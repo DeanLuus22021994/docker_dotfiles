@@ -35,19 +35,11 @@ Updated: October 23, 2025
   - [ ] In `.docker-compose/cluster-example/docker-compose.yml`, update Python service build path to same consolidated location
   - [ ] Test build with: `docker-compose -f .docker-compose/basic-stack/docker-compose.yml build`
 
-- [ ] **Standardize health check configurations across all services**
-  - [ ] Search all docker-compose.yml files for `healthcheck:` sections
-  - [ ] Update each healthcheck block to use these exact values:
-    ```yaml
-    healthcheck:
-      test: ["CMD-SHELL", "<appropriate-command>"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    ```
-  - [ ] Keep existing test commands, only change timing values
-  - [ ] Files to update: basic-stack, cluster-example, swarm-stack, mcp/python_utils, github-actions-runner
+- [x] **Standardize health check configurations across all services** ✅ COMPLETED
+  - [x] All docker-compose.yml files have standardized healthcheck configurations
+  - [x] Standard values: interval: 30s, timeout: 10s, retries: 3, start_period: 40s
+  - [x] Verified in: basic-stack, cluster-example, swarm-stack, mcp/python_utils, github-actions-runner
+  - [x] Observability stack also uses standardized health checks
 
 - [x] **Create environment-specific configuration files** ✅ COMPLETED
   - [x] Created `.env.development` with dev-specific values
