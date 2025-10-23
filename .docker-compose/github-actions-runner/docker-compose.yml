@@ -13,7 +13,7 @@ services:
       - LABELS=${LABELS:-self-hosted,linux,x64}
       - RUNNER_GROUP=${RUNNER_GROUP:-Default}
     volumes:
-      - runner_data:/actions-runner
+      - docker_examples_runner_data:/actions-runner
     restart: unless-stopped
     deploy:
       resources:
@@ -25,4 +25,4 @@ services:
           memory: 1G
 
 volumes:
-  docker_examples_runner_data
+  docker_examples_runner_data:

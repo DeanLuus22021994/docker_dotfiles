@@ -5,8 +5,8 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ../..:/workspaces:cached
-      - node_modules:/workspaces/node_modules
-      - python_venv:/workspaces/.venv
+      - docker_examples_node_modules:/workspaces/node_modules
+      - docker_examples_python_venv:/workspaces/.venv
     working_dir: /workspaces
     command: sleep infinity
     runtime: nvidia

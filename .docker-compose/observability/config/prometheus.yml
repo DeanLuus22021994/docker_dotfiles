@@ -1,0 +1,84 @@
+# Prometheus Configuration for Docker Compose Examples
+# Scrapes metrics from all services in the stack
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'docker-compose-examples'
+    environment: 'development'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: ['alertmanager:9093']
+
+# Load rules once and periodically evaluate them
+# rule_files:
+#   - "alerts/*.yml"
+
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Node Exporter - System metrics
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          service: 'node-exporter'
+
+  # cAdvisor - Container metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          service: 'cadvisor'
+
+  # PostgreSQL Exporter (if deployed)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'postgres-exporter'
+    # Optional: enable only if postgres-exporter is deployed
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: postgres-exporter:9187
+
+  # Redis Exporter (if deployed)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'redis-exporter'
+
+  # Application metrics (if exposed)
+  # Python FastAPI applications typically expose /metrics endpoint
+  - job_name: 'python-app'
+    static_configs:
+      - targets: ['python:8000']
+        labels:
+          service: 'python-app'
+    metrics_path: '/metrics'
+    # Optional: scrape only if metrics endpoint is available
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+
+  # Node.js application metrics (if exposed)
+  - job_name: 'node-app'
+    static_configs:
+      - targets: ['node:3000']
+        labels:
+          service: 'node-app'
+    metrics_path: '/metrics'

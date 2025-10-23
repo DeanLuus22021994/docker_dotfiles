@@ -8,6 +8,8 @@
 **/*.pyc
 **/*.pyo
 **/*.egg-info/
+**/.coverage
+**/coverage.xml
 
 # Node.js
 **/node_modules/
@@ -25,6 +27,7 @@
 # Secrets (keep only examples)
 secrets/
 !secrets/.secrets.example
+!secrets/README.md
 
 # IDE
 .vscode/
