@@ -3,15 +3,15 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "react-scuba-utils"
+name = "docker-compose-utils"
 version = "0.2.0"
-description = "Modular enterprise-grade MCP-compliant Python utilities for React Scuba documentation and component management"
+description = "Modular enterprise-grade MCP-compliant Python utilities for Docker Compose documentation and component management"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.14"
-authors = [{ name = "React Scuba Team", email = "team@react-scuba.dev" }]
-maintainers = [{ name = "React Scuba Team", email = "team@react-scuba.dev" }]
-keywords = ["documentation", "components", "MCP", "utilities", "react", "scuba"]
+authors = [{ name = "Docker Compose Team", email = "team@docker-compose.dev" }]
+maintainers = [{ name = "Docker Compose Team", email = "team@docker-compose.dev" }]
+keywords = ["documentation", "components", "MCP", "utilities", "docker", "compose"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -70,14 +70,14 @@ dev-dependencies = [
 ]
 
 [project.scripts]
-react-scuba-utils = "react_scuba_utils.cli:main"
+docker-compose-utils = "docker_compose_utils.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/react-scuba/react-scuba-utils"
-Documentation = "https://react-scuba.dev/docs/python-utils"
-Repository = "https://github.com/react-scuba/react-scuba-utils"
-Issues = "https://github.com/react-scuba/react-scuba-utils/issues"
-Changelog = "https://github.com/react-scuba/react-scuba-utils/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/docker-compose/docker-compose-utils"
+Documentation = "https://docker-compose.dev/docs/python-utils"
+Repository = "https://github.com/docker-compose/docker-compose-utils"
+Issues = "https://github.com/docker-compose/docker-compose-utils/issues"
+Changelog = "https://github.com/docker-compose/docker-compose-utils/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
 packages = ["react_scuba_utils"]
@@ -140,7 +140,7 @@ unfixable = [
 ]
 
 [tool.ruff.isort]
-known-first-party = ["react_scuba_utils"]
+known-first-party = ["docker_compose_utils"]
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]
@@ -148,7 +148,7 @@ known-first-party = ["react_scuba_utils"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra -q --strict-markers --strict-config --cov=react_scuba_utils --cov-report=term-missing --cov-report=html --cov-report=xml"
+addopts = "-ra -q --strict-markers --strict-config --cov=docker_compose_utils --cov-report=term-missing --cov-report=html --cov-report=xml"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
@@ -160,7 +160,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["react_scuba_utils"]
+source = ["docker_compose_utils"]
 omit = ["*/tests/*", "*/test_*", "setup.py"]
 
 [tool.coverage.report]
@@ -199,7 +199,7 @@ extend-exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 88
-known_first_party = ["react_scuba_utils"]
+known_first_party = ["docker_compose_utils"]
 
 [tool.pylint.messages_control]
 disable = [

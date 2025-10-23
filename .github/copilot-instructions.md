@@ -1,4 +1,4 @@
-# Docker Dotfiles - Copilot Instructions
+# Docker Compose Examples - Copilot Instructions
 
 ## Stack
 - Python 3.14 + UV | Node.js 22 + Vite | PostgreSQL/MariaDB
@@ -6,7 +6,7 @@
 
 ## Standards
 - **NO** `version:` in docker-compose.yml (deprecated)
-- Volumes: `react_scuba_<service>_<type>`
+- Volumes: `docker_examples_<service>_<type>`
 - Health checks: `interval:30s timeout:10s retries:3 start_period:40s`
 - Secrets: Never hardcode passwords
 - Python: py314, UV, Black, Ruff, mypy strict

@@ -31,9 +31,9 @@ Updated: October 23, 2025
 
 - [ ] **Standardize volume naming with consistent project prefix**
   - [ ] In `.docker-compose/basic-stack/docker-compose.yml`, find all volume definitions
-  - [ ] Rename `python_cache:` to `react_scuba_python_cache:`
-  - [ ] Rename `db_data:` to `react_scuba_db_data:`
-  - [ ] Rename `node_modules:` to `react_scuba_node_modules:`
+  - [ ] Rename `python_cache:` to `docker_examples_python_cache:`
+  - [ ] Rename `db_data:` to `docker_examples_db_data:`
+  - [ ] Rename `node_modules:` to `docker_examples_node_modules:`
   - [ ] Update all volume references in service definitions to match new names
   - [ ] Repeat for all other docker-compose.yml files in the project
 

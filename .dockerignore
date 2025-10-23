@@ -34,9 +34,18 @@ docs/.doctrees/
 # Exclude test coverage
 coverage/
 .nyc_output/
+htmlcov/
 
 # Exclude Docker volumes (if any)
 volumes/
+
+# Exclude environment files (keep only example)
+.env*
+!.env.example
+
+# Exclude secrets directory
+secrets/
+!secrets/.secrets.example
 
 # Keep only necessary files for Python builds
 !python_utils/

@@ -25,22 +25,22 @@ services:
       - dev
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 15s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 40s
 
   node:
     build:
       context: ../..
-      dockerfile: docker-compose-examples/cluster-example/dockerfiles/node.Dockerfile
+      dockerfile: .docker-compose/cluster-example/dockerfiles/node.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:
       - ../..:/app:cached
-      - node_modules:/app/node_modules
-      - node_cache:/root/.npm
-      - node_yarn_cache:/usr/local/share/.cache/yarn
+      - react_scuba_node_modules:/app/node_modules
+      - react_scuba_node_cache:/root/.npm
+      - react_scuba_node_yarn_cache:/usr/local/share/.cache/yarn
     working_dir: /app
     command: sh -c "npm install --legacy-peer-deps && npm start"
     ports:
@@ -59,24 +59,24 @@ services:
           "CMD-SHELL",
           "wget --quiet --tries=1 --spider http://127.0.0.1:3000/ || exit 1",
         ]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   python:
     build:
       context: ../..
-      dockerfile: docker-compose-examples/mcp/python_utils/dockerfiles/python.Dockerfile
+      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:
       - ../mcp/python_utils:/app:cached
       - react_scuba_python_venv:/app/.venv
-      - python_cache:/root/.cache/pip
-      - python_pytest_cache:/tmp/.cache/pytest
-      - python_mypy_cache:/tmp/.cache/mypy
-      - python_ruff_cache:/tmp/.cache/ruff
+      - react_scuba_python_cache:/root/.cache/pip
+      - react_scuba_python_pytest_cache:/tmp/.cache/pytest
+      - react_scuba_python_mypy_cache:/tmp/.cache/mypy
+      - react_scuba_python_ruff_cache:/tmp/.cache/ruff
     working_dir: /app
     command: sh -c "pip install -e . && python -m react_scuba_utils.api"
     ports:
@@ -93,10 +93,10 @@ services:
     healthcheck:
       test:
         ["CMD", "python", "-c", "import sys; print('Python OK'); sys.exit(0)"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 20s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   web1:
     build:
@@ -106,16 +106,16 @@ services:
         DOCKER_BUILDKIT: 1
     volumes:
       - ./web-content:/usr/share/nginx/html:ro
-      - nginx_cache:/var/cache/nginx
+      - react_scuba_nginx_cache:/var/cache/nginx
     command: nginx -g 'daemon off;'
     networks:
       - cluster-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 15s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 40s
     deploy:
       replicas: 1
       restart_policy:
@@ -129,16 +129,16 @@ services:
         DOCKER_BUILDKIT: 1
     volumes:
       - ./web-content:/usr/share/nginx/html:ro
-      - nginx_cache:/var/cache/nginx
+      - react_scuba_nginx_cache:/var/cache/nginx
     command: nginx -g 'daemon off;'
     networks:
       - cluster-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 15s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 40s
     deploy:
       replicas: 1
       restart_policy:
@@ -152,16 +152,16 @@ services:
         DOCKER_BUILDKIT: 1
     volumes:
       - ./web-content:/usr/share/nginx/html:ro
-      - nginx_cache:/var/cache/nginx
+      - react_scuba_nginx_cache:/var/cache/nginx
     command: nginx -g 'daemon off;'
     networks:
       - cluster-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 15s
-      timeout: 5s
+      interval: 30s
+      timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 40s
     deploy:
       replicas: 1
       restart_policy:
@@ -176,46 +176,52 @@ services:
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    secrets:
+      - db_password
     volumes:
-      - db_data:/var/lib/postgresql/data
-      - db_logs:/var/log/postgresql
+      - react_scuba_db_data:/var/lib/postgresql/data
+      - react_scuba_db_logs:/var/log/postgresql
     ports:
       - "5432:5432"
     networks:
       - cluster-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
-  db_data:
+  react_scuba_db_data:
     driver: local
-  db_logs:
+  react_scuba_db_logs:
     driver: local
-  node_modules:
+  react_scuba_node_modules:
     driver: local
-  node_cache:
+  react_scuba_node_cache:
     driver: local
-  node_yarn_cache:
+  react_scuba_node_yarn_cache:
     driver: local
   react_scuba_python_venv:
     driver: local
-  python_cache:
+  react_scuba_python_cache:
     driver: local
-  python_pytest_cache:
+  react_scuba_python_pytest_cache:
     driver: local
-  python_mypy_cache:
+  react_scuba_python_mypy_cache:
     driver: local
-  python_ruff_cache:
+  react_scuba_python_ruff_cache:
     driver: local
-  nginx_cache:
+  react_scuba_nginx_cache:
     driver: local
 
 networks:
   cluster-network:
     driver: bridge
+
+secrets:
+  db_password:
+    file: ../../secrets/db_password.txt
