@@ -1,7 +1,7 @@
 -- Init script for MariaDB in devcontainer
--- Create a sample database and table for scuba app
+-- Create a sample database and table for docker examples
 
-USE scuba_db;
+USE docker_examples_db;
 
 -- Create a sample table for dive sites
 CREATE TABLE IF NOT EXISTS dive_sites (

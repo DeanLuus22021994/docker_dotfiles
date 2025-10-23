@@ -116,7 +116,7 @@ def mock_external_dependencies():
 
         with (
             patch.multiple(
-                "react_scuba_utils.config.settings.HTTPConfig", session=session_mock
+                "docker_examples_utils.config.settings.HTTPConfig", session=session_mock
             ),
             patch.multiple("psycopg2", connect=database_mock.mock_connect),
             patch.multiple("redis", Redis=lambda **kwargs: redis_client_mock_instance),

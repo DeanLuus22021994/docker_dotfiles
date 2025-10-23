@@ -181,7 +181,7 @@ grep -E "Team Size:|Week [0-9]+" DEVELOPMENT.md
 
 ### Volume Mount Strategy
 
-- **Python venv**: `react_scuba_python_venv:/app/.venv`
+- **Python venv**: `docker_examples_python_venv:/app/.venv`
 - **Node modules**: `node_modules:/app/node_modules`
 - **Build cache**: `python_cache:/root/.cache/pip`
 
@@ -299,7 +299,7 @@ All Docker Compose stacks have been enhanced with dedicated `dockerfiles` folder
 ```yaml
 # Python services now include:
 volumes:
-  - react_scuba_python_venv:/app/.venv          # Virtual environment
+  - docker_examples_python_venv:/app/.venv          # Virtual environment
   - python_cache:/root/.cache/pip              # Pip cache
   - python_pytest_cache:/tmp/.cache/pytest     # Test cache
   - python_mypy_cache:/tmp/.cache/mypy        # Type check cache

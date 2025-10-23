@@ -12,19 +12,19 @@ services:
       - "3000:3000"
     environment:
       # Centralized configuration via environment variables
-      - REACT_SCUBA__ENVIRONMENT=development
-      - REACT_SCUBA__DEBUG=true
-      - REACT_SCUBA__LOGGING__LEVEL=INFO
-      - REACT_SCUBA__LOGGING__FORMAT=json
-      - REACT_SCUBA__LOGGING__ENABLE_CORRELATION_IDS=true
-      - REACT_SCUBA__SERVICES__NODE__HOST=localhost
-      - REACT_SCUBA__SERVICES__NODE__PORT=3000
-      - REACT_SCUBA__SERVICES__PYTHON__HOST=localhost
-      - REACT_SCUBA__SERVICES__PYTHON__PORT=8000
-      - REACT_SCUBA__SERVICES__DATABASE__HOST=db
-      - REACT_SCUBA__SERVICES__DATABASE__PORT=5432
-      - REACT_SCUBA__SERVICES__REDIS__HOST=redis
-      - REACT_SCUBA__SERVICES__REDIS__PORT=6379
+      - DOCKER_EXAMPLES__ENVIRONMENT=development
+      - DOCKER_EXAMPLES__DEBUG=true
+      - DOCKER_EXAMPLES__LOGGING__LEVEL=INFO
+      - DOCKER_EXAMPLES__LOGGING__FORMAT=json
+      - DOCKER_EXAMPLES__LOGGING__ENABLE_CORRELATION_IDS=true
+      - DOCKER_EXAMPLES__SERVICES__NODE__HOST=localhost
+      - DOCKER_EXAMPLES__SERVICES__NODE__PORT=3000
+      - DOCKER_EXAMPLES__SERVICES__PYTHON__HOST=localhost
+      - DOCKER_EXAMPLES__SERVICES__PYTHON__PORT=8000
+      - DOCKER_EXAMPLES__SERVICES__DATABASE__HOST=db
+      - DOCKER_EXAMPLES__SERVICES__DATABASE__PORT=5432
+      - DOCKER_EXAMPLES__SERVICES__REDIS__HOST=redis
+      - DOCKER_EXAMPLES__SERVICES__REDIS__PORT=6379
       # Legacy environment variables for backward compatibility
       - NODE_ENV=development
     depends_on:
@@ -53,37 +53,37 @@ services:
       target: deps # Skip final stage for faster builds
     volumes:
       - ../..:/app:cached
-      - react_scuba_python_venv:/app/.venv
-      - python_cache:/root/.cache/pip
+      - docker_examples_python_venv:/app/python_utils/.venv
+      - docker_examples_python_cache:/root/.cache/pip
     working_dir: /app
-    command: sh -c "pip install -e python_utils && python -m uvicorn react_scuba_utils.api:app --reload --host 0.0.0.0 --port 8000"
+    command: sh -c "pip install -e python_utils && python -m uvicorn docker_examples_utils.api:app --reload --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
     environment:
       # Centralized configuration via environment variables
-      - REACT_SCUBA__ENVIRONMENT=development
-      - REACT_SCUBA__DEBUG=true
-      - REACT_SCUBA__LOGGING__LEVEL=INFO
-      - REACT_SCUBA__LOGGING__FORMAT=json
-      - REACT_SCUBA__LOGGING__ENABLE_CORRELATION_IDS=true
-      - REACT_SCUBA__DATABASE__HOST=db
-      - REACT_SCUBA__DATABASE__PORT=5432
-      - REACT_SCUBA__DATABASE__NAME=mydb
-      - REACT_SCUBA__DATABASE__USER=user
-      - REACT_SCUBA__DATABASE__PASSWORD=password
-      - REACT_SCUBA__REDIS__HOST=redis
-      - REACT_SCUBA__REDIS__PORT=6379
-      - REACT_SCUBA__SERVICES__NODE__HOST=node
-      - REACT_SCUBA__SERVICES__NODE__PORT=3000
-      - REACT_SCUBA__SERVICES__PYTHON__HOST=localhost
-      - REACT_SCUBA__SERVICES__PYTHON__PORT=8000
-      - REACT_SCUBA__SERVICES__DATABASE__HOST=db
-      - REACT_SCUBA__SERVICES__DATABASE__PORT=5432
-      - REACT_SCUBA__SERVICES__REDIS__HOST=redis
-      - REACT_SCUBA__SERVICES__REDIS__PORT=6379
-      - REACT_SCUBA__DOCKER_BUILDKIT=true
-      - REACT_SCUBA__PYTHON_UNBUFFERED=true
-      - REACT_SCUBA__PYTHON_PATH=/app/python_utils:/app
+      - DOCKER_EXAMPLES__ENVIRONMENT=development
+      - DOCKER_EXAMPLES__DEBUG=true
+      - DOCKER_EXAMPLES__LOGGING__LEVEL=INFO
+      - DOCKER_EXAMPLES__LOGGING__FORMAT=json
+      - DOCKER_EXAMPLES__LOGGING__ENABLE_CORRELATION_IDS=true
+      - DOCKER_EXAMPLES__DATABASE__HOST=db
+      - DOCKER_EXAMPLES__DATABASE__PORT=5432
+      - DOCKER_EXAMPLES__DATABASE__NAME=mydb
+      - DOCKER_EXAMPLES__DATABASE__USER=user
+      - DOCKER_EXAMPLES__DATABASE__PASSWORD=password
+      - DOCKER_EXAMPLES__REDIS__HOST=redis
+      - DOCKER_EXAMPLES__REDIS__PORT=6379
+      - DOCKER_EXAMPLES__SERVICES__NODE__HOST=node
+      - DOCKER_EXAMPLES__SERVICES__NODE__PORT=3000
+      - DOCKER_EXAMPLES__SERVICES__PYTHON__HOST=localhost
+      - DOCKER_EXAMPLES__SERVICES__PYTHON__PORT=8000
+      - DOCKER_EXAMPLES__SERVICES__DATABASE__HOST=db
+      - DOCKER_EXAMPLES__SERVICES__DATABASE__PORT=5432
+      - DOCKER_EXAMPLES__SERVICES__REDIS__HOST=redis
+      - DOCKER_EXAMPLES__SERVICES__REDIS__PORT=6379
+      - DOCKER_EXAMPLES__DOCKER_BUILDKIT=true
+      - DOCKER_EXAMPLES__PYTHON_UNBUFFERED=true
+      - DOCKER_EXAMPLES__PYTHON_PATH=/app/python_utils:/app
       # Legacy environment variables for backward compatibility
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app/python_utils:/app
@@ -157,7 +157,8 @@ volumes:
     driver: local
   node_modules:
     driver: local
-  react_scuba_python_venv:
+  volumes:
+  docker_examples_python_venv:
     driver: local
   python_cache:
     driver: local

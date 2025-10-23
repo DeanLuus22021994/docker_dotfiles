@@ -1,6 +1,6 @@
-# GitHub Actions Self-Hosted Runner for react-scuba
+# GitHub Actions Self-Hosted Runner for docker-examples
 
-This project provides a self-hosted GitHub Actions runner service using Docker for the [react-scuba](https://github.com/DeanLuus22021994/react-scuba) repository. The runner is configured with minimal footprint and uses named volume mounts for persistence across builds.
+This project provides a self-hosted GitHub Actions runner service using Docker for the [docker-examples](https://github.com/DeanLuus22021994/docker-examples) repository. The runner is configured with minimal footprint and uses named volume mounts for persistence across builds.
 
 ## Features
 
@@ -16,7 +16,7 @@ This project provides a self-hosted GitHub Actions runner service using Docker f
 - `docker-compose.yml`: Defines the runner service with named volumes for persistence
 - `Dockerfile`: Builds a minimal Ubuntu 22.04 image with GitHub Actions runner v2.329.0
 - `scripts/entrypoint.sh`: Configuration and startup script with proper cleanup handling
-- `.env.example`: Template for environment variables with defaults for react-scuba
+- `.env.example`: Template for environment variables with defaults for docker-examples
 
 ## Prerequisites
 
@@ -31,7 +31,7 @@ This project provides a self-hosted GitHub Actions runner service using Docker f
 Go to your repository settings to get a new runner token:
 
 ```text
-https://github.com/DeanLuus22021994/react-scuba/settings/actions/runners/new
+https://github.com/DeanLuus22021994/docker-examples/settings/actions/runners/new
 ```
 
 **Note**: Runner tokens expire after 1 hour, so generate a new one each time you set up or reconfigure the runner.
@@ -71,7 +71,7 @@ You should see messages indicating successful configuration and "Listening for J
 Verify in GitHub:
 
 ```text
-https://github.com/DeanLuus22021994/react-scuba/settings/actions/runners
+https://github.com/DeanLuus22021994/docker-examples/settings/actions/runners
 ```
 
 ## Usage in Workflows
@@ -92,7 +92,7 @@ Or target specific labels:
 ```yaml
 jobs:
   build:
-    runs-on: [self-hosted, linux, react, scuba]
+    runs-on: [self-hosted, linux, docker, examples]
     steps:
       - uses: actions/checkout@v4
       # Your workflow steps here
@@ -102,9 +102,9 @@ jobs:
 
 The runner uses three named volumes for persistence:
 
-- **react_scuba_runner_work**: Stores workflow job data and build artifacts
-- **react_scuba_runner_config**: Stores runner configuration
-- **react_scuba_runner_credentials**: Stores authentication credentials
+- **docker_examples_runner_work**: Stores workflow job data and build artifacts
+- **docker_examples_runner_config**: Stores runner configuration
+- **docker_examples_runner_credentials**: Stores authentication credentials
 
 These volumes persist across container restarts and rebuilds.
 

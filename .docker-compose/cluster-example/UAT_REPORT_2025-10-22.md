@@ -1,4 +1,4 @@
-# React Scuba Docker Compose Examples - Cluster-Example User Acceptance Testing Report
+# Docker Examples Docker Compose Examples - Cluster-Example User Acceptance Testing Report
 
 **Test Date:** 2025-10-22 18:44:59
 **Environment:** Windows 11, Docker Desktop, PowerShell
@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Comprehensive User Acceptance Testing (UAT) was performed on the React Scuba cluster-example Docker Compose configuration. The load-balanced cluster with 7 services has been successfully deployed and validated, demonstrating proper nginx load balancing, Python 3.14 features, and full service orchestration.
+Comprehensive User Acceptance Testing (UAT) was performed on the Docker Examples cluster-example Docker Compose configuration. The load-balanced cluster with 7 services has been successfully deployed and validated, demonstrating proper nginx load balancing, Python 3.14 features, and full service orchestration.
 
 ## Test Results Overview
 
@@ -134,4 +134,4 @@ Internet → Load Balancer (nginx:8080)
 **Load Balancing Operational:** Round-robin distribution confirmed across 3 web servers
 **Python 3.14 Features:** Fully validated with concurrent processing capabilities
 **All Services Operational:** Ready for production deployment</content>
-<parameter name="filePath">c:\react_scuba_runner\react-scuba\docker-compose-examples\cluster-example\UAT_REPORT_2025-10-22.md
+<parameter name="filePath">c:\docker_examples_runner\docker-examples\.docker-compose\cluster-example\UAT_REPORT_2025-10-22.md

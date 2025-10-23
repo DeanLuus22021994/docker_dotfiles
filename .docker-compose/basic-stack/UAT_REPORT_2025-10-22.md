@@ -1,4 +1,4 @@
-# React Scuba Docker Compose Examples - User Acceptance Testing Report
+# Docker Examples Docker Compose Examples - User Acceptance Testing Report
 
 **Test Date:** 2025-10-22 18:31:46
 **Environment:** Windows 11, Docker Desktop, PowerShell
@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Comprehensive User Acceptance Testing (UAT) was performed on the React Scuba Docker Compose examples. The basic-stack configuration has been successfully deployed and validated, demonstrating Python 3.14 features and full API functionality.
+Comprehensive User Acceptance Testing (UAT) was performed on the Docker Examples Docker Compose examples. The basic-stack configuration has been successfully deployed and validated, demonstrating Python 3.14 features and full API functionality.
 
 ## Test Results Overview
 
@@ -104,4 +104,4 @@ Comprehensive User Acceptance Testing (UAT) was performed on the React Scuba Doc
 **Test Environment Cleaned:** Docker system prune executed successfully (0B usage confirmed)
 **All Services Operational:** Ready for production deployment
 **Python 3.14 Features:** Fully validated and functional</content>
-<parameter name="filePath">c:\react_scuba_runner\react-scuba\docker-compose-examples\basic-stack\UAT_REPORT_2025-10-22.md
+<parameter name="filePath">c:\docker_examples_runner\docker-examples\.docker-compose\basic-stack\UAT_REPORT_2025-10-22.md

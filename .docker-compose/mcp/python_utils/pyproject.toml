@@ -80,7 +80,7 @@ Issues = "https://github.com/docker-compose/docker-compose-utils/issues"
 Changelog = "https://github.com/docker-compose/docker-compose-utils/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
-packages = ["react_scuba_utils"]
+packages = ["docker_examples_utils"]
 
 [tool.mypy]
 python_version = "3.14"

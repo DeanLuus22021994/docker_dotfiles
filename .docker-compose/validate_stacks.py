@@ -176,8 +176,8 @@ class StackValidator:
         print("🔗 Validating volume consistency...")
 
         expected_volumes = {
-            "react_scuba_python_venv",
-            "python_cache",
+            "docker_examples_python_venv",
+            "docker_examples_python_cache",
             "python_pytest_cache",
             "python_mypy_cache",
             "python_ruff_cache",

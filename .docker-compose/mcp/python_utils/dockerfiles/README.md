@@ -99,7 +99,7 @@ docker-compose ps
 
 ### Named Volumes for Caching
 
-- **react_scuba_python_venv**: Python virtual environment
+- **docker_examples_python_venv**: Python virtual environment
 - **python_cache**: pip package cache
 - **python_pytest_cache**: pytest cache
 - **python_mypy_cache**: mypy cache
@@ -199,7 +199,7 @@ docker-compose --profile test logs test-runner
 
 The MCP Python utils stack shares named volumes with other stacks:
 
-- **react_scuba_python_venv**: Shared with basic-stack, cluster-example, swarm-stack
+- **docker_examples_python_venv**: Shared with basic-stack, cluster-example, swarm-stack
 - **python_cache**: Shared pip cache across all Python services
 - **python_*_cache**: Tool-specific caches for development efficiency
 
@@ -229,4 +229,4 @@ The MCP Python utils stack shares named volumes with other stacks:
 
 This stack provides enhanced MCP capabilities with Python 3.14 optimizations. The dockerfiles are designed for integration with the broader React Scuba ecosystem while maintaining backward compatibility.
 </content>
-<parameter name="filePath">c:\react_scuba_runner\react-scuba\docker-compose-examples\mcp\python_utils\dockerfiles\README.md
+<parameter name="filePath">c:\docker_examples_runner\docker-examples\.docker-compose\mcp\python_utils\dockerfiles\README.md

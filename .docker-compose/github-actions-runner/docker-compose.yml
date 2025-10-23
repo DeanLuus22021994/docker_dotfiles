@@ -3,8 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: react-scuba-runner:latest
-    container_name: react-scuba-runner
+    image: docker_examples_runner:latest
+    container_name: docker_examples_runner
     environment:
       - GITHUB_URL=${GITHUB_URL:-https://github.com/DeanLuus22021994/react-scuba}
       - RUNNER_TOKEN=${RUNNER_TOKEN}
@@ -25,5 +25,4 @@ services:
           memory: 1G
 
 volumes:
-  runner_data:
-    name: react_scuba_runner_data
+  docker_examples_runner_data

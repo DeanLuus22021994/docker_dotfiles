@@ -39,13 +39,13 @@ services:
         DOCKER_BUILDKIT: 1
     volumes:
       - ../mcp/python_utils:/app:cached
-      - react_scuba_python_venv:/app/.venv
-      - react_scuba_python_cache:/root/.cache/pip
-      - react_scuba_python_pytest_cache:/tmp/.cache/pytest
-      - react_scuba_python_mypy_cache:/tmp/.cache/mypy
-      - react_scuba_python_ruff_cache:/tmp/.cache/ruff
+      - docker_examples_python_venv:/app/.venv
+      - docker_examples_python_cache:/root/.cache/pip
+      - docker_examples_python_pytest_cache:/tmp/.cache/pytest
+      - docker_examples_python_mypy_cache:/tmp/.cache/mypy
+      - docker_examples_python_ruff_cache:/tmp/.cache/ruff
     working_dir: /app
-    command: sh -c "pip install -e . && python -m react_scuba_utils.api"
+    command: sh -c "pip install -e . && python -m docker_examples_utils.api"
     ports:
       - "8000:8000"
     environment:
@@ -84,8 +84,8 @@ services:
     secrets:
       - db_password
     volumes:
-      - react_scuba_db_data:/var/lib/postgresql/data
-      - react_scuba_db_logs:/var/log/postgresql
+      - docker_examples_db_data:/var/lib/postgresql/data
+      - docker_examples_db_logs:/var/log/postgresql
     ports:
       - "5432:5432"
     networks:
@@ -109,21 +109,21 @@ services:
           cpus: "0.5"
 
 volumes:
-  react_scuba_db_data:
+  docker_examples_db_data:
     driver: local
-  react_scuba_db_logs:
+  docker_examples_db_logs:
     driver: local
-  react_scuba_node_modules:
+  docker_examples_node_modules:
     driver: local
-  react_scuba_python_venv:
+  docker_examples_python_venv:
     driver: local
-  react_scuba_python_cache:
+  docker_examples_python_cache:
     driver: local
-  react_scuba_python_pytest_cache:
+  docker_examples_python_pytest_cache:
     driver: local
-  react_scuba_python_mypy_cache:
+  docker_examples_python_mypy_cache:
     driver: local
-  react_scuba_python_ruff_cache:
+  docker_examples_python_ruff_cache:
     driver: local
 
 networks:

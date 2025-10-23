@@ -10,20 +10,20 @@
   },
   "mounts": [
     {
-      "type": "volume",
-      "source": "react-scuba-python-cache",
-      "target": "/home/vscode/.cache/pip"
-    },
+        "type": "volume",
+        "source": "docker_examples_python_cache",
+        "target": "/home/vscode/.cache/pip"
+      },
     {
-      "type": "volume",
-      "source": "react-scuba-node-cache",
-      "target": "/home/vscode/.npm"
-    },
+        "type": "volume",
+        "source": "docker_examples_node_cache",
+        "target": "/home/vscode/.npm"
+      },
     {
-      "type": "volume",
-      "source": "react-scuba-mariadb-data",
-      "target": "/var/lib/mysql"
-    }
+        "type": "volume",
+        "source": "docker_examples_mariadb_data",
+        "target": "/var/lib/mysql"
+      }
   ],
   "hostRequirements": {
     "cpus": 4,

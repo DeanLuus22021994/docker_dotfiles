@@ -68,4 +68,4 @@ HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=5 \
 EXPOSE 8000
 
 # Default command leveraging Python 3.14 concurrent features for Swarm
-CMD ["/app/.venv/bin/python", "-m", "uvicorn", "react_scuba_utils.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/app/.venv/bin/python", "-m", "uvicorn", "docker_examples_utils.api:app", "--host", "0.0.0.0", "--port", "8000"]

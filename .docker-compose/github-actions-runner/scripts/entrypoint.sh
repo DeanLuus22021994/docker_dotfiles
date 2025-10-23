@@ -3,7 +3,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "Starting GitHub Actions Runner for react-scuba..."
+echo "Starting GitHub Actions Runner for docker-examples..."
 
 # Check if the required environment variables are set
 if [ -z "$GITHUB_URL" ] || [ -z "$RUNNER_TOKEN" ]; then
@@ -12,7 +12,7 @@ if [ -z "$GITHUB_URL" ] || [ -z "$RUNNER_TOKEN" ]; then
 fi
 
 # Set defaults
-RUNNER_NAME=${RUNNER_NAME:-react-scuba-runner}
+RUNNER_NAME=${RUNNER_NAME:-docker-examples-runner}
 RUNNER_WORKDIR=${RUNNER_WORKDIR:-/actions-runner/_work}
 LABELS=${LABELS:-self-hosted,linux,x64}
 RUNNER_GROUP=${RUNNER_GROUP:-Default}

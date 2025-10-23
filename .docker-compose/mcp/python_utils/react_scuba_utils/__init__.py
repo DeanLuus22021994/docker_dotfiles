@@ -1,7 +1,7 @@
 """
-React Scuba Utils - Modular enterprise-grade MCP-compliant Python utilities.
+Docker Examples Utils - Modular enterprise-grade MCP-compliant Python utilities.
 
-This package provides comprehensive documentation utilities for React Scuba projects,
+This package provides comprehensive documentation utilities for Docker Examples projects,
 including link checking, component inventory generation, and file operations.
 
 Features:
@@ -13,7 +13,7 @@ Features:
 - Modular architecture under 300 lines per module
 
 Usage:
-    from react_scuba_utils import DocUtils
+    from docker_examples_utils import DocUtils
 
     utils = DocUtils()
     results = utils.check_links_concurrent()
@@ -24,8 +24,8 @@ from .config.settings import get_python_features, has_interpreters, is_free_thre
 from .core.utils import DocUtils
 
 __version__ = "0.2.0"
-__author__ = "React Scuba Team"
-__email__ = "team@react-scuba.dev"
+__author__ = "Docker Examples Team"
+__email__ = "team@docker-examples.dev"
 
 # Feature detection
 PYTHON_FEATURES = get_python_features()

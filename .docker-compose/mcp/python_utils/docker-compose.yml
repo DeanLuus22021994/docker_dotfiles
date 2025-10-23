@@ -2,18 +2,18 @@ services:
   python:
     build:
       context: ../../../..
-      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
+      dockerfile: docker-compose-examples/mcp/python_utils/dockerfiles/python.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:
       - ./.docker-compose/mcp/python_utils:/app:cached
-      - react_scuba_python_venv:/app/.venv
-      - react_scuba_python_cache:/root/.cache/pip
-      - react_scuba_python_pytest_cache:/tmp/.cache/pytest
-      - react_scuba_python_mypy_cache:/tmp/.cache/mypy
-      - react_scuba_python_ruff_cache:/tmp/.cache/ruff
+      - docker_examples_python_venv:/app/.venv
+      - docker_examples_python_cache:/root/.cache/pip
+      - docker_examples_python_pytest_cache:/tmp/.cache/pytest
+      - docker_examples_python_mypy_cache:/tmp/.cache/mypy
+      - docker_examples_python_ruff_cache:/tmp/.cache/ruff
     working_dir: /app
-    command: sh -c "pip install -e python_utils && python -m react_scuba_utils.api"
+    command: sh -c "pip install -e python_utils && python -m docker_examples_utils.api"
     ports:
       - "8001:8000"
     environment:
@@ -36,19 +36,19 @@ services:
   test-runner:
     build:
       context: ../../../..
-      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
+      dockerfile: docker-compose-examples/mcp/python_utils/dockerfiles/python.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:
       - ./.docker-compose/mcp/python_utils:/app:cached
-      - react_scuba_python_venv:/app/.venv
-      - react_scuba_python_cache:/root/.cache/pip
-      - react_scuba_python_pytest_cache:/tmp/.cache/pytest
-      - react_scuba_python_mypy_cache:/tmp/.cache/mypy
-      - react_scuba_python_ruff_cache:/tmp/.cache/ruff
-      - react_scuba_test_coverage:/app/htmlcov
+      - docker_examples_python_venv:/app/.venv
+      - docker_examples_python_cache:/root/.cache/pip
+      - docker_examples_python_pytest_cache:/tmp/.cache/pytest
+      - docker_examples_python_mypy_cache:/tmp/.cache/mypy
+      - docker_examples_python_ruff_cache:/tmp/.cache/ruff
+      - docker_examples_test_coverage:/app/htmlcov
     working_dir: /app
-    command: sh -c "pip install -e python_utils && python -m pytest tests/ -v --cov=react_scuba_utils --cov-report=html --cov-report=term"
+    command: sh -c "pip install -e python_utils && python -m pytest tests/ -v --cov=docker_examples_utils --cov-report=html --cov-report=term"
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app/python_utils:/app
@@ -63,17 +63,17 @@ services:
         condition: service_healthy
 
 volumes:
-  react_scuba_python_venv:
+  docker_examples_python_venv:
     driver: local
-  react_scuba_python_cache:
+  docker_examples_python_cache:
     driver: local
-  react_scuba_python_pytest_cache:
+  docker_examples_python_pytest_cache:
     driver: local
-  react_scuba_python_mypy_cache:
+  docker_examples_python_mypy_cache:
     driver: local
-  react_scuba_python_ruff_cache:
+  docker_examples_python_ruff_cache:
     driver: local
-  react_scuba_test_coverage:
+  docker_examples_test_coverage:
     driver: local
 
 networks:

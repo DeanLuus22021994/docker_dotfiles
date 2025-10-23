@@ -29,7 +29,7 @@ tags: [mcp, python314, documentation, utilities, testing]
 ```bash
 python --version | grep "3.14"
 cd python_utils && uv sync --dry-run
-python -c "import react_scuba_utils; print('✓')"
+python -c "import docker_examples_utils; print('✓')"
 ```
 
 <a id="uac-mcp-utils-001-user-acceptance-criteria"></a>
@@ -43,8 +43,8 @@ python -c "import react_scuba_utils; print('✓')"
 ### [`UAC-MCP-UTILS-001`] Validation Criteria
 
 ```bash
-cd python_utils && python -m react_scuba_utils.mcp.server
-python -m react_scuba_utils.cli.main validate-docs
+cd python_utils && python -m docker_examples_utils.mcp.server
+python -m docker_examples_utils.cli.main validate-docs
 ```
 
 <a id="blk-mcp-utils-001-blockers"></a>
@@ -78,7 +78,7 @@ curl -f https://docs.python.org/3.14/ || echo "Limited"
 ```
 python_utils/
 ├── pyproject.toml          # Package configuration
-├── react_scuba_utils/      # Main package
+├── docker_examples_utils/      # Main package
 │   ├── api.py              # FastAPI application
 │   ├── cli/                # Command-line interface
 │   ├── mcp/                # MCP server implementation

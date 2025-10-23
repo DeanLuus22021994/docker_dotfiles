@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-FastAPI web server for React Scuba Python utilities.
+FastAPI web server for Docker Examples Python utilities.
 
 Provides REST API endpoints for documentation utilities,
 leveraging Python 3.14 features for enhanced performance.
@@ -33,8 +33,8 @@ logging_config = LoggingConfig(level=LogLevel.INFO)
 logging_config.configure_logging()
 
 app = FastAPI(
-    title="React Scuba Python Utilities API",
-    description="Python utilities for React Scuba project",
+    title="Docker Examples Python Utilities API",
+    description="FastAPI web server for Docker Examples Python utilities",
     version="0.2.0",
 )
 
@@ -208,7 +208,7 @@ if __name__ == "__main__":
         print("🔄 Concurrent interpreters available")
 
     uvicorn.run(
-        "react_scuba_utils.api:app",
+        "docker_examples_utils.api:app",
         host="0.0.0.0",
         port=8000,
         reload=False,

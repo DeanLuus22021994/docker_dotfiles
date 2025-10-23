@@ -194,7 +194,7 @@ class LoggingConfig(BaseModel):
         self, correlation_id: str | None = None
     ) -> "CorrelationLogger":
         """Get a correlation logger instance."""
-        return CorrelationLogger("react_scuba_api", correlation_id)
+        return CorrelationLogger("docker_examples_api", correlation_id)
 
 
 class CorrelationLogger:
@@ -326,7 +326,7 @@ class ApplicationConfig(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         env_nested_delimiter="__",
-        env_prefix="REACT_SCUBA__",
+        env_prefix="DOCKER_EXAMPLES__",
         case_sensitive=False,
         extra="ignore",  # Ignore extra environment variables
     )
@@ -376,7 +376,7 @@ class ApplicationConfig(BaseSettings):
     @classmethod
     def validate_environment_settings(cls, v: Environment) -> Environment:
         if v == Environment.PRODUCTION:
-            if os.getenv("REACT_SCUBA__DEBUG", "").lower() in ("true", "1"):
+            if os.getenv("DOCKER_EXAMPLES__DEBUG", "").lower() in ("true", "1"):
                 raise ValueError("Debug mode cannot be enabled in production")
         return v
 

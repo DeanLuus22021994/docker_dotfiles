@@ -66,4 +66,4 @@ HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
 EXPOSE 8000
 
 # Default command - can be overridden by docker-compose
-CMD ["python", "-m", "uvicorn", "react_scuba_utils.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "docker_examples_utils.api:app", "--host", "0.0.0.0", "--port", "8000"]
