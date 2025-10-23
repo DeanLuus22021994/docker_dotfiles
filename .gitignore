@@ -27,6 +27,7 @@
 # Secrets (keep only examples)
 secrets/
 !secrets/.secrets.example
+!secrets/README.md
 
 # IDE
 .vscode/

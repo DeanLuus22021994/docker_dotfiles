@@ -4,38 +4,27 @@ Updated: October 23, 2025
 
 ## 🔴 CRITICAL PRIORITY (Do Immediately)
 
-- [ ] **Fix Python version references (3.13 → 3.14)**
-  - [ ] Open `.devcontainer/devcontainer.json` and change line 27 from `"python.defaultInterpreterPath": "/usr/bin/python3.13"` to `"/usr/bin/python3.14"`
-  - [ ] Open `.docker-compose/mcp/python_utils/pyproject.toml` and change line 103 from `target-version = "py313"` to `"py314"`
-  - [ ] In same file, change line 208 from `target-version = ['py313']` to `['py314']`
+- [x] **Fix Python version references (3.13 → 3.14)** ✅ COMPLETED
+  - [x] Verified `.devcontainer/devcontainer.json` has `python.defaultInterpreterPath` set to `/usr/bin/python3.14`
+  - [x] Verified `.docker-compose/mcp/python_utils/pyproject.toml` has `target-version = "py314"`
+  - [x] No py313 references found in codebase
 
-- [ ] **Implement Docker secrets management for sensitive credentials**
-  - [ ] Create directory: `mkdir secrets` in project root
-  - [ ] Add `secrets/` to `.gitignore` file (append new line: `secrets/`)
-  - [ ] Create example secrets file: `secrets/.secrets.example` with placeholder values
-  - [ ] In each docker-compose.yml file, locate PostgreSQL service sections
-  - [ ] Replace `POSTGRES_PASSWORD: "password123"` with `POSTGRES_PASSWORD_FILE: /run/secrets/db_password`
-  - [ ] Add secrets section at root level of docker-compose.yml files:
-    ```yaml
-    secrets:
-      db_password:
-        file: ./secrets/db_password.txt
-    ```
-  - [ ] Update PostgreSQL service to mount secrets:
-    ```yaml
-    services:
-      postgres:
-        secrets:
-          - db_password
-    ```
+- [x] **Implement Docker secrets management for sensitive credentials** ✅ COMPLETED
+  - [x] Created directory: `secrets/` in project root
+  - [x] Added `secrets/` to `.gitignore` with exceptions for `.secrets.example` and `README.md`
+  - [x] Created example secrets file: `secrets/.secrets.example` with placeholder values
+  - [x] Created `secrets/README.md` with comprehensive documentation
+  - [x] Created `secrets/db_password.txt` for development use
+  - [x] Verified all docker-compose.yml files have proper secrets configuration
+  - [x] All PostgreSQL services use `POSTGRES_PASSWORD_FILE: /run/secrets/db_password`
+  - [x] All docker-compose.yml files have secrets section with `db_password` file reference
 
-- [ ] **Standardize volume naming with consistent project prefix**
-  - [ ] In `.docker-compose/basic-stack/docker-compose.yml`, find all volume definitions
-  - [ ] Rename `python_cache:` to `docker_examples_python_cache:`
-  - [ ] Rename `db_data:` to `docker_examples_db_data:`
-  - [ ] Rename `node_modules:` to `docker_examples_node_modules:`
-  - [ ] Update all volume references in service definitions to match new names
-  - [ ] Repeat for all other docker-compose.yml files in the project
+- [x] **Standardize volume naming with consistent project prefix** ✅ COMPLETED
+  - [x] Fixed `.docker-compose/basic-stack/docker-compose.yml` - updated `node_modules` and `python_venv` to use `docker_examples_` prefix
+  - [x] Fixed `.docker-compose/cluster-example/docker-compose.yml` - updated `node_modules` to use `docker_examples_` prefix
+  - [x] Fixed `.docker-compose/github-actions-runner/docker-compose.yml` - updated `runner_data` to `docker_examples_runner_data`
+  - [x] All volume definitions now have consistent `docker_examples_` prefix
+  - [x] All volume references in service definitions match the new names
 
 ## 🟡 HIGH PRIORITY (Do This Week)
 
