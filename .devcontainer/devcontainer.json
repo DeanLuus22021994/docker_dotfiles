@@ -42,7 +42,7 @@
     "vscode": {
       "settings": {
         // Python settings for container environment
-        "python.defaultInterpreterPath": "/usr/bin/python3.13",
+        "python.defaultInterpreterPath": "/usr/bin/python3.14",
         "python.terminal.activateEnvironment": true,
         "python.terminal.activateEnvInCurrentTerminal": true,
         "python.terminal.shellIntegration.enabled": true,

@@ -107,7 +107,7 @@ module = "tests.*"
 ignore_errors = true
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 line-length = 88
 select = [
   "E",  # pycodestyle errors
@@ -179,7 +179,7 @@ exclude_lines = [
 
 [tool.black]
 line-length = 88
-target-version = ['py313']
+target-version = ['py314']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
