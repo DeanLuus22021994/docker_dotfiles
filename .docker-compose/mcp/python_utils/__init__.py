@@ -1,12 +1,12 @@
 """
-Python utilities for React Scuba project.
+Python utilities for Docker Compose Utils project.
 
 Enhanced for Python 3.14 with free-threaded execution,
 concurrent interpreters, and improved parallelism.
 """
-
-__version__ = "0.2.0"
-__python_requires__ = ">=3.14"
+"""
+Python utilities for Docker Compose Utils project.
+"""
 
 # Python 3.14+ features detection
 import importlib.util

@@ -1,5 +1,5 @@
 """
-File operations service for React Scuba utilities.
+File operations service for Docker Compose Utils utilities.
 
 This module provides enhanced file operations with support for
 Python 3.14+ pathlib improvements.

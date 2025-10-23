@@ -23,13 +23,13 @@ class APIMock:
 
     def __init__(self):
         self.mock_responses = {
-            "https://api.github.com/repos/deanluus22021994/react-scuba": {
+            "https://api.github.com/repos/user/docker-examples": {
                 "status_code": 200,
                 "json": {
-                    "name": "react-scuba",
-                    "full_name": "deanluus22021994/react-scuba",
-                    "description": "React Scuba diving application",
-                    "html_url": "https://github.com/deanluus22021994/react-scuba",
+                    "name": "docker-examples",
+                    "full_name": "user/docker-examples",
+                    "description": "Docker Examples application",
+                    "html_url": "https://github.com/user/docker-examples",
                     "stargazers_count": 42,
                     "forks_count": 7,
                 },

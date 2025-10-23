@@ -15,7 +15,7 @@ from ..services.component_inventory import ComponentInventoryService
 from ..services.link_checker import LinkCheckerService
 
 """
-MCP (Model Context Protocol) server for React Scuba utilities.
+MCP (Model Context Protocol) server for Docker Compose Utils utilities.
 
 This module implements an MCP server that exposes documentation utilities
 as MCP tools for integration with AI assistants and other MCP clients.
@@ -84,9 +84,9 @@ class _MCPServerLike(Protocol):
         """
 
 
-class ReactScubaMCPServer:
+class DockerComposeMCPServer:
     """
-    MCP server for React Scuba documentation utilities.
+    MCP server for Docker Compose documentation utilities.
 
     Provides tools for link checking and component inventory generation
     through the Model Context Protocol.
@@ -97,7 +97,7 @@ class ReactScubaMCPServer:
             raise ImportError("MCP package is required for MCP server functionality")
 
         self.server: _MCPServerLike = cast(
-            _MCPServerLike, _MCPServerImpl("react-scuba-utils")
+            _MCPServerLike, _MCPServerImpl("docker-compose-utils")
         )
         self.path_config = PathConfig()
         self.http_config = HTTPConfig()
@@ -326,7 +326,7 @@ def main() -> int:
         print("❌ MCP package is required. Install with: pip install mcp")
         return 1
 
-    server = ReactScubaMCPServer()
+    server = DockerComposeMCPServer()
     asyncio.run(server.run())
     return 0
 

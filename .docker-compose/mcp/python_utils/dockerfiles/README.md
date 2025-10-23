@@ -227,6 +227,6 @@ The MCP Python utils stack shares named volumes with other stacks:
 
 ## Migration Notes
 
-This stack provides enhanced MCP capabilities with Python 3.14 optimizations. The dockerfiles are designed for integration with the broader React Scuba ecosystem while maintaining backward compatibility.
+This stack provides enhanced MCP capabilities with Python 3.14 optimizations. The dockerfiles are designed for integration with the broader Docker Examples ecosystem while maintaining backward compatibility.
 </content>
 <parameter name="filePath">c:\docker_examples_runner\docker-examples\.docker-compose\mcp\python_utils\dockerfiles\README.md

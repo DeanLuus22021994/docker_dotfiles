@@ -1,5 +1,6 @@
+documentation utilities and services.
 """
-Command-line interface for React Scuba utilities.
+Command-line interface for Docker Compose Utils utilities.
 
 This module provides the CLI entry point with support for all
 documentation utilities and services.
@@ -19,28 +20,21 @@ from ..services.link_checker import LinkCheckerService
 
 def main() -> int:
     """Enhanced CLI entry point with Python 3.14 features."""
-    parser = argparse.ArgumentParser(
-        description="React Scuba Documentation Utilities (Python 3.14 Enhanced)",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        parser = argparse.ArgumentParser(
+                description="Docker Compose Documentation Utilities (Python 3.14 Enhanced)",
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                epilog="""
 Examples:
-  react-scuba-utils check-links
-  react-scuba-utils inventory --src-path src
-  react-scuba-utils check-links --workers 20
+    docker-compose-utils check-links
+    docker-compose-utils inventory --src-path src
+    docker-compose-utils check-links --workers 20
 
 Python 3.14 Features:
-  - Free-threaded execution for true parallelism
-  - Concurrent interpreters for isolated processing
-  - Enhanced pathlib operations
-  - Improved concurrent.futures support
-        """,
-    )
-
-    parser.add_argument(
-        "command",
-        choices=["check-links", "inventory", "async-check"],
-        help="Command to run",
-    )
+    - Free-threaded execution for true parallelism
+    - Enhanced pathlib operations
+    - Improved concurrent.futures support
+                """,
+        )
     parser.add_argument("--docs-path", default="docs", help="Path to docs directory")
     parser.add_argument("--src-path", default="src", help="Path to source directory")
     parser.add_argument(

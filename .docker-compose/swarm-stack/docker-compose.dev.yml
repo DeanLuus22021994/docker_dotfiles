@@ -166,4 +166,4 @@ volumes:
 networks:
   swarm-network:
     external: true
-    name: react-scuba-swarm_swarm-network
+    name: docker-examples-swarm_swarm-network

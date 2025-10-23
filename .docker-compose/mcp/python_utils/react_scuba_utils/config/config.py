@@ -100,7 +100,7 @@ class HTTPConfig(BaseModel):
         default=[429, 500, 502, 503, 504], description="HTTP status codes to retry on"
     )
     user_agent: str = Field(
-        default="React-Scuba/1.0", description="User agent string for requests"
+        default="Docker-Compose-Utils/1.0", description="User agent string for requests"
     )
 
 
@@ -114,7 +114,7 @@ class PathConfig(BaseModel):
         default=Path("src"), description="Source code directory path"
     )
     base_url: str = Field(
-        default="https://deanluus22021994.github.io/react-scuba/",
+        default="https://user.github.io/docker-examples/",
         description="Base URL for the application",
     )
 
@@ -281,7 +281,7 @@ class ApplicationConfig(BaseSettings):
     environment: Environment = Field(
         default=Environment.DEVELOPMENT, description="Application environment"
     )
-    app_name: str = Field(default="React Scuba", description="Application name")
+    app_name: str = Field(default="Docker Compose Utils", description="Application name")
     version: str = Field(default="1.0.0", description="Application version")
     debug: bool = Field(default=False, description="Debug mode")
 

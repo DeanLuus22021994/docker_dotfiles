@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Documentation utilities for React Scuba project.
+Documentation utilities for Docker Compose Utils project.
 
 Enhanced for Python 3.14 with free-threaded execution,
 concurrent interpreters, and improved parallelism.
@@ -80,7 +80,7 @@ class DocUtils:
 
     def __init__(self, docs_path: str = "docs", use_interpreters: bool = True) -> None:
         self.docs_path = Path(docs_path)
-        self.base_url = "https://deanluus22021994.github.io/react-scuba/"
+        self.base_url = "https://user.github.io/docker-examples/"
         self.use_interpreters = use_interpreters and HAS_INTERPRETERS
 
         if requests:
@@ -416,7 +416,7 @@ def main() -> int:
     import argparse
 
     parser = argparse.ArgumentParser(
-        description="React Scuba Documentation Utilities (Python 3.14 Enhanced)",
+        description="Docker Compose Documentation Utilities (Python 3.14 Enhanced)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

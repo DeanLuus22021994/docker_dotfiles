@@ -68,7 +68,7 @@ async def root(request: Request) -> dict[str, Any]:
     correlation_logger.info("Root endpoint accessed", extra={"endpoint": "/"})
 
     return {
-        "message": "React Scuba Python Utilities API",
+        "message": "Docker Compose Utils Python Utilities API",
         "version": "0.2.0",
         "python_version": features["version_string"],
         "free_threaded": features["is_free_threaded"],
@@ -200,7 +200,7 @@ async def check_links(
 if __name__ == "__main__":
     import uvicorn
 
-    print("🐍 React Scuba Python Utilities API")
+    print("🐍 Docker Compose Utils Python Utilities API")
     print(f"📍 Python {features['version_string']}")
     if features["is_free_threaded"]:
         print("🧵 Running in free-threaded mode")

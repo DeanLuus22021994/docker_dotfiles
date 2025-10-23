@@ -56,7 +56,7 @@ ENV PYTHONMALLOC=malloc
 # Swarm-specific environment variables
 ENV SWARM_MODE=true
 ENV REDIS_URL=redis://redis:6379
-ENV POSTGRES_URL=postgresql://postgres:password@postgres:5432/scuba_db
+ENV POSTGRES_URL=postgresql://postgres:password@postgres:5432/example_db
 ENV DOCKER_HOST=unix:///var/run/docker.sock
 
 # Copy health check script

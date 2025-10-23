@@ -1,5 +1,5 @@
 """
-Configuration module for React Scuba utilities.
+Configuration module for Docker Compose Utils utilities.
 
 This module provides backward compatibility and convenience functions
 while delegating to the centralized configuration system.

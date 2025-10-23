@@ -1,8 +1,8 @@
 """
-Type definitions for React Scuba utilities.
+Type definitions for Docker Compose Utils utilities.
 
 This module contains all data models and type definitions used throughout
-the react-scuba-utils package.
+the docker-compose-utils package.
 """
 
 from dataclasses import asdict, dataclass, field

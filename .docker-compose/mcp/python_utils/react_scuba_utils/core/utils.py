@@ -1,5 +1,5 @@
 """
-Core module for React Scuba utilities.
+Core module for Docker Compose Utils utilities.
 
 This module provides the main DocUtils class that orchestrates
 all documentation utilities and services.
@@ -30,9 +30,9 @@ class DocUtils:
         use_interpreters: bool = True,
     ):
         """
-        Initialize DocUtils with configuration.
-
-        Args:
+        """
+        Core module for Docker Compose Utils utilities.
+        """
             docs_path: Path to documentation directory
             src_path: Path to source directory
             use_interpreters: Whether to use concurrent interpreters

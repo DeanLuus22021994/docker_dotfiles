@@ -1,12 +1,12 @@
 """
-Component inventory service for React Scuba.
+Component inventory service for Docker Compose Utils.
 
-This module provides functionality to analyze and catalog React components,
+This module provides functionality to analyze and catalog components,
 hooks, utilities, and pages in the source codebase.
 """
-
-import re
-import sys
+    """
+    Component inventory service for Docker Compose Utils.
+    """
 from pathlib import Path
 from typing import Any
 

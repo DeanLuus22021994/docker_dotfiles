@@ -52,7 +52,7 @@ ENV PYTHONMALLOC=malloc
 # Cluster-specific environment variables
 ENV CLUSTER_MODE=true
 ENV REDIS_URL=redis://redis:6379
-ENV POSTGRES_URL=postgresql://postgres:password@postgres:5432/scuba_db
+ENV POSTGRES_URL=postgresql://postgres:password@postgres:5432/example_db
 
 # Copy health check script
 COPY --chown=app:app docker-compose-examples/cluster-example/dockerfiles/healthcheck.py /app/healthcheck.py

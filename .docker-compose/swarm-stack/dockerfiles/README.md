@@ -87,14 +87,14 @@ docker swarm init
 docker-compose build
 
 # Deploy to Swarm
-docker stack deploy -c docker-compose.yml react-scuba
+docker stack deploy -c docker-compose.yml docker-examples
 
 # Check service status
-docker stack services react-scuba
+docker stack services docker-examples
 
 # Scale services
-docker service scale react-scuba_node=3
-docker service scale react-scuba_python=2
+docker service scale docker-examples_node=3
+docker service scale docker-examples_python=2
 ```
 
 ### Local Development
@@ -174,23 +174,23 @@ All environment variables remain the same as the original configuration.
 
 ```bash
 # Scale Node.js service
-docker service scale react-scuba_node=5
+docker service scale docker-examples_node=5
 
 # Scale Python service
-docker service scale react-scuba_python=3
+docker service scale docker-examples_python=3
 
 # Check scaling status
-docker stack services react-scuba
+docker stack services docker-examples
 ```
 
 ### Rolling Updates
 
 ```bash
 # Update with zero downtime
-docker stack deploy -c docker-compose.yml react-scuba
+docker stack deploy -c docker-compose.yml docker-examples
 
 # Monitor update progress
-docker stack services react-scuba
+docker stack services docker-examples
 ```
 
 ### Resource Monitoring
@@ -200,7 +200,7 @@ docker stack services react-scuba
 docker stats
 
 # Service-specific stats
-docker service ps react-scuba_node
+docker service ps docker-examples_node
 
 # Swarm node status
 docker node ls
@@ -212,24 +212,24 @@ docker node ls
 
 - Verify Swarm mode: `docker info | grep Swarm`
 - Check node status: `docker node ls`
-- Service logs: `docker service logs react-scuba_node`
+- Service logs: `docker service logs docker-examples_node`
 
 ### Resource Issues
 
-- Check resource limits: `docker service inspect react-scuba_node`
+- Check resource limits: `docker service inspect docker-examples_node`
 - Monitor usage: `docker stats`
 - Adjust limits in docker-compose.yml if needed
 
 ### Placement Issues
 
 - Check manager constraints: `docker node inspect self`
-- Verify placement: `docker service ps react-scuba_db`
+- Verify placement: `docker service ps docker-examples_db`
 - Update constraints if manager unavailable
 
 ### Network Issues
 
 - Check overlay network: `docker network ls`
-- Service discovery: `docker service inspect react-scuba_node`
+- Service discovery: `docker service inspect docker-examples_node`
 - DNS resolution: Check service names in docker-compose.yml
 
 ## Migration from Default Images

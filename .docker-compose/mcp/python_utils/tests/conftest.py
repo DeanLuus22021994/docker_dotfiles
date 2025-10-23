@@ -1,5 +1,5 @@
 """
-Pytest configuration and fixtures for React Scuba tests.
+Pytest configuration and fixtures for Docker Compose Utils tests.
 
 Provides automatic mocking of external dependencies for isolated testing.
 """

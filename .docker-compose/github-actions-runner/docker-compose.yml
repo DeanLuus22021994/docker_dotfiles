@@ -6,9 +6,9 @@ services:
     image: docker_examples_runner:latest
     container_name: docker_examples_runner
     environment:
-      - GITHUB_URL=${GITHUB_URL:-https://github.com/DeanLuus22021994/react-scuba}
+      - GITHUB_URL=${GITHUB_URL:-https://github.com/user/docker-examples}
       - RUNNER_TOKEN=${RUNNER_TOKEN}
-      - RUNNER_NAME=${RUNNER_NAME:-react-scuba-runner}
+      - RUNNER_NAME=${RUNNER_NAME:-docker-examples-runner}
       - RUNNER_WORKDIR=${RUNNER_WORKDIR:-/actions-runner/_work}
       - LABELS=${LABELS:-self-hosted,linux,x64}
       - RUNNER_GROUP=${RUNNER_GROUP:-Default}

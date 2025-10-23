@@ -1,5 +1,5 @@
 """
-Link checking service for React Scuba documentation.
+Link checking service for Docker Compose documentation.
 
 This module provides comprehensive link validation functionality
 with support for concurrent execution and Python 3.14+ features.

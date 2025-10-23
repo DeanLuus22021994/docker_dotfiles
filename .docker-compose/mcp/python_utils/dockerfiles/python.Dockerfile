@@ -56,7 +56,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV CLUSTER_MODE=${CLUSTER_MODE:-false}
 ENV SWARM_MODE=${SWARM_MODE:-false}
 ENV REDIS_URL=${REDIS_URL:-redis://redis:6379}
-ENV POSTGRES_URL=${POSTGRES_URL:-postgresql://postgres:password@postgres:5432/scuba_db}
+ENV POSTGRES_URL=${POSTGRES_URL:-postgresql://postgres:password@postgres:5432/example_db}
 ENV DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
 
 # Health check optimized for Python 3.14
