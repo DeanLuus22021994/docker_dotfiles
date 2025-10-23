@@ -1,0 +1,42 @@
+# Exclude virtual environments
+.venv/
+venv/
+env/
+
+# Exclude node modules
+node_modules/
+
+# Exclude build artifacts
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exclude logs and temporary files
+*.log
+*.tmp
+.DS_Store
+
+# Exclude git
+.git/
+.gitignore
+
+# Exclude documentation build artifacts
+docs/_build/
+docs/.doctrees/
+
+# Exclude test coverage
+coverage/
+.nyc_output/
+
+# Exclude Docker volumes (if any)
+volumes/
+
+# Keep only necessary files for Python builds
+!python_utils/

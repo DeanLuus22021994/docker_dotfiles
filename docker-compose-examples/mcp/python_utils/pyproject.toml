@@ -1,0 +1,237 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "react-scuba-utils"
+version = "0.2.0"
+description = "Modular enterprise-grade MCP-compliant Python utilities for React Scuba documentation and component management"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.14"
+authors = [{ name = "React Scuba Team", email = "team@react-scuba.dev" }]
+maintainers = [{ name = "React Scuba Team", email = "team@react-scuba.dev" }]
+keywords = ["documentation", "components", "MCP", "utilities", "react", "scuba"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "mkdocs>=1.5.0",
+  "requests>=2.31.0",
+  "beautifulsoup4>=4.12.0",
+  "PyYAML>=6.0",
+  "pydantic>=2.5.0",
+  "pydantic-settings>=2.0.0",
+  "fastapi>=0.104.0",
+  "uvicorn[standard]>=0.24.0",
+  "mcp>=0.1.0",
+  "structlog>=23.2.0",
+  "click>=8.1.0",
+  "rich>=13.7.0",
+  "urllib3>=2.0.0",
+  "lxml>=5.1.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.7.0",
+  "ruff>=0.1.0",
+  "pytest>=7.4.0",
+  "pytest-cov>=4.1.0",
+  "black>=23.11.0",
+  "isort>=5.12.0",
+  "pre-commit>=3.5.0",
+]
+docs = [
+  "mkdocs-material>=9.4.0",
+  "mkdocstrings[python]>=0.24.0",
+  "mkdocs-git-revision-date-localized-plugin>=1.2.0",
+  "mkdocs-minify-plugin>=0.7.0",
+  "mkdocs-redirects>=1.2.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+  "black>=24.0.0",
+  "isort>=5.13.0",
+  "pylint>=3.0.0",
+  "mypy>=1.8.0",
+  "pytest>=8.0.0",
+  "pytest-cov>=4.1.0",
+  "ruff>=0.3.0",
+]
+
+[project.scripts]
+react-scuba-utils = "react_scuba_utils.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/react-scuba/react-scuba-utils"
+Documentation = "https://react-scuba.dev/docs/python-utils"
+Repository = "https://github.com/react-scuba/react-scuba-utils"
+Issues = "https://github.com/react-scuba/react-scuba-utils/issues"
+Changelog = "https://github.com/react-scuba/react-scuba-utils/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["react_scuba_utils"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+pretty = true
+show_column_numbers = true
+show_error_context = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
+
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+select = [
+  "E",  # pycodestyle errors
+  "W",  # pycodestyle warnings
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # flake8-bugbear
+  "C4", # flake8-comprehensions
+  "UP", # pyupgrade
+]
+ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105",
+  "S106",
+  "S107",
+  # Ignore complexity
+  "C901",
+  "PLR0911",
+  "PLR0912",
+  "PLR0913",
+  "PLR0915",
+]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.isort]
+known-first-party = ["react_scuba_utils"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*" = ["B011"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers --strict-config --cov=react_scuba_utils --cov-report=term-missing --cov-report=html --cov-report=xml"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+  "integration: marks tests as integration tests",
+  "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["react_scuba_utils"]
+omit = ["*/tests/*", "*/test_*", "setup.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "def __repr__",
+  "if self.debug:",
+  "if settings.DEBUG",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if 0:",
+  "if __name__ == .__main__.:",
+  "class .*\\bProtocol\\):",
+  "@(abc\\.)?abstractmethod",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["react_scuba_utils"]
+
+[tool.pylint.messages_control]
+disable = [
+  "C0114", # missing-module-docstring
+  "C0115", # missing-class-docstring
+  "C0116", # missing-function-docstring
+  "R0903", # too-few-public-methods
+  "R0913", # too-many-arguments
+]
+known_third_party = ["fastapi", "pydantic", "uvicorn"]
+
+[tool.taplo]
+include = ["*.toml"]
+exclude = [".git", "target"]
+[tool.taplo.formatting]
+align_comments = true
+align_entries = true
+array_auto_collapse = false
+array_auto_expand = true
+column_width = 120
+compact_arrays = false
+compact_inline_tables = false
+indent_entries = true
+indent_tables = true
+reorder_arrays = true
+reorder_keys = true
+trailing_newline = true
+
+[tool.mypyc]
+python_version = "3.14"
+opt_level = 2
+debug_level = 0
+strict_dunder_typing = true
+show_error_codes = true
+mypy_global_config_file = "pyproject.toml"

@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: react-scuba-runner:latest
+    container_name: react-scuba-runner
+    environment:
+      - GITHUB_URL=${GITHUB_URL:-https://github.com/DeanLuus22021994/react-scuba}
+      - RUNNER_TOKEN=${RUNNER_TOKEN}
+      - RUNNER_NAME=${RUNNER_NAME:-react-scuba-runner}
+      - RUNNER_WORKDIR=${RUNNER_WORKDIR:-/actions-runner/_work}
+      - LABELS=${LABELS:-self-hosted,linux,x64}
+      - RUNNER_GROUP=${RUNNER_GROUP:-Default}
+    volumes:
+      - runner_data:/actions-runner
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 2G
+        reservations:
+          cpus: "1"
+          memory: 1G
+
+volumes:
+  runner_data:
+    name: react_scuba_runner_data

@@ -1,0 +1,109 @@
+{
+  "build": {
+    "dockerfile": "devcontainer.dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/nvidia-cuda:2": {
+      "installCudnn": false,
+      "installNvtx": false
+    }
+  },
+  "mounts": [
+    {
+      "type": "volume",
+      "source": "react-scuba-python-cache",
+      "target": "/home/vscode/.cache/pip"
+    },
+    {
+      "type": "volume",
+      "source": "react-scuba-node-cache",
+      "target": "/home/vscode/.npm"
+    },
+    {
+      "type": "volume",
+      "source": "react-scuba-mariadb-data",
+      "target": "/var/lib/mysql"
+    }
+  ],
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "4gb",
+    "storage": "8gb",
+    "gpu": "optional"
+  },
+  "waitFor": "onCreateCommand",
+  "updateContentCommand": "npm install --legacy-peer-deps",
+  "postStartCommand": "chown -R mysql:mysql /var/lib/mysql && service mariadb start && sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
+  "postAttachCommand": "",
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["src/App.jsx"]
+    },
+    "vscode": {
+      "settings": {
+        // Python settings for container environment
+        "python.defaultInterpreterPath": "/usr/bin/python3.13",
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.terminal.shellIntegration.enabled": true,
+        "python.analysis.typeCheckingMode": "basic",
+        "python.analysis.autoImportCompletions": true,
+        "python.analysis.packageIndexDepths": [
+          {
+            "name": "",
+            "depth": 2,
+            "includeAllSymbols": true
+          }
+        ],
+        // UV integration
+        "python.createEnvironment.contentButton": "hide",
+        "python.createEnvironment.trigger": "off"
+      },
+      "extensions": [
+        "GitHub.copilot-chat",
+        "GitHub.copilot",
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml",
+        "ms-vscode.copilot-mermaid-diagram",
+        "ms-vscode.vscode-copilot-vision",
+        "ms-vscode.vscode-websearchforcopilot",
+        "vscjava.migrate-java-to-azure",
+        "vscjava.vscode-java-upgrade",
+        "dbaeumer.vscode-eslint",
+        "github.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "christian-kohler.npm-intellisense",
+        "Orta.vscode-jest",
+        "VisualStudioExptTeam.intellicode-api-usage-examples",
+        "ms-azuretools.vscode-containers",
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-python.pylint"
+      ],
+      "mcp": {
+        "servers": {
+          "github-official": {
+            "command": "docker",
+            "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"],
+            "env": {
+              "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GH_PAT}"
+            }
+          },
+          "MCP_DOCKER": {
+            "command": "docker",
+            "args": ["mcp", "gateway", "run"],
+            "type": "stdio"
+          }
+        }
+      }
+    }
+  },
+  "portsAttributes": {
+    "3001": {
+      "label": "Application",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [3001]
+}

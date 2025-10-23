@@ -1,0 +1,2 @@
+[console_scripts]
+react-scuba-utils = react_scuba_utils.cli:main

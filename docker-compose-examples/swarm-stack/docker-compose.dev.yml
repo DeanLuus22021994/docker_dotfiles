@@ -1,0 +1,170 @@
+version: "3.8"
+
+services:
+  node:
+    build:
+      context: ../..
+      dockerfile: docker-compose-examples/swarm-stack/dockerfiles/node.Dockerfile
+    volumes:
+      - ../..:/app:cached
+      - node_modules:/app/node_modules
+    working_dir: /app
+    command: sh -c "npm install --legacy-peer-deps && npm start"
+    ports:
+      - "3000:3000"
+    environment:
+      # Centralized configuration via environment variables
+      - REACT_SCUBA__ENVIRONMENT=development
+      - REACT_SCUBA__DEBUG=true
+      - REACT_SCUBA__LOGGING__LEVEL=INFO
+      - REACT_SCUBA__LOGGING__FORMAT=json
+      - REACT_SCUBA__LOGGING__ENABLE_CORRELATION_IDS=true
+      - REACT_SCUBA__SERVICES__NODE__HOST=localhost
+      - REACT_SCUBA__SERVICES__NODE__PORT=3000
+      - REACT_SCUBA__SERVICES__PYTHON__HOST=localhost
+      - REACT_SCUBA__SERVICES__PYTHON__PORT=8000
+      - REACT_SCUBA__SERVICES__DATABASE__HOST=db
+      - REACT_SCUBA__SERVICES__DATABASE__PORT=5432
+      - REACT_SCUBA__SERVICES__REDIS__HOST=redis
+      - REACT_SCUBA__SERVICES__REDIS__PORT=6379
+      # Legacy environment variables for backward compatibility
+      - NODE_ENV=development
+    depends_on:
+      - db
+    networks:
+      - swarm-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://127.0.0.1:3000/ || exit 1",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  python:
+    build:
+      context: ../..
+      dockerfile: docker-compose-examples/swarm-stack/dockerfiles/python.Dockerfile
+      target: deps # Skip final stage for faster builds
+    volumes:
+      - ../..:/app:cached
+      - react_scuba_python_venv:/app/.venv
+      - python_cache:/root/.cache/pip
+    working_dir: /app
+    command: sh -c "pip install -e python_utils && python -m uvicorn react_scuba_utils.api:app --reload --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    environment:
+      # Centralized configuration via environment variables
+      - REACT_SCUBA__ENVIRONMENT=development
+      - REACT_SCUBA__DEBUG=true
+      - REACT_SCUBA__LOGGING__LEVEL=INFO
+      - REACT_SCUBA__LOGGING__FORMAT=json
+      - REACT_SCUBA__LOGGING__ENABLE_CORRELATION_IDS=true
+      - REACT_SCUBA__DATABASE__HOST=db
+      - REACT_SCUBA__DATABASE__PORT=5432
+      - REACT_SCUBA__DATABASE__NAME=mydb
+      - REACT_SCUBA__DATABASE__USER=user
+      - REACT_SCUBA__DATABASE__PASSWORD=password
+      - REACT_SCUBA__REDIS__HOST=redis
+      - REACT_SCUBA__REDIS__PORT=6379
+      - REACT_SCUBA__SERVICES__NODE__HOST=node
+      - REACT_SCUBA__SERVICES__NODE__PORT=3000
+      - REACT_SCUBA__SERVICES__PYTHON__HOST=localhost
+      - REACT_SCUBA__SERVICES__PYTHON__PORT=8000
+      - REACT_SCUBA__SERVICES__DATABASE__HOST=db
+      - REACT_SCUBA__SERVICES__DATABASE__PORT=5432
+      - REACT_SCUBA__SERVICES__REDIS__HOST=redis
+      - REACT_SCUBA__SERVICES__REDIS__PORT=6379
+      - REACT_SCUBA__DOCKER_BUILDKIT=true
+      - REACT_SCUBA__PYTHON_UNBUFFERED=true
+      - REACT_SCUBA__PYTHON_PATH=/app/python_utils:/app
+      # Legacy environment variables for backward compatibility
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/python_utils:/app
+      - DEBUG=true
+    depends_on:
+      - db
+    networks:
+      - swarm-network
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import sys; print('Python OK'); sys.exit(0)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  db:
+    build:
+      context: ../..
+      dockerfile: docker-compose-examples/swarm-stack/dockerfiles/postgres.Dockerfile
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - db_logs:/var/log/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - swarm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - swarm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+
+volumes:
+  db_data:
+    driver: local
+  db_logs:
+    driver: local
+  node_modules:
+    driver: local
+  react_scuba_python_venv:
+    driver: local
+  python_cache:
+    driver: local
+
+networks:
+  swarm-network:
+    external: true
+    name: react-scuba-swarm_swarm-network

@@ -1,0 +1,131 @@
+version: "3.8"
+
+services:
+  node:
+    build:
+      context: ../..
+      dockerfile: docker-compose-examples/swarm-stack/dockerfiles/node.Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    command: npx vite preview --port 3000 --host 0.0.0.0
+    depends_on:
+      - db
+    networks:
+      - swarm-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --quiet --tries=1 --spider http://127.0.0.1:3000/ || exit 1",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+
+  python:
+    build:
+      context: ../..
+      dockerfile: docker-compose-examples/mcp/python_utils/dockerfiles/python.Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
+    volumes:
+      - ../mcp/python_utils:/app:cached
+      - react_scuba_python_venv:/app/.venv
+      - python_cache:/root/.cache/pip
+      - python_pytest_cache:/tmp/.cache/pytest
+      - python_mypy_cache:/tmp/.cache/mypy
+      - python_ruff_cache:/tmp/.cache/ruff
+    working_dir: /app
+    command: sh -c "pip install -e . && python -m react_scuba_utils.api"
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app:/app
+      - SWARM_MODE=true
+    depends_on:
+      - db
+    networks:
+      - swarm-network
+    healthcheck:
+      test:
+        ["CMD", "python", "-c", "import sys; print('Python OK'); sys.exit(0)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+
+  db:
+    build:
+      context: ../..
+      dockerfile: docker-compose-examples/swarm-stack/dockerfiles/postgres.Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - db_logs:/var/log/postgresql
+    ports:
+      - "5432:5432"
+    networks:
+      - swarm-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 1G
+          cpus: "1.0"
+        reservations:
+          memory: 512M
+          cpus: "0.5"
+
+volumes:
+  db_data:
+    driver: local
+  db_logs:
+    driver: local
+  node_modules:
+    driver: local
+  react_scuba_python_venv:
+    driver: local
+  python_cache:
+    driver: local
+  python_pytest_cache:
+    driver: local
+  python_mypy_cache:
+    driver: local
+  python_ruff_cache:
+    driver: local
+networks:
+  swarm-network:
+    external: true
+    name: react-scuba-swarm_swarm-network
