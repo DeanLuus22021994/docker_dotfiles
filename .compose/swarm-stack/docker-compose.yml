@@ -22,7 +22,7 @@ services:
     volumes:
       - docker_python_app:/app
     depends_on:
-      - db
+      - postgresql
       - redis
     healthcheck:
       test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]

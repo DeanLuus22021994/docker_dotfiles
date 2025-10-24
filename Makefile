@@ -31,19 +31,19 @@ help:
 # Generate docker-compose.yml files from config
 generate-compose:
 	@echo "🔧 Generating docker-compose.yml files from config..."
-	@python .docker-compose/validate_stacks.py --generate-compose
+	@python .compose/validate_stacks.py --generate-compose
 	@echo "✅ Compose files generated"
 
 # Validate all docker-compose.yml files
 validate:
 	@echo "🔍 Validating Docker Compose stacks..."
-	@python .docker-compose/validate_stacks.py
+	@python .compose/validate_stacks.py
 	@echo "✅ Validation complete"
 
 # Build all Docker Compose stacks
 build:
 	@echo "🔨 Building Docker Compose stacks..."
-	@python .docker-compose/validate_stacks.py --build
+	@python .compose/validate_stacks.py --build
 	@echo "✅ Build complete"
 
 # Run validation and build steps
@@ -61,16 +61,16 @@ clean:
 # Format Python code
 format:
 	@echo "📝 Formatting Python code..."
-	@cd .docker-compose/mcp/python_utils && python -m black . || echo "black not installed, skipping..."
-	@cd .docker-compose/mcp/python_utils && python -m ruff check --fix . || echo "ruff not installed, skipping..."
+	@cd .compose/mcp/python_utils && python -m black . || echo "black not installed, skipping..."
+	@cd .compose/mcp/python_utils && python -m ruff check --fix . || echo "ruff not installed, skipping..."
 	@echo "✅ Formatting complete"
 
 # Lint Python code and Dockerfiles
 lint:
 	@echo "🔍 Linting code..."
-	@cd .docker-compose/mcp/python_utils && python -m ruff check . || echo "ruff not installed, skipping..."
-	@cd .docker-compose/mcp/python_utils && python -m mypy . || echo "mypy not installed, skipping..."
-	@find .docker-compose -name "Dockerfile" -o -name "*.Dockerfile" | xargs -I {} sh -c 'echo "Linting: {}" && docker run --rm -i hadolint/hadolint < {} || echo "hadolint not available"'
+	@cd .compose/mcp/python_utils && python -m ruff check . || echo "ruff not installed, skipping..."
+	@cd .compose/mcp/python_utils && python -m mypy . || echo "mypy not installed, skipping..."
+	@find .compose -name "Dockerfile" -o -name "*.Dockerfile" | xargs -I {} sh -c 'echo "Linting: {}" && docker run --rm -i hadolint/hadolint < {} || echo "hadolint not available"'
 	@echo "✅ Linting complete"
 
 # Run security scans
@@ -86,19 +86,19 @@ all: validate build test
 # Basic stack management
 up:
 	@echo "🚀 Starting basic-stack services..."
-	@docker compose -f compose/basic-stack/docker-compose.yml up -d
+	@docker compose -f .compose/basic-stack/docker-compose.yml up -d
 	@echo "✅ Services started"
 
 down:
 	@echo "🛑 Stopping basic-stack services..."
-	@docker compose -f compose/basic-stack/docker-compose.yml down
+	@docker compose -f .compose/basic-stack/docker-compose.yml down
 	@echo "✅ Services stopped"
 
 logs:
-	@docker compose -f compose/basic-stack/docker-compose.yml logs -f
+	@docker compose -f .compose/basic-stack/docker-compose.yml logs -f
 
 ps:
-	@docker compose -f compose/basic-stack/docker-compose.yml ps
+	@docker compose -f .compose/basic-stack/docker-compose.yml ps
 
 # Buildx and Bake targets
 buildx-bake:

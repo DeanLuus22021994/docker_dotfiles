@@ -30,10 +30,10 @@ class StackValidator:
     def __init__(self, base_path: Path):
         self.base_path = base_path
         self.stacks = [
-            "basic-stack",
-            "cluster-example",
-            "swarm-stack",
-            "mcp/python_utils",
+            ".compose/basic-stack",
+            ".compose/cluster-example", 
+            ".compose/swarm-stack",
+            ".compose/mcp",
         ]
 
     def run_command(
