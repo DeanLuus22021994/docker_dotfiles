@@ -3,7 +3,12 @@
 
 services:
   prometheus:
-    image: prom/prometheus:latest
+    image: "docker_prometheus:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/prometheus.Dockerfile"
+      args:
+        ENVIRONMENT: production
     container_name: docker_prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -27,7 +32,12 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:latest
+    image: "docker_grafana:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/grafana.Dockerfile"
+      args:
+        ENVIRONMENT: production
     container_name: docker_grafana
     volumes:
       - docker_grafana_data:/var/lib/grafana
@@ -59,7 +69,12 @@ services:
         condition: service_healthy
 
   loki:
-    image: grafana/loki:latest
+    image: "docker_loki:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/loki.Dockerfile"
+      args:
+        ENVIRONMENT: production
     container_name: docker_loki
     command: -config.file=/etc/loki/loki-config.yml
     volumes:
@@ -78,7 +93,12 @@ services:
     restart: unless-stopped
 
   promtail:
-    image: grafana/promtail:latest
+    image: "docker_promtail:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/promtail.Dockerfile"
+      args:
+        ENVIRONMENT: production
     container_name: docker_promtail
     command: -config.file=/etc/promtail/promtail-config.yml
     volumes:
@@ -92,7 +112,12 @@ services:
       - loki
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: "docker_node-exporter:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/node-exporter.Dockerfile"
+      args:
+        ENVIRONMENT: production
     container_name: docker_node_exporter
     command:
       - '--path.rootfs=/host'
@@ -105,7 +130,12 @@ services:
     restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: "docker_cadvisor:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/cadvisor.Dockerfile"
+      args:
+        ENVIRONMENT: production
     container_name: docker_cadvisor
     privileged: true
     volumes:

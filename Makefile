@@ -31,31 +31,29 @@ help:
 # Generate docker-compose.yml files from config
 generate-compose:
 	@echo "🔧 Generating docker-compose.yml files from config..."
-	@python .compose/validate_stacks.py --generate-compose
-	@echo "✅ Compose files generated"
+	@./automate.sh report
+	@echo "✅ Compose files validated"
 
 # Validate all docker-compose.yml files
 validate:
 	@echo "🔍 Validating Docker Compose stacks..."
-	@python .compose/validate_stacks.py
+	@./automate.sh validate
 	@echo "✅ Validation complete"
 
 # Build all Docker Compose stacks
 build:
 	@echo "🔨 Building Docker Compose stacks..."
-	@python .compose/validate_stacks.py --build
+	@./build.sh bake
 	@echo "✅ Build complete"
 
 # Run validation and build steps
-test: validate build
+test: validate
 	@echo "✅ All tests passed"
 
 # Clean up Docker resources
 clean:
 	@echo "🧹 Cleaning up Docker resources..."
-	@docker system prune -f
-	@docker image prune -f
-	@docker volume prune -f
+	@./automate.sh cleanup
 	@echo "✅ Cleanup complete"
 
 # Format Python code
@@ -82,6 +80,17 @@ security:
 # Run all tasks
 all: validate build test
 	@echo "✅ All tasks completed successfully"
+
+# Full automation using standardized script
+automate:
+	@echo "🚀 Running full automation..."
+	@./automate.sh all
+	@echo "✅ Automation complete"
+
+# Quick status check
+status:
+	@echo "📊 Docker Stack Status"
+	@./status.sh
 
 # Basic stack management
 up:

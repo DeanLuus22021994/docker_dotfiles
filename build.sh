@@ -1,42 +1,20 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Docker Buildx and Bake build script for optimized container builds
 # This script leverages advanced Docker features for maximum performance
 
 set -euo pipefail
 
-# Configuration
+# Source common library
+source ".compose/lib/common.sh"
+
+# Build-specific configuration
 DOCKER_BUILDKIT=1
 COMPOSE_DOCKER_CLI_BUILD=1
-DOCKER_DEFAULT_PLATFORM=linux/amd64
 BUILDKIT_PROGRESS=plain
 
-export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD DOCKER_DEFAULT_PLATFORM BUILDKIT_PROGRESS
+export DOCKER_BUILDKIT COMPOSE_DOCKER_CLI_BUILD BUILDKIT_PROGRESS
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
-# Logging functions
-log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
-}
-
-log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-log_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
-}
-
-# Check if Docker Buildx is available
+# Check if Docker Buildx is available (using common library)
 check_buildx() {
     if ! docker buildx version >/dev/null 2>&1; then
         log_error "Docker Buildx is not available. Please install Docker Desktop or Docker CE with Buildx."
@@ -61,19 +39,14 @@ setup_builder() {
     docker buildx inspect --bootstrap
 }
 
-# Clean build cache
+# Clean build cache (using common library)
 clean_cache() {
     log_info "Cleaning Docker build cache..."
-    docker builder prune -f
-    docker buildx prune -f
+    docker builder prune -f >/dev/null 2>&1 || true
 
     # Clean local cache directory
-    if [ -d "/tmp/.buildx-cache" ]; then
-        rm -rf /tmp/.buildx-cache
-    fi
-    if [ -d "/tmp/.buildx-cache-new" ]; then
-        rm -rf /tmp/.buildx-cache-new
-    fi
+    rm -rf "/tmp/.buildx-cache" || true
+    rm -rf "/tmp/.buildx-cache-new" || true
 }
 
 # Build with Bake (default)

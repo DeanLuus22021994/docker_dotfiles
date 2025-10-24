@@ -66,11 +66,18 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: "nginx:alpine"
+    image: "docker_nginx:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/nginx.Dockerfile"
+      args:
+        ENVIRONMENT: production
     ports:
       - "8080:80"
+      - "8443:443"
     volumes:
-      - docker_nginx_config:/etc/nginx
+      - docker_nginx_logs:/var/log/nginx
+      - docker_nginx_cache:/var/cache/nginx
     depends_on:
       - python
     healthcheck:
@@ -82,7 +89,12 @@ services:
     restart: unless-stopped
 
   db:
-    image: "postgres:15"
+    image: "docker_postgresql:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/postgresql.Dockerfile"
+      args:
+        ENVIRONMENT: production
     environment:
       POSTGRES_DB: ${docker_DB_NAME:-mydb}
       POSTGRES_USER: ${docker_DB_USER:-user}
@@ -90,8 +102,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - docker_db_data:/var/lib/postgresql/data
-      - docker_db_logs:/var/lib/postgresql/data/log
+      - docker_postgresql_data:/var/lib/postgresql/data
+      - docker_postgresql_logs:/var/log/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${docker_DB_USER:-user} -d ${docker_DB_NAME:-mydb}"]
       interval: 30s
@@ -101,11 +113,17 @@ services:
     restart: unless-stopped
 
   redis:
-    image: "redis:7-alpine"
+    image: "docker_redis:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/redis.Dockerfile"
+      args:
+        ENVIRONMENT: production
     ports:
       - "6379:6379"
     volumes:
       - docker_redis_data:/data
+      - docker_redis_logs:/var/log/redis
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -115,17 +133,23 @@ services:
     restart: unless-stopped
 
 volumes:
-  docker_db_data:
+  docker_postgresql_data:
     driver: local
-  docker_db_logs:
+  docker_postgresql_logs:
     driver: local
   docker_redis_data:
+    driver: local
+  docker_redis_logs:
     driver: local
   docker_python_app:
     driver: local
   docker_node_app:
     driver: local
   docker_nginx_config:
+    driver: local
+  docker_nginx_logs:
+    driver: local
+  docker_nginx_cache:
     driver: local
 
 networks:
