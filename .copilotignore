@@ -1,0 +1,87 @@
+# GitHub Copilot Ignore File
+# Optimizes Copilot Chat performance by excluding large/irrelevant files
+# See .copilot/ignore for detailed configuration
+# Last updated: 2025-10-24
+
+# Python virtual environments and caches
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.tox/
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Node modules
+node_modules/
+.npm/
+.yarn/
+
+# Docker build artifacts
+.docker-compose/
+.dockerfiles/
+
+# Git internals
+.git/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment files with secrets
+.env/.env.local
+.env/.env.*.local
+.secrets/
+
+# Lock files (include pyproject.toml but exclude large lock files)
+uv.lock
+package-lock.json
+yarn.lock
+poetry.lock
+Pipfile.lock
+
+# Benchmark data
+.benchmark/results/
+.benchmark/charts/
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Test artifacts
+.pytest_cache/
+test-results/
+
+# CI/CD artifacts
+.github/workflows/*.log

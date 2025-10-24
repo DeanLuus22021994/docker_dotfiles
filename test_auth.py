@@ -7,7 +7,8 @@ import os
 import subprocess
 import sys
 
-def test_github_auth():
+
+def test_github_auth() -> bool:
     """Test GitHub CLI authentication"""
     print("🔍 Testing GitHub CLI authentication...")
 
@@ -15,14 +16,11 @@ def test_github_auth():
     gh_pat = os.getenv("GH_PAT")
     if gh_pat:
         os.environ["GH_TOKEN"] = gh_pat
-        print(f"✅ Set GH_TOKEN from GH_PAT")
+        print("✅ Set GH_TOKEN from GH_PAT")
 
     try:
         result = subprocess.run(
-            ["gh", "auth", "status"],
-            capture_output=True,
-            text=True,
-            timeout=10
+            ["gh", "auth", "status"], capture_output=True, text=True, timeout=10
         )
 
         if result.returncode == 0:
@@ -42,8 +40,9 @@ def test_github_auth():
         print(f"❌ GitHub CLI error: {e}")
         return False
 
-def test_docker_auth():
-    """Test Docker authentication"""
+
+def test_docker_auth() -> bool:
+    """Test Docker Hub authentication"""
     print("\n🔍 Testing Docker authentication...")
 
     docker_username = os.getenv("DOCKER_USERNAME")
@@ -62,7 +61,7 @@ def test_docker_auth():
             input=docker_token,
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         if result.returncode == 0:
@@ -80,22 +79,20 @@ def test_docker_auth():
         print(f"❌ Docker error: {e}")
         return False
 
-def test_repo_info():
+
+def test_repo_info() -> bool:
     """Test repository information"""
     print("\n🔍 Testing repository information...")
 
     try:
         result = subprocess.run(
-            ["gh", "repo", "view"],
-            capture_output=True,
-            text=True,
-            timeout=10
+            ["gh", "repo", "view"], capture_output=True, text=True, timeout=10
         )
 
         if result.returncode == 0:
             print("✅ Repository information retrieved")
             # Print first few lines
-            lines = result.stdout.split('\n')[:5]
+            lines = result.stdout.split("\n")[:5]
             for line in lines:
                 if line.strip():
                     print(f"  {line}")
@@ -109,7 +106,8 @@ def test_repo_info():
         print(f"❌ Repository info error: {e}")
         return False
 
-def main():
+
+def main() -> None:
     """Main test function"""
     print("🚀 GitHub Copilot Agent Authentication Test")
     print("=" * 50)
@@ -138,6 +136,7 @@ def main():
     else:
         print("\n⚠️  Some tests failed. Check configuration.")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

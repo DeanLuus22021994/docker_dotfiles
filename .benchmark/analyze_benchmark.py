@@ -5,20 +5,22 @@ Analyzes benchmark results and provides optimization recommendations
 """
 
 import json
-import sys
 import os
-from datetime import datetime
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
 import statistics
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
 
 # Optional visualization imports
 try:
     import matplotlib.pyplot as plt
     import seaborn as sns
+
     VISUALIZATION_AVAILABLE = True
 except ImportError:
     VISUALIZATION_AVAILABLE = False
+
 
 @dataclass
 class BenchmarkResult:
@@ -27,23 +29,25 @@ class BenchmarkResult:
     success: bool
     exit_code: int
 
+
 @dataclass
 class BenchmarkReport:
     timestamp: str
-    system_info: Dict[str, Any]
-    build_strategies: List[BenchmarkResult]
-    cache_performance: List[BenchmarkResult]
-    recommendations: List[Dict[str, Any]]
+    system_info: dict[str, Any]
+    build_strategies: list[BenchmarkResult]
+    cache_performance: list[BenchmarkResult]
+    recommendations: list[dict[str, Any]]
+
 
 class BenchmarkAnalyzer:
     def __init__(self, report_file: str):
         self.report_file = report_file
         self.data = self.load_report()
 
-    def load_report(self) -> Dict[str, Any]:
+    def load_report(self) -> dict[str, Any]:
         """Load benchmark report from JSON file"""
         try:
-            with open(self.report_file, 'r') as f:
+            with open(self.report_file, encoding="utf-8") as f:
                 return json.load(f)
         except FileNotFoundError:
             print(f"Error: Report file not found: {self.report_file}")
@@ -52,21 +56,21 @@ class BenchmarkAnalyzer:
             print(f"Error: Invalid JSON in report file: {e}")
             sys.exit(1)
 
-    def parse_results(self, results: List[Dict]) -> List[BenchmarkResult]:
+    def parse_results(self, results: list[dict[str, Any]]) -> list[BenchmarkResult]:
         """Parse raw results into BenchmarkResult objects"""
         return [
             BenchmarkResult(
-                name=result.get('name', 'unknown'),
-                duration=float(result.get('duration_seconds', 0)),
-                success=result.get('success', False),
-                exit_code=result.get('exit_code', -1)
+                name=result.get("name", "unknown"),
+                duration=float(result.get("duration_seconds", 0)),
+                success=result.get("success", False),
+                exit_code=result.get("exit_code", -1),
             )
             for result in results
         ]
 
-    def analyze_build_strategies(self) -> Dict[str, Any]:
+    def analyze_build_strategies(self) -> dict[str, Any]:
         """Analyze build strategy performance"""
-        strategies = self.parse_results(self.data.get('build_strategies', []))
+        strategies = self.parse_results(self.data.get("build_strategies", []))
 
         if not strategies:
             return {"error": "No build strategy data available"}
@@ -85,30 +89,28 @@ class BenchmarkAnalyzer:
             "total_strategies": len(strategies),
             "successful_strategies": len(successful_strategies),
             "failed_strategies": len(failed_strategies),
-            "fastest_strategy": {
-                "name": fastest.name,
-                "duration": fastest.duration
-            },
-            "slowest_strategy": {
-                "name": slowest.name,
-                "duration": slowest.duration
-            },
+            "fastest_strategy": {"name": fastest.name, "duration": fastest.duration},
+            "slowest_strategy": {"name": slowest.name, "duration": slowest.duration},
             "average_duration": statistics.mean(durations),
             "duration_stddev": statistics.stdev(durations) if len(durations) > 1 else 0,
             "duration_range": max(durations) - min(durations),
-            "performance_ratio": slowest.duration / fastest.duration if fastest.duration > 0 else float('inf')
+            "performance_ratio": (
+                slowest.duration / fastest.duration
+                if fastest.duration > 0
+                else float("inf")
+            ),
         }
 
-    def analyze_cache_performance(self) -> Dict[str, Any]:
+    def analyze_cache_performance(self) -> dict[str, Any]:
         """Analyze cache performance improvements"""
-        cache_results = self.parse_results(self.data.get('cache_performance', []))
+        cache_results = self.parse_results(self.data.get("cache_performance", []))
 
         if len(cache_results) < 2:
             return {"error": "Insufficient cache performance data"}
 
         # Find cold and warm cache builds
-        cold_cache = next((r for r in cache_results if 'cold_cache' in r.name), None)
-        warm_cache = next((r for r in cache_results if 'warm_cache' in r.name), None)
+        cold_cache = next((r for r in cache_results if "cold_cache" in r.name), None)
+        warm_cache = next((r for r in cache_results if "warm_cache" in r.name), None)
 
         if not cold_cache or not warm_cache:
             return {"error": "Missing cold or warm cache data"}
@@ -124,12 +126,18 @@ class BenchmarkAnalyzer:
             "warm_cache_duration": warm_cache.duration,
             "improvement_seconds": improvement_seconds,
             "improvement_percentage": improvement_percentage,
-            "cache_effectiveness": "excellent" if improvement_percentage > 50 else
-                                 "good" if improvement_percentage > 25 else
-                                 "moderate" if improvement_percentage > 10 else "poor"
+            "cache_effectiveness": (
+                "excellent"
+                if improvement_percentage > 50
+                else (
+                    "good"
+                    if improvement_percentage > 25
+                    else "moderate" if improvement_percentage > 10 else "poor"
+                )
+            ),
         }
 
-    def generate_optimization_recommendations(self) -> List[Dict[str, Any]]:
+    def generate_optimization_recommendations(self) -> list[dict[str, Any]]:
         """Generate specific optimization recommendations"""
         recommendations = []
 
@@ -140,14 +148,16 @@ class BenchmarkAnalyzer:
             ratio = build_analysis["performance_ratio"]
 
             if ratio > 2:
-                recommendations.append({
-                    "priority": "high",
-                    "category": "build_strategy",
-                    "title": f"Use {fastest} as primary build strategy",
-                    "description": f"{fastest} is {ratio:.1f}x faster than the slowest strategy",
-                    "estimated_impact": f"{(ratio-1)*100:.0f}% performance improvement",
-                    "implementation": f"Set {fastest} as the default build method in CI/CD"
-                })
+                recommendations.append(
+                    {
+                        "priority": "high",
+                        "category": "build_strategy",
+                        "title": f"Use {fastest} as primary build strategy",
+                        "description": f"{fastest} is {ratio:.1f}x faster than the slowest strategy",
+                        "estimated_impact": f"{(ratio-1)*100:.0f}% performance improvement",
+                        "implementation": f"Set {fastest} as the default build method in CI/CD",
+                    }
+                )
 
         # Analyze cache performance
         cache_analysis = self.analyze_cache_performance()
@@ -156,61 +166,69 @@ class BenchmarkAnalyzer:
             effectiveness = cache_analysis["cache_effectiveness"]
 
             if effectiveness in ["poor", "moderate"]:
-                recommendations.append({
-                    "priority": "high",
-                    "category": "caching",
-                    "title": "Improve cache effectiveness",
-                    "description": f"Cache provides only {improvement:.1f}% improvement ({effectiveness})",
-                    "estimated_impact": "20-50% build time reduction",
-                    "implementation": "Optimize Dockerfile layer ordering and cache mount points"
-                })
+                recommendations.append(
+                    {
+                        "priority": "high",
+                        "category": "caching",
+                        "title": "Improve cache effectiveness",
+                        "description": f"Cache provides only {improvement:.1f}% improvement ({effectiveness})",
+                        "estimated_impact": "20-50% build time reduction",
+                        "implementation": "Optimize Dockerfile layer ordering and cache mount points",
+                    }
+                )
 
         # Layer analysis recommendations
-        layer_info = self.data.get('layer_analysis', {})
-        total_layers = layer_info.get('total_layers', 0)
+        layer_info = self.data.get("layer_analysis", {})
+        total_layers = layer_info.get("total_layers", 0)
 
         if total_layers > 50:
-            recommendations.append({
-                "priority": "medium",
-                "category": "layer_optimization",
-                "title": "Reduce number of layers",
-                "description": f"Dockerfile has {total_layers} layers, consider consolidation",
-                "estimated_impact": "10-20% build time reduction",
-                "implementation": "Combine RUN commands and use multi-stage builds"
-            })
+            recommendations.append(
+                {
+                    "priority": "medium",
+                    "category": "layer_optimization",
+                    "title": "Reduce number of layers",
+                    "description": f"Dockerfile has {total_layers} layers, consider consolidation",
+                    "estimated_impact": "10-20% build time reduction",
+                    "implementation": "Combine RUN commands and use multi-stage builds",
+                }
+            )
 
         # System-specific recommendations
-        system_info = self.data.get('system_info', {})
-        docker_version = system_info.get('docker_version', '')
+        system_info = self.data.get("system_info", {})
+        docker_version = system_info.get("docker_version", "")
 
-        if 'buildx' not in docker_version.lower():
-            recommendations.append({
-                "priority": "high",
-                "category": "docker_upgrade",
-                "title": "Upgrade to Docker with Buildx",
-                "description": "Buildx provides advanced caching and build features",
-                "estimated_impact": "30-50% performance improvement",
-                "implementation": "Install Docker Desktop or Docker CE with Buildx support"
-            })
+        if "buildx" not in docker_version.lower():
+            recommendations.append(
+                {
+                    "priority": "high",
+                    "category": "docker_upgrade",
+                    "title": "Upgrade to Docker with Buildx",
+                    "description": "Buildx provides advanced caching and build features",
+                    "estimated_impact": "30-50% performance improvement",
+                    "implementation": "Install Docker Desktop or Docker CE with Buildx support",
+                }
+            )
 
         return recommendations
 
-    def create_visualizations(self, output_dir: str = "visualizations"):
+    def create_visualizations(self, output_dir: str = "visualizations") -> None:
         """Create performance visualizations"""
         if not VISUALIZATION_AVAILABLE:
-            print("Visualization libraries (matplotlib/seaborn) not available, skipping charts")
+            print(
+                "Visualization libraries (matplotlib/seaborn) not available, skipping charts"
+            )
             return
 
         os.makedirs(output_dir, exist_ok=True)
 
         # Set style
-        plt.style.use('seaborn-v0_8')
+        plt.style.use("seaborn-v0_8")
         sns.set_palette("husl")
 
         # Build strategies comparison
         build_data = self.analyze_build_strategies()
         if "error" not in build_data:
-            strategies = self.parse_results(self.data.get('build_strategies', []))
+            strategies = self.parse_results(self.data.get("build_strategies", []))
             successful = [s for s in strategies if s.success]
 
             if successful:
@@ -219,45 +237,60 @@ class BenchmarkAnalyzer:
 
                 plt.figure(figsize=(10, 6))
                 bars = plt.bar(names, durations)
-                plt.title('Build Strategy Performance Comparison')
-                plt.xlabel('Build Strategy')
-                plt.ylabel('Duration (seconds)')
-                plt.xticks(rotation=45, ha='right')
+                plt.title("Build Strategy Performance Comparison")
+                plt.xlabel("Build Strategy")
+                plt.ylabel("Duration (seconds)")
+                plt.xticks(rotation=45, ha="right")
 
                 # Add value labels on bars
                 for bar, duration in zip(bars, durations):
-                    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1,
-                           f'{duration:.1f}s', ha='center', va='bottom')
+                    plt.text(
+                        bar.get_x() + bar.get_width() / 2,
+                        bar.get_height() + 0.1,
+                        f"{duration:.1f}s",
+                        ha="center",
+                        va="bottom",
+                    )
 
                 plt.tight_layout()
-                plt.savefig(f'{output_dir}/build_strategies.png', dpi=300, bbox_inches='tight')
+                plt.savefig(
+                    f"{output_dir}/build_strategies.png", dpi=300, bbox_inches="tight"
+                )
                 plt.close()
 
         # Cache performance over time
         cache_data = self.analyze_cache_performance()
         if "error" not in cache_data:
-            cache_results = self.parse_results(self.data.get('cache_performance', []))
+            cache_results = self.parse_results(self.data.get("cache_performance", []))
             if len(cache_results) >= 2:
-                names = [r.name.replace('_', ' ').title() for r in cache_results]
+                names = [r.name.replace("_", " ").title() for r in cache_results]
                 durations = [r.duration for r in cache_results]
 
                 plt.figure(figsize=(8, 6))
-                plt.plot(names, durations, marker='o', linewidth=2, markersize=8)
-                plt.title('Cache Performance Over Time')
-                plt.xlabel('Build Run')
-                plt.ylabel('Duration (seconds)')
+                plt.plot(names, durations, marker="o", linewidth=2, markersize=8)
+                plt.title("Cache Performance Over Time")
+                plt.xlabel("Build Run")
+                plt.ylabel("Duration (seconds)")
                 plt.grid(True, alpha=0.3)
 
                 # Add improvement annotation
                 if len(durations) >= 2:
-                    improvement = ((durations[0] - durations[1]) / durations[0]) * 100
-                    plt.annotate('.1f',
-                               xy=(1, durations[1]), xytext=(0.7, durations[1] + max(durations) * 0.1),
-                               arrowprops=dict(arrowstyle='->', color='red'),
-                               fontsize=10, color='red')
+                    improvement_val = (
+                        (durations[0] - durations[1]) / durations[0]
+                    ) * 100
+                    plt.annotate(
+                        f"{improvement_val:.1f}%",
+                        xy=(1, durations[1]),
+                        xytext=(0.7, durations[1] + max(durations) * 0.1),
+                        arrowprops={"arrowstyle": "->", "color": "red"},
+                        fontsize=10,
+                        color="red",
+                    )
 
                 plt.tight_layout()
-                plt.savefig(f'{output_dir}/cache_performance.png', dpi=300, bbox_inches='tight')
+                plt.savefig(
+                    f"{output_dir}/cache_performance.png", dpi=300, bbox_inches="tight"
+                )
                 plt.close()
 
         print(f"Visualizations saved to: {output_dir}/")
@@ -321,7 +354,9 @@ class BenchmarkAnalyzer:
             report += "✅ No optimization recommendations needed.\n\n"
         else:
             for i, rec in enumerate(recommendations, 1):
-                priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(rec['priority'], "⚪")
+                priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
+                    rec["priority"], "⚪"
+                )
                 report += f"""### {i}. {priority_emoji} {rec['title']} ({rec['priority'].upper()} PRIORITY)
 
 **Description:** {rec['description']}
@@ -334,7 +369,8 @@ class BenchmarkAnalyzer:
 
         return report
 
-def main():
+
+def main() -> None:
     if len(sys.argv) != 2:
         print("Usage: python analyze_benchmark.py <report_file>")
         sys.exit(1)
@@ -356,16 +392,17 @@ def main():
         analyzer.create_visualizations()
     except ImportError:
         print("Warning: matplotlib/seaborn not available, skipping visualizations")
-    except Exception as e:
+    except (OSError, ValueError, KeyError) as e:
         print(f"Warning: Failed to create visualizations: {e}")
 
     # Save recommendations to file
     recommendations = analyzer.generate_optimization_recommendations()
     if recommendations:
-        rec_file = report_file.replace('.json', '_recommendations.json')
-        with open(rec_file, 'w') as f:
+        rec_file = report_file.replace(".json", "_recommendations.json")
+        with open(rec_file, "w", encoding="utf-8") as f:
             json.dump(recommendations, f, indent=2)
         print(f"\n💡 Recommendations saved to: {rec_file}")
+
 
 if __name__ == "__main__":
     main()

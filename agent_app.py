@@ -9,10 +9,9 @@ import json
 import logging
 import os
 import subprocess
-import sys
-from dataclasses import asdict
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any
 
 # Import configuration
 from agent.config import CopilotAgentConfig
@@ -20,6 +19,7 @@ from agent.config import CopilotAgentConfig
 # Core dependencies only - no external AI services
 try:
     import yaml  # type: ignore
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -28,25 +28,29 @@ except ImportError:
 try:
     from docker_utils.config import load_config  # type: ignore
     from docker_utils.logging import setup_logging  # type: ignore
+
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
+
     # Fallback configuration
-    def load_config():
+    def load_config() -> dict[str, Any]:
         return {
-            'agent': {'name': 'docker-copilot-agent', 'debug': False},
-            'server': {'host': '0.0.0.0', 'port': 8000},
-            'logging': {'level': 'INFO'},
-            'github': {'repo': 'docker_dotfiles', 'owner': 'DeanLuus22021994'}
+            "agent": {"name": "docker-copilot-agent", "debug": False},
+            "server": {"host": "0.0.0.0", "port": 8000},
+            "logging": {"level": "INFO"},
+            "github": {"repo": "docker_dotfiles", "owner": "DeanLuus22021994"},
         }
 
-    def setup_logging(name: str, level: str = 'INFO'):
+    def setup_logging(name: str, level: str = "INFO"):
         logging.basicConfig(level=getattr(logging, level.upper(), logging.INFO))
         return logging.getLogger(name)
 
+
 # Configuration
 config = load_config()
-logger = setup_logging(__name__, level=config.get('logging', {}).get('level', 'INFO'))
+logger = setup_logging(__name__, level=config.get("logging", {}).get("level", "INFO"))
+
 
 class GitHubCopilotAgent:
     """GitHub Copilot Native Agent - No external AI dependencies"""
@@ -54,11 +58,11 @@ class GitHubCopilotAgent:
     def __init__(self, config: CopilotAgentConfig):
         self.config = config
         self.logger = logging.getLogger(f"{__name__}.{config.name}")
-        self.tools: Dict[str, Callable] = {}
+        self.tools: dict[str, Callable[..., str]] = {}
         self._github_available = self._check_github_cli()
 
         # Setup logging
-        if config.__dict__.get('debug', False):
+        if config.__dict__.get("debug", False):
             logging.basicConfig(level=logging.DEBUG)
         else:
             logging.basicConfig(level=logging.INFO)
@@ -77,13 +81,14 @@ class GitHubCopilotAgent:
                 ["gh", "auth", "status"],
                 capture_output=True,
                 text=True,
-                timeout=10
+                timeout=5,
+                check=False,
             )
             return result.returncode == 0
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
 
-    async def initialize(self):
+    async def initialize(self) -> None:
         """Initialize the agent with GitHub Copilot native tools"""
         try:
             # Initialize tools
@@ -91,15 +96,17 @@ class GitHubCopilotAgent:
 
             # Validate GitHub integration
             if not self._github_available:
-                self.logger.warning("GitHub CLI not available - some tools will be limited")
+                self.logger.warning(
+                    "GitHub CLI not available - some tools will be limited"
+                )
 
             self.logger.info("GitHub Copilot Native Agent initialized successfully")
 
-        except Exception as e:
+        except Exception:
             self.logger.error("Failed to initialize agent", exc_info=True)
             raise
 
-    async def _init_tools(self):
+    async def _init_tools(self) -> None:
         """Initialize GitHub Copilot native tools"""
         tools_config = {
             "github_cli": self._create_github_cli_tool(),
@@ -108,14 +115,17 @@ class GitHubCopilotAgent:
             "config_management": self._create_config_management_tool(),
         }
 
-        for tool_name in self.config.tools_enabled or []:
+        # Register configured tools
+        enabled_tools = self.config.tools_enabled or []
+        for tool_name in enabled_tools:
             if tool_name in tools_config:
                 self.tools[tool_name] = tools_config[tool_name]
-                self.logger.debug(f"Tool initialized: {tool_name}")
+                self.logger.debug("Tool initialized: %s", tool_name)
 
-    def _create_github_cli_tool(self) -> Callable:
+    def _create_github_cli_tool(self) -> Callable[..., str]:
         """Create GitHub CLI tool for repository operations"""
-        def github_cli(command: str, args: Optional[List[str]] = None) -> str:
+
+        def github_cli(command: str, args: list[str] | None = None) -> str:
             """Execute GitHub CLI commands"""
             if not self._github_available:
                 return "GitHub CLI not available"
@@ -127,7 +137,8 @@ class GitHubCopilotAgent:
                     capture_output=True,
                     text=True,
                     timeout=30,
-                    cwd=self.config.workspace_root
+                    cwd=self.config.workspace,
+                    check=False,
                 )
 
                 if result.returncode == 0:
@@ -137,14 +148,15 @@ class GitHubCopilotAgent:
 
             except subprocess.TimeoutExpired:
                 return "Command timed out"
-            except Exception as e:
+            except (OSError, ValueError, KeyError) as e:
                 return f"Exception: {str(e)}"
 
         return github_cli
 
-    def _create_file_operations_tool(self) -> Callable:
+    def _create_file_operations_tool(self) -> Callable[..., str]:
         """Create file operations tool"""
-        def file_operations(action: str, path: str, content: Optional[str] = None) -> str:
+
+        def file_operations(action: str, path: str, content: str | None = None) -> str:
             """Perform file operations (read, write, list)"""
             try:
                 full_path = Path(self.config.workspace_root) / path
@@ -169,14 +181,15 @@ class GitHubCopilotAgent:
                 else:
                     return f"Unknown action: {action}"
 
-            except Exception as e:
+            except (OSError, ValueError, KeyError) as e:
                 return f"File operation error: {str(e)}"
 
         return file_operations
 
-    def _create_docker_operations_tool(self) -> Callable:
+    def _create_docker_operations_tool(self) -> Callable[..., str]:
         """Create Docker operations tool"""
-        def docker_operations(command: str, service: Optional[str] = None) -> str:
+
+        def docker_operations(command: str, service: str | None = None) -> str:
             """Execute Docker operations with automatic authentication"""
             try:
                 # Auto-login to Docker Hub if credentials are available
@@ -189,7 +202,7 @@ class GitHubCopilotAgent:
                         input=docker_token,
                         capture_output=True,
                         text=True,
-                        timeout=30
+                        timeout=30,
                     )
                     if login_result.returncode != 0:
                         return f"Docker login failed: {login_result.stderr.strip()}"
@@ -205,7 +218,7 @@ class GitHubCopilotAgent:
                     capture_output=True,
                     text=True,
                     timeout=60,
-                    cwd=self.config.workspace_root
+                    cwd=self.config.workspace_root,
                 )
 
                 if result.returncode == 0:
@@ -217,14 +230,17 @@ class GitHubCopilotAgent:
                 return "Docker command timed out"
             except FileNotFoundError:
                 return "Docker Compose not found"
-            except Exception as e:
+            except (OSError, ValueError, KeyError) as e:
                 return f"Docker exception: {str(e)}"
 
         return docker_operations
 
-    def _create_config_management_tool(self) -> Callable:
+    def _create_config_management_tool(self) -> Callable[..., str]:
         """Create configuration management tool"""
-        def config_management(action: str, config_type: str, data: Optional[Dict] = None) -> str:
+
+        def config_management(
+            action: str, config_type: str, data: dict[str, Any] | None = None
+        ) -> str:
             """Manage configuration files"""
             try:
                 config_dir = Path(self.config.workspace_root) / ".config"
@@ -245,28 +261,30 @@ class GitHubCopilotAgent:
                     config_file = config_dir / config_type / "config.yml"
                     config_file.parent.mkdir(parents=True, exist_ok=True)
                     if YAML_AVAILABLE:
-                        with open(config_file, 'w') as f:
+                        with open(config_file, "w") as f:
                             yaml.safe_dump(data, f)
                     else:
-                        with open(config_file, 'w') as f:
+                        with open(config_file, "w") as f:
                             f.write(str(data))
                     return f"Config written: {config_type}"
 
                 elif action == "list":
                     if config_dir.exists():
-                        return "\n".join(str(f.name) for f in config_dir.iterdir() if f.is_dir())
+                        return "\n".join(
+                            str(f.name) for f in config_dir.iterdir() if f.is_dir()
+                        )
                     else:
                         return "Config directory not found"
 
                 else:
                     return f"Unknown config action: {action}"
 
-            except Exception as e:
+            except (OSError, ValueError, KeyError) as e:
                 return f"Config management error: {str(e)}"
 
         return config_management
 
-    async def run_task(self, task: str) -> Dict[str, Any]:
+    async def run_task(self, task: str) -> dict[str, Any]:
         """Run a task using GitHub Copilot native capabilities"""
         try:
             self.logger.info(f"Starting task: {task[:100]}...")
@@ -279,16 +297,12 @@ class GitHubCopilotAgent:
                 "status": "success",
                 "result": result,
                 "agent": self.config.name,
-                "tools_used": list(self.tools.keys())
+                "tools_used": list(self.tools.keys()),
             }
 
-        except Exception as e:
+        except (OSError, ValueError, KeyError) as e:
             self.logger.error("Task failed", exc_info=True)
-            return {
-                "status": "error",
-                "error": str(e),
-                "agent": self.config.name
-            }
+            return {"status": "error", "error": str(e), "agent": self.config.name}
 
     async def _execute_task(self, task: str) -> str:
         """Execute task using available tools"""
@@ -325,6 +339,7 @@ class GitHubCopilotAgent:
         """Shutdown the agent"""
         self.logger.info("GitHub Copilot Native Agent shutdown completed")
 
+
 # FastAPI Application (minimal, no external dependencies)
 try:
     from fastapi import FastAPI  # type: ignore
@@ -333,11 +348,11 @@ try:
     app = FastAPI(
         title="Docker GitHub Copilot Agent",
         description="Lightweight agent leveraging GitHub Copilot native capabilities",
-        version="1.0.0"
+        version="1.0.0",
     )
 
     # Global agent instance
-    agent_instance: Optional[GitHubCopilotAgent] = None
+    agent_instance: GitHubCopilotAgent | None = None
 
     @app.on_event("startup")
     async def startup_event():
@@ -345,10 +360,10 @@ try:
         global agent_instance
 
         agent_config = CopilotAgentConfig(
-            name=config.get('agent', {}).get('name', 'docker-copilot-agent'),
-            workspace_root=config.get('workspace', {}).get('root', '/app'),
-            github_repo=config.get('github', {}).get('repo', 'docker_dotfiles'),
-            github_owner=config.get('github', {}).get('owner', 'DeanLuus22021994'),
+            name=config.get("agent", {}).get("name", "docker-copilot-agent"),
+            workspace_root=config.get("workspace", {}).get("root", "/app"),
+            github_repo=config.get("github", {}).get("repo", "docker_dotfiles"),
+            github_owner=config.get("github", {}).get("owner", "DeanLuus22021994"),
         )
 
         agent_instance = GitHubCopilotAgent(agent_config)
@@ -369,7 +384,12 @@ try:
     @app.get("/health")
     async def health():
         """Health check endpoint"""
-        return {"status": "healthy", "agent": agent_instance.config.name if agent_instance else "not_initialized"}
+        return {
+            "status": "healthy",
+            "agent": (
+                agent_instance.config.name if agent_instance else "not_initialized"
+            ),
+        }
 
     @app.post("/agent/run")
     async def run_agent(task: str):
@@ -392,9 +412,9 @@ try:
         # Run the FastAPI application
         config_obj = Config(
             app=app,
-            host=config.get('server', {}).get('host', '0.0.0.0'),
-            port=config.get('server', {}).get('port', 8000),
-            log_level="info"
+            host=config.get("server", {}).get("host", "0.0.0.0"),
+            port=config.get("server", {}).get("port", 8000),
+            log_level="info",
         )
 
         server = Server(config_obj)
@@ -415,4 +435,4 @@ except ImportError:
 
     if __name__ == "__main__":
         # Run the CLI mode agent - this is the entry point
-        asyncio.run(main())  # type: ignore</content>
+        asyncio.run(main())

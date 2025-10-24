@@ -3,8 +3,10 @@ Unit tests for GitHub Copilot Agent configuration
 Following TDD principles: Red-Green-Refactor
 """
 
-import pytest
 from dataclasses import asdict
+
+import pytest
+
 from agent.config import CopilotAgentConfig
 
 
@@ -28,10 +30,10 @@ class TestCopilotAgentConfig:
         config = CopilotAgentConfig()
 
         expected_extensions = [
-            "ms-python.python",      # 100M+ downloads
-            "ms-vscode.vscode-json", # 10M+ downloads
-            "github.copilot",        # 50M+ downloads
-            "github.copilot-chat"    # 20M+ downloads
+            "ms-python.python",  # 100M+ downloads
+            "ms-vscode.vscode-json",  # 10M+ downloads
+            "github.copilot",  # 50M+ downloads
+            "github.copilot-chat",  # 20M+ downloads
         ]
 
         assert config.vscode_extensions == expected_extensions
@@ -44,7 +46,7 @@ class TestCopilotAgentConfig:
             "github_cli",
             "file_operations",
             "docker_operations",
-            "config_management"
+            "config_management",
         ]
 
         assert config.tools_enabled == expected_tools
@@ -61,7 +63,7 @@ class TestCopilotAgentConfig:
             github_owner="custom-owner",
             mcp_enabled=False,
             vscode_extensions=custom_extensions,
-            tools_enabled=custom_tools
+            tools_enabled=custom_tools,
         )
 
         assert config.name == "custom-agent"
@@ -83,13 +85,16 @@ class TestCopilotAgentConfig:
         assert "vscode_extensions" in config_dict
         assert "tools_enabled" in config_dict
 
-    @pytest.mark.parametrize("field,value", [
-        ("name", "test-agent"),
-        ("workspace_root", "/test/path"),
-        ("github_repo", "test-repo"),
-        ("github_owner", "test-owner"),
-        ("mcp_enabled", False),
-    ])
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("name", "test-agent"),
+            ("workspace_root", "/test/path"),
+            ("github_repo", "test-repo"),
+            ("github_owner", "test-owner"),
+            ("mcp_enabled", False),
+        ],
+    )
     def test_field_assignment(self, field, value):
         """Test individual field assignments"""
         config = CopilotAgentConfig(**{field: value})
