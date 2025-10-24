@@ -5,85 +5,48 @@
     "github.copilot",
     "github.copilot-chat",
     "ms-windows-ai-studio.ai-toolkit-vscode",
-    
-    // Python Development
+    "ms-windows-ai-studio.ai-projects",
+    "ms-windows-ai-studio.ai-model-inference",
+    "ms-windows-ai-studio.mcp-toolkit",
+
+    // Python Development (Official Microsoft)
     "ms-python.python",
     "ms-python.debugpy",
     "ms-python.black-formatter",
     "charliermarsh.ruff",
     "ms-python.mypy-type-checker",
     "ms-python.pylint",
-    
-    // Testing and Quality
     "ms-python.pytest",
-    "hbenl.vscode-test-explorer",
-    "ms-vscode.test-adapter-converter",
-    
-    // Docker Development
+    "ms-python.vscode-pylance",
+
+    // Docker Development (Official Microsoft)
     "ms-azuretools.vscode-docker",
     "ms-vscode-remote.remote-containers",
-    
-    // Development Tools
+
+    // YAML and JSON (Official Microsoft)
     "ms-vscode.vscode-json",
     "redhat.vscode-yaml",
-    "ms-vscode.vscode-typescript-next",
-    "esbenp.prettier-vscode",
-    
-    // Git and Version Control
+
+    // Git and GitHub (Official)
     "github.vscode-github-actions",
     "ms-vscode.vscode-git-graph",
-    "donjayamanne.git-extension-pack",
-    
-    // Productivity
-    "ms-vscode.vscode-markdown-notebook",
-    "ms-toolsai.jupyter",
-    "ms-vscode-remote.remote-ssh",
-    
-    // Agent Framework Specific
-    "ms-python.vscode-pylance",
-    "ms-vscode.vscode-jupyter-slideshow",
-    "ms-vscode.vscode-jupyter-cell-tags",
-    
-    // AI and Agent Development Extensions
-    "ms-windows-ai-studio.ai-projects",
-    "ms-windows-ai-studio.ai-model-inference",
-    "github.copilot-workspace",
-    "continue.continue",
-    
-    // Model Context Protocol
-    "ms-windows-ai-studio.mcp-toolkit",
-    "redhat.vscode-openshift-connector",
-    
-    // Advanced Python for Agents
-    "ms-python.python-docstring-generator",
-    "ms-python.vscode-python-envs",
-    "ms-python.vscode-python-gettext",
-    
-    // API Development for Agents
-    "ms-vscode.vscode-rest-client",
-    "humao.rest-client",
-    
-    // Performance and Profiling
-    "ms-python.python-profiling",
-    "ms-vscode.vscode-js-profile-flame",
-    
-    // Cloud and API Integration
-    "ms-vscode.vscode-azure-account",
-    "ms-vscode.vscode-github-actions",
     "ms-vscode.vscode-pull-request-github",
-    
-    // Environment and Secrets Management
-    "ms-vscode.vscode-env",
-    "redhat.vscode-openshift-connector",
-    
-    // Advanced Development Tools
-    "ms-vscode.vscode-json",
-    "ms-vscode.vscode-yaml",
-    "ms-vscode.vscode-typescript-next",
-    "esbenp.prettier-vscode"
+
+    // Remote Development (Official Microsoft)
+    "ms-vscode-remote.remote-ssh",
+
+    // REST and API Development
+    "ms-vscode.vscode-rest-client",
+
+    // Cloud Integration
+    "ms-vscode.vscode-azure-account",
+
+    // Environment Management
+    "ms-vscode.vscode-env"
   ],
   "unwantedRecommendations": [
     "ms-python.python-old", // Old Python extension
-    "ms-vscode.vscode-typescript" // Use next version instead
+    "ms-vscode.vscode-typescript", // Use next version instead
+    "github.copilot-workspace" // Deprecated extension
   ]
 }
