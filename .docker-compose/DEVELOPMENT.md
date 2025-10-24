@@ -233,13 +233,13 @@ All stacks reference consolidated Dockerfile:
 
 ### Backend Developer
 - [x] JSON structured logging
-- [ ] Circuit breakers (pending)
+- [x] Circuit breakers (implemented in link checker service)
 - [x] Config validation
 - [x] Service mocking
 
 ### QA Lead
 - [x] Testing strategy design
-- [ ] Parallel test execution (pending)
+- [x] Parallel test execution (enabled with pytest-xdist)
 - [x] Service mocking implementation
 
 <a id="tml-dev-roadmap-001-timeline"></a>
