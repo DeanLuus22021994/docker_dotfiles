@@ -58,11 +58,13 @@ class CopilotAgentConfig:
 
     def __post_init__(self):
         if self.vscode_extensions is None:
+            # Only use GitHub/Microsoft extensions with >10M downloads
+            # Avoid deprecated extensions like GitHub Copilot Workspace
             self.vscode_extensions = [
-                "ms-python.python",
-                "ms-vscode.vscode-json",
-                "github.copilot",
-                "github.copilot-chat"
+                "ms-python.python",      # 100M+ downloads
+                "ms-vscode.vscode-json", # 10M+ downloads
+                "github.copilot",        # 50M+ downloads
+                "github.copilot-chat"    # 20M+ downloads
             ]
         if self.tools_enabled is None:
             self.tools_enabled = [

@@ -61,6 +61,19 @@ docker-compose -f .docker-compose/basic-stack/docker-compose.yml build
 ## TODO
 Check TODO.md for active tasks
 
+## Recommended VS Code Extensions
+Only use extensions from GitHub or Microsoft with proven reliability (>10M downloads):
+
+### Core Extensions (Required)
+- **ms-python.python** - Python language support (100M+ downloads)
+- **ms-vscode.vscode-json** - JSON language support (10M+ downloads)
+- **github.copilot** - GitHub Copilot AI assistant (50M+ downloads)
+- **github.copilot-chat** - GitHub Copilot Chat (20M+ downloads)
+
+### Deprecated Extensions (Avoid)
+- **GitHub Copilot Workspace** - Obsolete and deprecated, do not install
+- Any third-party extensions without >10M downloads and official backing
+
 ## AI Agent Guidelines
 - **Agent Code**: `agent_app.py` contains the main AI agent implementation using async patterns
 - **Tool Integration**: Agent uses various tools for code analysis, file operations, and terminal commands
