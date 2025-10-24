@@ -1,46 +1,21 @@
-# Python
-**/.venv/
-**/__pycache__/
-**/.mypy_cache/
-**/.pytest_cache/
-**/.ruff_cache/
-**/htmlcov/
-**/*.pyc
-**/*.pyo
-**/*.egg-info/
-**/.coverage
-**/coverage.xml
+# Minimal exclusions - only truly temporary files
+# OS generated files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
 
-# Node.js
-**/node_modules/
-**/npm-debug.log
-**/yarn-error.log
-
-# Environment files (keep only examples)
-.env
-.env.local
-.env.development
-.env.production
-.env.docker
-!.env.example
-
-# Secrets (keep only examples)
-secrets/
-!secrets/.secrets.example
-!secrets/README.md
-
-# IDE
-.vscode/
-.idea/
+# Editor swap files
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
+# Python bytecode (regenerated automatically)
+**/__pycache__/
+**/*.pyc
+**/*.pyo
 
-# Logs
+# Node modules (can be large)
+**/node_modules/
+
+# Log files
 *.log
-
-# Docker
-volumes/

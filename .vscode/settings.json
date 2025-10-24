@@ -75,5 +75,20 @@
   "python.formatting.blackArgs": ["--line-length", "88"],
   "python.linting.mypyEnabled": true,
   "python.linting.ruffEnabled": true,
-  "python.analysis.typeCheckingMode": "strict"
+  "python.analysis.typeCheckingMode": "strict",
+  // Exclude uv Python installations that don't support free-threading
+  "python.envFile": "${workspaceFolder}/.env",
+  "python.experiments.optInto": ["pythonTerminalEnvVarActivation"],
+  "python.interpreter.infoVisibility": "never",
+  // Exclude problematic Python installations
+  "python.pythonPath.exclude": {
+    "**/uv/python/**": true,
+    "**/cpython-3.14.0rc3*/**": true
+  },
+  // Disable automatic environment discovery to prevent conflicts
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "python.terminal.shellIntegration.enabled": true,
+  // Force specific interpreter and disable discovery
+  "python.interpreter.locator": "none",
+  "python.interpreter.showDeprecatedWarning": false
 }
