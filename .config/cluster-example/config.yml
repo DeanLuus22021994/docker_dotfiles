@@ -1,7 +1,7 @@
 ---
-# Cluster Example Configuration
+# Cluster Example Configuration - CI/CD Automation
 # Generated: 2025-10-24
-# Description: Load-balanced multi-instance deployment configuration
+# Description: Config-driven automation for load-balanced multi-instance deployment
 
 # Stack Metadata
 stack:
@@ -9,217 +9,171 @@ stack:
   description: "Production-like environment with load balancing and multiple instances"
   version: "3.0"
   purpose: "Testing horizontal scaling, load balancing, production simulation"
+  type: "production"
 
-# Service Definitions
+# CI/CD Configuration
+ci_cd:
+  github_actions:
+    workflow: "cluster-example.yml"
+    triggers:
+      - push:
+          branches: [main]
+      - pull_request:
+          branches: [main]
+      - schedule:
+          - cron: "0 3 * * 1"  # Weekly on Monday
+    environment: "staging"
+
+  docker:
+    build_context: "../../.dockerfiles"
+    build_args:
+      ENVIRONMENT: "production"
+      SERVICE_TYPE: "cluster"
+      WORKERS: "3"
+    image_tag: "docker_examples_cluster:latest"
+    registry: "docker.io"
+
+  testing:
+    framework: "pytest"
+    coverage_target: "90"
+    security_scan: true
+    performance_test: true
+    load_test: true
+
+# Environment Variables (Config-Driven)
+environment:
+  # Application Configuration
+  ENVIRONMENT: "production"
+  DEBUG: "false"
+  LOG_LEVEL: "INFO"
+
+  # Security Configuration
+  API_KEY: "${API_KEY}"
+  RATE_LIMIT_REQUESTS: "1000"
+  RATE_LIMIT_WINDOW: "60"
+  CORS_ORIGINS: "http://localhost:3000,http://localhost:8080"
+  SECURITY_HEADERS_ENABLED: "true"
+  INPUT_VALIDATION_ENABLED: "true"
+
+  # Database Configuration
+  POSTGRES_DB: "mydb"
+  POSTGRES_USER: "user"
+  POSTGRES_HOST: "db"
+  POSTGRES_PORT: "5432"
+
+  # Redis Configuration
+  REDIS_URL: "redis://redis:6379"
+  REDIS_DB: "0"
+
+  # Load Balancer Configuration
+  NGINX_WORKER_PROCESSES: "auto"
+  NGINX_WORKER_CONNECTIONS: "1024"
+
+  # External APIs
+  GITHUB_TOKEN: "${GITHUB_TOKEN}"
+
+# Service Configuration (References to docker-compose.yml)
 services:
   python:
-    image: "docker_examples_python:latest"
-    build:
-      context: "../.compose/cluster-example/dockerfiles"
-      dockerfile: "python.Dockerfile"
-    ports:
-      - "8001:8000"
-      - "8002:8000"
-      - "8003:8000"
-    environment:
-      - PYTHONPATH=/app
-      - ENVIRONMENT=production
-      - SERVICE_NAME=python
-    volumes:
-      - docker_examples_python_app:/app
-    depends_on:
-      - db
-      - redis
-    healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
-    deploy:
-      replicas: 3
-      resources:
-        limits:
-          cpus: "0.5"
-          memory: "512m"
-        reservations:
-          cpus: "0.25"
-          memory: "256m"
-
+    ports: [8001, 8002, 8003]  # Multiple instances
+    base_port: 8000
+    health_endpoint: "/health"
+    api_docs: "/docs"
+    replicas: 3
   node:
-    image: "docker_examples_node:latest"
-    build:
-      context: "../.compose/cluster-example/dockerfiles"
-      dockerfile: "node.Dockerfile"
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - docker_examples_node_app:/app
-      - /app/node_modules
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
-
+    port: 3000
+    dev_server: false
   nginx:
-    image: "nginx:alpine"
-    ports:
-      - "8080:80"
-    volumes:
-      - docker_examples_nginx_config:/etc/nginx
-    depends_on:
-      - python
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
-
+    port: 8080
+    upstream_port: 80
+    config_volume: true
   db:
-    image: "postgres:15"
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    ports:
-      - "5432:5432"
-    volumes:
-      - docker_examples_db_data:/var/lib/postgresql/data
-      - docker_examples_db_logs:/var/log/postgresql
-    secrets:
-      - db_password
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
-
+    port: 5432
+    database: "mydb"
   redis:
-    image: "redis:7-alpine"
-    ports:
-      - "6379:6379"
-    volumes:
-      - docker_examples_redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+    port: 6379
 
-# Volume Definitions
+# Volume Configuration (Named volumes for persistence)
 volumes:
-  docker_examples_db_data:
-    driver: local
-  docker_examples_db_logs:
-    driver: local
-  docker_examples_redis_data:
-    driver: local
-  docker_examples_python_app:
-    driver: local
-  docker_examples_node_app:
-    driver: local
-  docker_examples_nginx_config:
-    driver: local
+  db_data: "docker_examples_db_data"
+  db_logs: "docker_examples_db_logs"
+  redis_data: "docker_examples_redis_data"
+  python_app: "docker_examples_python_app"
+  node_app: "docker_examples_node_app"
+  nginx_config: "docker_examples_nginx_config"
+  python_mcp: "docker_examples_python_mcp"  # MCP utilities volume
 
-# Secrets Definitions
+# Secrets Configuration
 secrets:
   db_password:
-    file: ../../secrets/db_password.txt
+    source: "../../secrets/db_password.txt"
+    target: "/run/secrets/db_password"
 
-# Network Definitions
-networks:
-  default:
-    name: docker_examples_cluster_example_network
-    driver: bridge
+# Network Configuration
+network:
+  name: "docker_examples_cluster_example_network"
+  driver: "bridge"
 
-# Load Balancer Configuration
+# Load Balancer Configuration (Config-Driven)
 load_balancer:
   nginx:
     upstream_servers:
-      - python:8000
-      - python:8001
-      - python:8002
+      - "python:8000"
+      - "python:8001"
+      - "python:8002"
     algorithm: "round_robin"
     health_checks:
       enabled: true
-      interval: 10s
-      timeout: 5s
+      interval: "10s"
+      timeout: "5s"
       unhealthy_threshold: 3
       healthy_threshold: 2
 
-# Scaling Configuration
+# Scaling Configuration (CI/CD Automation)
 scaling:
   python:
     min_replicas: 1
     max_replicas: 5
     target_cpu_utilization: 70
+    scale_command: "docker compose up -d --scale python={count}"
   node:
     replicas: 1
   nginx:
     replicas: 1
 
-# Monitoring Configuration
+# Monitoring Configuration (CI/CD Automation)
 monitoring:
-  metrics:
-    enabled: true
-    endpoints:
-      - "/metrics"
-      - "/health"
-    exporters:
-      - prometheus
+  enabled: true
+  metrics_endpoint: "/metrics"
+  health_endpoint: "/health"
+  log_level: "INFO"
+  exporters: ["prometheus"]
   logging:
-    driver: json-file
+    driver: "json-file"
     options:
       max-size: "10m"
       max-file: "3"
 
-# Environment Variables
-environment:
-  # Security Configuration
-  API_KEY: ${API_KEY:-}
-  RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-100}
-  RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:8080}
-  SECURITY_HEADERS_ENABLED: ${SECURITY_HEADERS_ENABLED:-true}
-  INPUT_VALIDATION_ENABLED: ${INPUT_VALIDATION_ENABLED:-true}
-
-  # Database Configuration
-  POSTGRES_DB: ${POSTGRES_DB:-mydb}
-  POSTGRES_USER: ${POSTGRES_USER:-user}
-
-  # Load Balancer
-  NGINX_WORKER_PROCESSES: ${NGINX_WORKER_PROCESSES:-auto}
-  NGINX_WORKER_CONNECTIONS: ${NGINX_WORKER_CONNECTIONS:-1024}
+# Resource Limits (Config-Driven)
+resource_limits:
+  python:
+    cpus: "0.5"
+    memory: "512m"
+  node:
+    cpus: "0.5"
+    memory: "512m"
+  nginx:
+    cpus: "0.25"
+    memory: "128m"
+  db:
+    cpus: "0.5"
+    memory: "512m"
+  redis:
+    cpus: "0.25"
+    memory: "256m"
 
 # Deployment Configuration
 deployment:
   compose_file: "../../.compose/cluster-example/docker-compose.yml"
   scale_command: "docker compose -f ../../.compose/cluster-example/docker-compose.yml up -d --scale python=3"
-  resource_limits:
-    python:
-      cpus: "0.5"
-      memory: "512m"
-    node:
-      cpus: "0.5"
-      memory: "512m"
-    nginx:
-      cpus: "0.25"
-      memory: "128m"
-    db:
-      cpus: "0.5"
-      memory: "512m"
-    redis:
-      cpus: "0.25"
-      memory: "256m"
+  restart_policy: "unless-stopped"

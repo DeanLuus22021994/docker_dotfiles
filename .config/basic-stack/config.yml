@@ -1,7 +1,7 @@
 ---
-# Basic Stack Configuration
+# Basic Stack Configuration - CI/CD Automation
 # Generated: 2025-10-24
-# Description: Complete configuration for basic development stack
+# Description: Config-driven automation for basic development stack
 
 # Stack Metadata
 stack:
@@ -9,146 +9,134 @@ stack:
   description: "Development and testing environment with all core services"
   version: "3.0"
   purpose: "Local development, CI/CD pipelines, basic testing"
+  type: "development"
 
-# Service Definitions
-services:
-  python:
-    image: "docker_examples_python:latest"
-    build:
-      context: "../.compose/basic-stack/dockerfiles"
-      dockerfile: "python.Dockerfile"
-    ports:
-      - "8000:8000"
-    environment:
-      - PYTHONPATH=/app
-      - ENVIRONMENT=development
-    volumes:
-      - docker_examples_python_app:/app
-    depends_on:
-      - db
-      - redis
-    healthcheck:
-      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+# CI/CD Configuration
+ci_cd:
+  github_actions:
+    workflow: "basic-stack.yml"
+    triggers:
+      - push:
+          branches: [main, develop]
+      - pull_request:
+          branches: [main]
+    environment: "development"
 
-  node:
-    image: "docker_examples_node:latest"
-    build:
-      context: "../.compose/basic-stack/dockerfiles"
-      dockerfile: "node.Dockerfile"
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - docker_examples_node_app:/app
-      - /app/node_modules
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  docker:
+    build_context: "../../.dockerfiles"
+    build_args:
+      ENVIRONMENT: "development"
+      SERVICE_TYPE: "basic"
+      WORKERS: "1"
+    image_tag: "docker_examples_basic:latest"
+    registry: "docker.io"
 
-  db:
-    image: "postgres:15"
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    ports:
-      - "5432:5432"
-    volumes:
-      - docker_examples_db_data:/var/lib/postgresql/data
-      - docker_examples_db_logs:/var/log/postgresql
-    secrets:
-      - db_password
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
+  testing:
+    framework: "pytest"
+    coverage_target: "80"
+    security_scan: true
+    performance_test: false
 
-  redis:
-    image: "redis:7-alpine"
-    ports:
-      - "6379:6379"
-    volumes:
-      - docker_examples_redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    restart: unless-stopped
-
-# Volume Definitions
-volumes:
-  docker_examples_db_data:
-    driver: local
-  docker_examples_db_logs:
-    driver: local
-  docker_examples_redis_data:
-    driver: local
-  docker_examples_python_app:
-    driver: local
-  docker_examples_node_app:
-    driver: local
-
-# Secrets Definitions
-secrets:
-  db_password:
-    file: ../../secrets/db_password.txt
-
-# Network Definitions
-networks:
-  default:
-    name: docker_examples_basic_stack_network
-    driver: bridge
-
-# Environment Variables
+# Environment Variables (Config-Driven)
 environment:
+  # Application Configuration
+  ENVIRONMENT: "development"
+  DEBUG: "true"
+  LOG_LEVEL: "DEBUG"
+
   # Security Configuration
-  API_KEY: ${API_KEY:-}
-  RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-100}
-  RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
-  SECURITY_HEADERS_ENABLED: ${SECURITY_HEADERS_ENABLED:-true}
-  INPUT_VALIDATION_ENABLED: ${INPUT_VALIDATION_ENABLED:-true}
+  API_KEY: "${API_KEY}"
+  RATE_LIMIT_REQUESTS: "100"
+  RATE_LIMIT_WINDOW: "60"
+  CORS_ORIGINS: "http://localhost:3000"
+  SECURITY_HEADERS_ENABLED: "true"
+  INPUT_VALIDATION_ENABLED: "true"
 
   # Database Configuration
-  POSTGRES_DB: ${POSTGRES_DB:-mydb}
-  POSTGRES_USER: ${POSTGRES_USER:-user}
+  POSTGRES_DB: "mydb"
+  POSTGRES_USER: "user"
+  POSTGRES_HOST: "db"
+  POSTGRES_PORT: "5432"
+
+  # Redis Configuration
+  REDIS_URL: "redis://redis:6379"
+  REDIS_DB: "0"
 
   # External APIs
-  GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+  GITHUB_TOKEN: "${GITHUB_TOKEN}"
+
+# Service Configuration (References to docker-compose.yml)
+services:
+  python:
+    port: 8000
+    health_endpoint: "/health"
+    api_docs: "/docs"
+  node:
+    port: 3000
+    dev_server: true
+  db:
+    port: 5432
+    database: "mydb"
+  redis:
+    port: 6379
+
+# Volume Configuration (Named volumes for persistence)
+volumes:
+  db_data: "docker_examples_db_data"
+  db_logs: "docker_examples_db_logs"
+  redis_data: "docker_examples_redis_data"
+  python_app: "docker_examples_python_app"
+  node_app: "docker_examples_node_app"
+  python_mcp: "docker_examples_python_mcp"  # MCP utilities volume
+
+# Secrets Configuration
+secrets:
+  db_password:
+    source: "../../secrets/db_password.txt"
+    target: "/run/secrets/db_password"
+
+# Network Configuration
+network:
+  name: "docker_examples_basic_stack_network"
+  driver: "bridge"
 
 # Health Checks Configuration
 health_checks:
-  overall_timeout: 300s
+  overall_timeout: "300s"
   service_startup_order: ["db", "redis", "python", "node"]
   required_services: ["db", "redis", "python", "node"]
+
+# Resource Limits (Config-Driven)
+resource_limits:
+  python:
+    cpus: "1.0"
+    memory: "1g"
+  node:
+    cpus: "0.5"
+    memory: "512m"
+  db:
+    cpus: "0.5"
+    memory: "512m"
+  redis:
+    cpus: "0.25"
+    memory: "256m"
+
+# Monitoring Configuration
+monitoring:
+  enabled: true
+  metrics_endpoint: "/metrics"
+  health_endpoint: "/health"
+  log_level: "DEBUG"
 
 # Development Configuration
 development:
   hot_reload: true
   debug_mode: true
-  log_level: DEBUG
   auto_restart: true
-
-# Testing Configuration
-testing:
-  test_command: "docker compose -f .compose/mcp/python_utils/docker-compose.yml run --rm test"
-  coverage_command: "docker compose -f .compose/mcp/python_utils/docker-compose.yml run --rm test-coverage"
-  lint_command: "docker compose -f .compose/mcp/python_utils/docker-compose.yml run --rm lint"
+  volume_mounts:
+    - source: "../../.dockerfiles"
+      target: "/dockerfiles"
+      type: "bind"
 
 # Deployment Configuration
 deployment:
@@ -158,16 +146,4 @@ deployment:
     node: 1
     db: 1
     redis: 1
-  resource_limits:
-    python:
-      cpus: "1.0"
-      memory: "1g"
-    node:
-      cpus: "0.5"
-      memory: "512m"
-    db:
-      cpus: "0.5"
-      memory: "512m"
-    redis:
-      cpus: "0.25"
-      memory: "256m"
+  restart_policy: "unless-stopped"
