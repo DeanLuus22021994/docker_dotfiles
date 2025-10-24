@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Compose Stack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .status {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .service {
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+        }
+        .service h3 {
+            margin: 0 0 5px 0;
+            color: #2e7d32;
+        }
+        .service p {
+            margin: 0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐳 Docker Compose Stack</h1>
+        <p>Welcome to your containerized application stack!</p>
+
+        <div class="status">
+            <div class="service">
+                <h3>✅ Nginx</h3>
+                <p>Web Server</p>
+            </div>
+            <div class="service">
+                <h3>🐍 Python</h3>
+                <p>Application</p>
+            </div>
+            <div class="service">
+                <h3>🗄️ Database</h3>
+                <p>Data Storage</p>
+            </div>
+            <div class="service">
+                <h3>📦 Redis</h3>
+                <p>Cache</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <p><strong>API Health:</strong> <span id="api-status">Checking...</span></p>
+            <p><strong>Database:</strong> <span id="db-status">Checking...</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Simple health check
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                if (response.ok) {
+                    document.getElementById('api-status').textContent = '✅ Healthy';
+                    document.getElementById('api-status').style.color = 'green';
+                } else {
+                    throw new Error('API not healthy');
+                }
+            } catch (error) {
+                document.getElementById('api-status').textContent = '❌ Unavailable';
+                document.getElementById('api-status').style.color = 'red';
+            }
+
+            // Check database via API
+            try {
+                const dbResponse = await fetch('/api/db-status');
+                if (dbResponse.ok) {
+                    document.getElementById('db-status').textContent = '✅ Connected';
+                    document.getElementById('db-status').style.color = 'green';
+                } else {
+                    throw new Error('Database not connected');
+                }
+            } catch (error) {
+                document.getElementById('db-status').textContent = '❌ Disconnected';
+                document.getElementById('db-status').style.color = 'red';
+            }
+        }
+
+        // Check health on page load
+        checkHealth();
+
+        // Check health every 30 seconds
+        setInterval(checkHealth, 30000);
+    </script>
+</body>
+</html>

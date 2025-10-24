@@ -254,30 +254,114 @@ target "runner" {
   ]
 }
 
+# Redis service target
+target "redis" {
+  dockerfile = ".dockerfiles/redis.Dockerfile"
+  context = "."
+  platforms = ["linux/amd64"]
+  tags = [
+    "${REGISTRY}redis:${TAG}",
+    "${REGISTRY}docker_redis:latest"
+  ]
+  cache-from = [
+    "type=local,src=${LOCAL_CACHE_DIR}",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}redis-${TAG}" : ""}"
+  ]
+  cache-to = [
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}redis-${TAG},mode=max" : ""}"
+  ]
+}
+
+# Nginx service target
+target "nginx" {
+  dockerfile = ".dockerfiles/nginx.Dockerfile"
+  context = "."
+  platforms = ["linux/amd64"]
+  tags = [
+    "${REGISTRY}nginx:${TAG}",
+    "${REGISTRY}docker_nginx:latest"
+  ]
+  cache-from = [
+    "type=local,src=${LOCAL_CACHE_DIR}",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}nginx-${TAG}" : ""}"
+  ]
+  cache-to = [
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}nginx-${TAG},mode=max" : ""}"
+  ]
+}
+
+# MariaDB service target
+target "mariadb" {
+  dockerfile = ".dockerfiles/mariadb.Dockerfile"
+  context = "."
+  platforms = ["linux/amd64"]
+  tags = [
+    "${REGISTRY}mariadb:${TAG}",
+    "${REGISTRY}docker_mariadb:latest"
+  ]
+  cache-from = [
+    "type=local,src=${LOCAL_CACHE_DIR}",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}mariadb-${TAG}" : ""}"
+  ]
+  cache-to = [
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}mariadb-${TAG},mode=max" : ""}"
+  ]
+}
+
+# PostgreSQL service target
+target "postgresql" {
+  dockerfile = ".dockerfiles/postgresql.Dockerfile"
+  context = "."
+  platforms = ["linux/amd64"]
+  tags = [
+    "${REGISTRY}postgresql:${TAG}",
+    "${REGISTRY}docker_postgresql:latest"
+  ]
+  cache-from = [
+    "type=local,src=${LOCAL_CACHE_DIR}",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}postgresql-${TAG}" : ""}"
+  ]
+  cache-to = [
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
+    "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}postgresql-${TAG},mode=max" : ""}"
+  ]
+}
+
 # Stack-specific groups
 group "basic-stack" {
-  targets = ["python-dev", "node-dev"]
+  targets = ["python-dev", "node-dev", "redis", "nginx"]
 }
 
 group "cluster-stack" {
-  targets = ["python-prod", "node-prod"]
+  targets = ["python-prod", "node-prod", "postgresql", "redis", "nginx"]
 }
 
 group "mcp-stack" {
-  targets = ["python-mcp"]
+  targets = ["python-mcp", "redis"]
 }
 
 group "swarm-stack" {
-  targets = ["python-prod", "node-prod"]
+  targets = ["python-prod", "node-prod", "mariadb", "redis", "nginx"]
+}
+
+group "database-stack" {
+  targets = ["mariadb", "postgresql", "redis"]
+}
+
+group "web-stack" {
+  targets = ["nginx", "python-prod", "node-prod"]
 }
 
 group "ci-stack" {
-  targets = ["devcontainer-ci", "python-test", "node-dev", "runner"]
+  targets = ["devcontainer-ci", "python-test", "node-dev", "runner", "redis"]
 }
 
 # All services group
 group "all-services" {
-  targets = ["devcontainer-dev", "devcontainer-prod", "python-dev", "python-prod", "python-test", "python-mcp", "node-dev", "node-prod", "runner"]
+  targets = ["devcontainer-dev", "devcontainer-prod", "python-dev", "python-prod", "python-test", "python-mcp", "node-dev", "node-prod", "runner", "redis", "nginx", "mariadb", "postgresql"]
 }
 
 # Default target
