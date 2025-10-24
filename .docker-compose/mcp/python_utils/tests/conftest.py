@@ -9,8 +9,8 @@ from pathlib import Path
 
 import pytest
 
-# Add python_utils to path for testing
-sys.path.insert(0, str(Path(__file__).parent.parent / "python_utils"))
+# Add tests directory to path so imports work
+sys.path.insert(0, str(Path(__file__).parent))
 
 from api_mock import mock_external_dependencies
 
