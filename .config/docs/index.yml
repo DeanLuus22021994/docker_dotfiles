@@ -13,22 +13,14 @@ index:
 
 # Documentation Structure
 structure:
-  navigation: "toc.yml"
   categories: "categories.yml"
   quick_access: "quick-access.yml"
   metadata: "metadata.yml"
 
-# Quick Stats
-stats:
-  total_files: 23
-  categories: 5
-  quick_access_groups: 4
-  implemented_features: 10
-
 # Repository Information
 repository:
   name: "docker_dotfiles"
-  owner: "DeanLuus22094"
+  owner: "DeanLuus22021994"
   branch: "refactor/python-utils-consolidation"
   default_branch: "main"
 
