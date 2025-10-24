@@ -1,177 +1,51 @@
 ---
-# Docker Compose Examples - Table of Contents
+# Docker Compose Examples - Main Table of Contents
 # Generated: 2025-10-24
 # Repository: docker_dotfiles
-# Description: Comprehensive table of contents for all documentation files
+# Description: Main entry point for decomposed documentation structure
 
-toc:
-  # Root Level Documentation
-  root:
-    - Makefile
-    - pyproject.toml
-    - .gitignore
-    - .dockerignore
-    - .pre-commit-config.yaml
-
-  # Main Documentation
-  docs:
-    - docs/architecture.md
-    - docs/deployment.md
-    - docs/troubleshooting.md
-
-  # Security Documentation
-  secrets:
-    - secrets/README.md
-    - secrets/.secrets.example
-
-  # Docker Compose Documentation
-  docker_compose:
-    - .docker-compose/README.md
-    - .docker-compose/CHANGELOG.md
-    - .docker-compose/DEVELOPMENT.md
-    - .docker-compose/TESTING.md
-
-  # Basic Stack Documentation
-  basic_stack:
-    - .docker-compose/basic-stack/README.md
-    - .docker-compose/basic-stack/UAT_REPORT_2025-10-22.md
-    - .docker-compose/basic-stack/dockerfiles/README.md
-
-  # Cluster Example Documentation
-  cluster_example:
-    - .docker-compose/cluster-example/README.md
-    - .docker-compose/cluster-example/UAT_REPORT_2025-10-22.md
-
-  # Swarm Stack Documentation
-  swarm_stack:
-    - .docker-compose/swarm-stack/README.md
-    - .docker-compose/swarm-stack/dockerfiles/README.md
-
-  # MCP Documentation
-  mcp:
-    - .docker-compose/mcp/README.md
-    - .docker-compose/mcp/DEVELOPMENT.md
-
-  # GitHub Configuration
-  github:
-    - .github/copilot-instructions.md
-    - .github/TODO.md
-
-  # Environment Configuration
-  environment:
-    - .env
-    - .env.development
-    - .env.docker
-    - .env.example
-    - .env.production
-
-# Documentation Categories
-categories:
-  architecture_design:
-    - docs/architecture.md
-    - .docker-compose/README.md
-
-  deployment_setup:
-    - docs/deployment.md
-    - .docker-compose/basic-stack/README.md
-    - .docker-compose/cluster-example/README.md
-    - .docker-compose/swarm-stack/README.md
-
-  development_testing:
-    - .docker-compose/DEVELOPMENT.md
-    - .docker-compose/TESTING.md
-    - .docker-compose/basic-stack/UAT_REPORT_2025-10-22.md
-    - .docker-compose/cluster-example/UAT_REPORT_2025-10-22.md
-    - .docker-compose/mcp/DEVELOPMENT.md
-
-  security_configuration:
-    - secrets/README.md
-    - docs/troubleshooting.md
-
-  stack_specific:
-    - .docker-compose/basic-stack/dockerfiles/README.md
-    - .docker-compose/swarm-stack/dockerfiles/README.md
-
-# Quick Access Links
-quick_access:
-  getting_started:
-    - .docker-compose/README.md
-    - docs/deployment.md
-    - .docker-compose/basic-stack/README.md
-
-  troubleshooting:
-    - docs/troubleshooting.md
-    - .docker-compose/TESTING.md
-
-  development:
-    - .docker-compose/DEVELOPMENT.md
-    - .docker-compose/mcp/DEVELOPMENT.md
-    - .github/TODO.md
-
-  security:
-    - secrets/README.md
-    - docs/architecture.md
-
-# Metadata
-metadata:
-  total_files: 23
-  last_updated: "2025-10-24"
+# Documentation Structure Overview
+structure:
+  title: "Docker Compose Examples - Enterprise Edition"
   version: "3.0"
-  repository: "docker_dotfiles"
-  description: "Enterprise-grade Docker Compose examples with security enhancements"
+  description: "Enterprise-grade Docker Compose examples with comprehensive security and monitoring"
 
-  # Implementation Details
-  implemented_features:
-    - security_middleware: "API key authentication, rate limiting, CORS, security headers"
-    - caching_layer: "Redis integration across all stacks for session management and rate limiting"
-    - python_version: "Python 3.14+ with free-threaded execution support"
-    - deployment_patterns: "Basic stack, cluster example, swarm orchestration"
-    - testing_framework: "Comprehensive pytest suite with enterprise health checks"
-    - container_orchestration: "Multi-stack Docker Compose with named volumes and secrets"
-    - development_tools: "MCP utilities, pre-commit hooks, comprehensive CI/CD"
-    - security_hardening: "Docker secrets, non-root containers, read-only filesystems"
-    - monitoring_observability: "Health checks, logging, resource limits"
-    - mock_removal: "Eliminated all mock implementations for production readiness"
+  # Decomposed Documentation Files
+  docs_index: "docs/index.yml"
+  table_of_contents: "docs/toc.yml"
+  categories: "docs/categories.yml"
+  quick_access: "docs/quick-access.yml"
+  implementation_metadata: "docs/metadata.yml"
 
-  # Architecture Components
-  architecture:
-    services:
-      - python_fastapi: "REST API with enterprise security middleware"
-      - node_vite: "Modern frontend with hot reload"
-      - postgresql: "Primary relational database with persistent storage"
-      - redis: "High-performance caching and session management"
-    stacks:
-      - basic_stack: "Development environment with all services"
-      - cluster_example: "Load-balanced multi-instance deployment"
-      - swarm_stack: "Docker Swarm orchestration"
-      - mcp_utils: "Testing and validation utilities"
+# Quick Navigation (Legacy Support)
+quick_nav:
+  getting_started: "docs/quick-access.yml#getting_started"
+  troubleshooting: "docs/quick-access.yml#troubleshooting"
+  development: "docs/quick-access.yml#development"
+  security: "docs/quick-access.yml#security"
 
-  # Security Implementation
-  security:
-    authentication: "API key-based authentication middleware"
-    rate_limiting: "Redis-backed rate limiting per endpoint"
-    cors: "Configurable cross-origin resource sharing"
-    headers: "Security headers (HSTS, CSP, X-Frame-Options)"
-    validation: "Pydantic model validation for all inputs"
-    secrets: "Docker secrets for credential management"
+  architecture: "docs/categories.yml#architecture_design"
+  deployment: "docs/categories.yml#deployment_setup"
+  testing: "docs/categories.yml#development_testing"
 
-  # Quality Assurance
-  quality:
-    testing: "Comprehensive unit and integration tests"
-    linting: "Black, Ruff, mypy for code quality"
-    documentation: "Complete enterprise documentation suite"
-    validation: "Automated stack validation and health checks"
+# Repository Statistics
+stats:
+  total_documentation_files: 23
+  documentation_categories: 5
+  quick_access_groups: 4
+  implemented_features: 10
+  deployment_stacks: 4
 
-  # Development Workflow
-  development:
-    version_control: "Git with conventional commits"
-    ci_cd: "Automated testing and deployment pipelines"
-    containerization: "Multi-stage Docker builds with BuildKit"
-    environment_management: "Multiple environment configurations"
+# Implementation Status
+status:
+  security_enhancements: "✅ Fully Implemented"
+  redis_integration: "✅ Fully Implemented"
+  mock_removal: "✅ Fully Implemented"
+  enterprise_documentation: "✅ Fully Implemented"
+  multi_stack_deployment: "✅ Fully Implemented"
 
-  # Enterprise Readiness
-  enterprise:
-    scalability: "Horizontal scaling with load balancing"
-    reliability: "Health checks and graceful shutdown"
-    observability: "Comprehensive logging and monitoring"
-    maintainability: "Modular architecture with clear separation of concerns"
+# Support & Resources
+support:
+  primary_docs: "docs/index.yml"
+  issues: "https://github.com/DeanLuus22021994/docker_dotfiles/issues"
+  discussions: "GitHub Discussions"

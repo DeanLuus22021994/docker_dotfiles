@@ -1,0 +1,91 @@
+---
+# Docker Compose Examples - Quick Access Links
+# Generated: 2025-10-24
+# Description: Quick access links organized by common tasks and user roles
+
+quick_access:
+  # Getting Started (New Users)
+  getting_started:
+    title: "🚀 Getting Started"
+    description: "Essential documentation for new users and first-time setup"
+    priority: "high"
+    audience: "beginners"
+    files:
+      - .docker-compose/README.md
+      - docs/deployment.md
+      - .docker-compose/basic-stack/README.md
+
+  # Troubleshooting (Problem Solving)
+  troubleshooting:
+    title: "🔧 Troubleshooting"
+    description: "Problem-solving resources and debugging guides"
+    priority: "high"
+    audience: "all_users"
+    files:
+      - docs/troubleshooting.md
+      - .docker-compose/TESTING.md
+
+  # Development (Active Contributors)
+  development:
+    title: "💻 Development"
+    description: "Development workflows, coding standards, and contribution guides"
+    priority: "medium"
+    audience: "developers"
+    files:
+      - .docker-compose/DEVELOPMENT.md
+      - .docker-compose/mcp/DEVELOPMENT.md
+      - .github/TODO.md
+
+  # Security (Administrators)
+  security:
+    title: "🔒 Security"
+    description: "Security configuration, hardening, and compliance documentation"
+    priority: "high"
+    audience: "administrators"
+    files:
+      - secrets/README.md
+      - docs/architecture.md
+
+# Quick Access Workflows
+workflows:
+  # First-Time Setup
+  first_time_setup:
+    title: "First-Time Repository Setup"
+    steps:
+      - "Read: .docker-compose/README.md"
+      - "Follow: docs/deployment.md"
+      - "Start with: .docker-compose/basic-stack/README.md"
+
+  # Development Environment
+  dev_environment:
+    title: "Setting Up Development Environment"
+    steps:
+      - "Read: .docker-compose/DEVELOPMENT.md"
+      - "Configure: secrets/README.md"
+      - "Test: .docker-compose/TESTING.md"
+
+  # Production Deployment
+  production_deployment:
+    title: "Production Deployment Checklist"
+    steps:
+      - "Review: docs/architecture.md"
+      - "Configure: secrets/README.md"
+      - "Deploy: docs/deployment.md"
+      - "Monitor: docs/troubleshooting.md"
+
+  # Security Audit
+  security_audit:
+    title: "Security Implementation Review"
+    steps:
+      - "Review: docs/architecture.md (Security section)"
+      - "Verify: secrets/README.md"
+      - "Test: docs/troubleshooting.md (Security issues)"
+
+# Quick Access Metadata
+quick_access_metadata:
+  total_groups: 4
+  priority_distribution:
+    high: 3
+    medium: 1
+    low: 0
+  audience_coverage: "beginners, developers, administrators, all_users"

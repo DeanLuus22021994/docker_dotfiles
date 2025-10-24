@@ -1,0 +1,57 @@
+---
+# Docker Compose Examples - Documentation Categories
+# Generated: 2025-10-24
+# Description: Documentation organized by functional categories
+
+categories:
+  # Architecture & Design Documentation
+  architecture_design:
+    title: "Architecture & Design"
+    description: "System architecture, service relationships, and design principles"
+    files:
+      - docs/architecture.md
+      - .docker-compose/README.md
+
+  # Deployment & Setup Documentation
+  deployment_setup:
+    title: "Deployment & Setup"
+    description: "Installation, configuration, and deployment guides"
+    files:
+      - docs/deployment.md
+      - .docker-compose/basic-stack/README.md
+      - .docker-compose/cluster-example/README.md
+      - .docker-compose/swarm-stack/README.md
+
+  # Development & Testing Documentation
+  development_testing:
+    title: "Development & Testing"
+    description: "Development workflows, testing protocols, and quality assurance"
+    files:
+      - .docker-compose/DEVELOPMENT.md
+      - .docker-compose/TESTING.md
+      - .docker-compose/basic-stack/UAT_REPORT_2025-10-22.md
+      - .docker-compose/cluster-example/UAT_REPORT_2025-10-22.md
+      - .docker-compose/mcp/DEVELOPMENT.md
+
+  # Security & Configuration Documentation
+  security_configuration:
+    title: "Security & Configuration"
+    description: "Security setup, configuration management, and troubleshooting"
+    files:
+      - secrets/README.md
+      - docs/troubleshooting.md
+
+  # Stack-Specific Documentation
+  stack_specific:
+    title: "Stack-Specific Guides"
+    description: "Detailed guides for specific deployment stacks and build instructions"
+    files:
+      - .docker-compose/basic-stack/dockerfiles/README.md
+      - .docker-compose/swarm-stack/dockerfiles/README.md
+
+# Category Metadata
+category_metadata:
+  total_categories: 5
+  most_popular: "deployment_setup"
+  beginner_friendly: "architecture_design"
+  advanced_users: "stack_specific"
