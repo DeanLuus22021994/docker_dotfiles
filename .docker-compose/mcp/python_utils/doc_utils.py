@@ -20,11 +20,11 @@ if sys.version_info >= (3, 14):
     try:
         from concurrent.futures import ProcessPoolExecutor as InterpreterPoolExecutor
 
-        HAS_INTERPRETERS = True
+        has_interpreters = True
     except ImportError:
-        HAS_INTERPRETERS = False
+        has_interpreters = False
 else:
-    HAS_INTERPRETERS = False
+    has_interpreters = False
 
 try:
     import requests
@@ -81,7 +81,7 @@ class DocUtils:
     def __init__(self, docs_path: str = "docs", use_interpreters: bool = True) -> None:
         self.docs_path = Path(docs_path)
         self.base_url = "https://user.github.io/docker-examples/"
-        self.use_interpreters = use_interpreters and HAS_INTERPRETERS
+        self.use_interpreters = use_interpreters and has_interpreters
 
         if requests:
             self.session: Session | None = requests.Session()
@@ -98,7 +98,7 @@ class DocUtils:
         return list(self.docs_path.rglob("*.md"))
 
     def extract_links(self, file_path: Path) -> list[str]:
-        links = []
+        links: list[str] = []
         try:
             content = file_path.read_text(encoding="utf-8")
 
@@ -123,7 +123,7 @@ class DocUtils:
         results: dict[str, list[str]] = {"valid": [], "broken": [], "skipped": []}
 
         md_files = self.find_markdown_files()
-        all_links = set()
+        all_links: set[str] = set()
 
         for file_path in md_files:
             links = self.extract_links(file_path)
@@ -137,7 +137,7 @@ class DocUtils:
         from concurrent.futures import ProcessPoolExecutor
 
         executor_class: type[ThreadPoolExecutor] | type[ProcessPoolExecutor]
-        if self.use_interpreters and HAS_INTERPRETERS:
+        if self.use_interpreters and has_interpreters:
             print("🚀 Using InterpreterPoolExecutor for true parallelism")
             executor_class = InterpreterPoolExecutor
         else:
@@ -298,7 +298,7 @@ class DocUtils:
         )
 
     def _extract_exports(self, content: str) -> list[str]:
-        exports = []
+        exports: list[str] = []
 
         named_exports = re.findall(
             r"export (?:const|function|class|let|var) (\w+)", content
@@ -313,7 +313,7 @@ class DocUtils:
         return list(set(exports))
 
     def _extract_imports(self, content: str) -> list[str]:
-        imports = []
+        imports: list[str] = []
 
         es6_imports = re.findall(r'import .* from ["\']([^"\']+)["\']', content)
         imports.extend(es6_imports)
@@ -391,9 +391,7 @@ class DocUtils:
                     return url, False, str(e)
 
         tasks = [check_single_url(url) for url in urls]
-        completed_results: list[
-            tuple[str, bool, str] | BaseException
-        ] = await asyncio.gather(*tasks, return_exceptions=True)
+        completed_results: list[tuple[str, bool, str] | BaseException] = await asyncio.gather(*tasks, return_exceptions=True)
 
         for result in completed_results:
             if isinstance(result, BaseException):
@@ -451,7 +449,7 @@ Python 3.14 Features:
 
     args = parser.parse_args()
 
-    use_interpreters = not args.no_interpreters and HAS_INTERPRETERS
+    use_interpreters = not args.no_interpreters and has_interpreters
     utils = DocUtils(args.docs_path, use_interpreters=use_interpreters)
 
     print(f"🐍 Python {sys.version}")
@@ -459,6 +457,8 @@ Python 3.14 Features:
         "InterpreterPoolExecutor" if use_interpreters else "ThreadPoolExecutor"
     )
     print(f"🔧 Using {executor_name}")
+
+    results: dict[str, list[str]] = {"valid": [], "broken": [], "skipped": []}
 
     if args.command == "check-links":
         print("🔗 Checking documentation links...")
@@ -480,7 +480,7 @@ Python 3.14 Features:
             print("🔗 Checking links asynchronously (Python 3.14 free-threaded)...")
 
             md_files = utils.find_markdown_files()
-            all_links = set()
+            all_links: set[str] = set()
             for file_path in md_files:
                 links = utils.extract_links(file_path)
                 all_links.update(links)

@@ -23,13 +23,13 @@ CorrelationLogger = BaseCorrelationLogger
 if sys.version_info >= (3, 14):
     import importlib.util
 
-    HAS_INTERPRETERS = (
+    has_interpreters = (
         importlib.util.find_spec("concurrent.interpreters") is not None
         and importlib.util.find_spec("concurrent.futures.InterpreterPoolExecutor")
         is not None
     )
 else:
-    HAS_INTERPRETERS = False
+    has_interpreters = False
 
 
 def get_python_features() -> dict[str, Any]:
@@ -44,7 +44,7 @@ def get_python_features() -> dict[str, Any]:
     return {
         "version": sys.version_info,
         "version_string": sys.version,
-        "has_interpreters": HAS_INTERPRETERS,
+        "has_interpreters": has_interpreters,
         "is_free_threaded": getattr(sys, "_is_gil_enabled", lambda: True)() is False,
         "has_pathlib_copy": hasattr(Path, "copy"),
         "has_pathlib_move": hasattr(Path, "move"),
@@ -58,4 +58,4 @@ def is_free_threaded() -> bool:
 
 def has_interpreters() -> bool:
     """Check if concurrent interpreters are available."""
-    return HAS_INTERPRETERS
+    return has_interpreters

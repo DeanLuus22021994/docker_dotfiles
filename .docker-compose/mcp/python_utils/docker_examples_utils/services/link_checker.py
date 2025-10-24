@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
-from ..config.settings import HAS_INTERPRETERS, HTTPConfig, PathConfig
+from ..config.settings import has_interpreters, HTTPConfig, PathConfig
 from ..models.models import LinkCheckConfig, LinkResult
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
         InterpreterPoolExecutor = ThreadPoolExecutor  # type: ignore[misc,assignment]
         pass
 
-if HAS_INTERPRETERS:
+if has_interpreters():
     from concurrent.futures import ProcessPoolExecutor as InterpreterPoolExecutor
 else:
     from concurrent.futures import ThreadPoolExecutor
@@ -60,7 +60,7 @@ class LinkCheckerService:
         return list(docs_path.rglob("*.md"))
 
     def extract_links(self, file_path: Path) -> list[str]:
-        links = []
+        links: list[str] = []
         try:
             content = file_path.read_text(encoding="utf-8")
 
@@ -85,7 +85,7 @@ class LinkCheckerService:
         results: dict[str, list[str]] = {"valid": [], "broken": [], "skipped": []}
 
         md_files = self.find_markdown_files()
-        all_links = set()
+        all_links: set[str] = set()
 
         for file_path in md_files:
             links = self.extract_links(file_path)
@@ -99,7 +99,7 @@ class LinkCheckerService:
         from concurrent.futures import ProcessPoolExecutor
 
         executor_class: type[ThreadPoolExecutor] | type[ProcessPoolExecutor]
-        if self.config.use_interpreters and HAS_INTERPRETERS:
+        if self.config.use_interpreters and has_interpreters():
             print("🚀 Using InterpreterPoolExecutor for true parallelism")
             executor_class = InterpreterPoolExecutor
         else:
@@ -284,9 +284,7 @@ class LinkCheckerService:
                     return url, False, str(e)
 
         tasks = [check_single_url(url) for url in urls]
-        completed_results: list[
-            tuple[str, bool, str] | BaseException
-        ] = await asyncio.gather(*tasks, return_exceptions=True)
+        completed_results: list[tuple[str, bool, str] | BaseException] = await asyncio.gather(*tasks, return_exceptions=True)
 
         for result in completed_results:
             if isinstance(result, BaseException):

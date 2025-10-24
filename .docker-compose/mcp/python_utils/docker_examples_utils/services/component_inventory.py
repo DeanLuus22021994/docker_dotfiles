@@ -132,7 +132,7 @@ class ComponentInventoryService:
         )
 
     def _extract_exports(self, content: str) -> list[str]:
-        exports = []
+        exports: list[str] = []
 
         named_exports = re.findall(
             r"export (?:const|function|class|let|var) (\w+)", content
@@ -147,7 +147,7 @@ class ComponentInventoryService:
         return list(set(exports))
 
     def _extract_imports(self, content: str) -> list[str]:
-        imports = []
+        imports: list[str] = []
 
         es6_imports = re.findall(r'import .* from ["\']([^"\']+)["\']', content)
         imports.extend(es6_imports)

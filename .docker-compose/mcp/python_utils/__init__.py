@@ -13,8 +13,15 @@ import importlib.util
 import sys
 from typing import Any
 
+def _check_free_threaded() -> bool:
+    """Check if running in free-threaded mode safely."""
+    try:
+        return hasattr(sys, "_is_gil_enabled") and not getattr(sys, "_is_gil_enabled", True)
+    except AttributeError:
+        return False
+
 PYTHON_314_FEATURES = {
-    "free_threaded": hasattr(sys, "_is_gil_enabled") and not sys._is_gil_enabled(),
+    "free_threaded": _check_free_threaded(),
     "interpreters": importlib.util.find_spec("concurrent.interpreters") is not None,
     "pathlib_copy_move": hasattr(__import__("pathlib").Path, "copy"),
     "tail_call_optimization": sys.version_info >= (3, 14),
