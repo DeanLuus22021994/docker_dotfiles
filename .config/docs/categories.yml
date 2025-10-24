@@ -20,16 +20,16 @@ categories:
     title: "Core Documentation"
     description: "Primary documentation for architecture, deployment, and troubleshooting"
     files:
-      - .docs/architecture.md
-      - .docs/deployment.md
-      - .docs/troubleshooting.md
+      - docs/architecture.md
+      - docs/deployment.md
+      - docs/troubleshooting.md
 
   # Security Documentation
   secrets:
     title: "Security & Secrets"
     description: "Security configuration and credential management"
     files:
-      - secrets/README.md
+      - docs/security/README.md
       - secrets/.secrets.example
 
   # Docker Compose Documentation
@@ -37,10 +37,10 @@ categories:
     title: "Docker Compose Suite"
     description: "General Docker Compose documentation and guides"
     files:
-      - .compose/README.md
-      - .compose/CHANGELOG.md
-      - .compose/DEVELOPMENT.md
-      - .compose/TESTING.md
+      - docs/compose/README.md
+      - docs/compose/CHANGELOG.md
+      - docs/compose/DEVELOPMENT.md
+      - docs/compose/TESTING.md
 
   # Basic Stack Documentation
   basic_stack:
