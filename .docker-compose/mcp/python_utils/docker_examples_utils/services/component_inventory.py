@@ -4,9 +4,8 @@ Component inventory service for Docker Compose Utils.
 This module provides functionality to analyze and catalog components,
 hooks, utilities, and pages in the source codebase.
 """
-    """
-    Component inventory service for Docker Compose Utils.
-    """
+import re
+import sys
 from pathlib import Path
 from typing import Any
 

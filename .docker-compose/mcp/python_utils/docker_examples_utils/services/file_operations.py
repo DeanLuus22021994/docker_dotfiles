@@ -150,7 +150,7 @@ class FileOperationsService:
                 "suffix": file_path.suffix,
                 "size": stat.st_size,
                 "modified": stat.st_mtime,
-                "created": stat.st_ctime,
+                "created": getattr(stat, "st_birthtime", stat.st_ctime),
                 "exists": file_path.exists(),
                 "is_file": file_path.is_file(),
                 "is_dir": file_path.is_dir(),
