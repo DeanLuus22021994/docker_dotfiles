@@ -15,7 +15,7 @@ RUN mkdir -p /var/log/postgresql \
   && chown -R postgres:postgres /var/lib/postgresql/data
 
 # Copy custom configuration
-COPY --chown=postgres:postgres docker-compose-examples/swarm-stack/dockerfiles/postgresql.conf /etc/postgresql/postgresql.conf
+COPY --chown=postgres:postgres .docker-compose/swarm-stack/dockerfiles/postgresql.conf /etc/postgresql/postgresql.conf
 
 # Switch to postgres user
 USER postgres

@@ -26,8 +26,8 @@ USER app
 
 FROM base AS deps
 # Copy dependency files first for better caching
-COPY --chown=app:app pyproject.toml ./
-COPY --chown=app:app python_utils/ ./python_utils/
+COPY --chown=app:app .docker-compose/mcp/python_utils/pyproject.toml ./
+COPY --chown=app:app .docker-compose/mcp/python_utils/docker_examples_utils/ ./docker_examples_utils/
 
 # Create virtual environment with pip cache mounting
 RUN --mount=type=cache,target=/tmp/.cache/pip,uid=1001 \
@@ -39,7 +39,7 @@ FROM deps AS runner
 # Copy virtual environment from deps stage
 COPY --from=deps --chown=app:app /app/.venv /app/.venv
 # Copy application code
-COPY --chown=app:app . .
+COPY --chown=app:app .docker-compose/mcp/python_utils/ .
 
 # Activate virtual environment
 ENV PATH="/app/.venv/bin:$PATH"

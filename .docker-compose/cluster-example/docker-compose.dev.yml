@@ -2,7 +2,7 @@ services:
   node:
     build:
       context: ../..
-      dockerfile: docker-compose-examples/cluster-example/dockerfiles/node.Dockerfile
+      dockerfile: .docker-compose/cluster-example/dockerfiles/node.Dockerfile
     volumes:
       - ../..:/app:cached
       - node_modules:/app/node_modules
@@ -53,7 +53,7 @@ services:
   python:
     build:
       context: ../..
-      dockerfile: docker-compose-examples/cluster-example/dockerfiles/python.Dockerfile
+      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
       target: deps # Skip final stage for faster builds
     volumes:
       - ../..:/app:cached

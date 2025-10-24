@@ -32,8 +32,8 @@ services:
 
   node:
     build:
-      context: ../..
-      dockerfile: .docker-compose/cluster-example/dockerfiles/node.Dockerfile
+      context: .
+      dockerfile: dockerfiles/node.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:
@@ -66,8 +66,8 @@ services:
 
   python:
     build:
-      context: ../..
-      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
+      context: .
+      dockerfile: ../../mcp/python_utils/dockerfiles/python.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:

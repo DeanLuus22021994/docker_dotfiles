@@ -9,7 +9,7 @@ RUN apk add --no-cache \
   && rm -rf /var/cache/apk/*
 
 # Copy custom configuration
-COPY --chown=postgres:postgres docker-compose-examples/basic-stack/dockerfiles/postgresql.conf /etc/postgresql/postgresql.conf
+COPY --chown=postgres:postgres .docker-compose/basic-stack/dockerfiles/postgresql.conf /etc/postgresql/postgresql.conf
 
 # Create directories for logs and data with proper permissions
 RUN mkdir -p /var/log/postgresql \

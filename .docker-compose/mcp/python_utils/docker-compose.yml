@@ -2,7 +2,7 @@ services:
   python:
     build:
       context: ../../../..
-      dockerfile: docker-compose-examples/mcp/python_utils/dockerfiles/python.Dockerfile
+      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:
@@ -32,12 +32,11 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-      start_period: 40s
 
   test-runner:
     build:
       context: ../../../..
-      dockerfile: docker-compose-examples/mcp/python_utils/dockerfiles/python.Dockerfile
+      dockerfile: .docker-compose/mcp/python_utils/dockerfiles/python.Dockerfile
       args:
         DOCKER_BUILDKIT: 1
     volumes:

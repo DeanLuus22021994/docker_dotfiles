@@ -62,7 +62,18 @@
   
   // ✅ ADD: Performance tuning
   "github.copilot.advanced": {
-    "debug.overrideEngine": "gpt-4o",  // Use faster model
+    "debug.overrideEngine": "grok-code-fast-1",  // Use faster model
     "debug.useNodeFetcher": true
-  }
+  },
+
+  // Python Settings - Use localhost Python environment
+  "python.defaultInterpreterPath": "python",  // Use system Python from PATH
+  "python.terminal.activateEnvironment": true,  // Activate environment in terminal
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": ["--line-length", "88"],
+  "python.linting.mypyEnabled": true,
+  "python.linting.ruffEnabled": true,
+  "python.analysis.typeCheckingMode": "strict"
 }
