@@ -5,7 +5,7 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ../..:/workspaces:cached
-      - node_modules:/workspaces/node_modules
+      - docker_examples_node_modules:/workspaces/node_modules
       - docker_examples_python_venv:/workspaces/.venv
     working_dir: /workspaces
     ports:
