@@ -132,6 +132,53 @@
           "remoteRoot": "/app"
         }
       ]
+    },
+    {
+      "name": "Agent: Debug with GitHub Integration",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_github.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Agent: Debug with Azure AI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_azure.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "AZURE_CLIENT_ID": "${env:AZURE_CLIENT_ID}",
+        "AZURE_CLIENT_SECRET": "${env:AZURE_CLIENT_SECRET}",
+        "AZURE_TENANT_ID": "${env:AZURE_TENANT_ID}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Agent: Debug with HuggingFace",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_huggingface.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "HUGGINGFACE_ACCESS_TOKEN": "${env:HUGGINGFACE_ACCESS_TOKEN}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
     }
   ]
 }

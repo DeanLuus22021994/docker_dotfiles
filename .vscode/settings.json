@@ -91,6 +91,13 @@
   "github.copilot.chat.agent.intelliSense.completion": true,
   "github.copilot.chat.agent.intelliSense.hover": true,
   "github.copilot.chat.agent.intelliSense.signatureHelp": true,
+  
+  // Environment Variable Integration for Agent Development
+  "github.copilot.chat.agent.environment.enabled": true,
+  "github.copilot.chat.agent.github.enabled": true,
+  "github.copilot.chat.agent.azure.enabled": true,
+  "github.copilot.chat.agent.docker.enabled": true,
+  "github.copilot.chat.agent.huggingface.enabled": true,
 
   // Python Settings - Updated for uv virtual environment
   "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",  // Use uv virtual environment Python

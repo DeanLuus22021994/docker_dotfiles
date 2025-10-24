@@ -262,6 +262,54 @@
         "clear": false
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Agent Development: Test GitHub Integration",
+      "type": "shell",
+      "command": "curl",
+      "args": ["-H", "Authorization: token ${env:GITHUB_TOKEN}", "-H", "Accept: application/vnd.github.v3+json", "https://api.github.com/user"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Agent Development: Test Azure AI Integration",
+      "type": "shell",
+      "command": "python",
+      "args": ["-c", "import os; print(f'Azure Client ID: {os.getenv(\"AZURE_CLIENT_ID\", \"Not set\")}'); print(f'Azure Tenant ID: {os.getenv(\"AZURE_TENANT_ID\", \"Not set\")}')"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Agent Development: Test HuggingFace Integration",
+      "type": "shell",
+      "command": "python",
+      "args": ["-c", "import os; token = os.getenv('HUGGINGFACE_ACCESS_TOKEN'); print(f'HuggingFace Token: {\"Set\" if token else \"Not set\"}')"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
     }
   ]
 }

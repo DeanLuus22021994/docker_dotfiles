@@ -65,7 +65,22 @@
     
     // Performance and Profiling
     "ms-python.python-profiling",
-    "ms-vscode.vscode-js-profile-flame"
+    "ms-vscode.vscode-js-profile-flame",
+    
+    // Cloud and API Integration
+    "ms-vscode.vscode-azure-account",
+    "ms-vscode.vscode-github-actions",
+    "ms-vscode.vscode-pull-request-github",
+    
+    // Environment and Secrets Management
+    "ms-vscode.vscode-env",
+    "redhat.vscode-openshift-connector",
+    
+    // Advanced Development Tools
+    "ms-vscode.vscode-json",
+    "ms-vscode.vscode-yaml",
+    "ms-vscode.vscode-typescript-next",
+    "esbenp.prettier-vscode"
   ],
   "unwantedRecommendations": [
     "ms-python.python-old", // Old Python extension
