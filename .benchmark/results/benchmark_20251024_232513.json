@@ -1,0 +1,69 @@
+{
+  "config": {
+    "benchmark": {
+      "timeout": 1800,
+      "targets": [
+        "default"
+      ],
+      "iterations": 3
+    },
+    "thresholds": {
+      "max_cache_miss_ratio": 0.5,
+      "max_build_time": 300
+    }
+  },
+  "timestamp": "20251024_232513",
+  "benchmarks": [
+    {
+      "summary": {
+        "max_duration": null,
+        "failed_iterations": 0,
+        "avg_duration": 0.0,
+        "successful_iterations": 6,
+        "total_iterations": 1,
+        "min_duration": null
+      },
+      "description": "Cached build (using build cache)",
+      "iterations": [
+        {
+          "iteration": 1,
+          "exit_code": 0,
+          "timestamp": "2025-10-24T23:25:14.6006508+02:00",
+          "success": true,
+          "duration": null,
+          "scenario": "cached"
+        }
+      ],
+      "scenario": "cached"
+    },
+    {
+      "summary": {
+        "max_duration": null,
+        "failed_iterations": 0,
+        "avg_duration": 0.0,
+        "successful_iterations": 6,
+        "total_iterations": 1,
+        "min_duration": null
+      },
+      "description": "No-cache build (fresh build)",
+      "iterations": [
+        {
+          "iteration": 1,
+          "exit_code": 0,
+          "timestamp": "2025-10-24T23:25:15.3073705+02:00",
+          "success": true,
+          "duration": null,
+          "scenario": "no-cache"
+        }
+      ],
+      "scenario": "no-cache"
+    }
+  ],
+  "summary": {
+    "failed_iterations": 0.0,
+    "total_scenarios": 2,
+    "average_build_time": 0.0,
+    "total_iterations": 2,
+    "successful_iterations": 12.0
+  }
+}

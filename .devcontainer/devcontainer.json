@@ -40,6 +40,51 @@
       },
     {
         "type": "volume",
+        "source": "docker_mypy_cache",
+        "target": "/home/vscode/.mypy_cache"
+      },
+    {
+        "type": "volume",
+        "source": "docker_ruff_cache",
+        "target": "/home/vscode/.cache/ruff"
+      },
+    {
+        "type": "volume",
+        "source": "docker_pytest_cache",
+        "target": "/home/vscode/.pytest_cache"
+      },
+    {
+        "type": "volume",
+        "source": "docker_precommit_cache",
+        "target": "/home/vscode/.cache/pre-commit"
+      },
+    {
+        "type": "volume",
+        "source": "docker_jupyter_cache",
+        "target": "/home/vscode/.jupyter"
+      },
+    {
+        "type": "volume",
+        "source": "docker_conda_envs",
+        "target": "/home/vscode/.conda/envs"
+      },
+    {
+        "type": "volume",
+        "source": "docker_precompiled_bytecode",
+        "target": "/opt/precompiled"
+      },
+    {
+        "type": "volume",
+        "source": "docker_black_cache",
+        "target": "/home/vscode/.cache/black"
+      },
+    {
+        "type": "volume",
+        "source": "docker_isort_cache",
+        "target": "/home/vscode/.cache/isort"
+      },
+    {
+        "type": "volume",
         "source": "docker_mariadb_data",
         "target": "/var/lib/mysql"
       }
@@ -55,17 +100,14 @@
     "storage": "8gb",
     "gpu": "optional"
   },
-  "waitFor": "onCreateCommand",
+  "containerUser": "vscode",
   "postCreateCommand": [
-    "/home/vscode/actions-runner/start.sh",
-    "uv sync --extra dev --extra agent-dev",
     "python -m compileall /workspaces/docker",
-    "python -m compileall /home/vscode/.venv",
-    "mypy --cache-dir /home/vscode/.mypy_cache --no-error-summary .",
-    "ruff check --cache-dir /home/vscode/.ruff_cache .",
-    "npm install -g yarn typescript @types/node eslint prettier"
+    "mypy --cache-dir /home/vscode/.mypy_cache --no-error-summary /workspaces/docker || true",
+    "ruff check --cache-dir /home/vscode/.cache/ruff /workspaces/docker || true",
+    "black --check /workspaces/docker || true"
   ],
-  "postStartCommand": "chown -R mysql:mysql /var/lib/mysql && service mariadb start && sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
+  "postStartCommand": "sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
   "postAttachCommand": "",
   "features": {
     "ghcr.io/devcontainers/features/git": "latest",

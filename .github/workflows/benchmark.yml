@@ -1,0 +1,235 @@
+name: Docker Build Benchmark
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '.devcontainer/**'
+      - '.benchmark/**'
+      - 'docker-bake.hcl'
+      - 'build.sh'
+      - 'Makefile'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '.devcontainer/**'
+      - '.benchmark/**'
+      - 'docker-bake.hcl'
+      - 'build.sh'
+      - 'Makefile'
+  workflow_dispatch:
+    inputs:
+      benchmark_type:
+        description: 'Benchmark type to run'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - build
+          - cache
+          - layers
+          - disk
+      iterations:
+        description: 'Number of benchmark iterations'
+        required: false
+        default: '3'
+        type: string
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_DEFAULT_PLATFORM: linux/amd64
+
+jobs:
+  benchmark:
+    name: Docker Build Performance Benchmark
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      performance_warning: ${{ steps.thresholds.outputs.performance_warning }}
+      cache_warning: ${{ steps.thresholds.outputs.cache_warning }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install Python dependencies
+      run: |
+        pip install -r .benchmark/requirements.txt
+
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Check system resources
+      run: |
+        echo "CPU Info: $(nproc) cores"
+        echo "Memory: $(free -h | grep '^Mem:' | awk '{print $2}')"
+        echo "Disk Free: $(df -h . | tail -1 | awk '{print $4}')"
+        echo "Docker Version: $(docker --version)"
+        echo "Buildx Version: $(docker buildx version)"
+
+    - name: Run benchmark
+      id: benchmark
+      run: |
+        # Determine benchmark type
+        BENCHMARK_TYPE="${{ github.event.inputs.benchmark_type || 'all' }}"
+        ITERATIONS="${{ github.event.inputs.iterations || '3' }}"
+
+        echo "Running benchmark type: $BENCHMARK_TYPE"
+        echo "Iterations: $ITERATIONS"
+
+        # Run the benchmark
+        if [ "$BENCHMARK_TYPE" = "all" ]; then
+          bash .benchmark/ci_benchmark.sh run
+        else
+          bash .benchmark/run_benchmark.sh "$BENCHMARK_TYPE"
+        fi
+
+    - name: Analyze results
+      id: analyze
+      run: |
+        # Find the latest benchmark results
+        LATEST_RESULTS=$(find .benchmark/results -name "benchmark_*.json" -type f -printf '%T@ %p\n' 2>/dev/null | sort -n | tail -1 | cut -d' ' -f2-)
+
+        if [ -n "$LATEST_RESULTS" ]; then
+          echo "results_file=$LATEST_RESULTS" >> $GITHUB_OUTPUT
+
+          # Extract key metrics for GitHub output
+          if command -v jq &> /dev/null; then
+            BAKE_DEV_TIME=$(jq -r '.build_strategies[] | select(.name == "bake_dev") | .duration_seconds' "$LATEST_RESULTS" 2>/dev/null || echo "unknown")
+            CACHE_IMPROVEMENT=$(jq -r '.cache_performance[] | select(.name == "cold_cache_build") | .duration_seconds' "$LATEST_RESULTS" 2>/dev/null || echo "unknown")
+
+            echo "bake_dev_time=$BAKE_DEV_TIME" >> $GITHUB_OUTPUT
+            echo "cache_improvement=$CACHE_IMPROVEMENT" >> $GITHUB_OUTPUT
+          fi
+        fi
+
+    - name: Generate analysis report
+      run: |
+        if [ -n "${{ steps.analyze.outputs.results_file }}" ]; then
+          cd .benchmark
+          python3 analyze_benchmark.py "${{ steps.analyze.outputs.results_file }}" > analysis_report.md
+        fi
+
+    - name: Check performance thresholds
+      id: thresholds
+      run: |
+        PERFORMANCE_WARNING=false
+        CACHE_WARNING=false
+
+        if [ -n "${{ steps.analyze.outputs.results_file }}" ] && command -v jq &> /dev/null; then
+          RESULTS_FILE="${{ steps.analyze.outputs.results_file }}"
+
+          # Check build time (target: 120 seconds)
+          BAKE_DEV_TIME=$(jq -r '.build_strategies[] | select(.name == "bake_dev") | .duration_seconds' "$RESULTS_FILE" 2>/dev/null || echo "0")
+          TARGET_TIME=120
+
+          if [ "$(echo "$BAKE_DEV_TIME > $TARGET_TIME" | bc -l 2>/dev/null)" = "1" ]; then
+            echo "⚠️ Build time ($BAKE_DEV_TIME s) exceeds target ($TARGET_TIME s)"
+            PERFORMANCE_WARNING=true
+          fi
+
+          # Check cache improvement (minimum 25%)
+          COLD_CACHE=$(jq -r '.cache_performance[] | select(.name == "cold_cache_build") | .duration_seconds' "$RESULTS_FILE" 2>/dev/null || echo "0")
+          WARM_CACHE=$(jq -r '.cache_performance[] | select(.name == "warm_cache_build") | .duration_seconds' "$RESULTS_FILE" 2>/dev/null || echo "0")
+
+          if [ "$COLD_CACHE" != "0" ] && [ "$WARM_CACHE" != "0" ]; then
+            IMPROVEMENT=$(echo "scale=2; (($COLD_CACHE - $WARM_CACHE) / $COLD_CACHE) * 100" | bc -l 2>/dev/null || echo "0")
+            MIN_IMPROVEMENT=25
+
+            if [ "$(echo "$IMPROVEMENT < $MIN_IMPROVEMENT" | bc -l 2>/dev/null)" = "1" ]; then
+              echo "⚠️ Cache improvement ($IMPROVEMENT%) below minimum ($MIN_IMPROVEMENT%)"
+              CACHE_WARNING=true
+            fi
+          fi
+        fi
+
+        echo "performance_warning=$PERFORMANCE_WARNING" >> $GITHUB_OUTPUT
+        echo "cache_warning=$CACHE_WARNING" >> $GITHUB_OUTPUT
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-results-${{ github.run_id }}
+        path: |
+          .benchmark/results/
+          .benchmark/analysis_report.md
+          .benchmark/visualizations/
+        retention-days: 30
+
+    - name: Comment on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const performanceWarning = '${{ steps.thresholds.outputs.performance_warning }}' === 'true';
+          const cacheWarning = '${{ steps.thresholds.outputs.cache_warning }}' === 'true';
+
+          const body = `## 🚀 Docker Build Benchmark Results
+
+          Benchmark completed for commit: \`${context.sha}\`
+
+          ### Performance Status
+          ${performanceWarning ? '❌' : '✅'} **Build Time**: ${{ steps.analyze.outputs.bake_dev_time }}s (target: ≤120s)
+          ${cacheWarning ? '❌' : '✅'} **Cache Improvement**: ${{ steps.analyze.outputs.cache_improvement }}% (target: ≥25%)
+
+          ### Results
+          📊 [View Full Report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          📁 [Download Artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)
+
+          ### Key Metrics
+          - **Build Time**: ${{ steps.analyze.outputs.bake_dev_time }}s
+          - **Cache Improvement**: ${{ steps.analyze.outputs.cache_improvement }}%
+
+          ---
+          *This comment was automatically generated by the benchmark workflow.*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+    - name: Fail on performance regression
+      if: steps.thresholds.outputs.performance_warning == 'true' || steps.thresholds.outputs.cache_warning == 'true'
+      run: |
+        echo "❌ Performance regression detected!"
+        echo "Build time or cache performance is below acceptable thresholds."
+        echo "Please review the benchmark results and optimize the build process."
+        exit 1
+
+  summary:
+    name: Benchmark Summary
+    runs-on: ubuntu-latest
+    needs: benchmark
+    if: always()
+
+    steps:
+    - name: Generate summary
+      run: |
+        echo "## Benchmark Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ needs.benchmark.result }}" = "success" ]; then
+          echo "✅ **Benchmark completed successfully**" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Benchmark failed**" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Performance Status" >> $GITHUB_STEP_SUMMARY
+        echo "- Build Time Warning: ${{ needs.benchmark.outputs.performance_warning || 'unknown' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- Cache Warning: ${{ needs.benchmark.outputs.cache_warning || 'unknown' }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Links" >> $GITHUB_STEP_SUMMARY
+        echo "- [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+        echo "- [Benchmark Results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)" >> $GITHUB_STEP_SUMMARY

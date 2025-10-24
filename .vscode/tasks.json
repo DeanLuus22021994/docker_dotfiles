@@ -58,8 +58,8 @@
     {
       "label": "Lint Python Code",
       "type": "shell",
-      "command": "uv",
-      "args": ["run", "ruff", "check", "."],
+      "command": "ruff",
+      "args": ["check", "."],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -74,8 +74,8 @@
     {
       "label": "Format Python Code",
       "type": "shell",
-      "command": "uv",
-      "args": ["run", "black", "."],
+      "command": "black",
+      "args": ["."],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -90,8 +90,8 @@
     {
       "label": "Type Check Python",
       "type": "shell",
-      "command": "uv",
-      "args": ["run", "mypy", "."],
+      "command": "mypy",
+      "args": ["."],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -107,7 +107,7 @@
       "label": "Validate Docker Compose",
       "type": "shell",
       "command": "docker-compose",
-      "args": ["config", "--quiet"],
+      "args": ["-f", ".compose/basic-stack/docker-compose.yml", "config", "--quiet"],
       "group": "build",
       "presentation": {
         "echo": true,
@@ -123,7 +123,7 @@
       "label": "Build Docker Images",
       "type": "shell",
       "command": "docker-compose",
-      "args": ["build"],
+      "args": ["-f", ".compose/basic-stack/docker-compose.yml", "build"],
       "group": "build",
       "presentation": {
         "echo": true,

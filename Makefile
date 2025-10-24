@@ -1,26 +1,31 @@
 # Makefile for Docker Compose Project
 # Provides common development tasks for managing Docker Compose stacks
 
-.PHONY: help validate build test clean format lint security all up down logs ps generate-compose
+.PHONY: help validate build test clean format lint security all up down logs ps generate-compose buildx-bake buildx-all buildx-push buildx-clean
 
 # Default target - show help
 help:
 	@echo "Docker Compose - Available Commands:"
 	@echo ""
-	@echo "  make validate    - Validate all docker-compose.yml files"
-	@echo "  make build       - Build all Docker Compose stacks"
-	@echo "  make test        - Run validation and build steps"
-	@echo "  make clean       - Clean up Docker resources (images, containers, volumes)"
-	@echo "  make format      - Format Python code with black and ruff"
-	@echo "  make lint        - Lint Python code and Dockerfiles"
-	@echo "  make security    - Run security scans on Docker images"
-	@echo "  make all         - Run validate, build, and test"
+	@echo "  make validate          - Validate all docker-compose.yml files"
+	@echo "  make build             - Build all Docker Compose stacks"
+	@echo "  make test              - Run validation and build steps"
+	@echo "  make clean             - Clean up Docker resources (images, containers, volumes)"
+	@echo "  make format            - Format Python code with black and ruff"
+	@echo "  make lint              - Lint Python code and Dockerfiles"
+	@echo "  make security          - Run security scans on Docker images"
+	@echo "  make all               - Run validate, build, and test"
 	@echo ""
-	@echo "  make generate-compose - Generate docker-compose.yml files from config"
-	@echo "  make up          - Start basic-stack services"
-	@echo "  make down        - Stop basic-stack services"
-	@echo "  make logs        - Show basic-stack logs"
-	@echo "  make ps          - Show basic-stack service status"
+	@echo "  make buildx-bake       - Build devcontainer with Docker Bake (default)"
+	@echo "  make buildx-all        - Build all devcontainer targets with Bake"
+	@echo "  make buildx-push       - Push all images to registry with Bake"
+	@echo "  make buildx-clean      - Clean Buildx cache"
+	@echo ""
+	@echo "  make generate-compose   - Generate docker-compose.yml files from config"
+	@echo "  make up                - Start basic-stack services"
+	@echo "  make down              - Stop basic-stack services"
+	@echo "  make logs              - Show basic-stack logs"
+	@echo "  make ps                - Show basic-stack service status"
 	@echo ""
 
 # Generate docker-compose.yml files from config
@@ -94,3 +99,29 @@ logs:
 
 ps:
 	@docker compose -f compose/basic-stack/docker-compose.yml ps
+
+# Buildx and Bake targets
+buildx-bake:
+	@echo "🔨 Building devcontainer with Docker Bake..."
+	@powershell -ExecutionPolicy Bypass -File build.ps1 -Command bake -Target dev
+	@echo "✅ Bake build complete"
+
+buildx-all:
+	@echo "🔨 Building all devcontainer targets with Bake..."
+	@powershell -ExecutionPolicy Bypass -File build.ps1 -Command all
+	@echo "✅ All Bake builds complete"
+
+buildx-push:
+	@echo "📤 Pushing images to registry..."
+	@if [ -z "$(REGISTRY)" ]; then \
+		echo "❌ Error: REGISTRY environment variable is required"; \
+		echo "Usage: make buildx-push REGISTRY=ghcr.io/myorg/"; \
+		exit 1; \
+	fi
+	@powershell -ExecutionPolicy Bypass -File build.ps1 -Command all -Registry "$(REGISTRY)" -Tag "$(TAG)"
+	@echo "✅ Images pushed"
+
+buildx-clean:
+	@echo "🧹 Cleaning Buildx cache..."
+	@powershell -ExecutionPolicy Bypass -File build.ps1 -Command clean
+	@echo "✅ Buildx cache cleaned"
