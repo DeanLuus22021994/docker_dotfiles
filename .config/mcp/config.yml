@@ -15,7 +15,7 @@ services:
   python:
     image: "docker_examples_python:latest"
     build:
-      context: "../.docker-compose/mcp/python_utils"
+      context: "../.compose/mcp/python_utils"
       dockerfile: "python.Dockerfile"
     environment:
       - PYTHONPATH=/app
@@ -104,7 +104,7 @@ code_quality:
 # Validation Configuration
 validation:
   docker_compose:
-    validate_command: "python .docker-compose/validate_stacks.py"
+    validate_command: "python .compose/validate_stacks.py"
     check_syntax: true
     check_references: true
     check_secrets: true
@@ -165,15 +165,15 @@ development:
 
 # Deployment Configuration
 deployment:
-  compose_file: "../../compose/mcp/docker-compose.yml"
+  compose_file: "../../.compose/mcp/docker-compose.yml"
   service_name: "test"
   commands:
-    test: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm test"
-    test_coverage: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm test-coverage"
-    lint: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm lint"
-    format: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm format"
-    type_check: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm type-check"
-    security_scan: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm security"
+    test: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm test"
+    test_coverage: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm test-coverage"
+    lint: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm lint"
+    format: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm format"
+    type_check: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm type-check"
+    security_scan: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm security"
 
   resource_limits:
     python:

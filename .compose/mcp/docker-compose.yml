@@ -1,0 +1,48 @@
+---
+# Docker Compose - MCP (Model Context Protocol)
+# Generated: 2025-10-24
+# Description: Testing and validation utilities configuration
+
+services:
+  python:
+    image: "docker_examples_python:latest"
+    build:
+      context: "../.dockerfiles"
+      dockerfile: "python.Dockerfile"
+      args:
+        ENVIRONMENT: test
+        SERVICE_TYPE: mcp
+        WORKERS: 1
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=test
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - docker_examples_python_app:/app
+      - docker_examples_tests:/app/tests
+      - docker_examples_pytest_cache:/app/.pytest_cache
+      - docker_examples_coverage:/app/coverage
+    working_dir: /app
+    command: ["tail", "-f", "/dev/null"]  # Keep container running
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+volumes:
+  docker_examples_pytest_cache:
+    driver: local
+  docker_examples_coverage:
+    driver: local
+  docker_examples_python_app:
+    driver: local
+  docker_examples_tests:
+    driver: local
+
+networks:
+  default:
+    name: docker_examples_mcp_network
+    driver: bridge

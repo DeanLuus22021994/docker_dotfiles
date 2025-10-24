@@ -66,8 +66,8 @@
     "debug.useNodeFetcher": true
   },
 
-  // Python Settings - Simplified for Copilot compatibility
-  "python.defaultInterpreterPath": "python",  // Use system Python
+  // Python Settings - Updated for uv virtual environment
+  "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",  // Use uv virtual environment Python
   "python.terminal.activateEnvironment": true,
   "python.linting.enabled": true,
   "python.formatting.provider": "black",
@@ -75,5 +75,6 @@
   "python.analysis.typeCheckingMode": "basic",  // Reduced from strict to prevent hangs
   "python.envFile": "${workspaceFolder}/.env",
   "python.terminal.activateEnvInCurrentTerminal": true,
-  "python.interpreter.showDeprecatedWarning": false
+  "python.interpreter.showDeprecatedWarning": false,
+  "python-envs.pythonProjects": []
 }

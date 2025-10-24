@@ -1,22 +1,18 @@
 ---
-# Cluster Example Configuration
+# Docker Compose - Cluster Example
 # Generated: 2025-10-24
 # Description: Load-balanced multi-instance deployment configuration
 
-# Stack Metadata
-stack:
-  name: "cluster-example"
-  description: "Production-like environment with load balancing and multiple instances"
-  version: "3.0"
-  purpose: "Testing horizontal scaling, load balancing, production simulation"
-
-# Service Definitions
 services:
   python:
     image: "docker_examples_python:latest"
     build:
-      context: "../.compose/cluster-example/dockerfiles"
+      context: "../.dockerfiles"
       dockerfile: "python.Dockerfile"
+      args:
+        ENVIRONMENT: production
+        SERVICE_TYPE: app
+        WORKERS: 4
     ports:
       - "8001:8000"
       - "8002:8000"
@@ -50,8 +46,10 @@ services:
   node:
     image: "docker_examples_node:latest"
     build:
-      context: "../.compose/cluster-example/dockerfiles"
+      context: "../.dockerfiles"
       dockerfile: "node.Dockerfile"
+      args:
+        ENVIRONMENT: production
     ports:
       - "3000:3000"
     environment:
@@ -118,7 +116,6 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-# Volume Definitions
 volumes:
   docker_examples_db_data:
     driver: local
@@ -133,93 +130,11 @@ volumes:
   docker_examples_nginx_config:
     driver: local
 
-# Secrets Definitions
 secrets:
   db_password:
     file: ../../secrets/db_password.txt
 
-# Network Definitions
 networks:
   default:
     name: docker_examples_cluster_example_network
     driver: bridge
-
-# Load Balancer Configuration
-load_balancer:
-  nginx:
-    upstream_servers:
-      - python:8000
-      - python:8001
-      - python:8002
-    algorithm: "round_robin"
-    health_checks:
-      enabled: true
-      interval: 10s
-      timeout: 5s
-      unhealthy_threshold: 3
-      healthy_threshold: 2
-
-# Scaling Configuration
-scaling:
-  python:
-    min_replicas: 1
-    max_replicas: 5
-    target_cpu_utilization: 70
-  node:
-    replicas: 1
-  nginx:
-    replicas: 1
-
-# Monitoring Configuration
-monitoring:
-  metrics:
-    enabled: true
-    endpoints:
-      - "/metrics"
-      - "/health"
-    exporters:
-      - prometheus
-  logging:
-    driver: json-file
-    options:
-      max-size: "10m"
-      max-file: "3"
-
-# Environment Variables
-environment:
-  # Security Configuration
-  API_KEY: ${API_KEY:-}
-  RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-100}
-  RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,http://localhost:8080}
-  SECURITY_HEADERS_ENABLED: ${SECURITY_HEADERS_ENABLED:-true}
-  INPUT_VALIDATION_ENABLED: ${INPUT_VALIDATION_ENABLED:-true}
-
-  # Database Configuration
-  POSTGRES_DB: ${POSTGRES_DB:-mydb}
-  POSTGRES_USER: ${POSTGRES_USER:-user}
-
-  # Load Balancer
-  NGINX_WORKER_PROCESSES: ${NGINX_WORKER_PROCESSES:-auto}
-  NGINX_WORKER_CONNECTIONS: ${NGINX_WORKER_CONNECTIONS:-1024}
-
-# Deployment Configuration
-deployment:
-  compose_file: "../../.compose/cluster-example/docker-compose.yml"
-  scale_command: "docker compose -f ../../.compose/cluster-example/docker-compose.yml up -d --scale python=3"
-  resource_limits:
-    python:
-      cpus: "0.5"
-      memory: "512m"
-    node:
-      cpus: "0.5"
-      memory: "512m"
-    nginx:
-      cpus: "0.25"
-      memory: "128m"
-    db:
-      cpus: "0.5"
-      memory: "512m"
-    redis:
-      cpus: "0.25"
-      memory: "256m"

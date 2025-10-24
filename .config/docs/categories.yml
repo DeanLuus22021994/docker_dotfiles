@@ -20,9 +20,9 @@ categories:
     title: "Core Documentation"
     description: "Primary documentation for architecture, deployment, and troubleshooting"
     files:
-      - docs/architecture.md
-      - docs/deployment.md
-      - docs/troubleshooting.md
+      - .docs/architecture.md
+      - .docs/deployment.md
+      - .docs/troubleshooting.md
 
   # Security Documentation
   secrets:
@@ -37,43 +37,43 @@ categories:
     title: "Docker Compose Suite"
     description: "General Docker Compose documentation and guides"
     files:
-      - .docker-compose/README.md
-      - .docker-compose/CHANGELOG.md
-      - .docker-compose/DEVELOPMENT.md
-      - .docker-compose/TESTING.md
+      - .compose/README.md
+      - .compose/CHANGELOG.md
+      - .compose/DEVELOPMENT.md
+      - .compose/TESTING.md
 
   # Basic Stack Documentation
   basic_stack:
     title: "Basic Stack"
     description: "Development and testing environment documentation"
     files:
-      - .docker-compose/basic-stack/README.md
-      - .docker-compose/basic-stack/UAT_REPORT_2025-10-22.md
-      - .docker-compose/basic-stack/dockerfiles/README.md
+      - .compose/basic-stack/README.md
+      - .compose/basic-stack/UAT_REPORT_2025-10-22.md
+      - .compose/basic-stack/dockerfiles/README.md
 
   # Cluster Example Documentation
   cluster_example:
     title: "Cluster Example"
     description: "Load-balanced multi-instance deployment guides"
     files:
-      - .docker-compose/cluster-example/README.md
-      - .docker-compose/cluster-example/UAT_REPORT_2025-10-22.md
+      - .compose/cluster-example/README.md
+      - .compose/cluster-example/UAT_REPORT_2025-10-22.md
 
   # Swarm Stack Documentation
   swarm_stack:
     title: "Swarm Stack"
     description: "Docker Swarm orchestration documentation"
     files:
-      - .docker-compose/swarm-stack/README.md
-      - .docker-compose/swarm-stack/dockerfiles/README.md
+      - .compose/swarm-stack/README.md
+      - .compose/swarm-stack/dockerfiles/README.md
 
   # MCP Documentation
   mcp:
     title: "MCP Utilities"
     description: "Model Context Protocol testing and validation tools"
     files:
-      - .docker-compose/mcp/README.md
-      - .docker-compose/mcp/DEVELOPMENT.md
+      - .compose/mcp/README.md
+      - .compose/mcp/DEVELOPMENT.md
 
   # GitHub Configuration
   github:

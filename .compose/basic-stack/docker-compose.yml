@@ -1,22 +1,18 @@
 ---
-# Basic Stack Configuration
+# Docker Compose - Basic Stack
 # Generated: 2025-10-24
 # Description: Complete configuration for basic development stack
 
-# Stack Metadata
-stack:
-  name: "basic-stack"
-  description: "Development and testing environment with all core services"
-  version: "3.0"
-  purpose: "Local development, CI/CD pipelines, basic testing"
-
-# Service Definitions
 services:
   python:
     image: "docker_examples_python:latest"
     build:
-      context: "../.compose/basic-stack/dockerfiles"
+      context: "../.dockerfiles"
       dockerfile: "python.Dockerfile"
+      args:
+        ENVIRONMENT: development
+        SERVICE_TYPE: app
+        WORKERS: 1
     ports:
       - "8000:8000"
     environment:
@@ -38,8 +34,10 @@ services:
   node:
     image: "docker_examples_node:latest"
     build:
-      context: "../.compose/basic-stack/dockerfiles"
+      context: "../.dockerfiles"
       dockerfile: "node.Dockerfile"
+      args:
+        ENVIRONMENT: development
     ports:
       - "3000:3000"
     environment:
@@ -90,7 +88,6 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-# Volume Definitions
 volumes:
   docker_examples_db_data:
     driver: local
@@ -103,71 +100,11 @@ volumes:
   docker_examples_node_app:
     driver: local
 
-# Secrets Definitions
 secrets:
   db_password:
     file: ../../secrets/db_password.txt
 
-# Network Definitions
 networks:
   default:
     name: docker_examples_basic_stack_network
     driver: bridge
-
-# Environment Variables
-environment:
-  # Security Configuration
-  API_KEY: ${API_KEY:-}
-  RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-100}
-  RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
-  SECURITY_HEADERS_ENABLED: ${SECURITY_HEADERS_ENABLED:-true}
-  INPUT_VALIDATION_ENABLED: ${INPUT_VALIDATION_ENABLED:-true}
-
-  # Database Configuration
-  POSTGRES_DB: ${POSTGRES_DB:-mydb}
-  POSTGRES_USER: ${POSTGRES_USER:-user}
-
-  # External APIs
-  GITHUB_TOKEN: ${GITHUB_TOKEN:-}
-
-# Health Checks Configuration
-health_checks:
-  overall_timeout: 300s
-  service_startup_order: ["db", "redis", "python", "node"]
-  required_services: ["db", "redis", "python", "node"]
-
-# Development Configuration
-development:
-  hot_reload: true
-  debug_mode: true
-  log_level: DEBUG
-  auto_restart: true
-
-# Testing Configuration
-testing:
-  test_command: "docker compose -f .compose/mcp/python_utils/docker-compose.yml run --rm test"
-  coverage_command: "docker compose -f .compose/mcp/python_utils/docker-compose.yml run --rm test-coverage"
-  lint_command: "docker compose -f .compose/mcp/python_utils/docker-compose.yml run --rm lint"
-
-# Deployment Configuration
-deployment:
-  compose_file: "../../.compose/basic-stack/docker-compose.yml"
-  scale_defaults:
-    python: 1
-    node: 1
-    db: 1
-    redis: 1
-  resource_limits:
-    python:
-      cpus: "1.0"
-      memory: "1g"
-    node:
-      cpus: "0.5"
-      memory: "512m"
-    db:
-      cpus: "0.5"
-      memory: "512m"
-    redis:
-      cpus: "0.25"
-      memory: "256m"

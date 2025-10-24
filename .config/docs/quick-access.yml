@@ -11,9 +11,9 @@ quick_access:
     priority: "high"
     audience: "beginners"
     files:
-      - .docker-compose/README.md
-      - docs/deployment.md
-      - .docker-compose/basic-stack/README.md
+      - .compose/README.md
+      - .docs/deployment.md
+      - .compose/basic-stack/README.md
 
   # Troubleshooting (Problem Solving)
   troubleshooting:
@@ -22,8 +22,8 @@ quick_access:
     priority: "high"
     audience: "all_users"
     files:
-      - docs/troubleshooting.md
-      - .docker-compose/TESTING.md
+      - .docs/troubleshooting.md
+      - .compose/TESTING.md
 
   # Development (Active Contributors)
   development:
@@ -32,8 +32,8 @@ quick_access:
     priority: "medium"
     audience: "developers"
     files:
-      - .docker-compose/DEVELOPMENT.md
-      - .docker-compose/mcp/DEVELOPMENT.md
+      - .compose/DEVELOPMENT.md
+      - .compose/mcp/DEVELOPMENT.md
       - .github/TODO.md
 
   # Security (Administrators)
@@ -44,7 +44,7 @@ quick_access:
     audience: "administrators"
     files:
       - secrets/README.md
-      - docs/architecture.md
+      - .docs/architecture.md
 
 # Quick Access Workflows
 workflows:
@@ -52,34 +52,34 @@ workflows:
   first_time_setup:
     title: "First-Time Repository Setup"
     steps:
-      - "Read: .docker-compose/README.md"
-      - "Follow: docs/deployment.md"
-      - "Start with: .docker-compose/basic-stack/README.md"
+      - "Read: .compose/README.md"
+      - "Follow: .docs/deployment.md"
+      - "Start with: .compose/basic-stack/README.md"
 
   # Development Environment
   dev_environment:
     title: "Setting Up Development Environment"
     steps:
-      - "Read: .docker-compose/DEVELOPMENT.md"
+      - "Read: .compose/DEVELOPMENT.md"
       - "Configure: secrets/README.md"
-      - "Test: .docker-compose/TESTING.md"
+      - "Test: .compose/TESTING.md"
 
   # Production Deployment
   production_deployment:
     title: "Production Deployment Checklist"
     steps:
-      - "Review: docs/architecture.md"
+      - "Review: .docs/architecture.md"
       - "Configure: secrets/README.md"
-      - "Deploy: docs/deployment.md"
-      - "Monitor: docs/troubleshooting.md"
+      - "Deploy: .docs/deployment.md"
+      - "Monitor: .docs/troubleshooting.md"
 
   # Security Audit
   security_audit:
     title: "Security Implementation Review"
     steps:
-      - "Review: docs/architecture.md (Security section)"
+      - "Review: .docs/architecture.md (Security section)"
       - "Verify: secrets/README.md"
-      - "Test: docs/troubleshooting.md (Security issues)"
+      - "Test: .docs/troubleshooting.md (Security issues)"
 
 # Quick Access Metadata
 quick_access_metadata:
