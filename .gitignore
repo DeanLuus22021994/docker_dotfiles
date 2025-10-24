@@ -42,3 +42,7 @@ Thumbs.db
 dist/
 build/
 *.egg
+
+# Build cache (Docker Buildx, etc.)
+.cache/
+**/.cache/

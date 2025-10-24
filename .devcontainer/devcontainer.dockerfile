@@ -72,8 +72,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user with sudo access
-
-# Create non-root user with sudo access
 RUN groupadd -r vscode && useradd -m -s /bin/bash -g vscode vscode \
     && mkdir -p /etc/sudoers.d \
     && echo 'vscode ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/vscode \
@@ -98,6 +96,19 @@ COPY --chown=vscode:vscode pyproject.toml uv.lock* /home/vscode/
 USER vscode
 WORKDIR /home/vscode
 ENV PATH="/home/vscode/.local/bin:$PATH"
+
+# Pre-install Python dependencies with caching
+RUN --mount=type=cache,target=/home/vscode/.cache/uv,id=uv-cache \
+    --mount=type=cache,target=/home/vscode/.cache/pip,id=pip-cache \
+    uv sync --extra dev --frozen-lockfile || uv sync --extra dev || true
+
+# Switch to vscode user for dependency installation
+USER vscode
+WORKDIR /home/vscode
+ENV PATH="/home/vscode/.local/bin:$PATH"
+
+# Copy Python project files for dependency installation (moved later for better caching)
+COPY --chown=vscode:vscode pyproject.toml uv.lock* /home/vscode/
 
 # Pre-install Python dependencies with caching
 RUN --mount=type=cache,target=/home/vscode/.cache/uv,id=uv-cache \

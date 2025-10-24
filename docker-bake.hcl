@@ -20,7 +20,7 @@ variable "DOCKER_BUILDKIT" {
 
 # Global cache configuration
 variable "LOCAL_CACHE_DIR" {
-  default = "/tmp/.buildx-cache"
+  default = ".cache/buildx"
 }
 
 variable "REGISTRY_CACHE_PREFIX" {
@@ -44,7 +44,7 @@ target "base" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}devcontainer-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}devcontainer-${TAG},mode=max" : ""}"
   ]
   output = ["type=docker"]
@@ -66,7 +66,7 @@ target "devcontainer-dev" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}devcontainer-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}devcontainer-${TAG},mode=max" : ""}"
   ]
 }
@@ -85,7 +85,7 @@ target "devcontainer-prod" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}devcontainer-prod-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}devcontainer-prod-${TAG},mode=max" : ""}"
   ]
 }
@@ -128,7 +128,7 @@ target "python-dev" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-dev-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-dev-${TAG},mode=max" : ""}"
   ]
   target = "app"
@@ -149,7 +149,7 @@ target "python-prod" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-prod-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-prod-${TAG},mode=max" : ""}"
   ]
 }
@@ -169,7 +169,7 @@ target "python-test" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-test-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-test-${TAG},mode=max" : ""}"
   ]
 }
@@ -189,7 +189,7 @@ target "python-mcp" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-mcp-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}python-mcp-${TAG},mode=max" : ""}"
   ]
 }
@@ -211,7 +211,7 @@ target "node-dev" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}node-dev-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}node-dev-${TAG},mode=max" : ""}"
   ]
   target = "app"
@@ -230,7 +230,7 @@ target "node-prod" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}node-prod-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}node-prod-${TAG},mode=max" : ""}"
   ]
 }
@@ -249,7 +249,7 @@ target "runner" {
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}runner-${TAG}" : ""}"
   ]
   cache-to = [
-    "type=local,dest=${LOCAL_CACHE_DIR}-new,mode=max",
+    "type=local,dest=${LOCAL_CACHE_DIR},mode=max",
     "${ENABLE_REGISTRY_CACHE == "true" ? "type=registry,ref=${REGISTRY_CACHE_PREFIX}runner-${TAG},mode=max" : ""}"
   ]
 }

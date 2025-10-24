@@ -10,9 +10,12 @@ import logging
 import os
 import subprocess
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Union
+
+# Import configuration
+from agent.config import CopilotAgentConfig
 
 # Core dependencies only - no external AI services
 try:
@@ -44,35 +47,6 @@ except ImportError:
 # Configuration
 config = load_config()
 logger = setup_logging(__name__, level=config.get('logging', {}).get('level', 'INFO'))
-
-@dataclass
-class CopilotAgentConfig:
-    """GitHub Copilot native agent configuration"""
-    name: str = "docker-copilot-agent"
-    workspace_root: str = "/app"
-    github_repo: str = "docker_dotfiles"
-    github_owner: str = "DeanLuus22021994"
-    mcp_enabled: bool = True
-    vscode_extensions: Optional[List[str]] = None
-    tools_enabled: Optional[List[str]] = None
-
-    def __post_init__(self):
-        if self.vscode_extensions is None:
-            # Only use GitHub/Microsoft extensions with >10M downloads
-            # Avoid deprecated extensions like GitHub Copilot Workspace
-            self.vscode_extensions = [
-                "ms-python.python",      # 100M+ downloads
-                "ms-vscode.vscode-json", # 10M+ downloads
-                "github.copilot",        # 50M+ downloads
-                "github.copilot-chat"    # 20M+ downloads
-            ]
-        if self.tools_enabled is None:
-            self.tools_enabled = [
-                "github_cli",
-                "file_operations",
-                "docker_operations",
-                "config_management"
-            ]
 
 class GitHubCopilotAgent:
     """GitHub Copilot Native Agent - No external AI dependencies"""
