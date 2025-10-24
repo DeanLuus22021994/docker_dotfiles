@@ -52,9 +52,9 @@ def has_interpreters() -> bool:
     return PYTHON_314_FEATURES["interpreters"]
 
 
-# Expose main classes for convenience
-from .models import ComponentInfo, LinkResult
-from .services import DocUtils
+# Re-export main classes from docker_examples_utils for convenience
+from .docker_examples_utils.models import ComponentInfo, LinkResult
+from .docker_examples_utils.services import ComponentInventoryService, LinkCheckerService
 
 __all__ = [
     "get_python_features",
@@ -62,7 +62,8 @@ __all__ = [
     "has_interpreters",
     "ComponentInfo",
     "LinkResult",
-    "DocUtils",
+    "ComponentInventoryService",
+    "LinkCheckerService",
 ]
 """
 Python utilities for Docker Compose Utils project.

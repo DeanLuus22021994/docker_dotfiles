@@ -3,15 +3,29 @@
 CLI entry point for documentation utilities.
 
 Enhanced for Python 3.14 with improved CLI handling.
+Uses the existing docker_examples_utils services for consistency.
 """
 
 import argparse
 import asyncio
 import json
+import re
 import sys
+from pathlib import Path
 
-from .. import has_interpreters
-from ..services.doc_utils_service import DocUtils
+from ..docker_examples_utils.config.settings import (
+    HTTPConfig,
+    PathConfig,
+    has_interpreters,
+)
+from ..docker_examples_utils.models.models import (
+    ComponentInventoryConfig,
+    LinkCheckConfig,
+)
+from ..docker_examples_utils.services.component_inventory import (
+    ComponentInventoryService,
+)
+from ..docker_examples_utils.services.link_checker import LinkCheckerService
 
 
 def main() -> int:
@@ -53,7 +67,8 @@ Python 3.14 Features:
     args = parser.parse_args()
 
     use_interpreters = not args.no_interpreters and has_interpreters()
-    utils = DocUtils(args.docs_path, use_interpreters=use_interpreters)
+    path_config = PathConfig()
+    http_config = HTTPConfig()
 
     print(f"🐍 Python {sys.version}")
     executor_name = (
@@ -65,7 +80,13 @@ Python 3.14 Features:
 
     if args.command == "check-links":
         print("🔗 Checking documentation links...")
-        results = utils.check_links_concurrent(max_workers=args.workers)
+        config = LinkCheckConfig(
+            max_workers=args.workers,
+            timeout=10,
+            use_interpreters=use_interpreters,
+        )
+        service = LinkCheckerService(config, path_config, http_config)
+        results = service.check_links_concurrent()
 
         print(f"✅ Valid links: {len(results['valid'])}")
         print(f"❌ Broken links: {len(results['broken'])}")
@@ -81,16 +102,32 @@ Python 3.14 Features:
     elif args.command == "async-check":
         if sys.version_info >= (3, 14):
             print("🔗 Checking links asynchronously (Python 3.14 free-threaded)...")
-
-            md_files = utils.find_markdown_files()
-            all_links: set[str] = set()
-            for file_path in md_files:
-                links = utils.extract_links(file_path)
-                all_links.update(links)
-
-            results = asyncio.run(
-                utils.async_check_links(list(all_links), args.workers)
+            config = LinkCheckConfig(
+                max_workers=args.workers,
+                timeout=10,
+                use_interpreters=use_interpreters,
             )
+            service = LinkCheckerService(config, path_config, http_config)
+            
+            # Collect all links from documentation files
+            all_links: set[str] = set()
+            docs_path = Path(args.docs_path)
+            if docs_path.exists():
+                for md_file in docs_path.rglob("*.md"):
+                    try:
+                        content = md_file.read_text(encoding="utf-8")
+                        # Simple link extraction (could be improved)
+                        import re
+                        links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+                        for _, url in links:
+                            if not url.startswith(("http://", "https://", "#")):
+                                all_links.add(url)
+                            elif url.startswith(("http://", "https://")):
+                                all_links.add(url)
+                    except Exception:
+                        pass
+            
+            results = asyncio.run(service.async_check_links(list(all_links)))
 
             print(f"✅ Valid links: {len(results['valid'])}")
             print(f"❌ Broken links: {len(results['broken'])}")
@@ -100,12 +137,14 @@ Python 3.14 Features:
 
     elif args.command == "inventory":
         print("📦 Generating component inventory...")
-        inventory = utils.generate_component_inventory(args.src_path)
+        config = ComponentInventoryConfig(src_path=args.src_path)
+        service = ComponentInventoryService(config, path_config)
+        inventory = service.generate_inventory()
 
-        print(f"📄 Pages: {len(inventory['pages'])}")
-        print(f"🧩 Components: {len(inventory['components'])}")
-        print(f"🪝 Hooks: {len(inventory['hooks'])}")
-        print(f"🛠️  Utils: {len(inventory['utils'])}")
+        print(f"📄 Pages: {len(inventory.get('pages', []))}")
+        print(f"🧩 Components: {len(inventory.get('components', []))}")
+        print(f"🪝 Hooks: {len(inventory.get('hooks', []))}")
+        print(f"🛠️  Utils: {len(inventory.get('utils', []))}")
 
         output_file = args.output or "docs/testing/component-inventory.json"
         with open(output_file, "w", encoding="utf-8") as f:

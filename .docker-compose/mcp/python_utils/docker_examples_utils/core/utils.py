@@ -30,9 +30,9 @@ class DocUtils:
         use_interpreters: bool = True,
     ):
         """
-        """
-        Core module for Docker Compose Utils utilities.
-        """
+        Initialize DocUtils with configuration.
+
+        Args:
             docs_path: Path to documentation directory
             src_path: Path to source directory
             use_interpreters: Whether to use concurrent interpreters
