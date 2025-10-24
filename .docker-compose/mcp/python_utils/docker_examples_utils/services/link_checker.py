@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import urljoin
 
-from ..config.settings import has_interpreters, HTTPConfig, PathConfig
+from ..config.settings import HTTPConfig, PathConfig, has_interpreters
 from ..models.models import LinkCheckConfig, LinkResult
 
 if TYPE_CHECKING:
@@ -199,7 +199,10 @@ class LinkCheckerService:
             self.failure_count += 1
             if self.failure_count >= self.failure_threshold:
                 self.circuit_open = True
-                print(f"🚫 Circuit breaker opened after {self.failure_count} failures", file=sys.stderr)
+                print(
+                    f"🚫 Circuit breaker opened after {self.failure_count} failures",
+                    file=sys.stderr
+                )
             return LinkResult(
                 url=url,
                 is_valid=False,
@@ -244,7 +247,7 @@ class LinkCheckerService:
                 # Circuit breaker check
                 if self.circuit_open:
                     return url, False, "circuit breaker open"
-                
+
                 try:
                     if any(
                         skip_domain in url for skip_domain in self.config.skip_domains
@@ -280,7 +283,10 @@ class LinkCheckerService:
                     self.failure_count += 1
                     if self.failure_count >= self.failure_threshold:
                         self.circuit_open = True
-                        print(f"🚫 Circuit breaker opened after {self.failure_count} failures", file=sys.stderr)
+                        print(
+                            f"🚫 Circuit breaker opened after {self.failure_count} failures",
+                            file=sys.stderr
+                        )
                     return url, False, str(e)
 
         tasks = [check_single_url(url) for url in urls]

@@ -126,7 +126,10 @@ class TestLinkCheckerService:
     @patch('requests.Session')
     @patch('requests.adapters.HTTPAdapter')
     @patch('urllib3.util.retry.Retry')
-    def test_check_single_link_success(self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock, service: LinkCheckerService):
+    def test_check_single_link_success(
+        self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock,
+        service: LinkCheckerService
+    ):
         """Test successful single link checking."""
         # Setup mocks
         mock_session = Mock()
@@ -149,7 +152,10 @@ class TestLinkCheckerService:
     @patch('requests.Session')
     @patch('requests.adapters.HTTPAdapter')
     @patch('urllib3.util.retry.Retry')
-    def test_check_single_link_redirect(self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock, service: LinkCheckerService):
+    def test_check_single_link_redirect(
+        self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock,
+        service: LinkCheckerService
+    ):
         """Test link checking with redirect (405 -> GET)."""
         # Setup mocks
         mock_session = Mock()
@@ -203,7 +209,10 @@ class TestLinkCheckerService:
     @patch('requests.Session')
     @patch('requests.adapters.HTTPAdapter')
     @patch('urllib3.util.retry.Retry')
-    def test_check_single_link_exception_handling(self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock, service: LinkCheckerService):
+    def test_check_single_link_exception_handling(
+        self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock,
+        service: LinkCheckerService
+    ):
         """Test exception handling during link checking."""
         # Setup mock to raise exception
         mock_session = Mock()
@@ -222,7 +231,10 @@ class TestLinkCheckerService:
     @patch('requests.Session')
     @patch('requests.adapters.HTTPAdapter')
     @patch('urllib3.util.retry.Retry')
-    def test_check_single_link_circuit_breaker_activation(self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock, service: LinkCheckerService):
+    def test_check_single_link_circuit_breaker_activation(
+        self, mock_retry: Mock, mock_adapter: Mock, mock_session_class: Mock,
+        service: LinkCheckerService
+    ):
         """Test circuit breaker activation after multiple failures."""
         # Setup mock to always fail
         mock_session = Mock()
@@ -251,7 +263,10 @@ class TestLinkCheckerService:
 
     @patch('docker_examples_utils.services.link_checker.ThreadPoolExecutor')
     @patch('builtins.print')  # Suppress print output
-    def test_check_links_concurrent_with_links(self, mock_print: Mock, mock_executor_class: Mock, service: LinkCheckerService, tmp_path: Path):
+    def test_check_links_concurrent_with_links(
+        self, mock_print: Mock, mock_executor_class: Mock,
+        service: LinkCheckerService, tmp_path: Path
+    ):
         """Test concurrent link checking with actual links."""
         # Create test markdown file with links
         docs_dir = tmp_path / "docs"

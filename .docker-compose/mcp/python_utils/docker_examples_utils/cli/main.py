@@ -1,4 +1,3 @@
-documentation utilities and services.
 """
 Command-line interface for Docker Compose Utils utilities.
 
@@ -20,10 +19,10 @@ from ..services.link_checker import LinkCheckerService
 
 def main() -> int:
     """Enhanced CLI entry point with Python 3.14 features."""
-        parser = argparse.ArgumentParser(
-                description="Docker Compose Documentation Utilities (Python 3.14 Enhanced)",
-                formatter_class=argparse.RawDescriptionHelpFormatter,
-                epilog="""
+    parser = argparse.ArgumentParser(
+        description="Docker Compose Documentation Utilities (Python 3.14 Enhanced)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
 Examples:
     docker-compose-utils check-links
     docker-compose-utils inventory --src-path src

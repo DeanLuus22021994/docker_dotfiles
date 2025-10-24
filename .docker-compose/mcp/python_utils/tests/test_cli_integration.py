@@ -164,7 +164,7 @@ class TestCLIArgumentParsing:
 
                 # Check that output file was created with correct content
                 assert output_file.exists()
-                with open(output_file, 'r', encoding='utf-8') as f:
+                with open(output_file, encoding='utf-8') as f:
                     saved_results = json.load(f)
                 assert saved_results == test_results
 

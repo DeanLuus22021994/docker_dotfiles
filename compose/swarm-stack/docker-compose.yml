@@ -1,16 +1,8 @@
 ---
-# Swarm Stack Configuration
+# Docker Compose - Swarm Stack
 # Generated: 2025-10-24
 # Description: Docker Swarm orchestration configuration
 
-# Stack Metadata
-stack:
-  name: "swarm-stack"
-  description: "Production deployment with Docker Swarm orchestration"
-  version: "3.0"
-  purpose: "Production deployments, service discovery, rolling updates"
-
-# Service Definitions
 services:
   python:
     image: "docker_examples_python:latest"
@@ -173,7 +165,6 @@ services:
         max_attempts: 3
         window: 120s
 
-# Volume Definitions
 volumes:
   docker_examples_db_data:
     driver: local
@@ -186,103 +177,11 @@ volumes:
   docker_examples_node_app:
     driver: local
 
-# Secrets Definitions
 secrets:
   db_password:
     file: ../../secrets/db_password.txt
 
-# Network Definitions
 networks:
   default:
     driver: overlay
     name: docker_examples_swarm_stack_overlay
-
-# Swarm Configuration
-swarm:
-  requirements:
-    managers: 1
-    workers: 2
-  constraints:
-    manager_nodes: "node.role == manager"
-    worker_nodes: "node.role == worker"
-  labels:
-    environment: production
-    stack: docker_examples
-
-# Orchestration Configuration
-orchestration:
-  update_strategy: rolling
-  rollback_on_failure: true
-  health_check_grace_period: 60s
-  service_discovery: true
-  load_balancing: dnsrr
-
-# Monitoring Configuration
-monitoring:
-  swarm_monitoring:
-    enabled: true
-    metrics:
-      - container_cpu_usage
-      - container_memory_usage
-      - service_replicas
-      - network_traffic
-    alerts:
-      - service_down
-      - high_cpu_usage
-      - high_memory_usage
-      - replica_failure
-
-# Logging Configuration
-logging:
-  driver: json-file
-  options:
-    max-size: "10m"
-    max-file: "3"
-  centralized: false
-
-# Environment Variables
-environment:
-  # Security Configuration
-  API_KEY: ${API_KEY:-}
-  RATE_LIMIT_REQUESTS: ${RATE_LIMIT_REQUESTS:-100}
-  RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60}
-  CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
-  SECURITY_HEADERS_ENABLED: ${SECURITY_HEADERS_ENABLED:-true}
-  INPUT_VALIDATION_ENABLED: ${INPUT_VALIDATION_ENABLED:-true}
-
-  # Database Configuration
-  POSTGRES_DB: ${POSTGRES_DB:-mydb}
-  POSTGRES_USER: ${POSTGRES_USER:-user}
-
-  # Swarm Configuration
-  DOCKER_SWARM_MANAGER: ${DOCKER_SWARM_MANAGER:-true}
-  SERVICE_DISCOVERY: ${SERVICE_DISCOVERY:-true}
-
-# Deployment Configuration
-deployment:
-  stack_name: "docker_examples"
-  compose_file: "../../compose/swarm-stack/docker-compose.yml"
-  deploy_command: "docker stack deploy -c ../../compose/swarm-stack/docker-compose.yml docker_examples"
-  scale_commands:
-    python: "docker service scale docker_examples_python=5"
-    node: "docker service scale docker_examples_node=3"
-  remove_command: "docker stack rm docker_examples"
-
-# Maintenance Configuration
-maintenance:
-  rolling_updates:
-    enabled: true
-    parallelism: 1
-    delay: 10s
-    monitor: 60s
-  backups:
-    database:
-      schedule: "0 2 * * *"
-      retention: 7
-    volumes:
-      schedule: "0 3 * * *"
-      retention: 30
-  cleanup:
-    dangling_images: true
-    unused_volumes: true
-    schedule: "0 4 * * *"

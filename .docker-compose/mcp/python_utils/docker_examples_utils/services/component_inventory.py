@@ -149,10 +149,14 @@ class ComponentInventoryService:
     def _extract_imports(self, content: str) -> list[str]:
         imports: list[str] = []
 
-        es6_imports = re.findall(r'import .* from ["\']([^"\']+)["\']', content)
+        es6_imports = re.findall(
+            r'import .* from ["\']([^"\']+)["\']', content
+        )
         imports.extend(es6_imports)
 
-        cjs_imports = re.findall(r'require\(["\']([^"\']+)["\']', content)
+        cjs_imports = re.findall(
+            r'require\(["\']([^"\']+)["\']', content
+        )
         imports.extend(cjs_imports)
 
         return list(set(imports))

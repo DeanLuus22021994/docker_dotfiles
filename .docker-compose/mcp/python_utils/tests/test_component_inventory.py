@@ -122,7 +122,9 @@ export const API_BASE_URL = 'https://api.example.com';
         assert service.config == config
         assert service.path_config == path_config
 
-    def test_generate_inventory_comprehensive(self, service: ComponentInventoryService, sample_files: dict[str, Path]):
+    def test_generate_inventory_comprehensive(
+        self, service: ComponentInventoryService, sample_files: dict[str, Path]
+    ):
         """Test comprehensive inventory generation."""
         inventory = service.generate_inventory()
 
@@ -167,7 +169,9 @@ export const API_BASE_URL = 'https://api.example.com';
         assert "formatDate" in helpers_util["exports"]
         assert "API_BASE_URL" in helpers_util["exports"]
 
-    def test_generate_inventory_empty_directory(self, service: ComponentInventoryService, tmp_path: Path):
+    def test_generate_inventory_empty_directory(
+        self, service: ComponentInventoryService, tmp_path: Path
+    ):
         """Test inventory generation with empty directory."""
         empty_dir = tmp_path / "empty_src"
         empty_dir.mkdir()
@@ -186,7 +190,9 @@ export const API_BASE_URL = 'https://api.example.com';
         finally:
             service.path_config.src_path = original_src
 
-    def test_generate_inventory_file_processing_error(self, service: ComponentInventoryService, sample_files: dict[str, Path]):
+    def test_generate_inventory_file_processing_error(
+        self, service: ComponentInventoryService, sample_files: dict[str, Path]
+    ):
         """Test inventory generation handles file processing errors gracefully."""
         # Mock the internal _analyze_component_file method to raise an exception
         with patch.object(service, '_analyze_component_file', side_effect=Exception("Processing error")):
@@ -203,7 +209,9 @@ export const API_BASE_URL = 'https://api.example.com';
         # Should have exactly the categories from config
         assert set(inventory.keys()) == set(service.config.categories)
 
-    def test_component_analysis_includes_imports(self, service: ComponentInventoryService, sample_files: dict[str, Path]):
+    def test_component_analysis_includes_imports(
+        self, service: ComponentInventoryService, sample_files: dict[str, Path]
+    ):
         """Test that component analysis includes import information."""
         inventory = service.generate_inventory()
 
@@ -220,7 +228,9 @@ export const API_BASE_URL = 'https://api.example.com';
         assert "../Button" in home_page["imports"]
         assert "react" in home_page["imports"]
 
-    def test_component_analysis_includes_file_info(self, service: ComponentInventoryService, sample_files: dict[str, Path]):
+    def test_component_analysis_includes_file_info(
+        self, service: ComponentInventoryService, sample_files: dict[str, Path]
+    ):
         """Test that component analysis includes file path and size information."""
         inventory = service.generate_inventory()
 
@@ -233,7 +243,9 @@ export const API_BASE_URL = 'https://api.example.com';
                 assert component["size_bytes"] > 0
                 assert "relative_path" in component
 
-    def test_component_analysis_handles_different_export_patterns(self, service: ComponentInventoryService, tmp_path: Path):
+    def test_component_analysis_handles_different_export_patterns(
+        self, service: ComponentInventoryService, tmp_path: Path
+    ):
         """Test component analysis with different export patterns."""
         src_dir = tmp_path / "src"
         src_dir.mkdir()
@@ -290,7 +302,9 @@ export { OtherComponent } from './Other';
         assert "Helper" in mixed_comp["exports"]
         assert "react" in mixed_comp["imports"]
 
-    def test_component_analysis_error_handling(self, service: ComponentInventoryService, tmp_path: Path):
+    def test_component_analysis_error_handling(
+        self, service: ComponentInventoryService, tmp_path: Path
+    ):
         """Test error handling during component analysis."""
         src_dir = tmp_path / "src"
         src_dir.mkdir()

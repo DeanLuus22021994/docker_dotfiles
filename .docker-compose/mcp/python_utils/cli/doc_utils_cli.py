@@ -2,7 +2,7 @@
 """
 CLI entry point for documentation utilities.
 
-Enhanced for Python 3.14 with improved CLI handling.
+Compatible with Python 3.8+ with enhanced features for Python 3.14+.
 Uses the existing docker_examples_utils services for consistency.
 
 This module provides a command-line interface for various documentation
@@ -75,10 +75,13 @@ Python 3.14 Features:
             choices=["check-links", "inventory", "async-check"],
             help="Command to run",
         )
-        parser.add_argument("--docs-path", default="docs", help="Path to docs directory")
-        parser.add_argument("--src-path", default="src", help="Path to source directory")
+        parser.add_argument("--docs-path", default="docs",
+                            help="Path to docs directory")
+        parser.add_argument("--src-path", default="src",
+                            help="Path to source directory")
         parser.add_argument(
-            "--workers", type=int, default=10, help="Number of worker threads/interpreters"
+            "--workers", type=int, default=10,
+            help="Number of worker threads/interpreters"
         )
         parser.add_argument(
             "--no-interpreters",
@@ -131,7 +134,7 @@ Python 3.14 Features:
                     use_interpreters=use_interpreters,
                 )
                 service = LinkCheckerService(config, path_config, http_config)
-                
+
                 # Collect all links from documentation files
                 all_links: set[str] = set()
                 docs_path = Path(args.docs_path)
@@ -148,7 +151,7 @@ Python 3.14 Features:
                                     all_links.add(url)
                         except Exception:
                             pass
-                
+
                 results = asyncio.run(service.async_check_links(list(all_links)))
 
                 print(f"✅ Valid links: {len(results['valid'])}")
@@ -180,7 +183,7 @@ Python 3.14 Features:
                     with open(default_output, "w", encoding="utf-8") as f:
                         json.dump(inventory, f, indent=2, ensure_ascii=False)
                     print(f"📝 Inventory saved to {default_output}")
-                except (OSError, IOError):
+                except OSError:
                     # If we can't write to the default location, just continue without saving
                     pass
 

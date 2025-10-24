@@ -3,15 +3,16 @@
 # Generated: 2025-10-24
 # Description: Testing and validation utilities configuration
 
+# Stack Metadata
 stack:
   name: "mcp"
   description: "Model Context Protocol utilities for testing and validation"
   version: "3.0"
   purpose: "Automated testing, code quality validation, development tooling"
 
+# Service Definitions
 services:
   python:
-    name: "python"
     image: "docker_examples_python:latest"
     build:
       context: "../.docker-compose/mcp/python_utils"
@@ -21,10 +22,10 @@ services:
       - ENVIRONMENT=test
       - PYTHONDONTWRITEBYTECODE=1
     volumes:
-      - ./docker_examples_utils:/app/docker_examples_utils:ro
-      - ./tests:/app/tests:ro
-      - ./pytest_cache:/app/.pytest_cache
-      - ./coverage:/app/coverage
+      - docker_examples_python_app:/app
+      - docker_examples_tests:/app/tests
+      - docker_examples_pytest_cache:/app/.pytest_cache
+      - docker_examples_coverage:/app/coverage
     working_dir: /app
     command: ["tail", "-f", "/dev/null"]  # Keep container running
     healthcheck:
@@ -35,17 +36,24 @@ services:
       start_period: 40s
     restart: unless-stopped
 
+# Volume Definitions
 volumes:
-  pytest_cache:
+  docker_examples_pytest_cache:
     driver: local
-  coverage:
+  docker_examples_coverage:
+    driver: local
+  docker_examples_python_app:
+    driver: local
+  docker_examples_tests:
     driver: local
 
+# Network Definitions
 networks:
   default:
-    name: docker_examples_mcp-network
+    name: docker_examples_mcp_network
     driver: bridge
 
+# Testing Configuration
 testing:
   framework: pytest
   configuration:
@@ -68,6 +76,7 @@ testing:
     test_results: "test-results/"
     lint_reports: "lint-reports/"
 
+# Code Quality Configuration
 code_quality:
   linting:
     tools:
@@ -92,6 +101,7 @@ code_quality:
     disallow_untyped_defs: true
     disallow_incomplete_defs: true
 
+# Validation Configuration
 validation:
   docker_compose:
     validate_command: "python .docker-compose/validate_stacks.py"
@@ -109,6 +119,7 @@ validation:
     memory_profiling: true
     cpu_profiling: true
 
+# CI/CD Configuration
 ci_cd:
   github_actions:
     workflows:
@@ -131,6 +142,7 @@ ci_cd:
       - pytest
     configuration: ".pre-commit-config.yaml"
 
+# Development Configuration
 development:
   tools:
     - pytest
@@ -151,22 +163,24 @@ development:
     verbose_logging: true
     test_debugging: true
 
+# Deployment Configuration
 deployment:
-  compose_file: ".docker-compose/mcp/python_utils/docker-compose.yml"
+  compose_file: "../../compose/mcp/docker-compose.yml"
   service_name: "test"
   commands:
-    test: "docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm test"
-    test_coverage: "docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm test-coverage"
-    lint: "docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm lint"
-    format: "docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm format"
-    type_check: "docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm type-check"
-    security_scan: "docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm security"
+    test: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm test"
+    test_coverage: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm test-coverage"
+    lint: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm lint"
+    format: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm format"
+    type_check: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm type-check"
+    security_scan: "docker compose -f ../../compose/mcp/docker-compose.yml run --rm security"
 
   resource_limits:
     python:
       cpus: "1.0"
       memory: "1g"
 
+# Integration Configuration
 integration:
   external_services:
     github_api: true

@@ -11,7 +11,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 # pytest is used by the test framework but not directly imported
-from docker_examples_utils.config.config import LogLevel, LoggingConfig
+from docker_examples_utils.config.config import LoggingConfig, LogLevel
 from docker_examples_utils.config.settings import HTTPConfig, PathConfig
 
 

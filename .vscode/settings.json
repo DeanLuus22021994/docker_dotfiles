@@ -66,34 +66,14 @@
     "debug.useNodeFetcher": true
   },
 
-  // Python Settings - Portable configuration
-  "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",  // Use regular Python 3.14 (not free-threaded)
+  // Python Settings - Simplified for Copilot compatibility
+  "python.defaultInterpreterPath": "python",  // Use system Python
   "python.terminal.activateEnvironment": true,
   "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
   "python.formatting.provider": "black",
-  "python.formatting.blackArgs": ["--line-length", "88"],
-  "python.linting.mypyEnabled": true,
   "python.linting.ruffEnabled": true,
-  "python.analysis.typeCheckingMode": "strict",
-  // Portable environment file handling
+  "python.analysis.typeCheckingMode": "basic",  // Reduced from strict to prevent hangs
   "python.envFile": "${workspaceFolder}/.env",
-  "python.experiments.optInto": ["pythonTerminalEnvVarActivation"],
-  "python.interpreter.infoVisibility": "never",
-  // Allow interpreter discovery but exclude problematic installations
-  "python.interpreter.locator": "auto",
-  "python.pythonPath.exclude": {
-    "**/uv/python/**": true,
-    "**/cpython-3.14.0rc3*/**": true,
-    "**/.python/**": false  // Allow workspace .python
-  },
-  // Enable environment activation
   "python.terminal.activateEnvInCurrentTerminal": true,
-  "python.terminal.shellIntegration.enabled": true,
-  "python.interpreter.showDeprecatedWarning": false,
-  // Add workspace and Python site-packages to Python path for better import resolution
-  "python.analysis.extraPaths": [
-    "${workspaceFolder}",
-    "C:\\Users\\deanl.MSI\\AppData\\Local\\Programs\\Python\\Python314\\Lib\\site-packages"
-  ]
+  "python.interpreter.showDeprecatedWarning": false
 }

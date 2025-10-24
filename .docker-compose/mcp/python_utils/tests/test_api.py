@@ -87,7 +87,10 @@ class TestAPIEndpoints:
         assert "features" in data
 
     @patch('docker_examples_utils.api.ComponentInventoryService')
-    def test_inventory_endpoint_success(self, mock_service_class: Mock, client: TestClient, mock_inventory_service: Mock):
+    def test_inventory_endpoint_success(
+        self, mock_service_class: Mock, client: TestClient,
+        mock_inventory_service: Mock
+    ):
         """Test inventory endpoint with successful component analysis."""
         mock_service_class.return_value = mock_inventory_service
 
@@ -113,7 +116,10 @@ class TestAPIEndpoints:
         assert "size_bytes" in component
 
     @patch('docker_examples_utils.api.ComponentInventoryService')
-    def test_inventory_endpoint_with_src_path(self, mock_service_class: Mock, client: TestClient, mock_inventory_service: Mock):
+    def test_inventory_endpoint_with_src_path(
+        self, mock_service_class: Mock, client: TestClient,
+        mock_inventory_service: Mock
+    ):
         """Test inventory endpoint with custom src_path parameter."""
         mock_service_class.return_value = mock_inventory_service
 
@@ -126,7 +132,9 @@ class TestAPIEndpoints:
         assert call_args[1]["config"].src_path == "custom/src"
 
     @patch('docker_examples_utils.api.ComponentInventoryService')
-    def test_inventory_endpoint_service_error(self, mock_service_class: Mock, client: TestClient):
+    def test_inventory_endpoint_service_error(
+        self, mock_service_class: Mock, client: TestClient
+    ):
         """Test inventory endpoint handles service errors gracefully."""
         # Mock service to raise an exception
         mock_service = Mock()
@@ -140,7 +148,10 @@ class TestAPIEndpoints:
         assert "detail" in data
 
     @patch('docker_examples_utils.api.LinkCheckerService')
-    def test_links_check_endpoint_success(self, mock_service_class: Mock, client: TestClient, mock_link_checker_service: Mock):
+    def test_links_check_endpoint_success(
+        self, mock_service_class: Mock, client: TestClient,
+        mock_link_checker_service: Mock
+    ):
         """Test links check endpoint with successful validation."""
         mock_service_class.return_value = mock_link_checker_service
 
@@ -157,7 +168,10 @@ class TestAPIEndpoints:
         assert data["skipped"] == ["http://localhost:3000"]
 
     @patch('docker_examples_utils.api.LinkCheckerService')
-    def test_links_check_endpoint_with_parameters(self, mock_service_class: Mock, client: TestClient, mock_link_checker_service: Mock):
+    def test_links_check_endpoint_with_parameters(
+        self, mock_service_class: Mock, client: TestClient,
+        mock_link_checker_service: Mock
+    ):
         """Test links check endpoint with custom parameters."""
         mock_service_class.return_value = mock_link_checker_service
 
@@ -172,7 +186,9 @@ class TestAPIEndpoints:
         assert config.timeout == 30
 
     @patch('docker_examples_utils.api.LinkCheckerService')
-    def test_links_check_endpoint_service_error(self, mock_service_class: Mock, client: TestClient):
+    def test_links_check_endpoint_service_error(
+        self, mock_service_class: Mock, client: TestClient
+    ):
         """Test links check endpoint handles service errors gracefully."""
         mock_service = Mock()
         mock_service.check_links_concurrent.side_effect = Exception("Link checking failed")
@@ -203,7 +219,9 @@ class TestAPIEndpoints:
         assert response.headers["X-Correlation-ID"] == test_correlation_id
 
     @patch('docker_examples_utils.api.logging')
-    def test_error_handling_middleware(self, mock_logging: Mock, client: TestClient):
+    def test_error_handling_middleware(
+        self, mock_logging: Mock, client: TestClient
+    ):
         """Test error handling middleware catches and logs exceptions."""
         # Force an error by patching a service to raise an exception
         with patch('docker_examples_utils.api.ComponentInventoryService') as mock_service_class:
@@ -234,7 +252,9 @@ class TestAPIEndpoints:
         assert "detail" in data
 
     @patch('docker_examples_utils.api.ComponentInventoryService')
-    def test_inventory_endpoint_empty_results(self, mock_service_class: Mock, client: TestClient):
+    def test_inventory_endpoint_empty_results(
+        self, mock_service_class: Mock, client: TestClient
+    ):
         """Test inventory endpoint with empty results."""
         mock_service = Mock()
         mock_service.generate_inventory.return_value = {
@@ -257,7 +277,9 @@ class TestAPIEndpoints:
         assert data["utils"] == []
 
     @patch('docker_examples_utils.api.LinkCheckerService')
-    def test_links_check_endpoint_empty_docs(self, mock_service_class: Mock, client: TestClient):
+    def test_links_check_endpoint_empty_docs(
+        self, mock_service_class: Mock, client: TestClient
+    ):
         """Test links check endpoint when no markdown files exist."""
         mock_service = Mock()
         mock_service.check_links_concurrent.return_value = {

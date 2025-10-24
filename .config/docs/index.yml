@@ -19,10 +19,22 @@ structure:
 
 # Stack Configurations
 stacks:
-  basic_stack: "basic-stack/config.yml"
-  cluster_example: "cluster-example/config.yml"
-  swarm_stack: "swarm-stack/config.yml"
-  mcp_utils: "mcp/config.yml"
+  basic_stack:
+    config: "basic-stack/config.yml"
+    compose: "../../compose/basic-stack/docker-compose.yml"
+    description: "Development and testing environment"
+  cluster_example:
+    config: "cluster-example/config.yml"
+    compose: "../../compose/cluster-example/docker-compose.yml"
+    description: "Load-balanced multi-instance deployment"
+  swarm_stack:
+    config: "swarm-stack/config.yml"
+    compose: "../../compose/swarm-stack/docker-compose.yml"
+    description: "Docker Swarm orchestration"
+  mcp:
+    config: "mcp/config.yml"
+    compose: "../../compose/mcp/docker-compose.yml"
+    description: "Testing and validation utilities"
 
 # Repository Information
 repository:

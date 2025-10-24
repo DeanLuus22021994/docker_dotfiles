@@ -6,7 +6,7 @@ the docker-compose-utils package.
 """
 
 from dataclasses import asdict, dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 

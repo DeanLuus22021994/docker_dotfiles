@@ -11,14 +11,10 @@ This module provides comprehensive security middleware including:
 
 import time
 from collections import defaultdict
-from typing import Any, Awaitable, Callable, Dict, List
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from fastapi import Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from starlette.middleware.base import BaseHTTPMiddleware
-
-from ..config.config import get_security_config
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -31,7 +27,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     def __init__(self, app: Any):
         super().__init__(app)
-        self.requests: Dict[str, List[float]] = defaultdict(list)
+        self.requests: dict[str, list[float]] = defaultdict(list)
         self.config = get_security_config()
 
     async def dispatch(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
@@ -141,11 +137,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-        response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), microphone=(), camera=()"
+        )
 
         # HSTS (HTTP Strict Transport Security)
         if request.url.scheme == "https":
-            response.headers["Strict-Transport-Security"] = f"max-age={self.config.hsts_max_age}; includeSubDomains"
+            response.headers["Strict-Transport-Security"] = (
+                f"max-age={self.config.hsts_max_age}; includeSubDomains"
+            )
 
         # Content Security Policy
         if self.config.content_security_policy:

@@ -384,7 +384,9 @@ class ApplicationConfig(BaseSettings):
     python_dont_write_bytecode: bool = Field(
         default=True, description="Don't write .pyc files"
     )
-    python_malloc: str = Field(default="malloc", description="Python memory allocator")
+    python_malloc: str = Field(
+        default="malloc", description="Python memory allocator"
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -513,6 +515,11 @@ def get_redis_config() -> RedisConfig | None:
 def get_security_config() -> SecurityConfig:
     """Get security configuration."""
     return get_config().security
+
+
+def get_http_config() -> HTTPConfig:
+    """Get HTTP configuration."""
+    return get_config().http
 
 
 def get_path_config() -> PathConfig:

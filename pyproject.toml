@@ -1,18 +1,20 @@
 [tool.docker-compose]
-validate = "python .config/validate_stacks.py"
-build = "python .config/validate_stacks.py --build"
-test = "python .config/validate_stacks.py --build --test"
-clean = "python .config/validate_stacks.py --cleanup && docker system prune -f"
-up = "docker-compose -f .config/basic-stack/docker-compose.yml up -d"
-down = "docker-compose -f .config/basic-stack/docker-compose.yml down"
-logs = "docker-compose -f .config/basic-stack/docker-compose.yml logs -f"
-ps = "docker-compose -f .config/basic-stack/docker-compose.yml ps"
+validate = "python .docker-compose/validate_stacks.py"
+build = "python .docker-compose/validate_stacks.py --build"
+test = "python .docker-compose/validate_stacks.py --build --test"
+clean = "python .docker-compose/validate_stacks.py --cleanup && docker system prune -f"
+up = "docker compose -f compose/basic-stack/docker-compose.yml up -d"
+down = "docker compose -f compose/basic-stack/docker-compose.yml down"
+logs = "docker compose -f compose/basic-stack/docker-compose.yml logs -f"
+ps = "docker compose -f compose/basic-stack/docker-compose.yml ps"
+generate_compose = "python .docker-compose/validate_stacks.py --generate-compose"
 
 [tool.docker-compose.help]
-description = "Docker Compose Management - Available commands: validate, build, test, clean, up, down, logs, ps"
+description = "Docker Compose Management - Available commands: validate, build, test, clean, up, down, logs, ps, generate_compose"
 
 [tool.docker-compose.config]
 config_folder = ".config"
+compose_folder = "compose"
 
 # Minimal TOML referencing .config for all paths and scripts
 # Makefile removed; all commands are now managed via pyproject.toml

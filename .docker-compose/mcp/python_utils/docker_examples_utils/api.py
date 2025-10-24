@@ -32,7 +32,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Request, Response, Depends
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.responses import JSONResponse
 
 from .config.config import LogLevel
@@ -236,7 +236,7 @@ async def get_inventory(
 
 @app.get("/links/check")
 async def check_links(
-    request: Request, link_request: LinkCheckRequest = Depends()
+    request: Request, link_request: LinkCheckRequest = Depends()  # noqa: B008
 ) -> JSONResponse:
     """
     Validate links in documentation files.
@@ -260,7 +260,11 @@ async def check_links(
     )
     correlation_logger.info(
         "Link checking requested",
-        extra={"endpoint": "/links/check", "workers": link_request.workers, "timeout": link_request.timeout},
+        extra={
+            "endpoint": "/links/check",
+            "workers": link_request.workers,
+            "timeout": link_request.timeout
+        },
     )
 
     try:
@@ -292,7 +296,11 @@ async def check_links(
     except Exception as e:
         correlation_logger.error(
             "Link checking failed",
-            extra={"error": str(e), "workers": link_request.workers, "timeout": link_request.timeout},
+            extra={
+                "error": str(e),
+                "workers": link_request.workers,
+                "timeout": link_request.timeout
+            },
         )
         raise HTTPException(
             status_code=500, detail=f"Error checking links: {str(e)}"

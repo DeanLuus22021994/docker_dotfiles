@@ -39,7 +39,9 @@ class TestFileOperationsService:
             "dst_dir": dst_dir,
         }
 
-    def test_copy_file_python_314(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_copy_file_python_314(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file copying with Python 3.14+ copy method."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -51,7 +53,9 @@ class TestFileOperationsService:
         assert result is True
         mock_copy.assert_called_once_with(dst_file, follow_symlinks=True)
 
-    def test_copy_file_fallback(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_copy_file_fallback(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file copying with shutil fallback."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -64,7 +68,9 @@ class TestFileOperationsService:
         assert result is True
         mock_copy2.assert_called_once_with(src_file, dst_file, follow_symlinks=True)
 
-    def test_copy_file_error(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_copy_file_error(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file copying error handling."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -74,7 +80,9 @@ class TestFileOperationsService:
 
         assert result is False
 
-    def test_copy_file_with_path_objects(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_copy_file_with_path_objects(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file copying with Path objects."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -85,7 +93,9 @@ class TestFileOperationsService:
         assert result is True
         mock_copy.assert_called_once_with(dst_file, follow_symlinks=False)
 
-    def test_move_file_python_314(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_move_file_python_314(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file moving with Python 3.14+ move method."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -96,7 +106,9 @@ class TestFileOperationsService:
         assert result is True
         mock_move.assert_called_once_with(dst_file)
 
-    def test_move_file_fallback(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_move_file_fallback(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file moving with shutil fallback."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -108,7 +120,9 @@ class TestFileOperationsService:
         assert result is True
         mock_move.assert_called_once_with(src_file, dst_file)
 
-    def test_move_file_error(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_move_file_error(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file moving error handling."""
         src_file = temp_files["src_file"]
         dst_file = temp_files["dst_file"]
@@ -118,7 +132,9 @@ class TestFileOperationsService:
 
         assert result is False
 
-    def test_create_directory_success(self, service: FileOperationsService, tmp_path: Path):
+    def test_create_directory_success(
+        self, service: FileOperationsService, tmp_path: Path
+    ):
         """Test successful directory creation."""
         new_dir = tmp_path / "new_directory"
 
@@ -128,7 +144,9 @@ class TestFileOperationsService:
         assert new_dir.exists()
         assert new_dir.is_dir()
 
-    def test_create_directory_with_parents(self, service: FileOperationsService, tmp_path: Path):
+    def test_create_directory_with_parents(
+        self, service: FileOperationsService, tmp_path: Path
+    ):
         """Test directory creation with parent directories."""
         nested_dir = tmp_path / "parent" / "child" / "grandchild"
 
@@ -138,7 +156,9 @@ class TestFileOperationsService:
         assert nested_dir.exists()
         assert nested_dir.is_dir()
 
-    def test_create_directory_exists_error(self, service: FileOperationsService, tmp_path: Path):
+    def test_create_directory_exists_error(
+        self, service: FileOperationsService, tmp_path: Path
+    ):
         """Test directory creation when directory exists and exist_ok=False."""
         existing_dir = tmp_path / "existing"
         existing_dir.mkdir()
@@ -147,7 +167,9 @@ class TestFileOperationsService:
 
         assert result is False
 
-    def test_create_directory_permission_error(self, service: FileOperationsService, tmp_path: Path):
+    def test_create_directory_permission_error(
+        self, service: FileOperationsService, tmp_path: Path
+    ):
         """Test directory creation permission error."""
         protected_dir = tmp_path / "protected" / "nested"
 
@@ -156,7 +178,9 @@ class TestFileOperationsService:
 
         assert result is False
 
-    def test_remove_file_python_314(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_remove_file_python_314(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file removal with Python 3.14+ unlink method."""
         src_file = temp_files["src_file"]
 
@@ -166,7 +190,9 @@ class TestFileOperationsService:
         assert result is True
         mock_unlink.assert_called_once_with(missing_ok=True)
 
-    def test_remove_file_fallback(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_remove_file_fallback(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file removal with fallback for older Python."""
         src_file = temp_files["src_file"]
 
@@ -178,7 +204,9 @@ class TestFileOperationsService:
         assert result is True
         mock_unlink.assert_called_once()
 
-    def test_remove_file_missing_ok_false(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_remove_file_missing_ok_false(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file removal when file doesn't exist and missing_ok=False."""
         missing_file = temp_files["dst_file"]  # Doesn't exist
 
@@ -187,7 +215,9 @@ class TestFileOperationsService:
 
         assert result is False
 
-    def test_remove_file_error(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_remove_file_error(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file removal error handling."""
         src_file = temp_files["src_file"]
 
@@ -196,7 +226,9 @@ class TestFileOperationsService:
 
         assert result is False
 
-    def test_get_file_info_existing_file(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_get_file_info_existing_file(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test getting file information for existing file."""
         src_file = temp_files["src_file"]
 
@@ -214,7 +246,9 @@ class TestFileOperationsService:
         assert "modified" in info
         assert "created" in info
 
-    def test_get_file_info_directory(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_get_file_info_directory(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test getting file information for directory."""
         src_dir = temp_files["src_dir"]
 
@@ -227,7 +261,9 @@ class TestFileOperationsService:
         assert info["is_dir"] is True
         assert info["is_symlink"] is False
 
-    def test_get_file_info_nonexistent(self, service: FileOperationsService, tmp_path: Path):
+    def test_get_file_info_nonexistent(
+        self, service: FileOperationsService, tmp_path: Path
+    ):
         """Test getting file information for nonexistent file."""
         nonexistent = tmp_path / "nonexistent.txt"
 
@@ -237,7 +273,9 @@ class TestFileOperationsService:
         assert info["exists"] is False
         assert "error" in info
 
-    def test_get_file_info_error(self, service: FileOperationsService, temp_files: dict[str, Path]):
+    def test_get_file_info_error(
+        self, service: FileOperationsService, temp_files: dict[str, Path]
+    ):
         """Test file info error handling."""
         src_file = temp_files["src_file"]
 
@@ -249,7 +287,9 @@ class TestFileOperationsService:
         assert "error" in info
         assert "Access denied" in info["error"]
 
-    def test_get_file_info_symlink(self, service: FileOperationsService, temp_files: dict[str, Path], tmp_path: Path):
+    def test_get_file_info_symlink(
+        self, service: FileOperationsService, temp_files: dict[str, Path], tmp_path: Path
+    ):
         """Test getting file information for symlink."""
         src_file = temp_files["src_file"]
         link_file = tmp_path / "link.txt"
