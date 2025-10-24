@@ -1,4 +1,4 @@
-name: Performance Test
+name: Agent Performance Test
 
 on:
   workflow_dispatch:

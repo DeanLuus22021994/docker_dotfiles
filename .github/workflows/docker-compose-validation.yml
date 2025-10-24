@@ -1,4 +1,4 @@
-name: Validate Docker Compose Stacks
+name: Docker Compose Validation
 
 on:
   push:
