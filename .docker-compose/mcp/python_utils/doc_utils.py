@@ -19,22 +19,25 @@ from urllib.parse import urljoin
 if sys.version_info >= (3, 14):
     try:
         from concurrent.futures import ProcessPoolExecutor as InterpreterPoolExecutor
-
         has_interpreters = True
     except ImportError:
+        InterpreterPoolExecutor = None
         has_interpreters = False
 else:
+    InterpreterPoolExecutor = None
     has_interpreters = False
 
 try:
     import requests
-    from requests.adapters import HTTPAdapter
-    from urllib3.util.retry import Retry
 except ImportError:
-    requests = None  # type: ignore[assignment]
+    requests = None
+
+if TYPE_CHECKING:
+    from requests import Session
 
 if TYPE_CHECKING or requests:
-    from requests import Session
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
 
 
 @dataclass
@@ -137,7 +140,7 @@ class DocUtils:
         from concurrent.futures import ProcessPoolExecutor
 
         executor_class: type[ThreadPoolExecutor] | type[ProcessPoolExecutor]
-        if self.use_interpreters and has_interpreters:
+        if self.use_interpreters and has_interpreters and InterpreterPoolExecutor is not None:
             print("🚀 Using InterpreterPoolExecutor for true parallelism")
             executor_class = InterpreterPoolExecutor
         else:

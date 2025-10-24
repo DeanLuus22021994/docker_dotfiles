@@ -39,7 +39,7 @@ app = FastAPI(
 )
 
 status_lock = threading.Lock()
-init_status = {
+init_status: dict[str, Any] = {
     "status": "initializing",
     "timestamp": datetime.datetime.now().isoformat(),
     "services": {},
