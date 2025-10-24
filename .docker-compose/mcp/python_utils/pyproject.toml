@@ -46,6 +46,7 @@ dev = [
   "ruff>=0.1.0",
   "pytest>=7.4.0",
   "pytest-cov>=4.1.0",
+  "pytest-xdist>=3.0.0",
   "black>=23.11.0",
   "isort>=5.12.0",
   "pre-commit>=3.5.0",
@@ -148,7 +149,7 @@ known-first-party = ["docker_compose_utils"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra -q --strict-markers --strict-config --cov=docker_compose_utils --cov-report=term-missing --cov-report=html --cov-report=xml"
+addopts = "-ra -q --strict-markers --strict-config --cov=docker_compose_utils --cov-report=term-missing --cov-report=html --cov-report=xml -n auto"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]

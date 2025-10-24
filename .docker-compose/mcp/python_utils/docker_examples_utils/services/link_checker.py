@@ -49,6 +49,10 @@ class LinkCheckerService:
         self.http_config = http_config
         self._session: Session | None = None
         self._requests_available: bool = False
+        # Circuit breaker for external requests
+        self.failure_count = 0
+        self.failure_threshold = 5
+        self.circuit_open = False
 
     def find_markdown_files(self) -> list[Path]:
         """Find all markdown files in the docs directory."""
@@ -124,6 +128,15 @@ class LinkCheckerService:
     def _check_single_link(self, url: str) -> LinkResult:
         start_time = time.time()
 
+        # Circuit breaker check
+        if self.circuit_open:
+            return LinkResult(
+                url=url,
+                is_valid=False,
+                error_message="circuit breaker open",
+                response_time=time.time() - start_time,
+            )
+
         try:
             if any(skip_domain in url for skip_domain in self.config.skip_domains):
                 return LinkResult(
@@ -183,6 +196,10 @@ class LinkCheckerService:
             )
 
         except Exception as e:
+            self.failure_count += 1
+            if self.failure_count >= self.failure_threshold:
+                self.circuit_open = True
+                print(f"🚫 Circuit breaker opened after {self.failure_count} failures", file=sys.stderr)
             return LinkResult(
                 url=url,
                 is_valid=False,
@@ -224,6 +241,10 @@ class LinkCheckerService:
 
         async def check_single_url(url: str) -> tuple[str, bool, str]:
             async with semaphore:
+                # Circuit breaker check
+                if self.circuit_open:
+                    return url, False, "circuit breaker open"
+                
                 try:
                     if any(
                         skip_domain in url for skip_domain in self.config.skip_domains
@@ -256,6 +277,10 @@ class LinkCheckerService:
                     )
 
                 except Exception as e:
+                    self.failure_count += 1
+                    if self.failure_count >= self.failure_threshold:
+                        self.circuit_open = True
+                        print(f"🚫 Circuit breaker opened after {self.failure_count} failures", file=sys.stderr)
                     return url, False, str(e)
 
         tasks = [check_single_url(url) for url in urls]
