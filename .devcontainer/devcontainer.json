@@ -1,6 +1,7 @@
 {
   "build": {
-    "dockerfile": "devcontainer.dockerfile"
+    "dockerfile": "devcontainer.dockerfile",
+    "context": ".."
   },
   "mounts": [
     {
@@ -101,12 +102,7 @@
     "gpu": "optional"
   },
   "containerUser": "vscode",
-  "postCreateCommand": [
-    "python -m compileall /workspaces/docker",
-    "mypy --cache-dir /home/vscode/.mypy_cache --no-error-summary /workspaces/docker || true",
-    "ruff check --cache-dir /home/vscode/.cache/ruff /workspaces/docker || true",
-    "black --check /workspaces/docker || true"
-  ],
+  "postCreateCommand": "bash -c 'python -m compileall /workspaces/docker && mypy --cache-dir /home/vscode/.mypy_cache --no-error-summary /workspaces/docker || true && ruff check --cache-dir /home/vscode/.cache/ruff /workspaces/docker || true && black --check /workspaces/docker || true'",
   "postStartCommand": "sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
   "postAttachCommand": "",
   "features": {
