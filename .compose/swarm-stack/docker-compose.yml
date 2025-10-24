@@ -102,8 +102,61 @@ services:
         max_failure_ratio: 0.3
         order: start-first
 
-  db:
-    image: "postgres:15"
+  nginx:
+    image: "docker_nginx:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/nginx.Dockerfile"
+      args:
+        ENVIRONMENT: production
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - docker_nginx_logs:/var/log/nginx
+      - docker_nginx_cache:/var/cache/nginx
+    depends_on:
+      - python
+      - node
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256m"
+        reservations:
+          cpus: "0.25"
+          memory: "128m"
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3
+        order: start-first
+
+  postgresql:
+    image: "docker_postgresql:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/postgresql.Dockerfile"
+      args:
+        ENVIRONMENT: production
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: user
@@ -111,8 +164,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - docker_db_data:/var/lib/postgresql/data
-      - docker_db_logs:/var/log/postgresql
+      - docker_postgresql_data:/var/lib/postgresql/data
+      - docker_postgresql_logs:/var/log/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
       interval: 30s
@@ -138,8 +191,55 @@ services:
         max_attempts: 3
         window: 120s
 
+  mariadb:
+    image: "docker_mariadb:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/mariadb.Dockerfile"
+      args:
+        ENVIRONMENT: production
+    environment:
+      MARIADB_DATABASE: mydb
+      MARIADB_USER: user
+      MARIADB_PASSWORD: ${docker_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${docker_DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - docker_mariadb_data:/var/lib/mysql
+      - docker_mariadb_logs:/var/log/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-p${docker_DB_PASSWORD}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1g"
+        reservations:
+          cpus: "0.5"
+          memory: "512m"
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+
   redis:
-    image: "redis:7-alpine"
+    image: "docker_redis:latest"
+    build:
+      context: "../.."
+      dockerfile: ".dockerfiles/redis.Dockerfile"
+      args:
+        ENVIRONMENT: production
     ports:
       - "6379:6379"
     volumes:
@@ -170,11 +270,19 @@ services:
         window: 120s
 
 volumes:
-  docker_db_data:
+  docker_postgresql_data:
     driver: local
-  docker_db_logs:
+  docker_postgresql_logs:
+    driver: local
+  docker_mariadb_data:
+    driver: local
+  docker_mariadb_logs:
     driver: local
   docker_redis_data:
+    driver: local
+  docker_nginx_logs:
+    driver: local
+  docker_nginx_cache:
     driver: local
   docker_python_app:
     driver: local

@@ -344,7 +344,7 @@ group "mcp-stack" {
 }
 
 group "swarm-stack" {
-  targets = ["python-prod", "node-prod", "mariadb", "redis", "nginx"]
+  targets = ["python-prod", "node-prod", "postgresql", "mariadb", "redis", "nginx"]
 }
 
 group "database-stack" {

@@ -56,10 +56,14 @@ environment:
   INPUT_VALIDATION_ENABLED: "true"
 
   # Database Configuration
-  POSTGRES_DB: "mydb"
-  POSTGRES_USER: "user"
-  POSTGRES_HOST: "db"
+  POSTGRES_DB: "app"
+  POSTGRES_USER: "app"
+  POSTGRES_HOST: "postgres"
   POSTGRES_PORT: "5432"
+  MARIADB_DATABASE: "app"
+  MARIADB_USER: "app"
+  MARIADB_HOST: "mariadb"
+  MARIADB_PORT: "3306"
 
   # Redis Configuration
   REDIS_URL: "redis://redis:6379"
@@ -87,25 +91,38 @@ services:
     port: 8080
     upstream_port: 80
     config_volume: true
-  db:
+    health_endpoint: "/health"
+  mariadb:
+    port: 3306
+    database: "app"
+    type: "mariadb"
+  postgres:
     port: 5432
-    database: "mydb"
+    database: "app"
+    type: "postgresql"
   redis:
     port: 6379
 
 # Volume Configuration (Named volumes for persistence)
 volumes:
-  db_data: "docker_db_data"
-  db_logs: "docker_db_logs"
+  mariadb_data: "docker_mariadb_data"
+  mariadb_logs: "docker_mariadb_logs"
+  postgres_data: "docker_postgres_data"
+  postgres_logs: "docker_postgres_logs"
   redis_data: "docker_redis_data"
   python_app: "docker_python_app"
   node_app: "docker_node_app"
   nginx_config: "docker_nginx_config"
+  nginx_logs: "docker_nginx_logs"
   python_mcp: "docker_python_mcp"  # MCP utilities volume
 
 # Secrets Configuration (Environment Variable Driven)
 secrets:
-  db_password:
+  mariadb_password:
+    env_var: "docker_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "MariaDB database password loaded from environment variables"
+  postgres_password:
     env_var: "docker_DB_PASSWORD"
     source: "../../.secrets/secrets.env"
     description: "PostgreSQL database password loaded from environment variables"
@@ -141,6 +158,12 @@ scaling:
     replicas: 1
   nginx:
     replicas: 1
+  mariadb:
+    replicas: 1
+  postgres:
+    replicas: 1
+  redis:
+    replicas: 1
 
 # Monitoring Configuration (CI/CD Automation)
 monitoring:
@@ -166,7 +189,10 @@ resource_limits:
   nginx:
     cpus: "0.25"
     memory: "128m"
-  db:
+  mariadb:
+    cpus: "0.5"
+    memory: "512m"
+  postgres:
     cpus: "0.5"
     memory: "512m"
   redis:
@@ -177,4 +203,11 @@ resource_limits:
 deployment:
   compose_file: "../../.compose/cluster-example/docker-compose.yml"
   scale_command: "docker compose -f ../../.compose/cluster-example/docker-compose.yml up -d --scale python=3"
+  scale_defaults:
+    python: 3
+    node: 1
+    nginx: 1
+    mariadb: 1
+    postgres: 1
+    redis: 1
   restart_policy: "unless-stopped"

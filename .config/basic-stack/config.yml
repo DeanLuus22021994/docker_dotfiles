@@ -53,14 +53,22 @@ environment:
   INPUT_VALIDATION_ENABLED: "true"
 
   # Database Configuration
-  POSTGRES_DB: "mydb"
-  POSTGRES_USER: "user"
-  POSTGRES_HOST: "db"
+  POSTGRES_DB: "app"
+  POSTGRES_USER: "app"
+  POSTGRES_HOST: "postgres"
   POSTGRES_PORT: "5432"
+  MARIADB_DATABASE: "app"
+  MARIADB_USER: "app"
+  MARIADB_HOST: "mariadb"
+  MARIADB_PORT: "3306"
 
   # Redis Configuration
   REDIS_URL: "redis://redis:6379"
   REDIS_DB: "0"
+
+  # Nginx Configuration
+  NGINX_PORT: "80"
+  NGINX_SSL_PORT: "443"
 
   # External APIs
   GITHUB_TOKEN: "${GITHUB_TOKEN}"
@@ -74,9 +82,18 @@ services:
   node:
     port: 3000
     dev_server: true
+  nginx:
+    port: 80
+    health_endpoint: "/health"
+    static_files: "/usr/share/nginx/html"
   db:
+    port: 3306
+    database: "app"
+    type: "mariadb"
+  postgres:
     port: 5432
-    database: "mydb"
+    database: "app"
+    type: "postgresql"
   redis:
     port: 6379
 
@@ -84,14 +101,22 @@ services:
 volumes:
   db_data: "docker_db_data"
   db_logs: "docker_db_logs"
+  postgres_data: "docker_postgres_data"
+  postgres_logs: "docker_postgres_logs"
   redis_data: "docker_redis_data"
   python_app: "docker_python_app"
   node_app: "docker_node_app"
+  nginx_config: "docker_nginx_config"
+  nginx_logs: "docker_nginx_logs"
   python_mcp: "docker_python_mcp"  # MCP utilities volume
 
 # Secrets Configuration (Environment Variable Driven)
 secrets:
   db_password:
+    env_var: "docker_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "MariaDB database password loaded from environment variables"
+  postgres_password:
     env_var: "docker_DB_PASSWORD"
     source: "../../.secrets/secrets.env"
     description: "PostgreSQL database password loaded from environment variables"
@@ -104,8 +129,8 @@ network:
 # Health Checks Configuration
 health_checks:
   overall_timeout: "300s"
-  service_startup_order: ["db", "redis", "python", "node"]
-  required_services: ["db", "redis", "python", "node"]
+  service_startup_order: ["mariadb", "postgres", "redis", "python", "node", "nginx"]
+  required_services: ["mariadb", "postgres", "redis", "python", "node", "nginx"]
 
 # Resource Limits (Config-Driven)
 resource_limits:
@@ -115,7 +140,13 @@ resource_limits:
   node:
     cpus: "0.5"
     memory: "512m"
-  db:
+  nginx:
+    cpus: "0.25"
+    memory: "128m"
+  mariadb:
+    cpus: "0.5"
+    memory: "512m"
+  postgres:
     cpus: "0.5"
     memory: "512m"
   redis:
@@ -145,6 +176,8 @@ deployment:
   scale_defaults:
     python: 1
     node: 1
-    db: 1
+    nginx: 1
+    mariadb: 1
+    postgres: 1
     redis: 1
   restart_policy: "unless-stopped"
