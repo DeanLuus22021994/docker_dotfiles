@@ -7,8 +7,8 @@ services:
   python:
     image: "docker_python:latest"
     build:
-      context: "../.dockerfiles"
-      dockerfile: "python.Dockerfile"
+      context: "../.."
+      dockerfile: ".dockerfiles/python.Dockerfile"
       args:
         ENVIRONMENT: development
         SERVICE_TYPE: app
@@ -34,8 +34,8 @@ services:
   node:
     image: "docker_node:latest"
     build:
-      context: "../.dockerfiles"
-      dockerfile: "node.Dockerfile"
+      context: "../.."
+      dockerfile: ".dockerfiles/node.Dockerfile"
       args:
         ENVIRONMENT: development
     ports:

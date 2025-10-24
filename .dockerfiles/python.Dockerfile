@@ -1,12 +1,13 @@
-# Consolidated Python Dockerfile
-# Generated: 2025-10-24
-# Description: Multi-purpose Python FastAPI application with configurable environments
+# Optimized Python Dockerfile with Buildx/Bake caching
+# Generated: 2025-10-25
+# Description: Multi-stage Python FastAPI application with advanced caching
 # Build args:
 #   - ENVIRONMENT: development|production|test (default: development)
 #   - SERVICE_TYPE: app|mcp (default: app)
 #   - WORKERS: number of uvicorn workers (default: 1 for dev, 4 for prod)
 
-FROM python:3.14-slim
+# Base stage with system dependencies
+FROM python:3.14-slim AS base
 
 # Build arguments
 ARG ENVIRONMENT=development
@@ -33,7 +34,10 @@ RUN pip install uv
 # Set work directory
 WORKDIR /app
 
-# Copy Python dependencies
+# Dependencies stage for caching
+FROM base AS deps
+
+# Copy Python dependency files
 COPY pyproject.toml uv.lock ./
 
 # Install Python dependencies based on environment
@@ -43,12 +47,19 @@ RUN if [ "$ENVIRONMENT" = "test" ] || [ "$SERVICE_TYPE" = "mcp" ]; then \
         uv sync --frozen --no-install-project --no-dev; \
     fi
 
+# Application stage
+FROM base AS app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app /app
+
 # Copy application code
 COPY . .
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \
     && chown -R app:app /app
+
 USER app
 
 # Health check

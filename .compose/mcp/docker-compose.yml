@@ -7,8 +7,8 @@ services:
   python:
     image: "docker_python:latest"
     build:
-      context: "../.dockerfiles"
-      dockerfile: "python.Dockerfile"
+      context: "../.."
+      dockerfile: ".dockerfiles/python.Dockerfile"
       args:
         ENVIRONMENT: test
         SERVICE_TYPE: mcp

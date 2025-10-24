@@ -1,10 +1,11 @@
-# Consolidated Node.js Dockerfile
-# Generated: 2025-10-24
-# Description: Multi-purpose Node.js application with configurable environments
+# Optimized Node.js Dockerfile with Buildx/Bake caching
+# Generated: 2025-10-25
+# Description: Multi-stage Node.js application with advanced caching
 # Build args:
 #   - ENVIRONMENT: development|production (default: development)
 
-FROM node:22-alpine
+# Base stage with system dependencies
+FROM node:22-alpine AS base
 
 # Build arguments
 ARG ENVIRONMENT=development
@@ -15,15 +16,27 @@ ENV NODE_ENV=${ENVIRONMENT}
 # Set work directory
 WORKDIR /app
 
-# Copy package files
+# Dependencies stage for caching
+FROM base AS deps
+
+# Copy package files for dependency installation
 COPY package*.json ./
 
 # Install dependencies based on environment
 RUN if [ "$ENVIRONMENT" = "development" ]; then \
-        npm install; \
+        npm ci; \
     else \
         npm ci --only=production && npm cache clean --force; \
     fi
+
+# Application stage
+FROM base AS app
+
+# Copy dependencies from deps stage
+COPY --from=deps /app .
+
+# Copy package files
+COPY package*.json ./
 
 # Copy application code
 COPY . .
