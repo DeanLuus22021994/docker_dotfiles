@@ -245,7 +245,7 @@ class TestLinkCheckerService:
 
         results = service.check_links_concurrent()
 
-        expected = {"valid": [], "broken": [], "skipped": []}
+        expected: dict[str, list[str]] = {"valid": [], "broken": [], "skipped": []}
         assert results == expected
         mock_executor_class.assert_not_called()
 
