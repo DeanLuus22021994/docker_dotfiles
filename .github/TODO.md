@@ -42,9 +42,9 @@ Updated: October 23, 2025
   - [x] Observability stack also uses standardized health checks
 
 - [x] **Create environment-specific configuration files** ✅ COMPLETED
-  - [x] Created `.env.development` with dev-specific values
-  - [x] Created `.env.production` with production placeholder values
-  - [x] Created `.env.docker` with docker-specific values
+  - [x] Created `.env/.env.development` with dev-specific values
+  - [x] Created `.env/.env.production` with production placeholder values
+  - [x] Created `.env/.env.docker` with docker-specific values
   - [x] `.dockerignore` already has proper .env exclusions
   - [x] Documentation provided in deployment.md
 
@@ -73,13 +73,13 @@ Updated: October 23, 2025
   - [ ] Files to update: basic-stack, cluster-example, swarm-stack, mcp/python_utils, github-actions-runner
 
 - [ ] **Create environment-specific configuration files**
-  - [ ] Copy `.env.example` to `.env.development` and populate with dev-specific values
-  - [ ] Copy `.env.example` to `.env.production` and populate with production-specific values
-  - [ ] Copy `.env.example` to `.env.docker` and populate with docker-specific values
+  - [ ] Copy `.env/.env.example` to `.env/.env.development` and populate with dev-specific values
+  - [ ] Copy `.env/.env.example` to `.env/.env.production` and populate with production-specific values
+  - [ ] Copy `.env/.env.example` to `.env/.env.docker` and populate with docker-specific values
   - [ ] Open `.dockerignore` and add these lines:
     ```
-    .env*
-    !.env.example
+    .env/*
+    !.env/.env.example
     ```
   - [ ] Document which file to use for each environment in README.md
 

@@ -20,8 +20,8 @@ tags: [docker, compose, deployment, environments, production]
 ```bash
 git clone https://github.com/DeanLuus22021994/docker_dotfiles.git
 cd docker_dotfiles
-echo "your_secure_password" > secrets/db_password.txt
-cp .env.development .env
+echo "your_secure_password" > .secrets/secrets.env
+cp .env/.env.development .env
 ./setup-python-mcp.sh
 ```
 

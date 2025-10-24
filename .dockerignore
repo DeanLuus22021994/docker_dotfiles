@@ -40,12 +40,11 @@ htmlcov/
 volumes/
 
 # Exclude environment files (keep only example)
-.env*
-!.env.example
+.env/*
+!.env/.env.example
 
 # Exclude secrets directory
-secrets/
-!secrets/.secrets.example
+.secrets/
 
 # Keep only necessary files for Python builds
 !python_utils/

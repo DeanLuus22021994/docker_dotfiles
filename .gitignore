@@ -28,8 +28,11 @@ Thumbs.db
 *.log
 
 # Environment files (local overrides)
-.env.local
-.env.*.local
+.env/.env.local
+.env/.env.*.local
+
+# Secrets (environment variable driven)
+.secrets/secrets.env
 
 # IDE
 .vscode/settings.json.backup

@@ -65,7 +65,7 @@ tags: [docker, compose, mcp, python, volumes, persistence, ai, development, conf
 
 ### Configuration Management
 - **Environment Variables**: Centralized config with environment overrides
-- **Secrets Management**: Docker secrets integration with GitHub secrets
+- **Secrets Management**: Environment variable driven secrets with GitHub Actions integration
 - **Resource Limits**: Config-driven CPU/memory allocation and scaling
 - **Health Checks**: Automated service monitoring and alerting
 

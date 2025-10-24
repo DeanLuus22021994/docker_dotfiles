@@ -89,11 +89,12 @@ volumes:
   node_app: "docker_examples_node_app"
   python_mcp: "docker_examples_python_mcp"  # MCP utilities volume
 
-# Secrets Configuration
+# Secrets Configuration (Environment Variable Driven)
 secrets:
   db_password:
-    source: "../../secrets/db_password.txt"
-    target: "/run/secrets/db_password"
+    env_var: "DOCKER_EXAMPLES_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "PostgreSQL database password loaded from environment variables"
 
 # Network Configuration
 network:

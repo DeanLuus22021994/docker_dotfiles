@@ -107,14 +107,12 @@ services:
     environment:
       POSTGRES_DB: mydb
       POSTGRES_USER: user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_PASSWORD: ${DOCKER_EXAMPLES_DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - docker_examples_db_data:/var/lib/postgresql/data
       - docker_examples_db_logs:/var/log/postgresql
-    secrets:
-      - db_password
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
       interval: 30s
@@ -182,10 +180,6 @@ volumes:
     driver: local
   docker_examples_node_app:
     driver: local
-
-secrets:
-  db_password:
-    file: ../../secrets/db_password.txt
 
 networks:
   default:

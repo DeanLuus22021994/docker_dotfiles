@@ -47,7 +47,7 @@
   "github.copilot.chat.terminalChatLocation": "chatView",
   "github.copilot.chat.useProjectTemplates": true,
   "github.copilot.chat.useResponsesApi": true,
-  "github.copilot.chat.virtualTools.threshold": 128,  // ✅ Reduced from 64 to 48 for faster tool selection
+  "github.copilot.chat.virtualTools.threshold": 128,  // ✅ Optimized for Copilot+ subscription - maximum tool selection
   
   // GitHub Copilot Editor Settings
   "github.copilot.editor.enableCodeActions": true,
@@ -66,6 +66,32 @@
     "debug.useNodeFetcher": true
   },
 
+  // AI Agent Development Optimizations
+  "github.copilot.chat.agent.maxTokens": 8192,  // Increased for complex agent tasks
+  "github.copilot.chat.agent.streaming": true,  // Enable streaming for better responsiveness
+  "github.copilot.chat.agent.contextWindow": 128000,  // Large context for agent development
+  
+  // AI Toolkit Integration
+  "aiToolkit.modelContextProtocol.enabled": true,
+  "aiToolkit.agentDevelopment.enabled": true,
+  "aiToolkit.agentDevelopment.autoSave": true,
+  "aiToolkit.agentDevelopment.trace.enabled": true,
+  "aiToolkit.agentDevelopment.trace.level": "verbose",
+  
+  // Enhanced Debugging for Agents
+  "debug.javascript.usePreview": true,
+  "debug.node.autoAttach": "on",
+  "debug.terminal.clearBeforeReusing": true,
+  
+  // Agent Development - Advanced Settings
+  "github.copilot.chat.agent.codeActions.enabled": true,
+  "github.copilot.chat.agent.codeActions.onSave": true,
+  "github.copilot.chat.agent.codeActions.onType": true,
+  "github.copilot.chat.agent.intelliSense.enabled": true,
+  "github.copilot.chat.agent.intelliSense.completion": true,
+  "github.copilot.chat.agent.intelliSense.hover": true,
+  "github.copilot.chat.agent.intelliSense.signatureHelp": true,
+
   // Python Settings - Updated for uv virtual environment
   "python.defaultInterpreterPath": "./.venv/Scripts/python.exe",  // Use uv virtual environment Python
   "python.terminal.activateEnvironment": true,
@@ -76,5 +102,37 @@
   "python.envFile": "${workspaceFolder}/.env",
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.interpreter.showDeprecatedWarning": false,
-  "python-envs.pythonProjects": []
+  "python-envs.pythonProjects": [],
+  
+  // Agent Development - Python Specific
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": ["--verbose", "--tb=short"],
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.packageIndexDepths": [
+    { "name": "agent_framework", "depth": 3 },
+    { "name": "openai", "depth": 3 },
+    { "name": "anthropic", "depth": 3 },
+    { "name": "langchain", "depth": 3 }
+  ],
+  
+  // File Associations for Agent Development
+  "files.associations": {
+    "*.mcp": "json",
+    "*.agent": "python",
+    "*.tool": "python"
+  },
+  
+  // Search and Navigation for Agent Code
+  "search.exclude": {
+    "**/.venv/**": true,
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/__pycache__/**": true
+  },
+  
+  // Workspace Trust for Agent Development
+  "security.workspace.trust.enabled": true,
+  "security.workspace.trust.banner": "never",
+  "security.workspace.trust.startupPrompt": "never"
 }
