@@ -1,96 +1,313 @@
 ---
-started: 2025-10-22
-completed: 2025-10-22
+started: 2025-01-15
+completed: 2025-01-15
 author: AI Assistant
-version: 1.0
+version: 3.0
 status: active
-description: Basic Docker Compose stack with Node.js, Python, and PostgreSQL
-tags: [docker, compose, basic-stack, nodejs, python314, postgres]
+description: Enterprise-grade basic Docker Compose stack with security enhancements, Redis caching, and comprehensive testing
+tags: [docker, compose, basic-stack, nodejs, python314, postgres, redis, security, enterprise]
 ---
 
-# [`BASIC-STACK-001`](#basic-stack-001) Basic Stack
+# Basic Stack - Enterprise Edition
 
-## [`UAT-2025-10-22T16:45:00Z`](#uat-2025-10-22t16-45-00z) User Acceptance Testing - 2025-10-22T16:45:00Z ✅ PASSED
+## Overview
 
-### Test Results Summary
+The basic stack provides a complete development environment with enterprise-grade security features, Redis caching, and comprehensive testing capabilities. This is the recommended starting point for development and testing.
 
-- **Configuration**: ✅ PASSED - Docker Compose validated
-- **Services**: ✅ PASSED - Node.js, Python, PostgreSQL healthy
-- **Health Checks**: ✅ PASSED - All services responding
-- **API Endpoints**: ✅ PASSED - FastAPI operational
-- **Database**: ✅ PASSED - PostgreSQL connections successful
-
-### Service Status
-
-| Service | Status | Health | Ports |
-|---------|--------|--------|-------|
-| **node** | ✅ Running | Healthy | 3000 |
-| **python** | ✅ Running | Healthy | 8000 |
-| **db** | ✅ Running | Healthy | 5432 |
-
-### Architecture
+## Architecture
 
 ```
-Node.js (React) ←→ Python (FastAPI) ←→ PostgreSQL
-     ↓                        ↓            ↓
-   Port 3000              Port 8000     Port 5432
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Node.js       │    │   Python        │    │  PostgreSQL     │    │     Redis       │
+│   (Frontend)    │◄──►│   (FastAPI)     │◄──►│   (Database)    │    │   (Cache)      │
+│   Port: 3000    │    │   Port: 8000    │    │   Port: 5432    │    │   Port: 6379   │
+│                 │    │                 │    │                 │    │                 │
+│ • React/Vite    │    │ • REST API      │    │ • Persistent     │    │ • Session store │
+│ • Hot reload    │    │ • Security MW   │    │ • Health checks │    │ • Rate limiting │
+│ • Development   │    │ • Input validation│    │ • Named volumes │    │ • Health checks │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-<a id="fr-basic-stack-001-functional-requirements"></a>
+## Services
 
-## [`FR-BASIC-STACK-001`](#fr-basic-stack-001-functional-requirements) Functional Requirements
+### Node.js Service
+- **Technology**: Node.js 22 with Vite
+- **Port**: 3000
+- **Features**: Modern React development with hot reload
+- **Health Check**: HTTP endpoint availability
 
-- Node.js development server with hot reload
-- Python FastAPI with health endpoints
-- PostgreSQL database with persistent storage
-- Health checks for all services
+### Python Service (FastAPI)
+- **Technology**: Python 3.14+ with FastAPI and Uvicorn
+- **Port**: 8000
+- **Security Features**:
+  - API key authentication
+  - Rate limiting with Redis
+  - CORS protection
+  - Security headers
+  - Input validation with Pydantic
+- **Endpoints**:
+  - `GET /health` - Health check
+  - `GET /api/status` - API status
+  - `POST /api/inventory` - Inventory management
+  - `GET /api/link-check` - Link validation
 
-### [`FR-BASIC-STACK-001`] Validation Criteria
+### PostgreSQL Database
+- **Technology**: PostgreSQL 15+
+- **Port**: 5432
+- **Features**:
+  - Persistent data storage
+  - Named volumes (`docker_examples_db_data`)
+  - Health checks with `pg_isready`
+  - Docker secrets for password management
 
+### Redis Cache
+- **Technology**: Redis 7+
+- **Port**: 6379
+- **Features**:
+  - High-performance caching
+  - Session storage
+  - Rate limiting data
+  - Health checks with `redis-cli ping`
+  - Named volumes (`docker_examples_redis_data`)
+
+## Quick Start
+
+### Prerequisites
+- Docker Engine 24.0+
+- Docker Compose V2
+- Python 3.14+ (for validation)
+- 4GB RAM minimum
+
+### Setup and Run
 ```bash
-docker-compose config
-curl -f http://localhost:3000/
-curl -f http://localhost:8000/health
+# Navigate to basic stack directory
+cd .docker-compose/basic-stack
+
+# Validate configuration
+docker compose config
+
+# Start services
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Check health
+docker compose ps
 ```
 
-<a id="uac-basic-stack-001-user-acceptance-criteria"></a>
+### Access Services
+- **Frontend**: http://localhost:3000
+- **API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/docs
+- **Database**: localhost:5432 (from host)
+- **Redis**: localhost:6379 (from host)
 
-## [`UAC-BASIC-STACK-001`](#uac-basic-stack-001-user-acceptance-criteria) User Acceptance Criteria
+## Security Configuration
 
-- All services start successfully
-- HTTP endpoints return 200 OK
-- Database accepts connections
-- No errors in service logs
-
-### [`UAC-BASIC-STACK-001`] Validation Criteria
-
+### API Authentication
 ```bash
-docker-compose up -d
-docker ps --filter status=running
-docker-compose logs | grep -i error || echo "No errors"
+# Generate API key
+openssl rand -hex 32
+
+# Configure in environment
+echo "API_KEY=your_generated_key" >> .env
+
+# Test authentication
+curl -H "X-API-Key: your_key" http://localhost:8000/api/status
 ```
 
-<a id="blk-basic-stack-001-blockers"></a>
-
-## [`BLK-BASIC-STACK-001`](#blk-basic-stack-001-blockers) Blockers
-
-- Port conflicts on 3000, 8000, 5432
-- Docker not running
-- Insufficient system resources
-
-### [`BLK-BASIC-STACK-001`] Validation Criteria
-
+### Environment Variables
+Create a `.env` file in the project root:
 ```bash
-docker --version
-lsof -i :3000,8000,5432 || echo "Ports available"
+# Database
+POSTGRES_DB=mydb
+POSTGRES_USER=user
+
+# Security
+API_KEY=your_secure_api_key
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=60
+CORS_ORIGINS=http://localhost:3000
+SECURITY_HEADERS_ENABLED=true
+INPUT_VALIDATION_ENABLED=true
+
+# External APIs (optional)
+GITHUB_TOKEN=your_github_token
 ```
 
-<a id="lnk-basic-stack-001-links"></a>
+## Development Workflow
 
-## [`LNK-BASIC-STACK-001`](#lnk-basic-stack-001-links) Links
+### Running Tests
+```bash
+# Run Python tests
+docker compose -f ../mcp/python_utils/docker-compose.yml run --rm test
 
-- [Testing Protocol](../../TESTING.md)
-- [Main README](../../README.md)
-- [Changelog](../../CHANGELOG.md)
-- [MCP Utilities](../../mcp/README.md)
-- [Docker Compose Docs](https://docs.docker.com/compose/)
+# Run with coverage
+docker compose -f ../mcp/python_utils/docker-compose.yml run --rm test-coverage
+```
+
+### Database Operations
+```bash
+# Connect to database
+docker compose exec db psql -U user -d mydb
+
+# Run migrations (if applicable)
+docker compose exec python alembic upgrade head
+
+# Backup database
+docker compose exec db pg_dump -U user mydb > backup.sql
+```
+
+### Debugging
+```bash
+# View all logs
+docker compose logs -f
+
+# View specific service logs
+docker compose logs -f python
+
+# Access service shell
+docker compose exec python bash
+
+# Check resource usage
+docker stats
+```
+
+## Health Checks
+
+All services include comprehensive health checks:
+
+| Service | Check Command | Interval | Timeout | Retries |
+|---------|---------------|----------|---------|---------|
+| **node** | `curl -f http://localhost:3000` | 30s | 10s | 3 |
+| **python** | `python -c "import sys; sys.exit(0)"` | 30s | 10s | 3 |
+| **db** | `pg_isready -U user -d mydb` | 30s | 10s | 3 |
+| **redis** | `redis-cli ping` | 30s | 10s | 3 |
+
+## Volumes and Data Persistence
+
+### Named Volumes
+- `docker_examples_db_data` - PostgreSQL data
+- `docker_examples_db_logs` - PostgreSQL logs
+- `docker_examples_redis_data` - Redis data
+
+### Backup Strategy
+```bash
+# Backup database
+docker run --rm -v docker_examples_db_data:/data \
+  -v $(pwd):/backup ubuntu \
+  tar czf /backup/db_backup_$(date +%Y%m%d).tar.gz /data
+
+# Backup Redis (if persistent)
+docker run --rm -v docker_examples_redis_data:/data \
+  -v $(pwd):/backup ubuntu \
+  tar czf /backup/redis_backup_$(date +%Y%m%d).tar.gz /data
+```
+
+## Networking
+
+Services communicate over the `docker_examples_basic-stack-network`:
+- **Internal DNS**: Services can reach each other by service name
+- **Port Exposure**: Only necessary ports exposed to host
+- **Isolation**: Services isolated from other Docker networks
+
+## Troubleshooting
+
+### Common Issues
+
+**Services won't start**:
+```bash
+# Check for port conflicts
+netstat -tulpn | grep -E ':3000|:8000|:5432|:6379'
+
+# Validate configuration
+docker compose config
+
+# Check Docker resources
+docker system df
+```
+
+**Database connection fails**:
+```bash
+# Verify database is running
+docker compose ps db
+
+# Check database logs
+docker compose logs db
+
+# Test connection
+docker compose exec db pg_isready -U user -d mydb
+```
+
+**API authentication fails**:
+```bash
+# Verify API key configuration
+docker compose exec python env | grep API_KEY
+
+# Check security middleware logs
+docker compose logs python | grep -i auth
+```
+
+See [troubleshooting.md](../../docs/troubleshooting.md) for detailed solutions.
+
+## Performance Optimization
+
+### Resource Limits
+```yaml
+# In docker-compose.yml
+services:
+  python:
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+```
+
+### Build Optimization
+- Multi-stage Docker builds
+- Layer caching with BuildKit
+- Dependency optimization
+
+## Production Considerations
+
+### Security Hardening
+- Use strong, randomly generated passwords
+- Enable all security middleware features
+- Configure proper CORS origins
+- Use Docker secrets in production
+
+### Monitoring
+- Implement centralized logging
+- Set up metrics collection
+- Configure alerting for health check failures
+
+### Scaling
+For production workloads, consider:
+- Cluster example with load balancing
+- Swarm stack for orchestration
+- External Redis cluster
+- Database read replicas
+
+## Recent Updates
+
+### Version 3.0 - Enterprise Security
+- ✅ **Redis Integration**: Added Redis caching service
+- ✅ **Security Middleware**: API authentication, rate limiting, CORS
+- ✅ **Input Validation**: Pydantic model validation
+- ✅ **Health Checks**: Comprehensive service monitoring
+- ✅ **Documentation**: Updated for enterprise features
+
+### Version 2.2 - Python 3.14
+- ✅ Python 3.14 with performance optimizations
+- ✅ Enhanced testing capabilities
+- ✅ Build caching improvements
+
+### Version 2.1 - Multi-Service Architecture
+- ✅ Node.js frontend integration
+- ✅ PostgreSQL persistence
+- ✅ Named volume management
