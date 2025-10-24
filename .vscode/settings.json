@@ -67,7 +67,7 @@
   },
 
   // Python Settings - Use localhost Python environment
-  "python.defaultInterpreterPath": "python",  // Use system Python from PATH
+  "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\AppData\\Local\\Programs\\Python\\Python314\\python3.14t.exe",  // Use Python 3.14 free-threaded
   "python.terminal.activateEnvironment": true,  // Activate environment in terminal
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
