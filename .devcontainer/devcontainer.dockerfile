@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
 # Install tzdata first to avoid prompts
-RUN apt-get update && apt-get install -y tzdata && apt-get clean
+RUN apt-get update && apt-get install -y tzdata
 
 # Install devcontainer features: common-utils, github-cli, shellcheck
 RUN apt-get update && apt-get install -y \
@@ -19,10 +19,7 @@ RUN apt-get update && apt-get install -y \
   && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
   && apt-get update \
   && apt-get install -y gh \
-  && apt-get install -y shellcheck \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /var/cache/apt/*
+  && apt-get install -y shellcheck
 
 # Python layer - install Python 3.14 and UV
 RUN apt-get update && apt-get install -y \
@@ -33,10 +30,7 @@ RUN apt-get update && apt-get install -y \
   && apt-get update \
   && apt-get install -y python3.14 python3.14-venv python3.14-dev \
   && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.14 1 \
-  && update-alternatives --install /usr/bin/python python /usr/bin/python3.14 1 \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /var/cache/apt/*
+  && update-alternatives --install /usr/bin/python python /usr/bin/python3.14 1
 
 # Install UV (fast Python package manager)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
@@ -45,10 +39,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
 
 # Node.js layer - install Node.js 22
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-  && apt-get install -y nodejs \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /var/cache/apt/*
+  && apt-get install -y nodejs
 
 # MariaDB layer - install MariaDB
 RUN apt-get update && apt-get install -y \
@@ -69,10 +60,7 @@ COPY init.sql /docker-entrypoint-initdb.d/
 
 # GitHub Actions Runner layer - install GitHub Actions runner
 RUN apt-get update && apt-get install -y \
-  jq \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /var/cache/apt/*
+  jq
 
 # Create vscode home directory
 RUN mkdir -p /home/vscode
