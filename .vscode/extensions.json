@@ -42,7 +42,11 @@
     "ms-vscode.vscode-azure-account",
 
     // Environment Management
-    "ms-vscode.vscode-env"
+    "ms-vscode.vscode-env",
+
+    // Performance and Profiling (AI Agent Integration)
+    "ms-python.python-profiling",
+    "ms-vscode.vscode-js-profile-flame"
   ],
   "unwantedRecommendations": [
     "ms-python.python-old", // Old Python extension
