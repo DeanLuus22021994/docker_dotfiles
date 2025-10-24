@@ -1,17 +1,18 @@
 name: Validate Docker Compose Stacks
 
 on:
-  pull_request:
-    branches: [main, develop]
+  push:
+    branches: [ main ]
     paths:
       - '.docker-compose/**'
       - 'docker-compose*.yml'
       - '.github/workflows/validate-stacks.yml'
-  push:
-    branches: [main, develop]
+  pull_request:
+    branches: [ main ]
     paths:
       - '.docker-compose/**'
       - 'docker-compose*.yml'
+  workflow_dispatch:
 
 jobs:
   validate:

@@ -2,7 +2,7 @@ name: GitHub Copilot Agent CI/CD
 
 on:
   push:
-    branches: [ main, develop, refactor/** ]
+    branches: [ main ]
     paths:
       - 'agent_app.py'
       - 'tools/**'
@@ -10,12 +10,22 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/agent-ci.yml'
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
     paths:
       - 'agent_app.py'
       - 'tools/**'
       - '.config/agent/**'
       - 'pyproject.toml'
+  workflow_dispatch:
+    inputs:
+      run_full_suite:
+        description: 'Run full test suite including integration tests'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 jobs:
   agent-validation:
@@ -70,7 +80,7 @@ jobs:
   agent-integration-test:
     runs-on: ubuntu-latest
     needs: agent-validation
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_full_suite == 'true')
     steps:
       - uses: actions/checkout@v4
 
@@ -169,7 +179,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     needs: agent-validation
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v4
 
