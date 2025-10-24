@@ -1,25 +1,26 @@
 name: GitHub Copilot Agent CI/CD
 
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'agent_app.py'
-      - 'tools/**'
-      - '.config/agent/**'
-      - 'pyproject.toml'
-      - '.github/workflows/agent-ci.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'agent_app.py'
-      - 'tools/**'
-      - '.config/agent/**'
-      - 'pyproject.toml'
   workflow_dispatch:
     inputs:
-      run_full_suite:
-        description: 'Run full test suite including integration tests'
+      run_validation:
+        description: 'Run agent validation'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_integration:
+        description: 'Run integration tests'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      run_deployment:
+        description: 'Run deployment'
         required: false
         default: 'false'
         type: choice
@@ -28,194 +29,23 @@ on:
           - 'false'
 
 jobs:
-  agent-validation:
+  orchestrate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.14'
-
-      - name: Install uv
+      - name: Run Agent Validation
+        if: github.event.inputs.run_validation == 'true' || github.event_name != 'workflow_dispatch'
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          echo "Triggering agent validation workflow..."
+          gh workflow run agent-validation.yml
 
-      - name: Install dependencies
-        run: uv sync --extra agent --extra agent-dev
-
-      - name: Validate agent configuration
-        run: uv run python -c "import yaml; yaml.safe_load(open('.config/agent/config.yml')); print('Agent config valid')"
-
-      - name: Check GitHub CLI availability
+      - name: Run Agent Integration Test
+        if: github.event.inputs.run_integration == 'true'
         run: |
-          if command -v gh &> /dev/null; then
-            echo "GitHub CLI available"
-            gh --version
-          else
-            echo "GitHub CLI not available - installing..."
-            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-            sudo apt update
-            sudo apt install gh
-          fi
+          echo "Triggering agent integration test workflow..."
+          gh workflow run agent-integration-test.yml
 
-      - name: Validate agent imports
-        run: uv run python -c "from agent_app import GitHubCopilotAgent, CopilotAgentConfig; print('Agent imports successful')"
-
-      - name: Run agent unit tests
-        run: uv run python -m pytest tests/agent/ -v --cov=agent_app --cov-report=xml
-
-      - name: Type check agent code
-        run: uv run mypy agent_app.py tools/ --ignore-missing-imports
-
-      - name: Lint agent code
-        run: uv run ruff check agent_app.py tools/
-
-      - name: Format check
-        run: uv run black --check agent_app.py tools/
-
-  agent-integration-test:
-    runs-on: ubuntu-latest
-    needs: agent-validation
-    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_full_suite == 'true')
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.14'
-
-      - name: Install uv
+      - name: Run Agent Deployment
+        if: github.event.inputs.run_deployment == 'true'
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: uv sync --extra agent --extra agent-dev
-
-      - name: Install GitHub CLI
-        run: |
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          sudo apt update
-          sudo apt install gh
-
-      - name: Test agent initialization
-        run: |
-          uv run python -c "
-          import asyncio
-          from agent_app import GitHubCopilotAgent, CopilotAgentConfig
-
-          async def test():
-              config = CopilotAgentConfig()
-              agent = GitHubCopilotAgent(config)
-              await agent.initialize()
-              result = await agent.run_task('Test task')
-              print(f'Agent test result: {result}')
-              await agent.shutdown()
-
-          asyncio.run(test())
-          print('Agent integration test passed')
-          "
-
-      - name: Test agent tools
-        run: |
-          uv run python -c "
-          import asyncio
-          from agent_app import GitHubCopilotAgent, CopilotAgentConfig
-
-          async def test_tools():
-              config = CopilotAgentConfig()
-              agent = GitHubCopilotAgent(config)
-              await agent.initialize()
-              tools = list(agent.tools.keys())
-              print(f'Available tools: {tools}')
-              assert len(tools) > 0, 'No tools available'
-              await agent.shutdown()
-
-          asyncio.run(test_tools())
-          print('Agent tools test passed')
-          "
-
-  agent-deployment:
-    runs-on: ubuntu-latest
-    needs: [agent-validation, agent-integration-test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-
-      - name: Build and push agent image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: .dockerfiles/agent.Dockerfile
-          push: true
-          tags: docker/copilot-agent:latest,docker/copilot-agent:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Deploy to staging
-        run: |
-          echo "Deploying GitHub Copilot agent to staging environment..."
-          # Add your deployment logic here
-        env:
-          KUBECONFIG: ${{ secrets.KUBE_CONFIG }}
-          AGENT_CONFIG: ${{ secrets.AGENT_CONFIG }}
-
-  security-scan:
-    runs-on: ubuntu-latest
-    needs: agent-validation
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-  performance-test:
-    runs-on: ubuntu-latest
-    needs: agent-validation
-    if: github.event_name == 'schedule'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.14'
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies
-        run: uv sync --extra agent --extra agent-dev
-
-      - name: Run performance benchmarks
-        run: uv run python -m pytest tests/agent/ -k "performance" --benchmark-only --benchmark-save=benchmarks
+          echo "Triggering agent deployment workflow..."
+          gh workflow run agent-deployment.yml
