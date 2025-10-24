@@ -31,17 +31,17 @@ Edit `.secrets/secrets.env` with your actual values:
 
 ```bash
 # Database Configuration
-DOCKER_EXAMPLES_DB_PASSWORD=your_secure_database_password_here
-DOCKER_EXAMPLES_DB_USER=postgres_user
-DOCKER_EXAMPLES_DB_NAME=docker_examples_db
+docker_DB_PASSWORD=your_secure_database_password_here
+docker_DB_USER=postgres_user
+docker_DB_NAME=docker_db
 
 # API Security
-DOCKER_EXAMPLES_API_KEY=your_api_key_here
-DOCKER_EXAMPLES_JWT_SECRET=your_jwt_secret_here
+docker_API_KEY=your_api_key_here
+docker_JWT_SECRET=your_jwt_secret_here
 
 # External Services
-DOCKER_EXAMPLES_GITHUB_TOKEN=your_github_token_here
-DOCKER_EXAMPLES_REDIS_PASSWORD=your_redis_password_here
+docker_GITHUB_TOKEN=your_github_token_here
+docker_REDIS_PASSWORD=your_redis_password_here
 ```
 
 ### 3. Load Environment Variables
@@ -57,14 +57,14 @@ export $(cat .secrets/secrets.env | xargs)
 
 ### Naming Convention
 ```
-DOCKER_EXAMPLES_[COMPONENT]_[SECRET_TYPE]
+docker_[COMPONENT]_[SECRET_TYPE]
 ```
 
 **Examples:**
-- `DOCKER_EXAMPLES_DB_PASSWORD` - Database password
-- `DOCKER_EXAMPLES_API_KEY` - API authentication key
-- `DOCKER_EXAMPLES_JWT_SECRET` - JWT signing secret
-- `DOCKER_EXAMPLES_GITHUB_TOKEN` - GitHub API token
+- `docker_DB_PASSWORD` - Database password
+- `docker_API_KEY` - API authentication key
+- `docker_JWT_SECRET` - JWT signing secret
+- `docker_GITHUB_TOKEN` - GitHub API token
 
 ### Security Requirements
 - **Minimum Length**: 32 characters for passwords, 64 for secrets
@@ -80,15 +80,15 @@ DOCKER_EXAMPLES_[COMPONENT]_[SECRET_TYPE]
 services:
   postgres:
     environment:
-      POSTGRES_PASSWORD: ${DOCKER_EXAMPLES_DB_PASSWORD}
-      POSTGRES_USER: ${DOCKER_EXAMPLES_DB_USER}
-      POSTGRES_DB: ${DOCKER_EXAMPLES_DB_NAME}
+      POSTGRES_PASSWORD: ${docker_DB_PASSWORD}
+      POSTGRES_USER: ${docker_DB_USER}
+      POSTGRES_DB: ${docker_DB_NAME}
 
   python:
     environment:
-      API_KEY: ${DOCKER_EXAMPLES_API_KEY}
-      JWT_SECRET: ${DOCKER_EXAMPLES_JWT_SECRET}
-      GITHUB_TOKEN: ${DOCKER_EXAMPLES_GITHUB_TOKEN}
+      API_KEY: ${docker_API_KEY}
+      JWT_SECRET: ${docker_JWT_SECRET}
+      GITHUB_TOKEN: ${docker_GITHUB_TOKEN}
 ```
 
 ### Docker Secrets (Alternative)
@@ -96,7 +96,7 @@ services:
 # For enhanced security in production
 secrets:
   db_password:
-    environment: "DOCKER_EXAMPLES_DB_PASSWORD"
+    environment: "docker_DB_PASSWORD"
 
 services:
   postgres:
@@ -111,25 +111,25 @@ services:
 ### Development Environment
 ```bash
 # Use simple passwords for local development
-DOCKER_EXAMPLES_DB_PASSWORD=dev_password_123
-DOCKER_EXAMPLES_API_KEY=dev_api_key_456
+docker_DB_PASSWORD=dev_password_123
+docker_API_KEY=dev_api_key_456
 ```
 
 ### Production Environment
 ```bash
 # Use strong, randomly generated secrets
-DOCKER_EXAMPLES_DB_PASSWORD=$(openssl rand -base64 32)
-DOCKER_EXAMPLES_API_KEY=$(openssl rand -hex 32)
-DOCKER_EXAMPLES_JWT_SECRET=$(openssl rand -base64 64)
+docker_DB_PASSWORD=$(openssl rand -base64 32)
+docker_API_KEY=$(openssl rand -hex 32)
+docker_JWT_SECRET=$(openssl rand -base64 64)
 ```
 
 ### CI/CD Integration
 ```yaml
 # .github/workflows/deploy.yml
 env:
-  DOCKER_EXAMPLES_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DOCKER_EXAMPLES_API_KEY: ${{ secrets.API_KEY }}
-  DOCKER_EXAMPLES_JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  docker_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  docker_API_KEY: ${{ secrets.API_KEY }}
+  docker_JWT_SECRET: ${{ secrets.JWT_SECRET }}
 ```
 
 ## 🛠️ Utility Scripts
@@ -137,19 +137,19 @@ env:
 ### Generate Secure Secrets
 ```bash
 # Generate database password
-echo "DOCKER_EXAMPLES_DB_PASSWORD=$(openssl rand -base64 32)" >> .secrets/secrets.env
+echo "docker_DB_PASSWORD=$(openssl rand -base64 32)" >> .secrets/secrets.env
 
 # Generate API key
-echo "DOCKER_EXAMPLES_API_KEY=$(openssl rand -hex 32)" >> .secrets/secrets.env
+echo "docker_API_KEY=$(openssl rand -hex 32)" >> .secrets/secrets.env
 
 # Generate JWT secret
-echo "DOCKER_EXAMPLES_JWT_SECRET=$(openssl rand -base64 64)" >> .secrets/secrets.env
+echo "docker_JWT_SECRET=$(openssl rand -base64 64)" >> .secrets/secrets.env
 ```
 
 ### Validate Environment Setup
 ```bash
 # Check if all required variables are set
-required_vars="DOCKER_EXAMPLES_DB_PASSWORD DOCKER_EXAMPLES_API_KEY"
+required_vars="docker_DB_PASSWORD docker_API_KEY"
 for var in $required_vars; do
   if [ -z "${!var}" ]; then
     echo "ERROR: $var is not set"
@@ -176,7 +176,7 @@ If migrating from file-based secrets in `secrets/` directory:
 cat secrets/db_password.txt
 
 # New: .secrets/secrets.env
-echo "DOCKER_EXAMPLES_DB_PASSWORD=$(cat secrets/db_password.txt)" >> .secrets/secrets.env
+echo "docker_DB_PASSWORD=$(cat secrets/db_password.txt)" >> .secrets/secrets.env
 ```
 
 ## 🔍 Verification
@@ -184,10 +184,10 @@ echo "DOCKER_EXAMPLES_DB_PASSWORD=$(cat secrets/db_password.txt)" >> .secrets/se
 ### Check Environment Variables
 ```bash
 # Verify variables are loaded
-env | grep DOCKER_EXAMPLES_
+env | grep docker_
 
 # Test database connection
-docker compose exec postgres psql -U ${DOCKER_EXAMPLES_DB_USER} -d ${DOCKER_EXAMPLES_DB_NAME}
+docker compose exec postgres psql -U ${docker_DB_USER} -d ${docker_DB_NAME}
 ```
 
 ### Security Audit

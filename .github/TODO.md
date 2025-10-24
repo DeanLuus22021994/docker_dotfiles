@@ -20,10 +20,10 @@ Updated: October 23, 2025
   - [x] All docker-compose.yml files have secrets section with `db_password` file reference
 
 - [x] **Standardize volume naming with consistent project prefix** ✅ COMPLETED
-  - [x] Fixed `.docker-compose/basic-stack/docker-compose.yml` - updated `node_modules` and `python_venv` to use `docker_examples_` prefix
-  - [x] Fixed `.docker-compose/cluster-example/docker-compose.yml` - updated `node_modules` to use `docker_examples_` prefix
-  - [x] Fixed `.docker-compose/github-actions-runner/docker-compose.yml` - updated `runner_data` to `docker_examples_runner_data`
-  - [x] All volume definitions now have consistent `docker_examples_` prefix
+  - [x] Fixed `.docker-compose/basic-stack/docker-compose.yml` - updated `node_modules` and `python_venv` to use `docker_` prefix
+  - [x] Fixed `.docker-compose/cluster-example/docker-compose.yml` - updated `node_modules` to use `docker_` prefix
+  - [x] Fixed `.docker-compose/github-actions-runner/docker-compose.yml` - updated `runner_data` to `docker_runner_data`
+  - [x] All volume definitions now have consistent `docker_` prefix
   - [x] All volume references in service definitions match the new names
 
 ## 🟡 HIGH PRIORITY (Do This Week)
@@ -56,9 +56,9 @@ Updated: October 23, 2025
   - [ ] After changes, test each stack: `docker-compose -f <path> build --no-cache`
 
 - [ ] **Update file path references throughout codebase**
-  - [ ] Open `.docker-compose/validate_stacks.py` and replace all `docker-compose-examples` strings with `.docker-compose`
-  - [ ] Open root `README.md` and update all file path examples from `docker-compose-examples/` to `.docker-compose/`
-  - [ ] Search all `.md` files for `docker-compose-examples` and replace with `.docker-compose`
+  - [ ] Open `.docker-compose/validate_stacks.py` and replace all `.docker-compose` strings with `.docker-compose`
+  - [ ] Open root `README.md` and update all file path examples from `.docker-compose/` to `.docker-compose/`
+  - [ ] Search all `.md` files for `.docker-compose` and replace with `.docker-compose`
   - [ ] Check if `.vscode/settings.json` contains any hardcoded paths and update them
   - [ ] Update each healthcheck block to use these exact values:
     ```yaml
@@ -91,9 +91,9 @@ Updated: October 23, 2025
   - [ ] After changes, test each stack: `docker-compose -f <path> build --no-cache`
 
 - [ ] **Update file path references throughout codebase**
-  - [ ] Open `.docker-compose/validate_stacks.py` and replace all `docker-compose-examples` strings with `.docker-compose`
-  - [ ] Open root `README.md` and update all file path examples from `docker-compose-examples/` to `.docker-compose/`
-  - [ ] Search all `.md` files for `docker-compose-examples` and replace with `.docker-compose`
+  - [ ] Open `.docker-compose/validate_stacks.py` and replace all `.docker-compose` strings with `.docker-compose`
+  - [ ] Open root `README.md` and update all file path examples from `.docker-compose/` to `.docker-compose/`
+  - [ ] Search all `.md` files for `.docker-compose` and replace with `.docker-compose`
   - [ ] Check if `.vscode/settings.json` contains any hardcoded paths and update them
 
 ## 🟢 MEDIUM PRIORITY (Do This Month)

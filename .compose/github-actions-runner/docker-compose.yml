@@ -3,17 +3,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: docker_examples_runner:latest
-    container_name: docker_examples_runner
+    image: docker_runner:latest
+    container_name: docker_runner
     environment:
-      - GITHUB_URL=${GITHUB_URL:-https://github.com/user/docker-examples}
+      - GITHUB_URL=${GITHUB_URL:-https://github.com/user/docker}
       - RUNNER_TOKEN=${RUNNER_TOKEN}
-      - RUNNER_NAME=${RUNNER_NAME:-docker-examples-runner}
+      - RUNNER_NAME=${RUNNER_NAME:-docker-runner}
       - RUNNER_WORKDIR=${RUNNER_WORKDIR:-/actions-runner/_work}
       - LABELS=${LABELS:-self-hosted,linux,x64}
       - RUNNER_GROUP=${RUNNER_GROUP:-Default}
     volumes:
-      - docker_examples_runner_data:/actions-runner
+      - docker_runner_data:/actions-runner
     restart: unless-stopped
     deploy:
       resources:
@@ -25,4 +25,4 @@ services:
           memory: 1G
 
 volumes:
-  docker_examples_runner_data:
+  docker_runner_data:

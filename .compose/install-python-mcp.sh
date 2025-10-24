@@ -4,7 +4,7 @@
 
 set -e
 
-VOLUME_NAME="docker_examples_python_mcp"
+VOLUME_NAME="docker_python_mcp"
 SOURCE_DIR=".docker-compose/mcp/python_utils"
 
 echo "📦 Installing Python MCP utilities into volume: $VOLUME_NAME"

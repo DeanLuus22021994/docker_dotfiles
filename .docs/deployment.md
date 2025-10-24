@@ -4,11 +4,11 @@ completed: 2025-10-24
 author: AI Assistant
 version: 1.0
 status: active
-description: Step-by-step deployment guide for Docker Compose Examples across all environments
+description: Step-by-step deployment guide for Docker Compose across all environments
 tags: [docker, compose, deployment, environments, production]
 ---
 
-# Docker Compose Examples - Deployment Guide
+# Docker Compose - Deployment Guide
 
 ## Prerequisites
 - Docker Engine 24.0+ with Compose V2
@@ -43,8 +43,8 @@ docker compose -f .compose/cluster-example/docker-compose.yml up -d --scale pyth
 ### Swarm Stack (Production)
 ```bash
 docker swarm init
-docker stack deploy -c .compose/swarm-stack/docker-compose.yml docker_examples
-docker service scale docker_examples_python=5
+docker stack deploy -c .compose/swarm-stack/docker-compose.yml docker
+docker service scale docker_python=5
 ```
 
 ## Environment Configuration

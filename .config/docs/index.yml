@@ -1,14 +1,14 @@
 ---
-# Docker Compose Examples - Documentation Index
+# Docker Compose - Documentation Index
 # Generated: 2025-10-24
 # Repository: docker_dotfiles
 # Description: Main index for decomposed documentation structure
 
 # Main Documentation Index
 index:
-  title: "Docker Compose Examples - Enterprise Edition"
+  title: "Docker Compose - Enterprise Edition"
   version: "3.0"
-  description: "Enterprise-grade Docker Compose examples with comprehensive security and monitoring"
+  description: "Enterprise-grade Docker Compose with comprehensive security and monitoring"
   last_updated: "2025-10-24"
 
 # Documentation Structure

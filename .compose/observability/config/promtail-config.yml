@@ -1,4 +1,4 @@
-# Promtail Configuration for Docker Compose Examples
+# Promtail Configuration for Docker Compose
 # Collects logs from Docker containers and sends to Loki
 
 server:

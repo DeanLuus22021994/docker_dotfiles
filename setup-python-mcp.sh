@@ -1,16 +1,16 @@
 #!/bin/bash
-# Docker Examples - Python MCP Setup Script
+# Docker - Python MCP Setup Script
 # Initializes and configures Python MCP servers for all Docker Compose stacks
 # This script sets up persistent Python utilities in Docker volumes
 
 set -e
 
 # Configuration
-VOLUME_NAME="docker_examples_python_mcp"
+VOLUME_NAME="docker_python_mcp"
 SOURCE_DIR=".docker-compose/mcp/python_utils"
 PYTHON_VERSION="3.14"
 
-echo "🐳 Docker Examples - Python MCP Setup"
+echo "🐳 Docker - Python MCP Setup"
 echo "======================================"
 
 # Function to check if Docker is running
@@ -121,14 +121,14 @@ import sys
 print(f\"Python version: {sys.version}\")
 
 try:
-    import docker_examples_utils
-    print(\"✅ docker_examples_utils imported successfully\")
+    import docker_utils
+    print(\"✅ docker_utils imported successfully\")
 except ImportError as e:
     print(f\"❌ Import failed: {e}\")
     sys.exit(1)
 
 try:
-    from docker_examples_utils.api import app
+    from docker_utils.api import app
     print(\"✅ FastAPI app imported successfully\")
 except ImportError as e:
     print(f\"❌ API import failed: {e}\")

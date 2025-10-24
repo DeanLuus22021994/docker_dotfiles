@@ -1,10 +1,10 @@
 #!/bin/bash
-# Docker Examples - Status Check Script
+# Docker - Status Check Script
 # Shows the current status of Python MCP servers and Docker stacks
 
 set -e
 
-echo "🐳 Docker Examples - Status Check"
+echo "🐳 Docker - Status Check"
 echo "=================================="
 
 # Check if Docker is running
@@ -16,7 +16,7 @@ fi
 echo "✅ Docker is running"
 
 # Check Python MCP volume
-VOLUME_NAME="docker_examples_python_mcp"
+VOLUME_NAME="docker_python_mcp"
 if docker volume inspect "$VOLUME_NAME" >/dev/null 2>&1; then
     echo "✅ Python MCP volume exists: $VOLUME_NAME"
 else

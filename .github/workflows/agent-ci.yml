@@ -154,7 +154,7 @@ jobs:
           context: .
           file: .dockerfiles/agent.Dockerfile
           push: true
-          tags: docker-examples/copilot-agent:latest,docker-examples/copilot-agent:${{ github.sha }}
+          tags: docker/copilot-agent:latest,docker/copilot-agent:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

@@ -1,4 +1,4 @@
-# Pre-commit hooks for Docker Compose Examples
+# Pre-commit hooks for Docker Compose
 # Install: pip install pre-commit && pre-commit install
 # Run manually: pre-commit run --all-files
 

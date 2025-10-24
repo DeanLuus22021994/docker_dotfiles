@@ -5,7 +5,7 @@
 
 services:
   python:
-    image: "docker_examples_python:latest"
+    image: "docker_python:latest"
     build:
       context: "../.dockerfiles"
       dockerfile: "python.Dockerfile"
@@ -18,10 +18,10 @@ services:
       - ENVIRONMENT=test
       - PYTHONDONTWRITEBYTECODE=1
     volumes:
-      - docker_examples_python_app:/app
-      - docker_examples_tests:/app/tests
-      - docker_examples_pytest_cache:/app/.pytest_cache
-      - docker_examples_coverage:/app/coverage
+      - docker_python_app:/app
+      - docker_tests:/app/tests
+      - docker_pytest_cache:/app/.pytest_cache
+      - docker_coverage:/app/coverage
     working_dir: /app
     command: ["tail", "-f", "/dev/null"]  # Keep container running
     healthcheck:
@@ -33,16 +33,16 @@ services:
     restart: unless-stopped
 
 volumes:
-  docker_examples_pytest_cache:
+  docker_pytest_cache:
     driver: local
-  docker_examples_coverage:
+  docker_coverage:
     driver: local
-  docker_examples_python_app:
+  docker_python_app:
     driver: local
-  docker_examples_tests:
+  docker_tests:
     driver: local
 
 networks:
   default:
-    name: docker_examples_mcp_network
+    name: docker_mcp_network
     driver: bridge

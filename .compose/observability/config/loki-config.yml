@@ -1,4 +1,4 @@
-# Loki Configuration for Docker Compose Examples
+# Loki Configuration for Docker Compose
 # Centralized logging aggregation
 
 auth_enabled: false

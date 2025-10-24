@@ -34,7 +34,7 @@ ci_cd:
       ENVIRONMENT: "production"
       SERVICE_TYPE: "swarm"
       WORKERS: "3"
-    image_tag: "docker_examples_swarm:latest"
+    image_tag: "docker_swarm:latest"
     registry: "docker.io"
 
   testing:
@@ -101,23 +101,23 @@ services:
 
 # Volume Configuration (Named volumes for persistence)
 volumes:
-  db_data: "docker_examples_db_data"
-  db_logs: "docker_examples_db_logs"
-  redis_data: "docker_examples_redis_data"
-  python_app: "docker_examples_python_app"
-  node_app: "docker_examples_node_app"
-  python_mcp: "docker_examples_python_mcp"  # MCP utilities volume
+  db_data: "docker_db_data"
+  db_logs: "docker_db_logs"
+  redis_data: "docker_redis_data"
+  python_app: "docker_python_app"
+  node_app: "docker_node_app"
+  python_mcp: "docker_python_mcp"  # MCP utilities volume
 
 # Secrets Configuration (Environment Variable Driven)
 secrets:
   db_password:
-    env_var: "DOCKER_EXAMPLES_DB_PASSWORD"
+    env_var: "docker_DB_PASSWORD"
     source: "../../.secrets/secrets.env"
     description: "PostgreSQL database password loaded from environment variables"
 
 # Network Configuration
 network:
-  name: "docker_examples_swarm_stack_overlay"
+  name: "docker_swarm_stack_overlay"
   driver: "overlay"
 
 # Swarm Configuration (CI/CD Automation)
@@ -130,7 +130,7 @@ swarm:
     worker_nodes: "node.role == worker"
   labels:
     environment: "production"
-    stack: "docker_examples"
+    stack: "docker"
 
 # Orchestration Configuration (CI/CD Automation)
 orchestration:
@@ -181,13 +181,13 @@ resource_limits:
 
 # Deployment Configuration
 deployment:
-  stack_name: "docker_examples"
+  stack_name: "docker"
   compose_file: "../../.compose/swarm-stack/docker-compose.yml"
-  deploy_command: "docker stack deploy -c ../../.compose/swarm-stack/docker-compose.yml docker_examples"
+  deploy_command: "docker stack deploy -c ../../.compose/swarm-stack/docker-compose.yml docker"
   scale_commands:
-    python: "docker service scale docker_examples_python={count}"
-    node: "docker service scale docker_examples_node={count}"
-  remove_command: "docker stack rm docker_examples"
+    python: "docker service scale docker_python={count}"
+    node: "docker service scale docker_node={count}"
+  remove_command: "docker stack rm docker"
   restart_policy: "on-failure"
 
 # Maintenance Configuration (CI/CD Automation)

@@ -1,11 +1,11 @@
-# Makefile for Docker Compose Examples Project
+# Makefile for Docker Compose Project
 # Provides common development tasks for managing Docker Compose stacks
 
 .PHONY: help validate build test clean format lint security all up down logs ps generate-compose
 
 # Default target - show help
 help:
-	@echo "Docker Compose Examples - Available Commands:"
+	@echo "Docker Compose - Available Commands:"
 	@echo ""
 	@echo "  make validate    - Validate all docker-compose.yml files"
 	@echo "  make build       - Build all Docker Compose stacks"
@@ -71,7 +71,7 @@ lint:
 # Run security scans
 security:
 	@echo "🔒 Running security scans..."
-	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $$(docker images --format "{{.Repository}}:{{.Tag}}" | grep docker_examples | head -1) || echo "Trivy not available or no images to scan"
+	@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $$(docker images --format "{{.Repository}}:{{.Tag}}" | grep docker | head -1) || echo "Trivy not available or no images to scan"
 	@echo "✅ Security scan complete"
 
 # Run all tasks

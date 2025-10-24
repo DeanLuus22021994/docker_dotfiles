@@ -4,11 +4,11 @@ completed: 2025-01-15
 author: AI Assistant
 version: 3.0
 status: active
-description: Enterprise-grade Docker Compose examples with security enhancements, Redis caching, and comprehensive testing
-tags: [docker, compose, examples, security, redis, enterprise, python314, fastapi]
+description: Enterprise-grade Docker Compose with security enhancements, Redis caching, and comprehensive testing
+tags: [docker, compose, security, redis, enterprise, python314, fastapi]
 ---
 
-# Docker Compose Examples - Enterprise Edition
+# Docker Compose - Enterprise Edition
 
 ## Overview
 
@@ -47,7 +47,7 @@ Python utilities are installed in Docker named volumes that persist across conta
 # Initialize Python MCP servers
 ./setup-python-mcp.sh
 
-# This creates volume: docker_examples_python_mcp
+# This creates volume: docker_python_mcp
 # All Python utilities are installed here permanently
 ```
 
@@ -103,7 +103,7 @@ Each stack includes a Python MCP server for AI-assisted development:
 ```bash
 # Clone repository
 git clone <repository-url>
-cd docker-compose-examples
+cd .docker-compose
 
 # Configure secrets
 echo "your_db_password" > secrets/db_password.txt
@@ -187,10 +187,10 @@ docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm t
 ### Production Deployment
 ```bash
 # Use Swarm stack for production
-docker stack deploy -c .docker-compose/swarm-stack/docker-compose.yml docker_examples
+docker stack deploy -c .docker-compose/swarm-stack/docker-compose.yml docker
 
 # Scale services
-docker service scale docker_examples_python=5
+docker service scale docker_python=5
 ```
 
 ## Documentation

@@ -8,7 +8,7 @@ description: Config-driven CI/CD automation for Docker Compose stacks with custo
 tags: [docker, compose, mcp, python, volumes, persistence, ai, development, config-driven, cicd, automation, github]
 ---
 
-# Docker Compose Examples - Config-Driven Agent
+# Docker Compose - Config-Driven Agent
 
 ## Architecture Overview
 
@@ -91,7 +91,7 @@ RUN if [ "$ENVIRONMENT" = "production" ]; then \
 ```
 
 ### Python MCP Customization
-- **Volume Persistence**: `docker_examples_python_mcp` volume for cross-build persistence
+- **Volume Persistence**: `docker_python_mcp` volume for cross-build persistence
 - **Environment Integration**: Config-driven environment variable injection
 - **Service Discovery**: Automated service registration and discovery
 

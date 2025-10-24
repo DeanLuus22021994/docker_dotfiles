@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Docker Examples - GitHub Copilot Native Agent
+Docker - GitHub Copilot Native Agent
 A lightweight agent leveraging GitHub Copilot's native capabilities and VS Code Insiders
 """
 
@@ -23,8 +23,8 @@ except ImportError:
 
 # Local utilities
 try:
-    from docker_examples_utils.config import load_config  # type: ignore
-    from docker_examples_utils.logging import setup_logging  # type: ignore
+    from docker_utils.config import load_config  # type: ignore
+    from docker_utils.logging import setup_logging  # type: ignore
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
@@ -355,7 +355,7 @@ try:
     from uvicorn import Config, Server  # type: ignore
 
     app = FastAPI(
-        title="Docker Examples GitHub Copilot Agent",
+        title="Docker GitHub Copilot Agent",
         description="Lightweight agent leveraging GitHub Copilot native capabilities",
         version="1.0.0"
     )
@@ -388,7 +388,7 @@ try:
     @app.get("/")
     async def root():
         """Root endpoint"""
-        return {"message": "Docker Examples GitHub Copilot Agent API", "status": "running"}
+        return {"message": "Docker GitHub Copilot Agent API", "status": "running"}
 
     @app.get("/health")
     async def health():

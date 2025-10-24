@@ -4,7 +4,7 @@ completed: 2025-10-22
 author: AI Assistant
 version: 1.0
 status: active
-description: Custom agents for Docker Examples project development - Docker, Python, Testing, Documentation, Linting
+description: Custom agents for Docker project development - Docker, Python, Testing, Documentation, Linting
 tags: [agents, ai, development, react, docker, python, testing, documentation]
 ---
 
@@ -12,7 +12,7 @@ tags: [agents, ai, development, react, docker, python, testing, documentation]
 
 ## React Developer
 
-**Role**: Expert React developer for docker examples components
+**Role**: Expert React developer for Docker components
 
 **Instructions**:
 - Use functional components with hooks

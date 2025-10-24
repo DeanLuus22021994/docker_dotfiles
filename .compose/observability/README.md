@@ -1,6 +1,6 @@
 # Observability Stack
 
-This directory contains the observability and monitoring infrastructure for Docker Compose Examples, including Prometheus, Grafana, and Loki.
+This directory contains the observability and monitoring infrastructure for Docker Compose, including Prometheus, Grafana, and Loki.
 
 ## Components
 
@@ -86,7 +86,7 @@ docker compose -f .docker-compose/observability/docker-compose.yml ps
 2. Select **Loki** datasource
 3. Filter logs by labels:
    - `{compose_project="basic-stack"}`
-   - `{container="docker_examples_python"}`
+   - `{container="docker_python"}`
    - `{compose_service="python"} |= "error"`
 
 ## Pre-configured Dashboards
@@ -176,7 +176,7 @@ up{job="python-app"}
 {compose_service="python"} |= "ERROR"
 
 # Logs matching pattern
-{container="docker_examples_db"} |~ "connection.*failed"
+{container="docker_db"} |~ "connection.*failed"
 
 # Count errors per minute
 sum(count_over_time({compose_service="python"} |= "ERROR" [1m])) by (container)
@@ -239,7 +239,7 @@ lsof -i :3001
 docker ps | grep grafana
 
 # Check Grafana logs
-docker logs docker_examples_grafana
+docker logs docker_grafana
 ```
 
 ### No Metrics Appearing
@@ -260,7 +260,7 @@ curl http://localhost:3000/metrics  # Node app
 docker ps | grep promtail
 
 # Check Promtail logs
-docker logs docker_examples_promtail
+docker logs docker_promtail
 
 # Verify Loki is ready
 curl http://localhost:3100/ready
@@ -286,7 +286,7 @@ Example: Add observability network to basic-stack:
 networks:
   observability:
     external: true
-    name: docker_examples_observability
+    name: docker_observability
 ```
 
 Then attach services to both networks:

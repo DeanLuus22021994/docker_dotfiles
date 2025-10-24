@@ -1,4 +1,4 @@
-# Docker Examples - Secrets .gitignore
+# Docker - Secrets .gitignore
 # This file ensures that actual secrets are never committed to version control
 
 # Environment files with actual secrets

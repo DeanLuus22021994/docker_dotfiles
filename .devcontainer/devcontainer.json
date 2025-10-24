@@ -2,29 +2,28 @@
   "build": {
     "dockerfile": "devcontainer.dockerfile"
   },
-  "features": {
-    "ghcr.io/devcontainers/features/nvidia-cuda:2": {
-      "installCudnn": false,
-      "installNvtx": false
-    }
-  },
   "mounts": [
     {
         "type": "volume",
-        "source": "docker_examples_python_cache",
+        "source": "docker_python_cache",
         "target": "/home/vscode/.cache/pip"
       },
     {
         "type": "volume",
-        "source": "docker_examples_node_cache",
+        "source": "docker_node_cache",
         "target": "/home/vscode/.npm"
       },
     {
         "type": "volume",
-        "source": "docker_examples_mariadb_data",
+        "source": "docker_mariadb_data",
         "target": "/var/lib/mysql"
       }
   ],
+  "containerEnv": {
+    "GH_OWNER": "DeanLuus22021994",
+    "GH_REPOSITORY": "docker_dotfiles",
+    "GH_TOKEN": "${localEnv:GH_PAT}"
+  },
   "hostRequirements": {
     "cpus": 4,
     "memory": "4gb",
@@ -32,6 +31,11 @@
     "gpu": "optional"
   },
   "waitFor": "onCreateCommand",
+  "postCreateCommand": [
+    "/home/vscode/actions-runner/start.sh",
+    "pip install --upgrade pip setuptools wheel requests fastapi uvicorn pydantic",
+    "npm install -g yarn typescript @types/node eslint prettier"
+  ],
   "updateContentCommand": "npm install --legacy-peer-deps",
   "postStartCommand": "chown -R mysql:mysql /var/lib/mysql && service mariadb start && sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
   "postAttachCommand": "",

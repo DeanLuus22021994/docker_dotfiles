@@ -4,7 +4,7 @@
 
 set -e
 
-VOLUME_NAME="docker_examples_python_mcp"
+VOLUME_NAME="docker_python_mcp"
 PYTHON_VERSION="3.14"
 
 echo "🐳 Initializing Python MCP utilities in Docker volume: $VOLUME_NAME"

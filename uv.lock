@@ -256,7 +256,7 @@ wheels = [
 ]
 
 [[package]]
-name = "docker-examples-utils"
+name = "docker-utils"
 version = "0.2.0"
 source = { editable = "." }
 dependencies = [

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Docker Compose Examples Validation Script
+Docker Compose Validation Script
 
 Validates all docker-compose stacks for:
 - Configuration syntax
@@ -176,8 +176,8 @@ class StackValidator:
         print("🔗 Validating volume consistency...")
 
         expected_volumes = {
-            "docker_examples_python_venv",
-            "docker_examples_python_cache",
+            "docker_python_venv",
+            "docker_python_cache",
             "python_pytest_cache",
             "python_mypy_cache",
             "python_ruff_cache",
@@ -239,7 +239,7 @@ class StackValidator:
         self, build: bool = False, test: bool = False, cleanup: bool = False
     ) -> bool:
         """Run complete validation suite"""
-        print("🚀 Starting Docker Compose Examples Validation")
+        print("🚀 Starting Docker Compose Validation")
         print("=" * 50)
 
         results = []
@@ -289,7 +289,7 @@ class StackValidator:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Validate Docker Compose Examples")
+    parser = argparse.ArgumentParser(description="Validate Docker Compose")
     parser.add_argument("--build", action="store_true", help="Build all stack images")
     parser.add_argument("--test", action="store_true", help="Run integration tests")
     parser.add_argument(

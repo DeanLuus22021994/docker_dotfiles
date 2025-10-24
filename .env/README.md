@@ -1,4 +1,4 @@
-# Environment Variables - Docker Compose Examples
+# Environment Variables - Docker Compose
 
 This directory contains environment variable files for different deployment environments and configurations.
 
@@ -40,7 +40,7 @@ export $(cat .env/.env.docker | xargs)
 
 ## Environment Variable Naming Convention
 
-- `DOCKER_EXAMPLES_*` - Docker Compose specific variables
+- `docker_*` - Docker Compose specific variables
 - `POSTGRES_*` - PostgreSQL database configuration
 - `REDIS_*` - Redis configuration
 - `API_*` - API configuration

@@ -8,7 +8,7 @@ description: Enterprise-grade Docker Compose architecture with security, monitor
 tags: [docker, compose, architecture, security, mcp, enterprise]
 ---
 
-# Docker Compose Examples - Architecture
+# Docker Compose - Architecture
 
 ## System Overview
 
@@ -38,7 +38,7 @@ Python utilities installed in Docker named volumes that persist across container
 # Initialize Python MCP servers
 ./setup-python-mcp.sh
 
-# Creates volume: docker_examples_python_mcp
+# Creates volume: docker_python_mcp
 ```
 
 ### MCP Server Endpoints
@@ -66,7 +66,7 @@ All services communicate over internal Docker networks with proper isolation and
 5. Responses flow back through the chain
 
 ### Data Persistence
-- PostgreSQL: `docker_examples_db_data` volume
+- PostgreSQL: `docker_db_data` volume
 - Redis: Ephemeral in-memory storage
 - Application logs: Dedicated log volumes
 

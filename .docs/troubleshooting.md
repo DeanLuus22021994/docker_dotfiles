@@ -4,11 +4,11 @@ completed: 2025-10-24
 author: AI Assistant
 version: 1.0
 status: active
-description: Common issues and solutions for Docker Compose Examples deployment
+description: Common issues and solutions for Docker Compose deployment
 tags: [docker, compose, troubleshooting, debugging, errors]
 ---
 
-# Docker Compose Examples - Troubleshooting Guide
+# Docker Compose - Troubleshooting Guide
 
 ## Container Issues
 
@@ -59,7 +59,7 @@ docker compose -f .compose/basic-stack/docker-compose.yml exec db pg_isready
 ### Database Data Lost
 ```bash
 # Verify volume exists
-docker volume ls | grep docker_examples_db_data
+docker volume ls | grep docker_db_data
 
 # Don't use -v flag when stopping
 docker compose -f .compose/basic-stack/docker-compose.yml down  # Good
@@ -79,7 +79,7 @@ docker compose -f .compose/basic-stack/docker-compose.yml exec python ping db
 docker compose -f .compose/basic-stack/docker-compose.yml exec python nslookup db
 
 # Verify network
-docker network inspect docker_examples_basic-stack-network
+docker network inspect docker_basic-stack-network
 ```
 
 ### Port Already in Use

@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "docker-examples-utils"
+name = "docker-utils"
 version = "0.2.0"
 description = "Modular enterprise-grade MCP-compliant Python utilities for Docker Compose documentation and component management"
 readme = "README.md"
@@ -158,17 +158,17 @@ agent-dev = [
 ]
 
 [project.scripts]
-docker-compose-utils = "docker_examples_utils.cli:main"
+docker-compose-utils = "docker_utils.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/docker-compose/docker-examples-utils"
+Homepage = "https://github.com/docker-compose/docker-utils"
 Documentation = "https://docker-compose.dev/docs/python-utils"
-Repository = "https://github.com/docker-compose/docker-examples-utils"
-Issues = "https://github.com/docker-compose/docker-examples-utils/issues"
-Changelog = "https://github.com/docker-compose/docker-examples-utils/blob/main/CHANGELOG.md"
+Repository = "https://github.com/docker-compose/docker-utils"
+Issues = "https://github.com/docker-compose/docker-utils/issues"
+Changelog = "https://github.com/docker-compose/docker-utils/blob/main/CHANGELOG.md"
 
 [tool.setuptools]
-packages = ["docker_examples_utils"]
+packages = ["docker_utils"]
 package-dir = {"" = ".docker-compose/mcp/python_utils"}
 
 [tool.mypy]
@@ -227,7 +227,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["docker_examples_utils"]
+known-first-party = ["docker_utils"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
@@ -235,7 +235,7 @@ known-first-party = ["docker_examples_utils"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-addopts = "-ra -q --strict-markers --strict-config --cov=docker_examples_utils --cov-report=term-missing --cov-report=html --cov-report=xml -n auto"
+addopts = "-ra -q --strict-markers --strict-config --cov=docker_utils --cov-report=term-missing --cov-report=html --cov-report=xml -n auto"
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
@@ -247,7 +247,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["docker_examples_utils"]
+source = ["docker_utils"]
 omit = ["*/tests/*", "*/test_*", "setup.py"]
 
 [tool.coverage.report]

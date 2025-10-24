@@ -4,11 +4,11 @@ completed: 2025-10-22
 author: AI Assistant
 version: 1.2
 status: active
-description: Development roadmap and RAG status tracking for Docker Compose examples infrastructure improvements - Consolidated Python Dockerfile and volume mounts
+description: Development roadmap and RAG status tracking for Docker Compose infrastructure improvements - Consolidated Python Dockerfile and volume mounts
 tags: [development, roadmap, rag, infrastructure, testing, docker, python314]
 ---
 
-# `DEV-ROADMAP-001` Development Roadmap: Docker Compose Examples
+# `DEV-ROADMAP-001` Development Roadmap: Docker Compose
 
 ## Overview
 
@@ -171,7 +171,7 @@ grep -E "Team Size:|Week [0-9]+" DEVELOPMENT.md
 
 ### Consolidated Python Dockerfile
 
-**Location**: `docker-compose-examples/mcp/python_utils/Dockerfile`
+**Location**: `.docker-compose/mcp/python_utils/Dockerfile`
 
 - Multi-stage build with BuildKit
 - Common system dependencies (postgresql-client, redis-tools, docker.io)
@@ -181,14 +181,14 @@ grep -E "Team Size:|Week [0-9]+" DEVELOPMENT.md
 
 ### Volume Mount Strategy
 
-- **Python venv**: `docker_examples_python_venv:/app/.venv`
+- **Python venv**: `docker_python_venv:/app/.venv`
 - **Node modules**: `node_modules:/app/node_modules`
 - **Build cache**: `python_cache:/root/.cache/pip`
 
 ### Docker Compose Updates
 
 All stacks reference consolidated Dockerfile:
-- `dockerfile: docker-compose-examples/mcp/python_utils/Dockerfile`
+- `dockerfile: .docker-compose/mcp/python_utils/Dockerfile`
 - Named volume mounts for persistence
 - Removed pip install commands
 
@@ -262,7 +262,7 @@ Week 7-8: Polish        ██████████████████�
 2. **Error Handling**: Circuit breakers and graceful degradation ✅ COMPLETED
 3. **Fix Python Type Errors**: Resolve remaining type annotations and import issues in Python utilities ✅ COMPLETED
 4. **Fix MCP Server**: Update MCP server implementation for Python 3.14 compatibility ✅ COMPLETED
-5. **✅ Main Workspace Clean**: All compile/lint errors resolved in main Docker Examples codebase (314 tests passing)
+5. **✅ Main Workspace Clean**: All compile/lint errors resolved in main Docker codebase (314 tests passing)
 
 ## Docker Compose Stack Enhancements
 
@@ -299,7 +299,7 @@ All Docker Compose stacks have been enhanced with dedicated `dockerfiles` folder
 ```yaml
 # Python services now include:
 volumes:
-  - docker_examples_python_venv:/app/.venv          # Virtual environment
+  - docker_python_venv:/app/.venv          # Virtual environment
   - python_cache:/root/.cache/pip              # Pip cache
   - python_pytest_cache:/tmp/.cache/pytest     # Test cache
   - python_mypy_cache:/tmp/.cache/mypy        # Type check cache

@@ -30,7 +30,7 @@ ci_cd:
       ENVIRONMENT: "test"
       SERVICE_TYPE: "mcp"
       WORKERS: "1"
-    image_tag: "docker_examples_mcp:latest"
+    image_tag: "docker_mcp:latest"
     registry: "docker.io"
 
   testing:
@@ -64,15 +64,15 @@ services:
 
 # Volume Configuration (Named volumes for persistence)
 volumes:
-  python_app: "docker_examples_python_app"
-  tests: "docker_examples_tests"
-  pytest_cache: "docker_examples_pytest_cache"
-  coverage: "docker_examples_coverage"
-  python_mcp: "docker_examples_python_mcp"  # MCP utilities volume
+  python_app: "docker_python_app"
+  tests: "docker_tests"
+  pytest_cache: "docker_pytest_cache"
+  coverage: "docker_coverage"
+  python_mcp: "docker_python_mcp"  # MCP utilities volume
 
 # Network Configuration
 network:
-  name: "docker_examples_mcp_network"
+  name: "docker_mcp_network"
   driver: "bridge"
 
 # Testing Configuration (CI/CD Automation)
@@ -87,11 +87,11 @@ testing:
 
   commands:
     run_tests: "pytest tests/ -v --tb=short"
-    run_coverage: "pytest tests/ --cov=docker_examples_utils --cov-report=html --cov-report=term"
-    run_lint: "ruff check docker_examples_utils/ tests/"
-    run_format: "black docker_examples_utils/ tests/"
-    run_type_check: "mypy docker_examples_utils/"
-    run_security: "bandit -r docker_examples_utils/"
+    run_coverage: "pytest tests/ --cov=docker_utils --cov-report=html --cov-report=term"
+    run_lint: "ruff check docker_utils/ tests/"
+    run_format: "black docker_utils/ tests/"
+    run_type_check: "mypy docker_utils/"
+    run_security: "bandit -r docker_utils/"
 
   reports:
     coverage_directory: "coverage/"
