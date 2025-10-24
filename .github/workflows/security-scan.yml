@@ -3,8 +3,6 @@ name: Security Scan
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
   schedule:
     # Run weekly security scans on Sundays at midnight UTC
     - cron: '0 0 * * 0'
@@ -47,7 +45,6 @@ jobs:
 
   dependency-review:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

@@ -7,11 +7,6 @@ on:
       - '.docker-compose/**'
       - 'docker-compose*.yml'
       - '.github/workflows/validate-stacks.yml'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - '.docker-compose/**'
-      - 'docker-compose*.yml'
   workflow_dispatch:
 
 jobs:
