@@ -6,9 +6,11 @@ This guide provides step-by-step instructions for deploying Docker Compose Examp
 
 - Docker Engine 24.0+ with Compose V2
 - Git
-- Python 3.12+ (for validation scripts)
+- Python 3.14+ (for validation scripts)
 - At least 4GB RAM available for Docker
 - 8GB free disk space
+- Redis service (included in all stacks)
+- PostgreSQL database (included in all stacks)
 
 ## Environment Setup
 
@@ -48,7 +50,61 @@ cp .env.production .env
 cp .env.docker .env
 ```
 
-## Deployment Options
+### 4. Configure Security Settings
+
+Edit the `.env` file to configure security features:
+
+```bash
+# Security Configuration
+API_KEY=your_secure_api_key_here
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=60
+CORS_ORIGINS=http://localhost:3000,http://localhost:8080
+SECURITY_HEADERS_ENABLED=true
+INPUT_VALIDATION_ENABLED=true
+```
+
+## Security Configuration
+
+### API Key Authentication
+
+1. Generate a secure API key:
+```bash
+openssl rand -hex 32
+```
+
+2. Add to your `.env` file:
+```bash
+API_KEY=your_generated_api_key_here
+```
+
+3. Include API key in requests:
+```bash
+curl -H "X-API-Key: your_api_key" http://localhost:8000/api/status
+```
+
+### Rate Limiting
+
+Configure rate limits in `.env`:
+```bash
+# Requests per window (seconds)
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=60
+```
+
+### CORS Configuration
+
+Configure allowed origins:
+```bash
+CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
+```
+
+### Security Headers
+
+Enable security headers (enabled by default):
+```bash
+SECURITY_HEADERS_ENABLED=true
+```
 
 ### Option 1: Basic Stack (Development)
 

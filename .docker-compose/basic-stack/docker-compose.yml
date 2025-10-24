@@ -40,10 +40,12 @@ services:
       - "8001:8000"
     environment:
       - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/app:/app
+      - PYTHONPATH=/app/python_utils:/app
       - BASIC_MODE=true
     depends_on:
       db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - basic-stack-network
@@ -82,10 +84,34 @@ services:
       retries: 3
       start_period: 40s
 
+  redis:
+    build:
+      context: ../..
+      dockerfile: .docker-compose/basic-stack/dockerfiles/redis.Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
+    volumes:
+      - docker_examples_redis_data:/data
+      - docker_examples_redis_logs:/var/log/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - basic-stack-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
 volumes:
   docker_examples_db_data:
     driver: local
   docker_examples_db_logs:
+    driver: local
+  docker_examples_redis_data:
+    driver: local
+  docker_examples_redis_logs:
     driver: local
   docker_examples_node_modules:
     driver: local

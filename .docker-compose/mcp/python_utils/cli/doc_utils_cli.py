@@ -17,19 +17,19 @@ import re
 import sys
 from pathlib import Path
 
-from ..docker_examples_utils.config.settings import (
+from docker_examples_utils.config.settings import (
     HTTPConfig,
     PathConfig,
     has_interpreters,
 )
-from ..docker_examples_utils.models.models import (
+from docker_examples_utils.models.models import (
     ComponentInventoryConfig,
     LinkCheckConfig,
 )
-from ..docker_examples_utils.services.component_inventory import (
+from docker_examples_utils.services.component_inventory import (
     ComponentInventoryService,
 )
-from ..docker_examples_utils.services.link_checker import LinkCheckerService
+from docker_examples_utils.services.link_checker import LinkCheckerService
 
 
 def main() -> int:
@@ -168,14 +168,24 @@ Python 3.14 Features:
             print(f"🪝 Hooks: {len(inventory.get('hooks', []))}")
             print(f"🛠️  Utils: {len(inventory.get('utils', []))}")
 
-            output_file = args.output or "docs/testing/component-inventory.json"
-            with open(output_file, "w", encoding="utf-8") as f:
-                json.dump(inventory, f, indent=2, ensure_ascii=False)
-
-            print(f"📝 Inventory saved to {output_file}")
+            if args.output:
+                output_file = args.output if args.output.endswith('.json') else f"{args.output}.json"
+                with open(output_file, "w", encoding="utf-8") as f:
+                    json.dump(inventory, f, indent=2, ensure_ascii=False)
+                print(f"📝 Inventory saved to {output_file}")
+            else:
+                # Default behavior - save to docs/testing/component-inventory.json if docs directory exists
+                default_output = "docs/testing/component-inventory.json"
+                try:
+                    with open(default_output, "w", encoding="utf-8") as f:
+                        json.dump(inventory, f, indent=2, ensure_ascii=False)
+                    print(f"📝 Inventory saved to {default_output}")
+                except (OSError, IOError):
+                    # If we can't write to the default location, just continue without saving
+                    pass
 
         if args.output and args.command in ["check-links", "async-check"]:
-            results_file = f"{args.output}.json"
+            results_file = args.output if args.output.endswith('.json') else f"{args.output}.json"
             with open(results_file, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=2, ensure_ascii=False)
             print(f"📊 Results saved to {results_file}")

@@ -104,6 +104,67 @@ class HTTPConfig(BaseModel):
     )
 
 
+class SecurityConfig(BaseModel):
+    """Security configuration schema."""
+
+    enable_rate_limiting: bool = Field(
+        default=True, description="Enable rate limiting middleware"
+    )
+    rate_limit_requests: int = Field(
+        default=100, ge=1, description="Maximum requests per window"
+    )
+    rate_limit_window_seconds: int = Field(
+        default=60, ge=1, description="Rate limit window in seconds"
+    )
+
+    enable_authentication: bool = Field(
+        default=False, description="Enable authentication middleware"
+    )
+    api_key_header: str = Field(
+        default="X-API-Key", description="API key header name"
+    )
+    api_keys: list[str] = Field(
+        default_factory=list, description="List of valid API keys"
+    )
+
+    enable_cors: bool = Field(default=True, description="Enable CORS middleware")
+    cors_origins: list[str] = Field(
+        default=["*"], description="Allowed CORS origins"
+    )
+    cors_methods: list[str] = Field(
+        default=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        description="Allowed CORS methods"
+    )
+    cors_headers: list[str] = Field(
+        default=["*"], description="Allowed CORS headers"
+    )
+
+    enable_security_headers: bool = Field(
+        default=True, description="Enable security headers middleware"
+    )
+    hsts_max_age: int = Field(
+        default=31536000, ge=0, description="HSTS max-age in seconds"
+    )
+    content_security_policy: str = Field(
+        default="default-src 'self'",
+        description="Content Security Policy header value"
+    )
+
+    input_validation_enabled: bool = Field(
+        default=True, description="Enable input validation"
+    )
+    max_string_length: int = Field(
+        default=1000, ge=1, description="Maximum string input length"
+    )
+    max_list_items: int = Field(
+        default=100, ge=1, description="Maximum list input items"
+    )
+    allowed_path_patterns: list[str] = Field(
+        default=["src", "docs", "src/**", "docs/**"],
+        description="Allowed path patterns for file operations"
+    )
+
+
 class PathConfig(BaseModel):
     """Path configuration schema."""
 
@@ -296,6 +357,9 @@ class ApplicationConfig(BaseSettings):
     http: HTTPConfig = Field(
         default_factory=HTTPConfig, description="HTTP client configuration"
     )
+    security: SecurityConfig = Field(
+        default_factory=SecurityConfig, description="Security configuration"
+    )
     paths: PathConfig = Field(
         default_factory=PathConfig, description="Path configuration"
     )
@@ -446,9 +510,9 @@ def get_redis_config() -> RedisConfig | None:
     return get_config().redis
 
 
-def get_http_config() -> HTTPConfig:
-    """Get HTTP configuration."""
-    return get_config().http
+def get_security_config() -> SecurityConfig:
+    """Get security configuration."""
+    return get_config().security
 
 
 def get_path_config() -> PathConfig:

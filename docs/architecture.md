@@ -18,7 +18,7 @@ graph TB
 
     subgraph "Backend Layer"
         Python[Python Service<br/>Port 8000]
-        API[FastAPI Application]
+        API[FastAPI Application<br/>Security Enhanced]
     end
 
     subgraph "Data Layer"
@@ -28,6 +28,7 @@ graph TB
 
     subgraph "Infrastructure"
         LoadBalancer[Nginx Load Balancer<br/>Port 80/443]
+        Observability[Monitoring Stack<br/>Prometheus/Grafana]
     end
 
     User --> Node
@@ -40,6 +41,9 @@ graph TB
     API --> Redis
     Python --> GitHub
     Python --> Docker
+    Observability --> PostgreSQL
+    Observability --> Redis
+    Observability --> Python
 ```
 
 ## Service Components
@@ -55,10 +59,17 @@ graph TB
 ### Backend Services
 
 #### Python Service
-- **Purpose**: FastAPI backend application providing REST API
+- **Purpose**: FastAPI backend application providing REST API with enterprise security
 - **Port**: 8000
 - **Technology**: Python 3.14, FastAPI, Uvicorn
 - **Dependencies**: PostgreSQL, Redis, External APIs
+- **Security Features**:
+  - API key authentication middleware
+  - Rate limiting (configurable limits per endpoint)
+  - CORS protection with configurable origins
+  - Security headers (HSTS, CSP, X-Frame-Options)
+  - Input validation with Pydantic models
+  - Request correlation ID tracking
 
 ### Data Services
 
@@ -129,6 +140,30 @@ All services communicate over internal Docker networks:
 - Containers run as non-root users (UID 1001)
 - Minimal system dependencies installed
 - Read-only filesystem where possible
+
+## Enterprise Security Features
+
+### Authentication & Authorization
+- **API Key Authentication**: Configurable API keys for service access
+- **Rate Limiting**: Per-endpoint rate limits with Redis-backed storage
+- **Request Validation**: Comprehensive input validation using Pydantic models
+- **Correlation IDs**: Request tracing across service boundaries
+
+### Security Headers
+- **Content Security Policy (CSP)**: Prevents XSS attacks
+- **HTTP Strict Transport Security (HSTS)**: Enforces HTTPS connections
+- **X-Frame-Options**: Prevents clickjacking attacks
+- **X-Content-Type-Options**: Prevents MIME type sniffing
+
+### CORS Configuration
+- Configurable allowed origins, methods, and headers
+- Preflight request handling
+- Credential support for authenticated requests
+
+### Input Validation
+- Pydantic model validation for all API endpoints
+- Type checking and constraint validation
+- Automatic error responses for invalid inputs
 
 ## Deployment Patterns
 

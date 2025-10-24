@@ -249,6 +249,139 @@ docker compose -f .docker-compose/basic-stack/docker-compose.yml down
 docker compose -f .docker-compose/basic-stack/docker-compose.yml up -d
 ```
 
+## Security Issues
+
+### API Key Authentication Failing
+
+**Symptom**: 401 Unauthorized or 403 Forbidden errors
+
+**Solutions**:
+
+```bash
+# Verify API key is set in .env
+cat .env | grep API_KEY
+
+# Check API key header in request
+curl -H "X-API-Key: your_api_key" http://localhost:8000/api/status
+
+# Verify security middleware is enabled
+docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python env | grep SECURITY
+
+# Check application logs for authentication errors
+docker compose -f .docker-compose/basic-stack/docker-compose.yml logs python | grep -i auth
+```
+
+### Rate Limiting Blocking Requests
+
+**Symptom**: 429 Too Many Requests errors
+
+**Solutions**:
+
+```bash
+# Check rate limit configuration
+cat .env | grep RATE_LIMIT
+
+# Verify Redis is running (rate limits stored in Redis)
+docker compose -f .docker-compose/basic-stack/docker-compose.yml ps redis
+
+# Clear rate limit data (if using Redis CLI)
+docker compose -f .docker-compose/basic-stack/docker-compose.yml exec redis redis-cli FLUSHALL
+
+# Increase rate limits temporarily for testing
+RATE_LIMIT_REQUESTS=1000
+RATE_LIMIT_WINDOW=300
+```
+
+### CORS Errors in Browser
+
+**Symptom**: CORS policy errors in browser console
+
+**Solutions**:
+
+```bash
+# Check CORS configuration
+cat .env | grep CORS_ORIGINS
+
+# Verify frontend origin is allowed
+# CORS_ORIGINS should include http://localhost:3000
+
+# Check preflight request headers
+curl -H "Origin: http://localhost:3000" \
+     -H "Access-Control-Request-Method: GET" \
+     -X OPTIONS http://localhost:8000/api/status -v
+
+# Enable CORS debugging in application logs
+docker compose -f .docker-compose/basic-stack/docker-compose.yml logs python | grep -i cors
+```
+
+### Input Validation Errors
+
+**Symptom**: 422 Unprocessable Entity errors
+
+**Solutions**:
+
+```bash
+# Check request payload format
+curl -X POST http://localhost:8000/api/inventory \
+     -H "Content-Type: application/json" \
+     -H "X-API-Key: your_api_key" \
+     -d '{"invalid_field": "value"}'
+
+# Verify Pydantic models in application
+docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python python -c "
+from docker_examples_utils.models.models import InventoryRequest
+print(InventoryRequest.__annotations__)
+"
+
+# Check validation error details in logs
+docker compose -f .docker-compose/basic-stack/docker-compose.yml logs python | grep -i validation
+```
+
+## Redis Issues
+
+### Cannot Connect to Redis
+
+**Symptom**: Redis connection errors in application logs
+
+**Solutions**:
+
+```bash
+# Verify Redis service is running
+docker compose -f .docker-compose/basic-stack/docker-compose.yml ps redis
+
+# Check Redis health
+docker compose -f .docker-compose/basic-stack/docker-compose.yml exec redis redis-cli ping
+
+# Test connection from Python service
+docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python redis-cli -h redis ping
+
+# Check Redis logs
+docker compose -f .docker-compose/basic-stack/docker-compose.yml logs redis
+
+# Verify network connectivity
+docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python nc -zv redis 6379
+```
+
+### Redis Data Loss
+
+**Symptom**: Cached data disappears after restart
+
+**Solutions**:
+
+```bash
+# Redis in Docker Compose is ephemeral by design
+# Data is lost on container restart - this is expected behavior
+
+# For persistent Redis data, add volume mount:
+# In docker-compose.yml:
+redis:
+  volumes:
+    - docker_examples_redis_data:/data
+
+# Or use Redis persistence features
+# Configure RDB/AOF persistence in redis.conf
+```
+
 ## Health Check Failures
 
 ### All Health Checks Failing

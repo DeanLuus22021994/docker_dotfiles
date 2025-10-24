@@ -54,6 +54,7 @@ services:
       - SWARM_MODE=true
     depends_on:
       - db
+      - redis
     networks:
       - swarm-network
     healthcheck:
@@ -108,10 +109,40 @@ services:
           memory: 512M
           cpus: "0.5"
 
+  redis:
+    build:
+      context: ../..
+      dockerfile: .docker-compose/swarm-stack/dockerfiles/redis.Dockerfile
+      args:
+        DOCKER_BUILDKIT: 1
+    volumes:
+      - docker_examples_redis_data:/data
+      - docker_examples_redis_logs:/var/log/redis
+    ports:
+      - "6379:6379"
+    networks:
+      - swarm-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+
 volumes:
   docker_examples_db_data:
     driver: local
   docker_examples_db_logs:
+    driver: local
+  docker_examples_redis_data:
+    driver: local
+  docker_examples_redis_logs:
     driver: local
   docker_examples_node_modules:
     driver: local

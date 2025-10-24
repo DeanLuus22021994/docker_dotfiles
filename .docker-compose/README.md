@@ -1,110 +1,197 @@
 ---
-started: 2025-10-22
-completed: 2025-10-22
+started: 2025-01-15
+completed: 2025-01-15
 author: AI Assistant
-version: 2.2
+version: 3.0
 status: active
-description: Overview of Docker Compose examples with Python 3.14 enhancements - Consolidated Dockerfile and volume mounts
-tags: [docker, compose, examples, devcontainer, testing, python314, consolidated]
+description: Enterprise-grade Docker Compose examples with security enhancements, Redis caching, and comprehensive testing
+tags: [docker, compose, examples, security, redis, enterprise, python314, fastapi]
 ---
 
-# [`DOCKER-COMPOSE-EXAMPLES-001`](#docker-compose-examples-001) Docker Compose Examples
+# Docker Compose Examples - Enterprise Edition
 
-## [`UAT-2025-10-22T20:46:36Z`](#uat-2025-10-22t20-46-36z) User Acceptance Testing - 2025-10-22T20:46:36Z
+## Overview
 
-### Pre-UAT Cleanup ✅
+A comprehensive collection of Docker Compose configurations demonstrating enterprise-grade application deployment patterns with advanced security, caching, and monitoring capabilities.
 
-**Environment**: Clean slate achieved - 5.96GB reclaimed
+## Architecture Features
 
-### UAT Results Summary ✅
+### Core Services
+- **Python FastAPI** (3.14+): REST API with enterprise security middleware
+- **Node.js** (22+): Modern frontend with Vite
+- **PostgreSQL** (15+): Primary relational database
+- **Redis** (7+): High-performance caching and session management
 
-#### All stacks validated with Python 3.14 support and enhanced caching
+### Security Enhancements
+- API key authentication with configurable keys
+- Rate limiting with Redis-backed storage
+- CORS protection with configurable origins
+- Security headers (HSTS, CSP, X-Frame-Options)
+- Input validation with Pydantic models
+- Request correlation ID tracking
 
-#### Basic Stack ✅
-- Node.js, Python FastAPI, PostgreSQL operational
-- Enhanced with comprehensive build caching
-- Named volumes for instant rebuilds
+### Enterprise Features
+- Health checks with configurable intervals
+- Named volumes for data persistence
+- Docker secrets for credential management
+- Comprehensive logging and monitoring
+- Multi-stack deployment patterns
 
-#### Cluster Example ✅
-- Load-balanced nginx cluster with 7 services
-- Optimized Dockerfiles with BuildKit
-- Cross-stack volume compatibility
+## Available Stacks
 
-#### Swarm Stack ✅
-- Docker Swarm orchestration with overlay networking
-- Resource constraints and placement rules
-- Production-ready configurations
+### 1. Basic Stack (`basic-stack/`)
+**Purpose**: Development and testing environment
+**Services**: Python, Node.js, PostgreSQL, Redis
+**Use Case**: Local development, unit testing, CI/CD pipelines
 
-#### MCP Python Utils ✅
-- New testing and validation stack
-- Python 3.14 optimizations with free-threaded execution
-- Comprehensive tool caching (pytest, mypy, ruff)
+### 2. Cluster Example (`cluster-example/`)
+**Purpose**: Load-balanced multi-instance deployment
+**Services**: 3x Python replicas, Node.js, PostgreSQL, Redis, Nginx
+**Use Case**: Testing horizontal scaling, load balancing
 
-<a id="fr-docker-compose-examples-001-functional-requirements"></a>
+### 3. Swarm Stack (`swarm-stack/`)
+**Purpose**: Production orchestration with Docker Swarm
+**Services**: Replicated services with overlay networking
+**Use Case**: Production deployments, service discovery
 
-## [`FR-DOCKER-COMPOSE-EXAMPLES-001`](#fr-docker-compose-examples-001-functional-requirements) Functional Requirements
+### 4. MCP Python Utils (`mcp/python_utils/`)
+**Purpose**: Testing and validation utilities
+**Services**: Python testing environment with comprehensive tooling
+**Use Case**: Automated testing, code quality validation
 
-- Multiple Docker Compose stacks with Python 3.14 and enhanced caching
-- Dedicated `dockerfiles` folders for each stack with optimized builds
-- Named volume mounts for build caching and instant subsequent rebuilds
-- Comprehensive testing integration with `mcp/python_utils` stack
-- Automated validation and health check verification
+## Quick Start
 
-### [`FR-DOCKER-COMPOSE-EXAMPLES-001`] Validation Criteria
+### Prerequisites
+- Docker Engine 24.0+
+- Docker Compose V2
+- Python 3.14+
+- 4GB RAM minimum
 
+### Setup
 ```bash
-find . -name "docker-compose.yml" -exec docker-compose -f {} config \;
-python -c "import concurrent.interpreters; print('✓ Python 3.14')"
+# Clone repository
+git clone <repository-url>
+cd docker-compose-examples
+
+# Configure secrets
+echo "your_db_password" > secrets/db_password.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your settings
+
+# Start basic stack
+docker compose -f .docker-compose/basic-stack/docker-compose.yml up -d
+
+# Access services
+# Frontend: http://localhost:3000
+# API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
 ```
 
-<a id="uac-docker-compose-examples-001-user-acceptance-criteria"></a>
+## Security Configuration
 
-## [`UAC-DOCKER-COMPOSE-EXAMPLES-001`](#uac-docker-compose-examples-001-user-acceptance-criteria) User Acceptance Criteria
-
-- All stacks deploy successfully
-- Services pass health checks
-- HTTP endpoints respond correctly
-- No residual artifacts after cleanup
-
-### [`UAC-DOCKER-COMPOSE-EXAMPLES-001`] Validation Criteria
-
+### API Authentication
 ```bash
-for dir in */; do cd "$dir" && docker-compose up -d && cd ..; done
-docker-compose down -v --remove-orphans
+# Generate secure API key
+openssl rand -hex 32
+
+# Configure in .env
+API_KEY=your_generated_key_here
+
+# Use in requests
+curl -H "X-API-Key: your_key" http://localhost:8000/api/status
 ```
 
-<a id="blk-docker-compose-examples-001-blockers"></a>
-
-## `BLK-DOCKER-COMPOSE-EXAMPLES-001` Blockers
-
-- Docker environment unavailable
-- Port conflicts
-- Insufficient system resources
-
-### [`BLK-DOCKER-COMPOSE-EXAMPLES-001`] Validation Criteria
-
+### Rate Limiting
 ```bash
-docker --version
-lsof -i :3000,8080,5432 || echo "Ports available"
+# Configure limits in .env
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=60
 ```
 
-<a id="py314-docker-compose-examples-001-python314-features"></a>
+### CORS Setup
+```bash
+# Configure allowed origins
+CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
+```
 
-## `PY314-DOCKER-COMPOSE-EXAMPLES-001` Python 3.14 Features
+## Validation & Testing
 
-### Enhanced Capabilities
+### Automated Validation
+```bash
+# Validate all stack configurations
+python .docker-compose/validate_stacks.py
 
-- **Free-threaded execution**: True parallelism
-- **Concurrent interpreters**: Isolated execution
-- **Enhanced pathlib**: Direct file operations
+# Run comprehensive tests
+docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm test
+```
 
-<a id="lnk-docker-compose-examples-001-links"></a>
+### Health Checks
+All services include health checks with enterprise-grade monitoring:
+- **Interval**: 30s
+- **Timeout**: 10s
+- **Retries**: 3
+- **Start Period**: 40s
 
-## `LNK-DOCKER-COMPOSE-EXAMPLES-001` Links
+## Development Workflow
 
-- Testing Protocol
-- Changelog
-- MCP Utilities
-- Basic Stack
-- Cluster Example
-- Swarm Stack
+### Local Development
+```bash
+# Start development stack
+docker compose -f .docker-compose/basic-stack/docker-compose.yml up
+
+# View logs
+docker compose -f .docker-compose/basic-stack/docker-compose.yml logs -f
+
+# Run tests
+docker compose -f .docker-compose/mcp/python_utils/docker-compose.yml run --rm test
+```
+
+### Production Deployment
+```bash
+# Use Swarm stack for production
+docker stack deploy -c .docker-compose/swarm-stack/docker-compose.yml docker_examples
+
+# Scale services
+docker service scale docker_examples_python=5
+```
+
+## Documentation
+
+- [Architecture Overview](../docs/architecture.md)
+- [Deployment Guide](../docs/deployment.md)
+- [Troubleshooting](../docs/troubleshooting.md)
+- [API Documentation](http://localhost:8000/docs) (when running)
+
+## Recent Updates
+
+### Version 3.0 - Enterprise Security (Current)
+- ✅ **Security Enhancements**: API authentication, rate limiting, CORS, security headers
+- ✅ **Redis Integration**: All stacks now include Redis caching services
+- ✅ **Input Validation**: Comprehensive Pydantic model validation
+- ✅ **Mock Removal**: Eliminated all mock implementations for production readiness
+- ✅ **Documentation**: Updated all docs to reflect current enterprise architecture
+
+### Version 2.2 - Python 3.14 Support
+- ✅ Python 3.14 with free-threaded execution
+- ✅ Enhanced caching and build optimization
+- ✅ Comprehensive testing integration
+
+### Version 2.1 - Multi-Stack Architecture
+- ✅ Basic, cluster, and swarm deployment patterns
+- ✅ Named volumes for data persistence
+- ✅ Health checks and monitoring
+
+## Contributing
+
+1. Follow conventional commit standards
+2. Update documentation for any architecture changes
+3. Include tests for new features
+4. Validate all stacks before submitting PRs
+
+## Support
+
+- [Issues](https://github.com/your-repo/issues)
+- [Documentation](../docs/)
+- [Troubleshooting Guide](../docs/troubleshooting.md)

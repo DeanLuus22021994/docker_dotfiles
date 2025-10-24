@@ -8,6 +8,63 @@ the docker-compose-utils package.
 from dataclasses import asdict, dataclass, field
 from typing import Any, Optional
 
+from pydantic import BaseModel, Field, field_validator
+
+
+class InventoryRequest(BaseModel):
+    """Request model for inventory endpoint."""
+
+    src_path: str = Field(
+        default="src",
+        min_length=1,
+        max_length=255,
+        description="Source directory path"
+    )
+
+    @field_validator("src_path")
+    @classmethod
+    def validate_src_path(cls, v: str) -> str:
+        """Validate source path for security."""
+        from ..config.config import get_security_config
+
+        security_config = get_security_config()
+        if not security_config.input_validation_enabled:
+            return v
+
+        # Check against allowed patterns
+        import fnmatch
+        allowed = False
+        for pattern in security_config.allowed_path_patterns:
+            if fnmatch.fnmatch(v, pattern):
+                allowed = True
+                break
+
+        if not allowed:
+            raise ValueError(f"Path '{v}' is not in allowed patterns")
+
+        # Prevent directory traversal
+        if ".." in v or v.startswith("/"):
+            raise ValueError("Invalid path: directory traversal not allowed")
+
+        return v
+
+
+class LinkCheckRequest(BaseModel):
+    """Request model for link checking endpoint."""
+
+    workers: int = Field(
+        default=10,
+        ge=1,
+        le=50,
+        description="Number of concurrent workers"
+    )
+    timeout: int = Field(
+        default=10,
+        ge=1,
+        le=300,
+        description="Request timeout in seconds"
+    )
+
 
 @dataclass
 class LinkResult:

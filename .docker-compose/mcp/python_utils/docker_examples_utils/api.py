@@ -32,7 +32,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import FastAPI, HTTPException, Request, Response, Depends
 from fastapi.responses import JSONResponse
 
 from .config.config import LogLevel
@@ -42,6 +42,8 @@ from .config.settings import (
     PathConfig,
     get_python_features,
 )
+from .core.security import setup_security_middleware
+from .models.models import InventoryRequest, LinkCheckRequest
 
 path_config = PathConfig()
 http_config = HTTPConfig()
@@ -55,6 +57,9 @@ app = FastAPI(
     description="FastAPI web server for Docker Examples Python utilities",
     version="0.2.0",
 )
+
+# Setup security middleware
+setup_security_middleware(app)
 
 status_lock = threading.Lock()
 init_status: dict[str, Any] = {
@@ -167,7 +172,9 @@ async def health(request: Request) -> JSONResponse:
 
 
 @app.get("/inventory")
-async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse:
+async def get_inventory(
+    request: Request, inventory_request: InventoryRequest
+) -> JSONResponse:
     """
     Generate component inventory from source files.
 
@@ -189,7 +196,7 @@ async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse
     )
     correlation_logger.info(
         "Inventory generation requested",
-        extra={"endpoint": "/inventory", "src_path": src_path},
+        extra={"endpoint": "/inventory", "src_path": inventory_request.src_path},
     )
 
     try:
@@ -198,7 +205,7 @@ async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse
             ComponentInventoryService,
         )
 
-        config = ComponentInventoryConfig(src_path=src_path)
+        config = ComponentInventoryConfig(src_path=inventory_request.src_path)
         service = ComponentInventoryService(config, path_config)
         inventory = service.generate_inventory()
 
@@ -220,7 +227,7 @@ async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse
     except Exception as e:
         correlation_logger.error(
             "Inventory generation failed",
-            extra={"error": str(e), "src_path": src_path},
+            extra={"error": str(e), "src_path": inventory_request.src_path},
         )
         raise HTTPException(
             status_code=500, detail=f"Error generating inventory: {str(e)}"
@@ -229,7 +236,7 @@ async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse
 
 @app.get("/links/check")
 async def check_links(
-    request: Request, workers: int = 10, timeout: int = 10
+    request: Request, link_request: LinkCheckRequest = Depends()
 ) -> JSONResponse:
     """
     Validate links in documentation files.
@@ -253,7 +260,7 @@ async def check_links(
     )
     correlation_logger.info(
         "Link checking requested",
-        extra={"endpoint": "/links/check", "workers": workers, "timeout": timeout},
+        extra={"endpoint": "/links/check", "workers": link_request.workers, "timeout": link_request.timeout},
     )
 
     try:
@@ -261,8 +268,8 @@ async def check_links(
         from .services.link_checker import LinkCheckerService
 
         config = LinkCheckConfig(
-            max_workers=workers,
-            timeout=timeout,
+            max_workers=link_request.workers,
+            timeout=link_request.timeout,
             use_interpreters=features["has_interpreters"],
         )
 
@@ -285,7 +292,7 @@ async def check_links(
     except Exception as e:
         correlation_logger.error(
             "Link checking failed",
-            extra={"error": str(e), "workers": workers, "timeout": timeout},
+            extra={"error": str(e), "workers": link_request.workers, "timeout": link_request.timeout},
         )
         raise HTTPException(
             status_code=500, detail=f"Error checking links: {str(e)}"
