@@ -60,3 +60,13 @@ docker-compose -f .docker-compose/basic-stack/docker-compose.yml build
 
 ## TODO
 Check TODO.md for active tasks
+
+## AI Agent Guidelines
+- **Agent Code**: `agent_app.py` contains the main AI agent implementation using async patterns
+- **Tool Integration**: Agent uses various tools for code analysis, file operations, and terminal commands
+- **Error Handling**: Always implement try/except blocks for robust agent operations
+- **Documentation**: Document agent capabilities, tool usage, and limitations in docstrings
+- **Testing**: Use pytest for agent functionality testing with proper async handling
+- **MCP Protocol**: Agent supports Model Context Protocol for tool calling and external integrations
+- **Environment Variables**: Use environment variables for configuration (GITHUB_TOKEN, etc.)
+- **Logging**: Implement structured logging for agent operations and debugging
