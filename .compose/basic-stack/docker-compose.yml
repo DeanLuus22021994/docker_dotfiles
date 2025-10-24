@@ -86,17 +86,12 @@ services:
       start_period: 40s
     restart: unless-stopped
 
-  volumes:
+volumes:
   docker_db_data:
-    driver: local
   docker_db_logs:
-    driver: local
   docker_redis_data:
-    driver: local
   docker_python_app:
-    driver: local
   docker_node_app:
-    driver: local
 
 networks:
   default:
