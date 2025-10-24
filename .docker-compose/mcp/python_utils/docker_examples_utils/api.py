@@ -4,6 +4,24 @@ FastAPI web server for Docker Examples Python utilities.
 
 Provides REST API endpoints for documentation utilities,
 leveraging Python 3.14 features for enhanced performance.
+
+This module implements a FastAPI web server that exposes various
+documentation utilities as REST endpoints. It includes correlation ID
+tracking, structured logging, and leverages Python 3.14+ features
+for improved performance.
+
+Endpoints:
+    GET /: API information and available endpoints
+    GET /health: Health check with system status
+    GET /inventory: Component inventory generation
+    GET /links/check: Link validation service
+
+Features:
+    - Correlation ID tracking for request tracing
+    - Structured JSON logging
+    - Python 3.14+ feature detection and utilization
+    - Comprehensive error handling
+    - Async endpoint support
 """
 
 import datetime
@@ -50,18 +68,50 @@ init_status: dict[str, Any] = {
 async def add_correlation_id(
     request: Request, call_next: Callable[[Request], Awaitable[Response]]
 ) -> Response:
-    correlation_id = request.headers.get("X-Correlation-ID", str(uuid.uuid4()))
+    """
+    Middleware to add correlation ID tracking to all requests.
 
-    request.state.correlation_id = correlation_id
+    This middleware ensures every request has a correlation ID for
+    distributed tracing and logging. If no correlation ID is provided
+    in the request headers, a new UUID is generated.
 
-    response = await call_next(request)
-    response.headers["X-Correlation-ID"] = correlation_id
+    Args:
+        request: FastAPI request object
+        call_next: Next middleware/endpoint in the chain
 
-    return response
+    Returns:
+        Response: Modified response with correlation ID header
+    """
+    try:
+        correlation_id = request.headers.get("X-Correlation-ID", str(uuid.uuid4()))
+        request.state.correlation_id = correlation_id
+
+        response = await call_next(request)
+        response.headers["X-Correlation-ID"] = correlation_id
+
+        return response
+    except Exception:
+        # Fallback error response if middleware fails
+        return JSONResponse(
+            status_code=500,
+            content={"error": "Internal server error", "correlation_id": str(uuid.uuid4())},
+        )
 
 
 @app.get("/")
 async def root(request: Request) -> dict[str, Any]:
+    """
+    Root endpoint providing API information.
+
+    Returns basic API information including version, Python features,
+    and available endpoints.
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        dict: API information and available endpoints
+    """
     correlation_logger = logging_config.get_correlation_logger(
         request.state.correlation_id
     )
@@ -83,6 +133,18 @@ async def root(request: Request) -> dict[str, Any]:
 
 @app.get("/health")
 async def health(request: Request) -> JSONResponse:
+    """
+    Health check endpoint.
+
+    Provides system health information including Python version,
+    available features, and service status.
+
+    Args:
+        request: FastAPI request object
+
+    Returns:
+        JSONResponse: Health status information
+    """
     correlation_logger = logging_config.get_correlation_logger(
         request.state.correlation_id
     )
@@ -106,6 +168,22 @@ async def health(request: Request) -> JSONResponse:
 
 @app.get("/inventory")
 async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse:
+    """
+    Generate component inventory from source files.
+
+    Analyzes the specified source directory for React/TypeScript components
+    and generates a categorized inventory.
+
+    Args:
+        request: FastAPI request object
+        src_path: Source directory path (default: "src")
+
+    Returns:
+        JSONResponse: Component inventory with summary statistics
+
+    Raises:
+        HTTPException: If inventory generation fails
+    """
     correlation_logger = logging_config.get_correlation_logger(
         request.state.correlation_id
     )
@@ -153,6 +231,23 @@ async def get_inventory(request: Request, src_path: str = "src") -> JSONResponse
 async def check_links(
     request: Request, workers: int = 10, timeout: int = 10
 ) -> JSONResponse:
+    """
+    Validate links in documentation files.
+
+    Performs concurrent link checking on all documentation files
+    using the specified number of workers and timeout.
+
+    Args:
+        request: FastAPI request object
+        workers: Number of concurrent workers (default: 10)
+        timeout: Request timeout in seconds (default: 10)
+
+    Returns:
+        JSONResponse: Link validation results with summary statistics
+
+    Raises:
+        HTTPException: If link checking fails
+    """
     correlation_logger = logging_config.get_correlation_logger(
         request.state.correlation_id
     )
