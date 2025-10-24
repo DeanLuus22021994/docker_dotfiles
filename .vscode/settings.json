@@ -66,9 +66,9 @@
     "debug.useNodeFetcher": true
   },
 
-  // Python Settings - Use localhost Python environment
-  "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\AppData\\Local\\Programs\\Python\\Python314\\python3.14t.exe",  // Use Python 3.14 free-threaded
-  "python.terminal.activateEnvironment": true,  // Activate environment in terminal
+  // Python Settings - Portable configuration
+  "python.defaultInterpreterPath": "${workspaceFolder}/.python/python.exe",  // Use workspace-relative path for portability
+  "python.terminal.activateEnvironment": true,
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
   "python.formatting.provider": "black",
@@ -76,19 +76,21 @@
   "python.linting.mypyEnabled": true,
   "python.linting.ruffEnabled": true,
   "python.analysis.typeCheckingMode": "strict",
-  // Exclude uv Python installations that don't support free-threading
+  // Portable environment file handling
   "python.envFile": "${workspaceFolder}/.env",
   "python.experiments.optInto": ["pythonTerminalEnvVarActivation"],
   "python.interpreter.infoVisibility": "never",
-  // Exclude problematic Python installations
+  // Allow interpreter discovery but exclude problematic installations
+  "python.interpreter.locator": "auto",
   "python.pythonPath.exclude": {
     "**/uv/python/**": true,
-    "**/cpython-3.14.0rc3*/**": true
+    "**/cpython-3.14.0rc3*/**": true,
+    "**/.python/**": false  // Allow workspace .python
   },
-  // Disable automatic environment discovery to prevent conflicts
+  // Enable environment activation
   "python.terminal.activateEnvInCurrentTerminal": true,
   "python.terminal.shellIntegration.enabled": true,
-  // Force specific interpreter and disable discovery
-  "python.interpreter.locator": "none",
-  "python.interpreter.showDeprecatedWarning": false
+  "python.interpreter.showDeprecatedWarning": false,
+  // Add workspace to Python path for better import resolution
+  "python.analysis.extraPaths": ["${workspaceFolder}"]
 }
