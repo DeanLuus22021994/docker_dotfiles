@@ -10,9 +10,9 @@ import logging
 import os
 import subprocess
 import sys
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Union, Callable
-from dataclasses import dataclass, asdict
+from typing import Any, Callable, Dict, List, Optional, Union
 
 # Core dependencies only - no external AI services
 try:
