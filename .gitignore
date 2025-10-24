@@ -13,9 +13,29 @@ Thumbs.db
 **/__pycache__/
 **/*.pyc
 **/*.pyo
+**/*.egg-info/
+**/.mypy_cache/
+**/.pytest_cache/
+**/.ruff_cache/
+**/htmlcov/
+**/.coverage
+**/coverage.xml
 
 # Node modules (can be large)
 **/node_modules/
 
 # Log files
 *.log
+
+# Environment files (local overrides)
+.env.local
+.env.*.local
+
+# IDE
+.vscode/settings.json.backup
+.idea/
+
+# Build artifacts
+dist/
+build/
+*.egg
