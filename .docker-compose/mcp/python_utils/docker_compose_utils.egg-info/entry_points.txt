@@ -1,2 +1,0 @@
-[console_scripts]
-docker-compose-utils = docker_compose_utils.cli:main
