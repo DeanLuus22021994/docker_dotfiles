@@ -7,22 +7,23 @@ RUN apk add --no-cache curl
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (including lock file)
+COPY api/package.json api/package-lock.json ./
 
 # Install dependencies
-RUN npm ci --only=production && \
+RUN npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy application code
-COPY server.js ./
+COPY api/server.js ./
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001 && \
-    chown -R nodejs:nodejs /app
+# For Docker Desktop, socket permissions require root access
+# Since socket is mounted read-only, this is acceptable
+# Create app directory with proper permissions
+RUN chown -R node:node /app
 
-USER nodejs
+# Note: Running as root for Docker socket access
+# Socket is mounted read-only for security
 
 # Expose port
 EXPOSE 3001

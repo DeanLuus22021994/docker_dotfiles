@@ -80,13 +80,6 @@ scrape_configs:
           service: 'host-metrics'
           tier: 'infrastructure'
 
-  # Docker API Proxy - Custom metrics endpoint (if added)
-  - job_name: 'docker-api'
-    scrape_interval: 15s
-    metrics_path: '/metrics'
-    static_configs:
-      - targets: ['cluster-docker-api:3001']
-        labels:
-          service: 'docker-api'
-          tier: 'monitoring'
+  # Note: Docker API Proxy does not expose Prometheus metrics
+  # It's a REST API for dashboard integration, not a metrics exporter
 
