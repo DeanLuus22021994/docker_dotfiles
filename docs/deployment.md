@@ -4,11 +4,13 @@ This guide provides step-by-step instructions for deploying Docker Compose Examp
 
 ## Prerequisites
 
-- Docker Engine 24.0+ with Compose V2
-- Git
-- Python 3.12+ (for validation scripts)
-- At least 4GB RAM available for Docker
-- 8GB free disk space
+- Docker Engine 24.0+ with BuildKit and Compose V2
+- Git 2.40+
+- Python 3.13+ with UV package manager
+- At least 8GB RAM (16GB recommended for Jupyter GPU workloads)
+- 20GB free disk space for images and volumes
+- NVIDIA GPU + drivers 535+ (optional, for CUDA acceleration)
+- Windows: WSL2 backend | Linux: Docker Engine | macOS: Docker Desktop 4.25+
 
 ## Environment Setup
 

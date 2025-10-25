@@ -3,9 +3,13 @@
 
 FROM prom/prometheus:latest
 
+# Install curl for better health checks
+USER root
+RUN apk add --no-cache curl
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:9090/-/healthy || exit 1
+    CMD curl -f http://localhost:9090/-/healthy || exit 1
 
 USER nobody
 

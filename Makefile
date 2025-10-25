@@ -30,7 +30,7 @@ build:
 
 up:
 	@echo "Starting production cluster..."
-	@docker-compose up -d loadbalancer cluster-web1 cluster-web2 cluster-web3 cluster-postgres cluster-redis cluster-github-mcp cluster-jupyter cluster-minio cluster-grafana cluster-prometheus
+	@docker-compose up -d loadbalancer cluster-web1 cluster-web2 cluster-web3 cluster-postgres cluster-redis cluster-mariadb cluster-github-mcp cluster-jupyter cluster-minio cluster-grafana cluster-prometheus
 
 dev:
 	@echo "Starting development environment with all services..."
@@ -68,6 +68,8 @@ test-health:
 	@docker exec cluster-postgres pg_isready -U cluster_user -d clusterdb || echo "  FAILED"
 	@echo "Redis:"
 	@docker exec cluster-redis redis-cli ping || echo "  FAILED"
+	@echo "MariaDB:"
+	@docker exec cluster-mariadb mariadb-admin ping -h localhost || echo "  FAILED"
 	@echo "Jupyter:"
 	@curl -f http://localhost:8888/api -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
 	@echo "MinIO:"
@@ -84,6 +86,8 @@ test-conn:
 		psql -h cluster-postgres -U cluster_user -d clusterdb -c 'SELECT version();' && \
 		echo 'Redis:' && \
 		redis-cli -h cluster-redis ping && \
+		echo 'MariaDB:' && \
+		mysql -h cluster-mariadb -u cluster_user -pchangeme -e 'SELECT VERSION();' && \
 		echo 'Web Services:' && \
 		curl -f http://cluster-loadbalancer && \
 		echo 'MinIO:' && \

@@ -32,13 +32,13 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     jupyterlab-lsp \
     python-lsp-server
 
-# Install NVIDIA CUDA support (if available)
+# Install PyTorch for additional ML frameworks
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install \
-    tensorflow-gpu \
     torch \
     torchvision \
-    torchaudio
+    torchaudio \
+    --index-url https://download.pytorch.org/whl/cu118
 
 # Configure Jupyter Lab
 RUN jupyter labextension install @jupyterlab/git

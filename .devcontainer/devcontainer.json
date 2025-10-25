@@ -6,6 +6,7 @@
   "runServices": [
     "cluster-postgres",
     "cluster-redis",
+    "cluster-mariadb",
     "cluster-web1",
     "cluster-web2",
     "cluster-web3",
@@ -71,6 +72,7 @@
   "forwardPorts": [
     8080,  // Load Balancer
     5432,  // PostgreSQL
+    3306,  // MariaDB
     6379,  // Redis
     3001,  // GitHub MCP Server
     8888,  // Jupyter Lab
@@ -86,6 +88,10 @@
     },
     "5432": {
       "label": "PostgreSQL Database",
+      "onAutoForward": "silent"
+    },
+    "3306": {
+      "label": "MariaDB Database",
       "onAutoForward": "silent"
     },
     "6379": {

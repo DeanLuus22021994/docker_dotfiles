@@ -1,0 +1,52 @@
+[project]
+name = "docker-modern-data-platform"
+version = "2.0.0"
+description = "Turn-key modern data platform with GPU, dual databases, monitoring, and AI integration"
+authors = [{name = "Dean Luus", email = "dean@example.com"}]
+requires-python = ">=3.13"
+license = {text = "MIT"}
+readme = "README.md"
+keywords = ["docker", "data-platform", "gpu", "jupyter", "postgresql", "mariadb", "redis", "minio", "grafana", "prometheus", "mcp"]
+
+[project.urls]
+Homepage = "https://github.com/DeanLuus22021994/docker_dotfiles"
+Repository = "https://github.com/DeanLuus22021994/docker_dotfiles.git"
+Issues = "https://github.com/DeanLuus22021994/docker_dotfiles/issues"
+
+[tool.uv]
+dev-dependencies = [
+    "black>=24.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pytest>=8.3",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py313']
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.docker-cluster]
+description = "Modern Data Platform - 14-service cluster with GPU, databases, monitoring, AI"
+version = "2.0.0"
+
+[tool.docker-cluster.commands]
+build = "docker-compose build"
+up = "docker-compose up -d loadbalancer cluster-web1 cluster-web2 cluster-web3 cluster-postgres cluster-redis cluster-mariadb cluster-jupyter cluster-minio cluster-grafana cluster-prometheus cluster-github-mcp cluster-k9s"
+dev = "docker-compose --profile dev up -d"
+down = "docker-compose down"
+logs = "docker-compose logs -f"
+ps = "docker-compose ps"
+validate = "docker-compose config --quiet"
+clean = "docker-compose down -v && docker system prune -af"
+test-health = "make test-health"
+test-conn = "make test-conn"

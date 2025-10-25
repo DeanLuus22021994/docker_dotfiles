@@ -3,6 +3,9 @@
 
 FROM minio/minio:latest
 
+# Install curl for health checks
+RUN microdnf install -y curl && microdnf clean all
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD curl -f http://localhost:9000/minio/health/live || exit 1

@@ -1,10 +1,11 @@
-# Docker Cluster Implementation
+# Modern Data Platform - Docker Cluster
 
-[![Docker](https://img.shields.io/badge/Docker-20.10%2B-blue)](https://www.docker.com/)
+[![Docker](https://img.shields.io/badge/Docker-24.0%2B-blue)](https://www.docker.com/)
 [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-V2-blue)](https://docs.docker.com/compose/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GPU](https://img.shields.io/badge/CUDA-12.2-green)](https://developer.nvidia.com/cuda-toolkit)
 
-A production-ready Docker cluster implementation featuring nginx load balancing, high availability with multiple web server replicas, and PostgreSQL database backend.
+A turn-key modern data platform featuring GPU-accelerated Jupyter, load-balanced web services, dual databases (PostgreSQL + MariaDB), Redis cache, S3-compatible storage (MinIO), GitHub MCP integration, and production-grade monitoring with Grafana/Prometheus.
 
 ## 🚀 Quick Start
 
@@ -42,14 +43,24 @@ make dev  # Starts cluster + devcontainer
 
 ```
 Internet → Load Balancer (nginx:8080)
-                     ↓
-          ┌─────────┼─────────┐
-          │         │         │
-        Web1      Web2      Web3
-       (nginx)   (nginx)   (nginx)
-                     ↓
-                PostgreSQL
-              (Database:5432)
+            ↓
+    ┌───────┼───────┐
+   Web1   Web2   Web3
+    ↓       ↓      ↓
+┌─────────────────────────────┐
+│   Data & Processing Layer   │
+├─────────────────────────────┤
+│ PostgreSQL:5432             │
+│ MariaDB:3306                │
+│ Redis:6379 (Cache)          │
+│ MinIO:9000 (S3 Storage)     │
+│ Jupyter:8888 (GPU/ML)       │
+│ GitHub MCP (AI Context)     │
+├─────────────────────────────┤
+│   Monitoring & Ops          │
+│ Grafana:3002 | Prometheus   │
+│ k9s (K8s CLI)               │
+└─────────────────────────────┘
 ```
 
 ### Components
@@ -62,43 +73,65 @@ Internet → Load Balancer (nginx:8080)
 
 ## ✨ Features
 
-- ✅ **High Availability**: Multiple web server replicas for redundancy
-- ✅ **Load Balancing**: Nginx round-robin distribution across all replicas
-- ✅ **Health Monitoring**: Comprehensive health checks for all services
+- ✅ **GPU-Accelerated ML**: Jupyter TensorFlow notebook with CUDA 12.2 support
+- ✅ **Dual Databases**: PostgreSQL (RDBMS) + MariaDB with optimized configs
+- ✅ **High Availability**: Load-balanced 3x nginx web servers with Redis cache
+- ✅ **S3-Compatible Storage**: MinIO for object storage (9000/9001)
+- ✅ **AI Integration**: GitHub MCP Server for Model Context Protocol
+- ✅ **Production Monitoring**: Grafana dashboards + Prometheus metrics
+- ✅ **K8s Management**: k9s terminal UI for Kubernetes workflows
+- ✅ **DevContainer Ready**: VS Code integration with all services
 - ✅ **Security**: Non-root execution, secrets management, network isolation
-- ✅ **Performance**: BuildKit caching, optimized Dockerfiles
-- ✅ **Scalability**: Easy horizontal scaling of web servers
-- ✅ **Production Ready**: Best practices, proper logging, error handling
+- ✅ **Performance**: BuildKit caching, optimized Dockerfiles, health checks
 
 ## 📦 Prerequisites
 
-- Docker Engine 20.10+
+- Docker Engine 24.0+ with BuildKit enabled
 - Docker Compose V2
-- 2GB RAM minimum (4GB recommended)
-- Ports 8080 (load balancer), 5432 (PostgreSQL)
+- 8GB RAM minimum (16GB recommended for Jupyter GPU workloads)
+- NVIDIA GPU + drivers (optional, for Jupyter CUDA acceleration)
+- Ports: 8080, 5432, 3306, 6379, 8888, 9000, 9001, 3002, 9090
+- Windows: WSL2 with Docker Desktop | Linux: Docker Engine | macOS: Docker Desktop
 
 ## 📂 Project Structure
 
 ```
 docker/
-├── .devcontainer/          # VS Code devcontainer
-├── .github/                # GitHub configuration
-├── dockerfiles/            # Dockerfile definitions
-│   ├── nginx.Dockerfile    # Nginx web server & load balancer
-│   ├── postgres.Dockerfile # PostgreSQL database
-│   ├── default.conf        # Nginx upstream config
-│   ├── nginx.conf          # Nginx server config
-│   └── postgresql.conf     # PostgreSQL tuning
-├── docs/                   # Documentation
-│   ├── architecture.md     # System architecture
-│   ├── deployment.md       # Deployment guide
-│   └── troubleshooting.md  # Troubleshooting guide
-├── secrets/                # Secrets directory
-├── web-content/            # Static web content
-├── docker-compose.yml      # Main compose file
-├── Makefile                # Build commands
-├── nginx.conf              # Load balancer config
-└── README.md               # This file
+├── .devcontainer/              # VS Code devcontainer config
+│   ├── devcontainer.json       # DevContainer settings + runServices
+│   └── devcontainer.dockerfile # Python 3.13 + Node 22 + kubectl
+├── .github/                    # GitHub configuration
+│   └── copilot-instructions.md # Copilot coding standards
+├── dockerfile/                 # Dockerfile definitions (SRP)
+│   ├── configs/                # Configuration files
+│   │   ├── nginx.conf          # Load balancer config
+│   │   ├── default.conf        # Upstream servers
+│   │   ├── postgresql.conf     # PostgreSQL tuning
+│   │   └── mariadb.conf        # MariaDB optimization
+│   ├── nginx.Dockerfile        # Nginx Alpine
+│   ├── postgres.Dockerfile     # PostgreSQL 13 Alpine
+│   ├── mariadb.Dockerfile      # MariaDB 11 Jammy
+│   ├── redis.Dockerfile        # Redis 7 Alpine
+│   ├── jupyter.Dockerfile      # TensorFlow GPU notebook
+│   ├── minio.Dockerfile        # S3-compatible storage
+│   ├── grafana.Dockerfile      # Monitoring dashboards
+│   ├── prometheus.Dockerfile   # Metrics collection
+│   ├── github-mcp.Dockerfile   # MCP server for GitHub
+│   └── k9s.Dockerfile          # Kubernetes CLI UI
+├── docs/                       # Documentation
+│   ├── architecture.md         # System architecture
+│   ├── deployment.md           # Deployment guide
+│   └── troubleshooting.md      # Troubleshooting
+├── monitoring/                 # Monitoring configs
+│   └── prometheus.yml          # Prometheus scrape targets
+├── secrets/                    # Secrets directory (gitignored)
+│   └── README.md               # Secrets setup guide
+├── web-content/                # Static web content
+│   └── index.html              # Cluster landing page
+├── docker-compose.yml          # 14-service orchestration
+├── Makefile                    # Build + test commands
+├── pyproject.toml              # Python project metadata
+└── README.md                   # This file
 ```
 
 ## 🔧 Installation
@@ -181,11 +214,16 @@ docker-compose down -v
 
 ### Service Access
 
-- **Load Balancer**: http://localhost:8080
-- **PostgreSQL**: localhost:5432
-  - Database: `clusterdb`
-  - User: `cluster_user`
-  - Password: From `secrets/db_password.txt`
+- **Load Balancer**: http://localhost:8080 (Web UI)
+- **PostgreSQL**: localhost:5432 (User: cluster_user, DB: clusterdb)
+- **MariaDB**: localhost:3306 (User: cluster_user, DB: clusterdb)
+- **Redis**: localhost:6379 (Password: changeme)
+- **Jupyter Lab**: http://localhost:8888 (Token: changeme, GPU-enabled)
+- **MinIO Console**: http://localhost:9001 (Admin/Admin)
+- **MinIO API**: localhost:9000 (S3-compatible)
+- **Grafana**: http://localhost:3002 (Admin/Admin)
+- **Prometheus**: http://localhost:9090 (Metrics)
+- **GitHub MCP**: stdio-based (Node.js integration)
 
 ## ⚙️ Configuration
 

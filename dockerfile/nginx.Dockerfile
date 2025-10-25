@@ -11,8 +11,8 @@ RUN apk add --no-cache \
 # nginx user already exists in nginx:alpine image
 
 # Copy custom nginx configuration
-COPY --chown=nginx:nginx dockerfiles/nginx.conf /etc/nginx/nginx.conf
-COPY --chown=nginx:nginx dockerfiles/default.conf /etc/nginx/conf.d/default.conf
+COPY --chown=nginx:nginx dockerfile/configs/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginx:nginx dockerfile/configs/default.conf /etc/nginx/conf.d/default.conf
 
 # Create cache directory with proper permissions
 RUN mkdir -p /var/cache/nginx \

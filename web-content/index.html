@@ -1,15 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cluster Example</title>
+  <title>Modern Data Platform - Docker Cluster</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    h1 { font-size: 3rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    .subtitle { font-size: 1.2rem; opacity: 0.9; margin-bottom: 30px; }
+    .services {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .service {
+      background: rgba(255,255,255,0.15);
+      padding: 20px;
+      border-radius: 12px;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .service:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.25);
+    }
+    .service h3 { margin-bottom: 8px; }
+    .service p { opacity: 0.85; font-size: 0.9rem; }
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+    a { color: #fff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
 </head>
-
 <body>
-  <h1>Cluster Example Web Server</h1>
-  <p>This is a simple nginx web server in the cluster example.</p>
+  <div class="container">
+    <h1>🚀 Modern Data Platform</h1>
+    <p class="subtitle">Turn-key Docker cluster with GPU acceleration, dual databases, and production monitoring</p>
+    
+    <div class="services">
+      <div class="service">
+        <h3>🔮 Load Balancer</h3>
+        <p>Nginx round-robin across 3 web servers</p>
+        <span class="badge">Port 8080</span>
+      </div>
+      
+      <div class="service">
+        <h3>🗄️ PostgreSQL</h3>
+        <p>Production-ready RDBMS with tuning</p>
+        <span class="badge">Port 5432</span>
+      </div>
+      
+      <div class="service">
+        <h3>🐬 MariaDB</h3>
+        <p>MySQL-compatible database server</p>
+        <span class="badge">Port 3306</span>
+      </div>
+      
+      <div class="service">
+        <h3>⚡ Redis</h3>
+        <p>In-memory cache with persistence</p>
+        <span class="badge">Port 6379</span>
+      </div>
+      
+      <div class="service">
+        <h3>🧪 Jupyter Lab</h3>
+        <p><a href="http://localhost:8888" target="_blank">GPU-accelerated ML notebooks</a></p>
+        <span class="badge">CUDA 12.2</span>
+      </div>
+      
+      <div class="service">
+        <h3>🪣 MinIO</h3>
+        <p><a href="http://localhost:9001" target="_blank">S3-compatible object storage</a></p>
+        <span class="badge">Ports 9000/9001</span>
+      </div>
+      
+      <div class="service">
+        <h3>📊 Grafana</h3>
+        <p><a href="http://localhost:3002" target="_blank">Monitoring dashboards</a></p>
+        <span class="badge">Port 3002</span>
+      </div>
+      
+      <div class="service">
+        <h3>📈 Prometheus</h3>
+        <p><a href="http://localhost:9090" target="_blank">Metrics collection</a></p>
+        <span class="badge">Port 9090</span>
+      </div>
+      
+      <div class="service">
+        <h3>🐙 GitHub MCP</h3>
+        <p>Model Context Protocol integration</p>
+        <span class="badge">Stdio-based</span>
+      </div>
+      
+      <div class="service">
+        <h3>☸️ k9s</h3>
+        <p>Kubernetes CLI management UI</p>
+        <span class="badge">Container Shell</span>
+      </div>
+    </div>
+  </div>
 </body>
-
 </html>

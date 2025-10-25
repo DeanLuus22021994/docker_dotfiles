@@ -1,0 +1,124 @@
+# Modern Data Platform Configuration
+# Centralized cluster configuration for all services
+
+cluster:
+  name: "docker-modern-data-platform"
+  version: "2.0.0"
+  environment: "development"
+  
+network:
+  name: "cluster-network"
+  driver: "bridge"
+  subnet: "172.20.0.0/16"
+
+services:
+  loadbalancer:
+    enabled: true
+    port: 8080
+    replicas: 1
+    health_check_interval: 15s
+    
+  web_servers:
+    enabled: true
+    replicas: 3
+    health_check_interval: 30s
+    
+  databases:
+    postgresql:
+      enabled: true
+      port: 5432
+      database: "clusterdb"
+      user: "cluster_user"
+      max_connections: 100
+      health_check_interval: 10s
+      
+    mariadb:
+      enabled: true
+      port: 3306
+      database: "clusterdb"
+      user: "cluster_user"
+      max_connections: 100
+      health_check_interval: 30s
+      
+  cache:
+    redis:
+      enabled: true
+      port: 6379
+      persistence: true
+      health_check_interval: 30s
+      
+  storage:
+    minio:
+      enabled: true
+      api_port: 9000
+      console_port: 9001
+      health_check_interval: 30s
+      
+  compute:
+    jupyter:
+      enabled: true
+      port: 8888
+      gpu_enabled: true
+      cuda_version: "12.2"
+      health_check_interval: 60s
+      
+    github_mcp:
+      enabled: true
+      mode: "stdio"
+      health_check_interval: 30s
+      
+    k9s:
+      enabled: true
+      health_check_interval: 30s
+      
+  monitoring:
+    grafana:
+      enabled: true
+      port: 3002
+      admin_user: "admin"
+      health_check_interval: 30s
+      
+    prometheus:
+      enabled: true
+      port: 9090
+      scrape_interval: 15s
+      health_check_interval: 30s
+
+volumes:
+  postgres_data:
+    driver: "local"
+  postgres_logs:
+    driver: "local"
+  mariadb_data:
+    driver: "local"
+  mariadb_logs:
+    driver: "local"
+  redis_data:
+    driver: "local"
+  jupyter_data:
+    driver: "local"
+  minio_data:
+    driver: "local"
+  grafana_data:
+    driver: "local"
+  prometheus_data:
+    driver: "local"
+  k9s_config:
+    driver: "local"
+  github_mcp_data:
+    driver: "local"
+
+devcontainer:
+  enabled: true
+  profile: "dev"
+  python_version: "3.13"
+  node_version: "22"
+  features:
+    cuda: true
+    docker_in_docker: true
+    kubectl: true
+  resource_requirements:
+    cpus: 4
+    memory: "4gb"
+    storage: "8gb"
+    gpu: "optional"

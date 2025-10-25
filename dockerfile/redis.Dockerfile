@@ -15,6 +15,10 @@ RUN mkdir -p /data \
 # Custom Redis configuration
 FROM base AS production
 
+# Create config directory
+RUN mkdir -p /usr/local/etc/redis \
+    && chown -R redis:redis /usr/local/etc/redis
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD redis-cli ping || exit 1

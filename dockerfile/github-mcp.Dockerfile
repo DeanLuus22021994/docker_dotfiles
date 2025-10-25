@@ -13,6 +13,10 @@ RUN apk add --no-cache \
 # Create app directory
 WORKDIR /app
 
+# Configure npm for production
+ENV NPM_CONFIG_LOGLEVEL=warn
+ENV NODE_ENV=production
+
 # Install GitHub MCP Server with cache mount
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g @modelcontextprotocol/server-github

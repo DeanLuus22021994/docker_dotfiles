@@ -3,9 +3,13 @@
 
 FROM grafana/grafana:latest
 
+# Install curl for better health checks
+USER root
+RUN apk add --no-cache curl
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:3000/api/health || exit 1
+    CMD curl -f http://localhost:3000/api/health || exit 1
 
 USER grafana
 

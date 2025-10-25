@@ -8,6 +8,7 @@ This document describes the architecture of the Docker cluster implementation, i
 graph TB
     subgraph "External Access"
         User[User Browser]
+        DevContainer[VS Code DevContainer]
     end
 
     subgraph "Load Balancer Layer"
@@ -15,22 +16,38 @@ graph TB
     end
 
     subgraph "Web Server Layer"
-        Web1[Nginx Web Server 1]
-        Web2[Nginx Web Server 2]
-        Web3[Nginx Web Server 3]
+        Web1[Nginx Web 1]
+        Web2[Nginx Web 2]
+        Web3[Nginx Web 3]
     end
 
     subgraph "Data Layer"
-        PostgreSQL[(PostgreSQL Database<br/>Port 5432)]
+        PostgreSQL[(PostgreSQL:5432)]
+        MariaDB[(MariaDB:3306)]
+        Redis[(Redis:6379<br/>Cache)]
+        MinIO[(MinIO:9000/9001<br/>S3 Storage)]
+    end
+
+    subgraph "Compute Layer"
+        Jupyter[Jupyter Lab:8888<br/>GPU/CUDA 12.2]
+        GithubMCP[GitHub MCP<br/>AI Context]
+        K9s[k9s CLI<br/>K8s Management]
+    end
+
+    subgraph "Monitoring Layer"
+        Grafana[Grafana:3002<br/>Dashboards]
+        Prometheus[Prometheus:9090<br/>Metrics]
     end
 
     User --> LB
-    LB --> Web1
-    LB --> Web2
-    LB --> Web3
-    Web1 -.-> PostgreSQL
-    Web2 -.-> PostgreSQL
-    Web3 -.-> PostgreSQL
+    DevContainer --> LB
+    LB --> Web1 & Web2 & Web3
+    Web1 & Web2 & Web3 -.-> Redis
+    Web1 & Web2 & Web3 -.-> PostgreSQL
+    Web1 & Web2 & Web3 -.-> MariaDB
+    Jupyter -.-> PostgreSQL & MariaDB & MinIO
+    Grafana --> Prometheus
+    Prometheus -.-> LB & PostgreSQL & MariaDB & Redis & MinIO
 ```
 
 ## Service Components

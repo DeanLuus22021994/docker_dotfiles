@@ -47,7 +47,9 @@
   "github.copilot.chat.terminalChatLocation": "chatView",
   "github.copilot.chat.useProjectTemplates": true,
   "github.copilot.chat.useResponsesApi": true,
-  "github.copilot.chat.virtualTools.threshold": 128,  // ✅ Reduced from 64 to 48 for faster tool selection
+  "github.copilot.chat.virtualTools.threshold": 128,
+  "github.copilot.chat.testGeneration.enabled": true,
+  "github.copilot.chat.search.enabled": true
   
   // GitHub Copilot Editor Settings
   "github.copilot.editor.enableCodeActions": true,

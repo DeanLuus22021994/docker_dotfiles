@@ -20,15 +20,18 @@ docker-compose ps
 ### Port Conflicts
 
 ```bash
-# Windows
-netstat -ano | findstr :8080
-netstat -ano | findstr :5432
+# Windows PowerShell
+Get-NetTCPConnection | Where-Object {$_.LocalPort -in @(8080,5432,3306,6379,8888,9000,9001,3002,9090)}
+
+# Windows CMD
+netstat -ano | findstr /R "8080 5432 3306 6379 8888 9000 9001 3002 9090"
 
 # Linux/Mac
-lsof -i :8080
-lsof -i :5432
+lsof -i :8080 -i :5432 -i :3306 -i :6379 -i :8888 -i :9000 -i :9001 -i :3002 -i :9090
 
 # Solution: Stop conflicting service or change ports in docker-compose.yml
+# Required Ports: 8080 (LB), 5432 (PostgreSQL), 3306 (MariaDB), 6379 (Redis),
+#                 8888 (Jupyter), 9000/9001 (MinIO), 3002 (Grafana), 9090 (Prometheus)
 ```
 
 ### Container Exits Immediately
