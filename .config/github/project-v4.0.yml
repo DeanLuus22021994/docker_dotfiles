@@ -5,7 +5,7 @@
 project_name: "Modern Data Platform v4.0"
 version: "4.0.0"
 start_date: "2025-10-25"
-target_completion: "2025-12-06"  # 6 weeks from start
+target_completion: "2025-12-06" # 6 weeks from start
 status: "Planning Complete - Ready for Implementation"
 
 # Project Overview
@@ -30,7 +30,7 @@ phases:
       - "testing"
       - "phase-4.1"
       - "critical"
-    
+
   - id: "4.2"
     name: "Security Hardening"
     priority: "CRITICAL"
@@ -41,7 +41,7 @@ phases:
       - "security"
       - "phase-4.2"
       - "critical"
-    
+
   - id: "4.3"
     name: "Planned Scripts"
     priority: "HIGH"
@@ -52,7 +52,7 @@ phases:
       - "scripts"
       - "phase-4.3"
       - "high-priority"
-    
+
   - id: "4.4"
     name: "Documentation Consolidation"
     priority: "HIGH"
@@ -63,7 +63,7 @@ phases:
       - "documentation"
       - "phase-4.4"
       - "high-priority"
-    
+
   - id: "4.5"
     name: "Code Quality Automation"
     priority: "MEDIUM"
@@ -74,7 +74,7 @@ phases:
       - "quality"
       - "phase-4.5"
       - "medium-priority"
-    
+
   - id: "4.6"
     name: "Dashboard Enhancements"
     priority: "MEDIUM (Optional)"
@@ -116,7 +116,7 @@ labels:
     - name: "dashboard"
       color: "d876e3"
       description: "Dashboard enhancements"
-  
+
   priority:
     - name: "critical"
       color: "b60205"
@@ -127,7 +127,7 @@ labels:
     - name: "medium-priority"
       color: "fbca04"
       description: "Medium priority"
-  
+
   phases:
     - name: "phase-4.1"
       color: "1d76db"
@@ -192,17 +192,17 @@ risks:
     probability: "Medium"
     impact: "High"
     mitigation: "Start with simple pytest config"
-  
+
   - risk: "Authentication scope creep"
     probability: "High"
     impact: "Medium"
     mitigation: "Use JWT for internal, defer OAuth"
-  
+
   - risk: "Docker socket security issues"
     probability: "Low"
     impact: "High"
     mitigation: "Use read-only mount + proxy"
-  
+
   - risk: "Documentation consolidation delays"
     probability: "Low"
     impact: "Low"
