@@ -20,6 +20,7 @@
   "reportUnusedVariable": "none",
   "reportUnusedParameter": "none",
   "reportShadowedImports": "none",
+  "reportRedeclaration": "none",
   "reportDuplicateImport": "warning",
   "reportConstantRedefinition": "none",
   "reportIncompatibleMethodOverride": "warning",
@@ -28,5 +29,9 @@
   "reportUntypedFunctionDecorator": "none",
   "reportUntypedClassDecorator": "none",
   "reportUntypedBaseClass": "none",
-  "reportPrivateUsage": "none"
+  "reportPrivateUsage": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportOptionalSubscript": "none",
+  "reportPrivateImportUsage": "none"
 }

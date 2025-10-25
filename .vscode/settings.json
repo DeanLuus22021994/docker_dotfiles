@@ -131,22 +131,8 @@
   "python-envs.defaultPackageManager": "ms-python.python:pip",
   "python-envs.pythonProjects": [],
   
-  // Python analysis settings for Pylance (pytest fixture compatibility)
-  "python.analysis.typeCheckingMode": "basic",
-  "python.analysis.diagnosticSeverityOverrides": {
-    "reportGeneralTypeIssues": "none",
-    "reportOptionalMemberAccess": "none",
-    "reportOptionalSubscript": "none",
-    "reportPrivateImportUsage": "none",
-    "reportConstantRedefinition": "none"
-  },
-  "python.analysis.ignore": [],
-  "python.analysis.exclude": [
-    "**/__pycache__",
-    "**/node_modules",
-    "**/.venv",
-    "**/venv"
-  ],
+  // Python analysis configured in pyrightconfig.json (takes precedence)
+  // See pyrightconfig.json for pytest fixture suppression rules
   
   // Terminal settings (2025 API)
   "terminal.integrated.defaultProfile.windows": "PowerShell",
@@ -190,5 +176,10 @@
     "fish": {
       "path": "fish"
     }
-  }
+  },
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
