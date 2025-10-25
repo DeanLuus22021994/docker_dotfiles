@@ -1,0 +1,61 @@
+name: Agent Validation
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'agent_app.py'
+      - 'tools/**'
+      - '.config/agent/**'
+      - 'pyproject.toml'
+
+jobs:
+  agent-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: uv sync --extra agent --extra agent-dev
+
+      - name: Validate agent configuration
+        run: uv run python -c "import yaml; yaml.safe_load(open('.config/agent/config.yml')); print('Agent config valid')"
+
+      - name: Check GitHub CLI availability
+        run: |
+          if command -v gh &> /dev/null; then
+            echo "GitHub CLI available"
+            gh --version
+          else
+            echo "GitHub CLI not available - installing..."
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update
+            sudo apt install gh
+          fi
+
+      - name: Validate agent imports
+        run: uv run python -c "from agent_app import GitHubCopilotAgent, CopilotAgentConfig; print('Agent imports successful')"
+
+      - name: Run agent unit tests
+        run: uv run python -m pytest tests/agent/ -v --cov=agent_app --cov-report=xml
+
+      - name: Type check agent code
+        run: uv run mypy agent_app.py tools/ --ignore-missing-imports
+
+      - name: Lint agent code
+        run: uv run ruff check agent_app.py tools/
+
+      - name: Format check
+        run: uv run black --check agent_app.py tools/

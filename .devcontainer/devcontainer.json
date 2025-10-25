@@ -1,40 +1,114 @@
 {
   "build": {
-    "dockerfile": "devcontainer.dockerfile"
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/nvidia-cuda:2": {
-      "installCudnn": false,
-      "installNvtx": false
-    }
+    "dockerfile": "devcontainer.dockerfile",
+    "context": ".."
   },
   "mounts": [
     {
         "type": "volume",
-        "source": "docker_examples_python_cache",
+        "source": "docker_python_cache",
         "target": "/home/vscode/.cache/pip"
       },
     {
         "type": "volume",
-        "source": "docker_examples_node_cache",
+        "source": "docker_uv_cache",
+        "target": "/home/vscode/.cache/uv"
+      },
+    {
+        "type": "volume",
+        "source": "docker_apt_cache",
+        "target": "/var/cache/apt"
+      },
+    {
+        "type": "volume",
+        "source": "docker_apt_lists",
+        "target": "/var/lib/apt/lists"
+      },
+    {
+        "type": "volume",
+        "source": "docker_vscode_server",
+        "target": "/home/vscode/.vscode-server"
+      },
+    {
+        "type": "volume",
+        "source": "docker_gh_config",
+        "target": "/home/vscode/.config/gh"
+      },
+    {
+        "type": "volume",
+        "source": "docker_node_cache",
         "target": "/home/vscode/.npm"
       },
     {
         "type": "volume",
-        "source": "docker_examples_mariadb_data",
+        "source": "docker_mypy_cache",
+        "target": "/home/vscode/.mypy_cache"
+      },
+    {
+        "type": "volume",
+        "source": "docker_ruff_cache",
+        "target": "/home/vscode/.cache/ruff"
+      },
+    {
+        "type": "volume",
+        "source": "docker_pytest_cache",
+        "target": "/home/vscode/.pytest_cache"
+      },
+    {
+        "type": "volume",
+        "source": "docker_precommit_cache",
+        "target": "/home/vscode/.cache/pre-commit"
+      },
+    {
+        "type": "volume",
+        "source": "docker_jupyter_cache",
+        "target": "/home/vscode/.jupyter"
+      },
+    {
+        "type": "volume",
+        "source": "docker_conda_envs",
+        "target": "/home/vscode/.conda/envs"
+      },
+    {
+        "type": "volume",
+        "source": "docker_precompiled_bytecode",
+        "target": "/opt/precompiled"
+      },
+    {
+        "type": "volume",
+        "source": "docker_black_cache",
+        "target": "/home/vscode/.cache/black"
+      },
+    {
+        "type": "volume",
+        "source": "docker_isort_cache",
+        "target": "/home/vscode/.cache/isort"
+      },
+    {
+        "type": "volume",
+        "source": "docker_mariadb_data",
         "target": "/var/lib/mysql"
       }
   ],
+  "containerEnv": {
+    "GH_OWNER": "DeanLuus22021994",
+    "GH_REPOSITORY": "docker_dotfiles",
+    "GH_TOKEN": "${localEnv:GH_PAT}"
+  },
   "hostRequirements": {
     "cpus": 4,
     "memory": "4gb",
     "storage": "8gb",
     "gpu": "optional"
   },
-  "waitFor": "onCreateCommand",
-  "updateContentCommand": "npm install --legacy-peer-deps",
-  "postStartCommand": "chown -R mysql:mysql /var/lib/mysql && service mariadb start && sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
+  "containerUser": "vscode",
+  "postCreateCommand": "bash -c 'python -m compileall /workspaces/docker && mypy --cache-dir /home/vscode/.mypy_cache --no-error-summary /workspaces/docker || true && ruff check --cache-dir /home/vscode/.cache/ruff /workspaces/docker || true && black --check /workspaces/docker || true'",
+  "postStartCommand": "sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
   "postAttachCommand": "",
+  "features": {
+    "ghcr.io/devcontainers/features/git": "latest",
+    "ghcr.io/devcontainers/features/github-cli": "latest"
+  },
   "customizations": {
     "codespaces": {
       "openFiles": ["src/App.jsx"]
@@ -60,26 +134,53 @@
         "python.createEnvironment.trigger": "off"
       },
       "extensions": [
-        "GitHub.copilot-chat",
-        "GitHub.copilot",
-        "esbenp.prettier-vscode",
-        "redhat.vscode-yaml",
-        "ms-vscode.copilot-mermaid-diagram",
-        "ms-vscode.vscode-copilot-vision",
-        "ms-vscode.vscode-websearchforcopilot",
-        "vscjava.migrate-java-to-azure",
-        "vscjava.vscode-java-upgrade",
-        "dbaeumer.vscode-eslint",
-        "github.vscode-github-actions",
-        "GitHub.vscode-pull-request-github",
-        "christian-kohler.npm-intellisense",
-        "Orta.vscode-jest",
-        "VisualStudioExptTeam.intellicode-api-usage-examples",
-        "ms-azuretools.vscode-containers",
+        // Core AI and Agent Development
+        "ms-windows-ai-studio.windows-ai-studio",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-windows-ai-studio.ai-toolkit-vscode",
+        "ms-windows-ai-studio.ai-projects",
+        "ms-windows-ai-studio.ai-model-inference",
+        "ms-windows-ai-studio.mcp-toolkit",
+
+        // Python Development (Official Microsoft)
         "ms-python.python",
+        "ms-python.debugpy",
         "ms-python.black-formatter",
-        "ms-python.isort",
-        "ms-python.pylint"
+        "charliermarsh.ruff",
+        "ms-python.mypy-type-checker",
+        "ms-python.pylint",
+        "ms-python.pytest",
+        "ms-python.vscode-pylance",
+
+        // Docker Development (Official Microsoft)
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+
+        // YAML and JSON (Official Microsoft)
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+
+        // Git and GitHub (Official)
+        "github.vscode-github-actions",
+        "ms-vscode.vscode-git-graph",
+        "ms-vscode.vscode-pull-request-github",
+
+        // Remote Development (Official Microsoft)
+        "ms-vscode-remote.remote-ssh",
+
+        // REST and API Development
+        "ms-vscode.vscode-rest-client",
+
+        // Cloud Integration
+        "ms-vscode.vscode-azure-account",
+
+        // Environment Management
+        "ms-vscode.vscode-env",
+
+        // Performance and Profiling (AI Agent Integration)
+        "ms-python.python-profiling",
+        "ms-vscode.vscode-js-profile-flame"
       ],
       "mcp": {
         "servers": {

@@ -1,0 +1,29 @@
+name: Agent Performance Test
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly performance tests on Sundays at midnight UTC
+    - cron: '0 0 * * 0'
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: uv sync --extra agent --extra agent-dev
+
+      - name: Run performance benchmarks
+        run: uv run python -m pytest tests/agent/ -k "performance" --benchmark-only --benchmark-save=benchmarks

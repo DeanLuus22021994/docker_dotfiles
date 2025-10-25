@@ -1,0 +1,12 @@
+[mariadb]
+# MariaDB specific settings
+log_error=/var/lib/mysql/mariadb.err
+
+[mariadb-10.6]
+# Additional MariaDB 10.6+ settings
+innodb_default_row_format=dynamic
+aria_pagecache_buffer_size=8M
+
+# Performance schema
+performance_schema=ON
+performance_schema_instrument='%=ON'

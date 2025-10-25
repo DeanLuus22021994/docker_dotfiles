@@ -1,0 +1,52 @@
+name: Docker Compose Validation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.docker-compose/**'
+      - 'docker-compose*.yml'
+      - '.github/workflows/validate-stacks.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml requests
+
+      - name: Validate Docker Compose syntax
+        run: |
+          for file in $(find .docker-compose -name "docker-compose*.yml"); do
+            echo "Validating $file..."
+            docker compose -f "$file" config --quiet || exit 1
+          done
+
+      - name: Run validation script
+        run: |
+          python .docker-compose/validate_stacks.py
+
+      - name: Check for hardcoded secrets
+        run: |
+          if grep -r -E "(password|secret|key|token).*[:=].*[\"'][^$]" .docker-compose --include="*.yml" --exclude="*example*" --exclude="*.md"; then
+            echo "❌ Found hardcoded secrets in docker-compose files!"
+            exit 1
+          else
+            echo "✅ No hardcoded secrets detected"
+          fi

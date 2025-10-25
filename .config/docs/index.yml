@@ -1,0 +1,50 @@
+---
+# Docker Compose - Documentation Index
+# Generated: 2025-10-24
+# Repository: docker_dotfiles
+# Description: Main index for decomposed documentation structure
+
+# Main Documentation Index
+index:
+  title: "Docker Compose - Enterprise Edition"
+  version: "3.0"
+  description: "Enterprise-grade Docker Compose with comprehensive security and monitoring"
+  last_updated: "2025-10-24"
+
+# Documentation Structure
+structure:
+  categories: "categories.yml"
+  quick_access: "quick-access.yml"
+  metadata: "metadata.yml"
+
+# Stack Configurations
+stacks:
+  basic_stack:
+    config: "basic-stack/config.yml"
+    compose: "../../compose/basic-stack/docker-compose.yml"
+    description: "Development and testing environment"
+  cluster_example:
+    config: "cluster-example/config.yml"
+    compose: "../../compose/cluster-example/docker-compose.yml"
+    description: "Load-balanced multi-instance deployment"
+  swarm_stack:
+    config: "swarm-stack/config.yml"
+    compose: "../../compose/swarm-stack/docker-compose.yml"
+    description: "Docker Swarm orchestration"
+  mcp:
+    config: "mcp/config.yml"
+    compose: "../../compose/mcp/docker-compose.yml"
+    description: "Testing and validation utilities"
+
+# Repository Information
+repository:
+  name: "docker_dotfiles"
+  owner: "DeanLuus22021994"
+  branch: "refactor/python-utils-consolidation"
+  default_branch: "main"
+
+# Contact & Support
+support:
+  documentation: "Comprehensive enterprise documentation suite"
+  issues: "https://github.com/DeanLuus22021994/docker_dotfiles/issues"
+  discussions: "GitHub Discussions for questions and feedback"

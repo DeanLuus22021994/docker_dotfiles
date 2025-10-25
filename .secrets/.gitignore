@@ -1,0 +1,23 @@
+# Docker - Secrets .gitignore
+# This file ensures that actual secrets are never committed to version control
+
+# Environment files with actual secrets
+secrets.env
+
+# Legacy secret files (if any exist)
+*.txt
+!README.md
+!.env.template
+
+# Backup files
+*.bak
+*.backup
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp</content>
+<parameter name="filePath">c:\global\docker\.secrets\.gitignore

@@ -1,0 +1,242 @@
+---
+# Swarm Stack Configuration - CI/CD Automation
+# Generated: 2025-10-24
+# Description: Config-driven automation for Docker Swarm orchestration
+
+# Stack Metadata
+stack:
+  name: "swarm-stack"
+  description: "Production deployment with Docker Swarm orchestration"
+  version: "3.0"
+  purpose: "Production deployments, service discovery, rolling updates"
+  type: "production"
+
+# CI/CD Configuration
+ci_cd:
+  github_actions:
+    workflow: "swarm-stack.yml"
+    triggers:
+      - push:
+          branches: [main]
+      - pull_request:
+          branches: [main]
+      - workflow_dispatch:
+          inputs:
+            environment:
+              description: "Target environment"
+              required: true
+              default: "production"
+    environment: "production"
+
+  docker:
+    build_context: "../../.dockerfiles"
+    build_args:
+      ENVIRONMENT: "production"
+      SERVICE_TYPE: "swarm"
+      WORKERS: "3"
+    image_tag: "docker_swarm:latest"
+    registry: "docker.io"
+
+  testing:
+    framework: "pytest"
+    coverage_target: "95"
+    security_scan: true
+    performance_test: true
+    integration_test: true
+
+# Environment Variables (Config-Driven)
+environment:
+  # Application Configuration
+  ENVIRONMENT: "production"
+  DEBUG: "false"
+  LOG_LEVEL: "WARNING"
+
+  # Security Configuration
+  API_KEY: "${API_KEY}"
+  RATE_LIMIT_REQUESTS: "2000"
+  RATE_LIMIT_WINDOW: "60"
+  CORS_ORIGINS: "https://yourdomain.com"
+  SECURITY_HEADERS_ENABLED: "true"
+  INPUT_VALIDATION_ENABLED: "true"
+
+  # Database Configuration
+  POSTGRES_DB: "mydb"
+  POSTGRES_USER: "user"
+  POSTGRES_HOST: "postgresql"
+  POSTGRES_PORT: "5432"
+  MARIADB_DATABASE: "mydb"
+  MARIADB_USER: "user"
+  MARIADB_HOST: "mariadb"
+  MARIADB_PORT: "3306"
+
+  # Redis Configuration
+  REDIS_URL: "redis://redis:6379"
+  REDIS_DB: "0"
+
+  # Swarm Configuration
+  DOCKER_SWARM_MANAGER: "true"
+  SERVICE_DISCOVERY: "true"
+
+  # External APIs
+  GITHUB_TOKEN: "${GITHUB_TOKEN}"
+
+# Service Configuration (References to docker-compose.yml)
+services:
+  python:
+    port: 8000
+    health_endpoint: "/health"
+    api_docs: "/docs"
+    replicas: 3
+    placement: "worker"
+  node:
+    port: 3000
+    dev_server: false
+    replicas: 2
+    placement: "worker"
+  nginx:
+    port: 80
+    ssl_port: 443
+    replicas: 2
+    placement: "worker"
+  postgresql:
+    port: 5432
+    database: "mydb"
+    replicas: 1
+    placement: "manager"
+  mariadb:
+    port: 3306
+    database: "mydb"
+    replicas: 1
+    placement: "manager"
+  redis:
+    port: 6379
+    replicas: 1
+    placement: "worker"
+
+# Volume Configuration (Named volumes for persistence)
+volumes:
+  postgresql_data: "docker_postgresql_data"
+  postgresql_logs: "docker_postgresql_logs"
+  mariadb_data: "docker_mariadb_data"
+  mariadb_logs: "docker_mariadb_logs"
+  redis_data: "docker_redis_data"
+  nginx_logs: "docker_nginx_logs"
+  nginx_cache: "docker_nginx_cache"
+  python_app: "docker_python_app"
+  node_app: "docker_node_app"
+  python_mcp: "docker_python_mcp"  # MCP utilities volume
+
+# Secrets Configuration (Environment Variable Driven)
+secrets:
+  postgresql_password:
+    env_var: "docker_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "PostgreSQL database password loaded from environment variables"
+  mariadb_password:
+    env_var: "docker_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "MariaDB database password loaded from environment variables"
+
+# Network Configuration
+network:
+  name: "docker_swarm_stack_overlay"
+  driver: "overlay"
+
+# Swarm Configuration (CI/CD Automation)
+swarm:
+  requirements:
+    managers: 1
+    workers: 2
+  constraints:
+    manager_nodes: "node.role == manager"
+    worker_nodes: "node.role == worker"
+  labels:
+    environment: "production"
+    stack: "docker"
+
+# Orchestration Configuration (CI/CD Automation)
+orchestration:
+  update_strategy: "rolling"
+  rollback_on_failure: true
+  health_check_grace_period: "60s"
+  service_discovery: true
+  load_balancing: "dnsrr"
+
+# Monitoring Configuration (CI/CD Automation)
+monitoring:
+  enabled: true
+  swarm_monitoring: true
+  metrics:
+    - "container_cpu_usage"
+    - "container_memory_usage"
+    - "service_replicas"
+    - "network_traffic"
+  alerts:
+    - "service_down"
+    - "high_cpu_usage"
+    - "high_memory_usage"
+    - "replica_failure"
+  log_level: "WARNING"
+
+# Logging Configuration (CI/CD Automation)
+logging:
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+  centralized: false
+
+# Resource Limits (Config-Driven)
+resource_limits:
+  python:
+    cpus: "0.5"
+    memory: "512m"
+  node:
+    cpus: "0.5"
+    memory: "512m"
+  nginx:
+    cpus: "0.5"
+    memory: "256m"
+  postgresql:
+    cpus: "1.0"
+    memory: "1g"
+  mariadb:
+    cpus: "1.0"
+    memory: "1g"
+  redis:
+    cpus: "0.5"
+    memory: "512m"
+
+# Deployment Configuration
+deployment:
+  stack_name: "docker"
+  compose_file: "../../.compose/swarm-stack/docker-compose.yml"
+  deploy_command: "docker stack deploy -c ../../.compose/swarm-stack/docker-compose.yml docker"
+  scale_commands:
+    python: "docker service scale docker_python={count}"
+    node: "docker service scale docker_node={count}"
+    nginx: "docker service scale docker_nginx={count}"
+    postgresql: "docker service scale docker_postgresql={count}"
+    mariadb: "docker service scale docker_mariadb={count}"
+    redis: "docker service scale docker_redis={count}"
+  remove_command: "docker stack rm docker"
+  restart_policy: "on-failure"
+
+# Maintenance Configuration (CI/CD Automation)
+maintenance:
+  rolling_updates:
+    enabled: true
+    parallelism: 1
+    delay: "10s"
+    monitor: "60s"
+  backups:
+    database:
+      schedule: "0 2 * * *"
+      retention: 7
+    volumes:
+      schedule: "0 3 * * *"
+      retention: 30
+  cleanup:
+    dangling_images: true
+    unused_volumes: true
+    schedule: "0 4 * * *"

@@ -1,0 +1,130 @@
+---
+# Docker Compose - Documentation Categories
+# Generated: 2025-10-24
+# Description: Documentation organized by functional categories with file listings
+
+categories:
+  # Root Level Documentation
+  root:
+    title: "Root Level Files"
+    description: "Core project files and configuration"
+    files:
+      - Makefile
+      - pyproject.toml
+      - .gitignore
+      - .dockerignore
+      - .pre-commit-config.yaml
+
+  # Main Documentation
+  docs:
+    title: "Core Documentation"
+    description: "Primary documentation for architecture, deployment, and troubleshooting"
+    files:
+      - docs/architecture.md
+      - docs/deployment.md
+      - docs/troubleshooting.md
+
+  # Security Documentation
+  secrets:
+    title: "Security & Secrets"
+    description: "Security configuration and credential management"
+    files:
+      - docs/security/README.md
+      - secrets/.secrets.example
+
+  # Docker Compose Documentation
+  docker_compose:
+    title: "Docker Compose Suite"
+    description: "General Docker Compose documentation and guides"
+    files:
+      - docs/compose/README.md
+      - docs/compose/CHANGELOG.md
+      - docs/compose/DEVELOPMENT.md
+      - docs/compose/TESTING.md
+
+  # Basic Stack Documentation
+  basic_stack:
+    title: "Basic Stack"
+    description: "Development and testing environment documentation"
+    files:
+      - .compose/basic-stack/README.md
+      - .compose/basic-stack/UAT_REPORT_2025-10-22.md
+      - .compose/basic-stack/dockerfiles/README.md
+
+  # Cluster Example Documentation
+  cluster_example:
+    title: "Cluster Example"
+    description: "Load-balanced multi-instance deployment guides"
+    files:
+      - .compose/cluster-example/README.md
+      - .compose/cluster-example/UAT_REPORT_2025-10-22.md
+
+  # Swarm Stack Documentation
+  swarm_stack:
+    title: "Swarm Stack"
+    description: "Docker Swarm orchestration documentation"
+    files:
+      - .compose/swarm-stack/README.md
+      - .compose/swarm-stack/dockerfiles/README.md
+
+  # MCP Documentation
+  mcp:
+    title: "MCP Utilities"
+    description: "Model Context Protocol testing and validation tools"
+    files:
+      - .compose/mcp/README.md
+      - .compose/mcp/DEVELOPMENT.md
+
+  # GitHub Configuration
+  github:
+    title: "GitHub Integration"
+    description: "GitHub Actions, Copilot instructions, and project management"
+    files:
+      - .github/copilot-instructions.md
+      - .github/TODO.md
+
+  # Environment Configuration
+  environment:
+    title: "Environment Configuration"
+    description: "Environment files and configuration templates"
+    files:
+      - .env
+      - .env.development
+      - .env.docker
+      - .env.example
+      - .env.production
+
+# Functional Categories (Higher-level groupings)
+functional_categories:
+  architecture_design:
+    title: "Architecture & Design"
+    description: "System architecture, service relationships, and design principles"
+    categories: ["docs", "docker_compose"]
+
+  deployment_setup:
+    title: "Deployment & Setup"
+    description: "Installation, configuration, and deployment guides"
+    categories: ["docs", "basic_stack", "cluster_example", "swarm_stack"]
+
+  development_testing:
+    title: "Development & Testing"
+    description: "Development workflows, testing protocols, and quality assurance"
+    categories: ["docker_compose", "basic_stack", "cluster_example", "mcp"]
+
+  security_configuration:
+    title: "Security & Configuration"
+    description: "Security setup, configuration management, and troubleshooting"
+    categories: ["secrets", "docs"]
+
+  stack_specific:
+    title: "Stack-Specific Guides"
+    description: "Detailed guides for specific deployment stacks and build instructions"
+    categories: ["basic_stack", "swarm_stack"]
+
+# Category Metadata
+category_metadata:
+  total_categories: 10
+  functional_groups: 5
+  most_popular: "deployment_setup"
+  beginner_friendly: "docs"
+  advanced_users: "stack_specific"

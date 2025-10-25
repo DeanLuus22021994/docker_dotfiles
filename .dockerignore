@@ -1,31 +1,129 @@
-# Exclude virtual environments
-.venv/
+# Docker build context optimization for Buildx and Bake
+# Exclude files that aren't needed in the container to improve build performance
+
+# Version control
+.git
+.gitignore
+.github
+
+# Documentation
+README.md
+docs/
+*.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv
 venv/
+ENV/
 env/
 
-# Exclude node modules
-node_modules/
-
-# Exclude build artifacts
-dist/
-build/
-*.pyc
-__pycache__/
-
-# Exclude IDE files
+# IDE and editor files
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# Exclude logs and temporary files
-*.log
-*.tmp
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Exclude git
-.git/
-.gitignore
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Testing
+.coverage
+.pytest_cache/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Conda
+.conda/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Secrets (should be mounted as secrets, not copied)
+secrets/
+
+# Docker files (avoid recursive copying)
+Dockerfile*
+docker-compose*.yml
+docker-bake.hcl
+.dockerignore
+
+# CI/CD
+.github/
+
+# Benchmarking (not needed in container)
+.benchmark/
+
+# Build artifacts
+target/
+build/
+dist/
+
+# Database files (should be volumes)
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache directories (should be volumes)
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.pre-commit/
+.jupyter/
+.conda/
 
 # Exclude documentation build artifacts
 docs/_build/
@@ -40,12 +138,11 @@ htmlcov/
 volumes/
 
 # Exclude environment files (keep only example)
-.env*
-!.env.example
+.env/*
+!.env/.env.example
 
 # Exclude secrets directory
-secrets/
-!secrets/.secrets.example
+.secrets/
 
 # Keep only necessary files for Python builds
 !python_utils/

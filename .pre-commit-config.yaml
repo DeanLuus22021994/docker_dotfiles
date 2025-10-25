@@ -1,4 +1,4 @@
-# Pre-commit hooks for Docker Compose Examples
+# Pre-commit hooks for Docker Compose
 # Install: pip install pre-commit && pre-commit install
 # Run manually: pre-commit run --all-files
 
@@ -21,7 +21,7 @@ repos:
     hooks:
       - id: validate-docker-compose
         name: Validate docker-compose.yml files
-        entry: bash -c 'for f in $(find .docker-compose -name "docker-compose*.yml"); do docker compose -f $f config --quiet || exit 1; done'
+        entry: bash -c 'for f in $(find compose -name "docker-compose*.yml"); do docker compose -f $f config --quiet || exit 1; done'
         language: system
         pass_filenames: false
         files: '\.yml$'
@@ -62,7 +62,7 @@ repos:
     hooks:
       - id: detect-secrets-docker-compose
         name: Detect hardcoded secrets in docker-compose files
-        entry: bash -c 'if grep -r -E "(password|secret|key|token).*[:=].*[\"'\''][^$]" .docker-compose --include="*.yml" --exclude="*example*"; then echo "❌ Found hardcoded secrets in docker-compose files!"; exit 1; fi'
+        entry: bash -c 'if grep -r -E "(password|secret|key|token).*[:=].*[\"'\''][^$]" compose --include="*.yml" --exclude="*example*"; then echo "❌ Found hardcoded secrets in docker-compose files!"; exit 1; fi'
         language: system
         pass_filenames: false
         files: '\.yml$'

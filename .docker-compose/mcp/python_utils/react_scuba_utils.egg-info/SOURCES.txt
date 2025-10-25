@@ -1,9 +1,0 @@
-pyproject.toml
-react_scuba_utils/__init__.py
-react_scuba_utils/api.py
-react_scuba_utils.egg-info/PKG-INFO
-react_scuba_utils.egg-info/SOURCES.txt
-react_scuba_utils.egg-info/dependency_links.txt
-react_scuba_utils.egg-info/entry_points.txt
-react_scuba_utils.egg-info/requires.txt
-react_scuba_utils.egg-info/top_level.txt

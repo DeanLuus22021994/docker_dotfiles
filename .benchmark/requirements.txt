@@ -1,0 +1,15 @@
+# Benchmarking and Analysis Requirements
+# Install with: pip install -r .benchmark/requirements.txt
+
+# Core analysis
+pandas>=1.5.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# JSON processing
+jsonschema>=4.0.0
+
+# Optional: For advanced statistics
+scipy>=1.7.0
+statsmodels>=0.13.0

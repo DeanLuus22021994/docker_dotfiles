@@ -1,0 +1,183 @@
+---
+# Basic Stack Configuration - CI/CD Automation
+# Generated: 2025-10-24
+# Description: Config-driven automation for basic development stack
+
+# Stack Metadata
+stack:
+  name: "basic-stack"
+  description: "Development and testing environment with all core services"
+  version: "3.0"
+  purpose: "Local development, CI/CD pipelines, basic testing"
+  type: "development"
+
+# CI/CD Configuration
+ci_cd:
+  github_actions:
+    workflow: "basic-stack.yml"
+    triggers:
+      - push:
+          branches: [main, develop]
+      - pull_request:
+          branches: [main]
+    environment: "development"
+
+  docker:
+    build_context: "../../.dockerfiles"
+    build_args:
+      ENVIRONMENT: "development"
+      SERVICE_TYPE: "basic"
+      WORKERS: "1"
+    image_tag: "docker_basic:latest"
+    registry: "docker.io"
+
+  testing:
+    framework: "pytest"
+    coverage_target: "80"
+    security_scan: true
+    performance_test: false
+
+# Environment Variables (Config-Driven)
+environment:
+  # Application Configuration
+  ENVIRONMENT: "development"
+  DEBUG: "true"
+  LOG_LEVEL: "DEBUG"
+
+  # Security Configuration
+  API_KEY: "${API_KEY}"
+  RATE_LIMIT_REQUESTS: "100"
+  RATE_LIMIT_WINDOW: "60"
+  CORS_ORIGINS: "http://localhost:3000"
+  SECURITY_HEADERS_ENABLED: "true"
+  INPUT_VALIDATION_ENABLED: "true"
+
+  # Database Configuration
+  POSTGRES_DB: "app"
+  POSTGRES_USER: "app"
+  POSTGRES_HOST: "postgres"
+  POSTGRES_PORT: "5432"
+  MARIADB_DATABASE: "app"
+  MARIADB_USER: "app"
+  MARIADB_HOST: "mariadb"
+  MARIADB_PORT: "3306"
+
+  # Redis Configuration
+  REDIS_URL: "redis://redis:6379"
+  REDIS_DB: "0"
+
+  # Nginx Configuration
+  NGINX_PORT: "80"
+  NGINX_SSL_PORT: "443"
+
+  # External APIs
+  GITHUB_TOKEN: "${GITHUB_TOKEN}"
+
+# Service Configuration (References to docker-compose.yml)
+services:
+  python:
+    port: 8000
+    health_endpoint: "/health"
+    api_docs: "/docs"
+  node:
+    port: 3000
+    dev_server: true
+  nginx:
+    port: 80
+    health_endpoint: "/health"
+    static_files: "/usr/share/nginx/html"
+  db:
+    port: 3306
+    database: "app"
+    type: "mariadb"
+  postgres:
+    port: 5432
+    database: "app"
+    type: "postgresql"
+  redis:
+    port: 6379
+
+# Volume Configuration (Named volumes for persistence)
+volumes:
+  db_data: "docker_db_data"
+  db_logs: "docker_db_logs"
+  postgres_data: "docker_postgres_data"
+  postgres_logs: "docker_postgres_logs"
+  redis_data: "docker_redis_data"
+  python_app: "docker_python_app"
+  node_app: "docker_node_app"
+  nginx_config: "docker_nginx_config"
+  nginx_logs: "docker_nginx_logs"
+  python_mcp: "docker_python_mcp"  # MCP utilities volume
+
+# Secrets Configuration (Environment Variable Driven)
+secrets:
+  db_password:
+    env_var: "docker_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "MariaDB database password loaded from environment variables"
+  postgres_password:
+    env_var: "docker_DB_PASSWORD"
+    source: "../../.secrets/secrets.env"
+    description: "PostgreSQL database password loaded from environment variables"
+
+# Network Configuration
+network:
+  name: "docker_basic_stack_network"
+  driver: "bridge"
+
+# Health Checks Configuration
+health_checks:
+  overall_timeout: "300s"
+  service_startup_order: ["mariadb", "postgres", "redis", "python", "node", "nginx"]
+  required_services: ["mariadb", "postgres", "redis", "python", "node", "nginx"]
+
+# Resource Limits (Config-Driven)
+resource_limits:
+  python:
+    cpus: "1.0"
+    memory: "1g"
+  node:
+    cpus: "0.5"
+    memory: "512m"
+  nginx:
+    cpus: "0.25"
+    memory: "128m"
+  mariadb:
+    cpus: "0.5"
+    memory: "512m"
+  postgres:
+    cpus: "0.5"
+    memory: "512m"
+  redis:
+    cpus: "0.25"
+    memory: "256m"
+
+# Monitoring Configuration
+monitoring:
+  enabled: true
+  metrics_endpoint: "/metrics"
+  health_endpoint: "/health"
+  log_level: "DEBUG"
+
+# Development Configuration
+development:
+  hot_reload: true
+  debug_mode: true
+  auto_restart: true
+  volume_mounts:
+    - source: "../../.dockerfiles"
+      target: "/dockerfiles"
+      type: "bind"
+
+# Deployment Configuration
+deployment:
+  compose_file: "../../.compose/basic-stack/docker-compose.yml"
+  scale_defaults:
+    python: 1
+    node: 1
+    nginx: 1
+    mariadb: 1
+    postgres: 1
+    redis: 1
+  restart_policy: "unless-stopped"

@@ -1,7 +1,7 @@
 -- Init script for MariaDB in devcontainer
--- Create a sample database and table for docker examples
+-- Create a sample database and table for Docker
 
-USE docker_examples_db;
+USE docker_db;
 
 -- Create a sample table for dive sites
 CREATE TABLE IF NOT EXISTS dive_sites (

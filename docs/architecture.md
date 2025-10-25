@@ -1,182 +1,121 @@
-# Docker Compose Examples - Architecture
+---
+started: 2025-10-24
+completed: 2025-10-24
+author: AI Assistant
+version: 1.0
+status: active
+description: Enterprise-grade Docker Compose architecture with security, monitoring, and MCP integration
+tags: [docker, compose, architecture, security, mcp, enterprise]
+---
 
-This document describes the architecture of the Docker Compose Examples project, including service relationships, data flow, and deployment patterns.
+# Docker Compose - Architecture
 
-## System Architecture
+## System Overview
 
-```mermaid
-graph TB
-    subgraph "External Services"
-        User[User Browser]
-        GitHub[GitHub API]
-        Docker[Docker Hub]
-    end
+Enterprise-grade Docker Compose setup with Python MCP servers, security enhancements, and comprehensive monitoring.
 
-    subgraph "Frontend Layer"
-        Node[Node.js Service<br/>Port 3000]
-    end
-
-    subgraph "Backend Layer"
-        Python[Python Service<br/>Port 8000]
-        API[FastAPI Application]
-    end
-
-    subgraph "Data Layer"
-        PostgreSQL[(PostgreSQL Database<br/>Port 5432)]
-        Redis[(Redis Cache<br/>Port 6379)]
-    end
-
-    subgraph "Infrastructure"
-        LoadBalancer[Nginx Load Balancer<br/>Port 80/443]
-    end
-
-    User --> Node
-    User --> LoadBalancer
-    LoadBalancer --> Node
-    LoadBalancer --> Python
-    Node --> API
-    Python --> API
-    API --> PostgreSQL
-    API --> Redis
-    Python --> GitHub
-    Python --> Docker
-```
-
-## Service Components
-
-### Frontend Services
-
-#### Node.js Service
-- **Purpose**: Serves the React/Vite frontend application
-- **Port**: 3000
-- **Technology**: Node.js 22, Vite, React
-- **Dependencies**: PostgreSQL (for data), Python API (for backend)
+## Core Services
 
 ### Backend Services
+- **Python FastAPI** (3.14+): REST API with enterprise security middleware
+- **Node.js** (22+): Modern frontend with Vite
+- **PostgreSQL** (15+): Primary relational database
+- **Redis** (7+): High-performance caching and session management
 
-#### Python Service
-- **Purpose**: FastAPI backend application providing REST API
-- **Port**: 8000
-- **Technology**: Python 3.14, FastAPI, Uvicorn
-- **Dependencies**: PostgreSQL, Redis, External APIs
+### Security Features
+- API key authentication with configurable keys
+- Rate limiting with Redis-backed storage
+- CORS protection with configurable origins
+- Security headers (HSTS, CSP, X-Frame-Options)
+- Input validation with Pydantic models
 
-### Data Services
+## MCP Architecture
 
-#### PostgreSQL
-- **Purpose**: Primary relational database
-- **Port**: 5432
-- **Version**: Latest
-- **Features**: 
-  - Docker secrets for password management
-  - Persistent volumes for data
-  - Health checks
-  - Custom initialization scripts
+### Volume-Based Persistence
+Python utilities installed in Docker named volumes that persist across container rebuilds:
 
-#### Redis
-- **Purpose**: Caching and session management
-- **Port**: 6379
-- **Version**: Latest
-- **Features**:
-  - In-memory data storage
-  - Pub/Sub messaging
-  - Session storage
+```bash
+# Initialize Python MCP servers
+./setup-python-mcp.sh
 
-### Infrastructure Services
+# Creates volume: docker_python_mcp
+```
 
-#### Nginx (Cluster Mode)
-- **Purpose**: Load balancing and reverse proxy
-- **Port**: 80, 443
-- **Configuration**: Round-robin load balancing
-- **Upstream**: Multiple Python/Node instances
+### MCP Server Endpoints
+- **Basic Stack**: `http://localhost:8001` - Development MCP server
+- **Cluster Example**: `http://localhost:8000` - Load-balanced MCP servers
+- **Swarm Stack**: `http://localhost:8000` - Orchestrated MCP servers
+
+## Deployment Patterns
+
+### Available Stacks
+1. **Basic Stack**: Development and testing environment
+2. **Cluster Example**: Load-balanced multi-instance deployment
+3. **Swarm Stack**: Production orchestration with Docker Swarm
+
+### Network Architecture
+All services communicate over internal Docker networks with proper isolation and security.
 
 ## Data Flow
 
 ### Request Flow
-1. User requests reach Nginx load balancer
-2. Nginx routes requests to appropriate service (Node.js or Python)
-3. Node.js serves static frontend assets
-4. Frontend makes API calls to Python backend
-5. Python processes requests, queries PostgreSQL/Redis
-6. Responses flow back through the chain
+1. User requests → Nginx load balancer
+2. Load balancer → Appropriate service (Node.js/Python)
+3. Frontend → API calls to Python backend
+4. Backend → Queries PostgreSQL/Redis
+5. Responses flow back through the chain
 
 ### Data Persistence
-- PostgreSQL data: Stored in `docker_examples_db_data` volume
-- PostgreSQL logs: Stored in `docker_examples_db_logs` volume
-- Redis data: Ephemeral (in-memory only)
-- Application cache: Stored in respective cache volumes
-
-## Network Architecture
-
-All services communicate over internal Docker networks:
-- `basic-stack-network`: For basic-stack deployment
-- `cluster-network`: For cluster-example deployment
-- `swarm-overlay`: For swarm-stack deployment (overlay network)
+- PostgreSQL: `docker_db_data` volume
+- Redis: Ephemeral in-memory storage
+- Application logs: Dedicated log volumes
 
 ## Security Architecture
 
+### Authentication & Authorization
+- API key middleware for service access
+- Per-endpoint rate limiting
+- Comprehensive input validation
+- Request correlation ID tracking
+
+### Network Security
+- Service isolation in Docker networks
+- Minimal exposed ports
+- Internal communication via service names
+
 ### Secret Management
-- Database passwords stored in Docker secrets
-- Secrets mounted as files in `/run/secrets/`
+- Docker secrets for credentials
 - Environment variables reference secret files
-- `.gitignore` prevents secret files from being committed
+- Git ignore prevents secret commits
 
-### Network Isolation
-- Services isolated in Docker networks
-- Only exposed ports are accessible externally
-- Internal communication uses service names
+## Health Checks & Monitoring
 
-### User Permissions
-- Containers run as non-root users (UID 1001)
-- Minimal system dependencies installed
-- Read-only filesystem where possible
-
-## Deployment Patterns
-
-### Basic Stack
-Single-instance deployment for development:
-- One instance of each service
-- Development-focused configuration
-- Quick startup and teardown
-
-### Cluster Example
-Multiple instances with load balancing:
-- 3 Python service replicas
-- Nginx load balancer
-- Production-like configuration
-
-### Swarm Stack
-Docker Swarm orchestration:
-- Service replicas managed by Swarm
-- Overlay networking
-- Service discovery
-- Rolling updates
-
-## Health Checks
-
+### Health Checks
 All services implement health checks:
-- **Interval**: 30s
-- **Timeout**: 10s
-- **Retries**: 3
-- **Start Period**: 40s
-
-Health check commands:
+- **Interval**: 30s, **Timeout**: 10s, **Retries**: 3
 - PostgreSQL: `pg_isready`
-- Python: `python -c "import sys; sys.exit(0)"`
-- Node.js: `curl -f http://localhost:3000/`
+- Python: Python import check
+- Node.js: HTTP endpoint check
 - Redis: `redis-cli ping`
 
-## Monitoring and Observability
-
-### Logs
+### Observability
 - Container logs via `docker logs`
-- Centralized logging (optional: ELK or Loki)
-- Log rotation policies
-
-### Metrics
-- Container metrics via Docker stats
 - Application metrics (optional: Prometheus)
-- Custom application metrics
-
-### Tracing
 - Request tracing (optional: Jaeger)
-- Distributed tracing across services
+
+## Enterprise Features
+
+### Scalability
+- Horizontal scaling support
+- Load balancing configurations
+- Service discovery mechanisms
+
+### Reliability
+- Health check monitoring
+- Automatic restart policies
+- Rolling update capabilities
+
+### Maintainability
+- Modular service architecture
+- Configuration management
+- Comprehensive documentation

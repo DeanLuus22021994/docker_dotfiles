@@ -1,46 +1,48 @@
-# Python
-**/.venv/
+# Minimal exclusions - only truly temporary files
+# OS generated files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Editor swap files
+*.swp
+*.swo
+
+# Python bytecode (regenerated automatically)
 **/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.egg-info/
 **/.mypy_cache/
 **/.pytest_cache/
 **/.ruff_cache/
 **/htmlcov/
-**/*.pyc
-**/*.pyo
-**/*.egg-info/
 **/.coverage
 **/coverage.xml
 
-# Node.js
+# Node modules (can be large)
 **/node_modules/
-**/npm-debug.log
-**/yarn-error.log
 
-# Environment files (keep only examples)
-.env
-.env.local
-.env.development
-.env.production
-.env.docker
-!.env.example
-
-# Secrets (keep only examples)
-secrets/
-!secrets/.secrets.example
-!secrets/README.md
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
+# Log files
 *.log
 
-# Docker
-volumes/
+# Environment files (local overrides)
+.env/.env.local
+.env/.env.*.local
+
+# Secrets (environment variable driven)
+.secrets/secrets.env
+
+# IDE
+.vscode/settings.json.backup
+.idea/
+
+# Build artifacts
+dist/
+build/
+*.egg
+
+# Build cache (Docker Buildx, etc.)
+.cache/
+**/.cache/

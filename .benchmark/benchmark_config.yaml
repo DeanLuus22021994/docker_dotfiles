@@ -1,0 +1,115 @@
+# Docker Build Benchmark Configuration
+# Defines benchmark scenarios and performance targets
+
+# Benchmark configuration
+benchmark:
+  version: "1.0.0"
+  timeout_minutes: 30
+  iterations: 3
+  warmup_runs: 1
+
+# Performance targets (in seconds)
+targets:
+  bake_dev_build: 120    # 2 minutes max for dev build
+  bake_all_build: 300    # 5 minutes max for all targets
+  cache_improvement: 50  # 50% minimum cache improvement
+  layer_count: 25        # Maximum layers in final image
+
+# Build scenarios to test
+scenarios:
+  - name: "bake_dev"
+    description: "Docker Bake development build"
+    command: "./build.sh bake dev"
+    expected_success: true
+
+  - name: "bake_all"
+    description: "Docker Bake all targets"
+    command: "./build.sh all"
+    expected_success: true
+
+  - name: "legacy_build"
+    description: "Legacy docker build"
+    command: "./build.sh legacy dev"
+    expected_success: true
+
+  - name: "buildx_no_cache"
+    description: "Buildx without cache"
+    command: "DOCKER_BUILDKIT=1 docker build -f .devcontainer/devcontainer.dockerfile -t devcontainer:nocache ."
+    expected_success: true
+
+# Cache performance scenarios
+cache_scenarios:
+  - name: "cold_cache"
+    description: "First build (cold cache)"
+    command: "./build.sh bake dev"
+    cleanup: true
+
+  - name: "warm_cache"
+    description: "Second build (warm cache)"
+    command: "./build.sh bake dev"
+    cleanup: false
+
+  - name: "hot_cache"
+    description: "Third build (hot cache)"
+    command: "./build.sh bake dev"
+    cleanup: false
+
+# System requirements
+requirements:
+  docker:
+    min_version: "20.10.0"
+    buildx_required: true
+
+  system:
+    min_memory_gb: 4
+    min_disk_free_gb: 10
+    recommended_cores: 2
+
+# Performance thresholds
+thresholds:
+  warning:
+    build_time_multiplier: 1.5  # Warn if build is 50% slower than target
+    cache_improvement_min: 25   # Warn if cache improvement < 25%
+
+  critical:
+    build_time_multiplier: 2.0  # Critical if build is 2x slower than target
+    cache_improvement_min: 10   # Critical if cache improvement < 10%
+    failure_rate_max: 0.1       # Critical if >10% of builds fail
+
+# Reporting configuration
+reporting:
+  formats: ["json", "markdown", "html"]
+  include_visualizations: true
+  include_system_info: true
+  include_recommendations: true
+
+# CI/CD integration
+ci:
+  github_actions:
+    artifact_retention_days: 30
+    fail_on_performance_regression: true
+    comment_on_pr: true
+
+  gitlab_ci:
+    artifact_expiry: "1 week"
+    allow_failure: false
+
+# Notification settings
+notifications:
+  slack:
+    enabled: false
+    webhook_url: ""
+    channels: ["build-performance"]
+
+  email:
+    enabled: false
+    recipients: []
+    smtp_server: ""
+
+# Advanced options
+advanced:
+  enable_profiling: false
+  collect_docker_stats: true
+  measure_network_io: false
+  detailed_layer_analysis: true
+  export_build_context: false

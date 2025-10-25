@@ -1,0 +1,184 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Python: MCP Server",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/setup-python-mcp.sh",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "MCP_DEBUG": "true"
+      }
+    },
+    {
+      "name": "Python: Agent Framework",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_app.py",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Python: Test Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v", "--tb=short"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Python: All Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-v", "--tb=short", "--cov=.", "--cov-report=term-missing"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Docker: Attach to Container",
+      "type": "docker",
+      "request": "attach",
+      "platform": "netCore",
+      "containerName": "docker-python-1"
+    },
+    {
+      "name": "Agent: Debug Agent with Tracing",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_app.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG",
+        "AGENT_TRACING": "true",
+        "AGENT_TRACE_LEVEL": "verbose"
+      }
+    },
+    {
+      "name": "Agent: Debug MCP Server with Tools",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/mcp_server.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "MCP_DEBUG": "true",
+        "MCP_TOOLS_ENABLED": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Agent: Debug Agent Evaluation",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_evaluation.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "EVALUATION_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Agent: Attach to Running Agent",
+      "type": "debugpy",
+      "request": "attach",
+      "listen": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/app"
+        }
+      ]
+    },
+    {
+      "name": "Agent: Debug with GitHub Integration",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_github.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Agent: Debug with Azure AI",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_azure.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "AZURE_CLIENT_ID": "${env:AZURE_CLIENT_ID}",
+        "AZURE_CLIENT_SECRET": "${env:AZURE_CLIENT_SECRET}",
+        "AZURE_TENANT_ID": "${env:AZURE_TENANT_ID}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    },
+    {
+      "name": "Agent: Debug with HuggingFace",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/agent_huggingface.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/Scripts/python.exe",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "HUGGINGFACE_ACCESS_TOKEN": "${env:HUGGINGFACE_ACCESS_TOKEN}",
+        "AGENT_DEBUG": "true",
+        "LOG_LEVEL": "DEBUG"
+      }
+    }
+  ]
+}

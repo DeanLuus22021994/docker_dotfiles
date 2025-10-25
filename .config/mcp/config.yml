@@ -1,0 +1,204 @@
+---
+# MCP (Model Context Protocol) Configuration - CI/CD Automation
+# Generated: 2025-10-24
+# Description: Config-driven automation for testing and validation utilities
+
+# Stack Metadata
+stack:
+  name: "mcp"
+  description: "Model Context Protocol utilities for testing and validation"
+  version: "3.0"
+  purpose: "Automated testing, code quality validation, development tooling"
+  type: "testing"
+
+# CI/CD Configuration
+ci_cd:
+  github_actions:
+    workflow: "mcp-validation.yml"
+    triggers:
+      - push:
+          branches: [main, develop]
+      - pull_request:
+          branches: [main]
+      - schedule:
+          - cron: "0 2 * * 1-5"  # Weekdays at 2 AM
+    environment: "testing"
+
+  docker:
+    build_context: "../../.dockerfiles"
+    build_args:
+      ENVIRONMENT: "test"
+      SERVICE_TYPE: "mcp"
+      WORKERS: "1"
+    image_tag: "docker_mcp:latest"
+    registry: "docker.io"
+
+  testing:
+    framework: "pytest"
+    coverage_target: "85"
+    security_scan: true
+    performance_test: true
+
+# Environment Variables (Config-Driven)
+environment:
+  # Application Configuration
+  ENVIRONMENT: "test"
+  DEBUG: "false"
+  LOG_LEVEL: "INFO"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+  # Testing Configuration
+  PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+  PYTEST_PLUGINS: "pytest_cov,pytest_asyncio"
+  COVERAGE_PROCESS_START: ".coveragerc"
+
+  # Python Path
+  PYTHONPATH: "/app"
+
+# Service Configuration (References to docker-compose.yml)
+services:
+  python:
+    working_dir: "/app"
+    command: "tail -f /dev/null"  # Keep container running for testing
+    health_endpoint: "/health"
+
+# Volume Configuration (Named volumes for persistence)
+volumes:
+  python_app: "docker_python_app"
+  tests: "docker_tests"
+  pytest_cache: "docker_pytest_cache"
+  coverage: "docker_coverage"
+  python_mcp: "docker_python_mcp"  # MCP utilities volume
+
+# Network Configuration
+network:
+  name: "docker_mcp_network"
+  driver: "bridge"
+
+# Testing Configuration (CI/CD Automation)
+testing:
+  framework: "pytest"
+  configuration:
+    test_directory: "tests/"
+    test_pattern: "test_*.py"
+    coverage_target: 85
+    parallel_execution: true
+    workers: 4
+
+  commands:
+    run_tests: "pytest tests/ -v --tb=short"
+    run_coverage: "pytest tests/ --cov=docker_utils --cov-report=html --cov-report=term"
+    run_lint: "ruff check docker_utils/ tests/"
+    run_format: "black docker_utils/ tests/"
+    run_type_check: "mypy docker_utils/"
+    run_security: "bandit -r docker_utils/"
+
+  reports:
+    coverage_directory: "coverage/"
+    test_results: "test-results/"
+    lint_reports: "lint-reports/"
+
+# Code Quality Configuration (CI/CD Automation)
+code_quality:
+  linting:
+    tools: ["ruff", "black", "mypy", "bandit"]
+    configuration:
+      ruff_config: "pyproject.toml"
+      black_config: "pyproject.toml"
+      mypy_config: "pyproject.toml"
+
+  formatting:
+    line_length: 88
+    target_version: "py314"
+    string_quotes: "double"
+    magic_trailing_comma: true
+
+  type_checking:
+    strict_mode: true
+    warn_unused_ignores: true
+    disallow_untyped_defs: true
+    disallow_incomplete_defs: true
+
+# Validation Configuration (CI/CD Automation)
+validation:
+  docker_compose:
+    validate_command: "python ../../.compose/validate_stacks.py"
+    check_syntax: true
+    check_references: true
+    check_secrets: true
+
+  security:
+    scan_dependencies: true
+    check_secrets: true
+    vulnerability_scanning: true
+
+  performance:
+    benchmark_tests: true
+    memory_profiling: true
+    cpu_profiling: true
+
+# CI/CD Pipeline Configuration
+ci_cd_pipeline:
+  github_actions:
+    workflows:
+      - test
+      - lint
+      - security
+      - deploy
+    triggers:
+      - push
+      - pull_request
+    branches:
+      - main
+      - develop
+
+  pre_commit:
+    hooks: ["black", "ruff", "mypy", "pytest"]
+    configuration: "../../.pre-commit-config.yaml"
+
+# Development Configuration
+development:
+  tools: ["pytest", "pytest-cov", "ruff", "black", "mypy", "bandit", "pre-commit"]
+  environment:
+    python_version: "3.14"
+    uv_enabled: true
+    virtual_environment: ".venv"
+  debugging:
+    pdb_enabled: true
+    verbose_logging: true
+    test_debugging: true
+
+# Deployment Configuration
+deployment:
+  compose_file: "../../.compose/mcp/docker-compose.yml"
+  service_name: "test"
+  commands:
+    test: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm test"
+    test_coverage: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm test-coverage"
+    lint: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm lint"
+    format: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm format"
+    type_check: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm type-check"
+    security_scan: "docker compose -f ../../.compose/mcp/docker-compose.yml run --rm security"
+
+  resource_limits:
+    python:
+      cpus: "1.0"
+      memory: "1g"
+
+# Integration Configuration
+integration:
+  external_services:
+    github_api: true
+    docker_hub: true
+    external_databases: false
+
+  mock_services:
+    enabled: false  # All mocks removed
+    database_mock: false
+    redis_mock: false
+    api_mock: false
+
+  test_data:
+    fixtures_directory: "tests/fixtures/"
+    sample_data: "tests/data/"
+    mock_responses: "tests/mocks/"

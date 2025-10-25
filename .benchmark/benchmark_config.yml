@@ -1,0 +1,228 @@
+# Docker Build Benchmark Configuration
+# This file defines the benchmarking parameters and thresholds
+
+# Benchmark Configuration
+benchmark:
+  name: "docker_build_performance"
+  version: "1.0.0"
+  description: "Comprehensive Docker build performance analysis"
+
+  # Test parameters
+  parameters:
+    iterations: 3  # Number of iterations per test
+    timeout: 1800  # Maximum time per test (seconds)
+    cleanup: true  # Clean Docker resources between tests
+
+  # Build targets to test
+  targets:
+    - name: "dev"
+      description: "Development container with full features"
+      dockerfile: ".devcontainer/devcontainer.dockerfile"
+
+    - name: "prod"
+      description: "Production container with minimal features"
+      dockerfile: ".devcontainer/devcontainer.dockerfile"
+
+    - name: "ci"
+      description: "CI/CD container for automated builds"
+      dockerfile: ".devcontainer/devcontainer.dockerfile"
+
+  # Build strategies to compare
+  strategies:
+    - name: "bake"
+      description: "Docker Bake (recommended)"
+      command: "./build.sh bake {target}"
+      priority: 1
+
+    - name: "bake_all"
+      description: "Docker Bake all targets"
+      command: "./build.sh all"
+      priority: 2
+
+    - name: "legacy"
+      description: "Legacy Docker build"
+      command: "./build.sh legacy {target}"
+      priority: 3
+
+    - name: "buildx_no_cache"
+      description: "Buildx without cache"
+      command: "docker build -f .devcontainer/devcontainer.dockerfile -t devcontainer:{target}-nocache ."
+      priority: 4
+
+# Performance Thresholds
+thresholds:
+  # Maximum acceptable build times (seconds)
+  max_build_time:
+    dev: 300    # 5 minutes
+    prod: 240   # 4 minutes
+    ci: 180     # 3 minutes
+
+  # Minimum cache efficiency (%)
+  min_cache_efficiency: 50
+
+  # Maximum acceptable variance (%)
+  max_variance: 20
+
+  # Performance regression thresholds
+  regression_threshold: 10  # % increase from baseline
+
+# System Requirements
+system_requirements:
+  min_docker_version: "20.10.0"
+  min_buildx_version: "0.8.0"
+  min_memory_gb: 8
+  min_disk_free_gb: 20
+  recommended_cpu_cores: 4
+
+# Cache Configuration
+cache:
+  # Volume mounts for persistent caching
+  volumes:
+    - name: "pip_cache"
+      mount: "/tmp/docker_devcontainer_pip_cache"
+      description: "Python pip package cache"
+
+    - name: "npm_cache"
+      mount: "/tmp/docker_devcontainer_npm_cache"
+      description: "Node.js npm package cache"
+
+    - name: "uv_cache"
+      mount: "/tmp/docker_devcontainer_uv_cache"
+      description: "UV package manager cache"
+
+    - name: "mypy_cache"
+      mount: "/tmp/docker_devcontainer_mypy_cache"
+      description: "MyPy type checking cache"
+
+    - name: "ruff_cache"
+      mount: "/tmp/docker_devcontainer_ruff_cache"
+      description: "Ruff linting cache"
+
+  # Registry cache settings
+  registry:
+    enabled: true
+    ttl: "168h"  # 1 week
+    compression: "gzip"
+
+# Reporting Configuration
+reporting:
+  # Output formats
+  formats:
+    - "json"
+    - "markdown"
+    - "html"
+
+  # Chart generation
+  charts:
+    enabled: true
+    format: "png"
+    dpi: 300
+
+  # Notification settings
+  notifications:
+    slack:
+      enabled: false
+      webhook_url: ""
+      channels:
+        - "build-performance"
+
+    email:
+      enabled: false
+      recipients: []
+      smtp_server: ""
+
+# CI/CD Integration
+ci:
+  # GitHub Actions settings
+  github_actions:
+    enabled: true
+    schedule: "0 2 * * 1"  # Weekly on Monday at 2 AM
+    timeout: 3600  # 1 hour
+    artifacts_retention_days: 30
+
+  # Performance regression detection
+  regression_detection:
+    enabled: true
+    baseline_branch: "main"
+    comparison_window_days: 7
+    alert_threshold_percent: 15
+
+# Optimization Rules
+optimization:
+  # Automatic optimization suggestions
+  rules:
+    - name: "layer_ordering"
+      description: "Optimize Dockerfile layer ordering"
+      condition: "build_time > 300"
+      action: "reorder_run_commands"
+
+    - name: "cache_mounts"
+      description: "Add cache mounts for package managers"
+      condition: "cache_efficiency < 50"
+      action: "add_cache_mounts"
+
+    - name: "multi_stage"
+      description: "Implement multi-stage builds"
+      condition: "image_size > 2GB"
+      action: "split_build_runtime"
+
+    - name: "parallel_builds"
+      description: "Enable parallel target building"
+      condition: "total_build_time > 600"
+      action: "use_bake_parallel"
+
+# Environment Variables
+environment:
+  # Required environment variables
+  required_vars:
+    - "DOCKER_BUILDKIT"
+    - "BUILDKIT_PROGRESS"
+
+  # Optional environment variables
+  optional_vars:
+    - "DOCKER_USERNAME"
+    - "DOCKER_ACCESS_TOKEN"
+    - "GITHUB_TOKEN"
+
+# Monitoring and Metrics
+monitoring:
+  # Prometheus metrics export
+  prometheus:
+    enabled: false
+    port: 9090
+    path: "/metrics"
+
+  # Custom metrics
+  metrics:
+    - name: "build_duration_seconds"
+      type: "histogram"
+      description: "Time spent building Docker images"
+
+    - name: "cache_hit_ratio"
+      type: "gauge"
+      description: "Cache hit ratio percentage"
+
+    - name: "image_size_bytes"
+      type: "gauge"
+      description: "Final image size in bytes"
+
+# Advanced Configuration
+advanced:
+  # Custom test scenarios
+  custom_scenarios: []
+
+  # Performance profiling
+  profiling:
+    enabled: false
+    tools:
+      - "perf"
+      - "strace"
+      - "docker_stats"
+
+  # Network testing
+  network_tests:
+    enabled: false
+    registries:
+      - "docker.io"
+      - "ghcr.io"
+      - "registry.hub.docker.com"

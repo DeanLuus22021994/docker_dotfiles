@@ -1,0 +1,56 @@
+{
+  "recommendations": [
+    // Core AI and Agent Development
+    "ms-windows-ai-studio.windows-ai-studio",
+    "github.copilot",
+    "github.copilot-chat",
+    "ms-windows-ai-studio.ai-toolkit-vscode",
+    "ms-windows-ai-studio.ai-projects",
+    "ms-windows-ai-studio.ai-model-inference",
+    "ms-windows-ai-studio.mcp-toolkit",
+
+    // Python Development (Official Microsoft)
+    "ms-python.python",
+    "ms-python.debugpy",
+    "ms-python.black-formatter",
+    "charliermarsh.ruff",
+    "ms-python.mypy-type-checker",
+    "ms-python.pylint",
+    "ms-python.pytest",
+    "ms-python.vscode-pylance",
+
+    // Docker Development (Official Microsoft)
+    "ms-azuretools.vscode-docker",
+    "ms-vscode-remote.remote-containers",
+
+    // YAML and JSON (Official Microsoft)
+    "ms-vscode.vscode-json",
+    "redhat.vscode-yaml",
+
+    // Git and GitHub (Official)
+    "github.vscode-github-actions",
+    "ms-vscode.vscode-git-graph",
+    "ms-vscode.vscode-pull-request-github",
+
+    // Remote Development (Official Microsoft)
+    "ms-vscode-remote.remote-ssh",
+
+    // REST and API Development
+    "ms-vscode.vscode-rest-client",
+
+    // Cloud Integration
+    "ms-vscode.vscode-azure-account",
+
+    // Environment Management
+    "ms-vscode.vscode-env",
+
+    // Performance and Profiling (AI Agent Integration)
+    "ms-python.python-profiling",
+    "ms-vscode.vscode-js-profile-flame"
+  ],
+  "unwantedRecommendations": [
+    "ms-python.python-old", // Old Python extension
+    "ms-vscode.vscode-typescript", // Use next version instead
+    "github.copilot-workspace" // Deprecated extension
+  ]
+}
