@@ -1,0 +1,70 @@
+# Pre-commit hooks configuration
+# Strict error enforcement - blocks commits on failures
+# Run manually: pre-commit run --all-files
+# Auto-runs on: git commit
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+      - id: end-of-file-fixer
+        name: Fix end of files
+      - id: check-yaml
+        name: Check YAML syntax
+        args: ['--unsafe']  # Allow custom YAML tags
+      - id: check-json
+        name: Check JSON syntax
+      - id: check-added-large-files
+        name: Check for large files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+      - id: mixed-line-ending
+        name: Check line endings
+
+  # YAML validation
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        name: Validate YAML files
+        args: ['-d', '{extends: default, rules: {line-length: {max: 120}, document-start: disable}}']
+        types: [yaml]
+
+  # Secrets detection
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        name: Detect secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: ^\.env\.example$
+
+  # Python code quality
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        name: Format Python with Black
+        language_version: python3.13
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.9
+    hooks:
+      - id: ruff
+        name: Lint Python with Ruff
+        args: [--fix, --exit-non-zero-on-fix]
+
+  # Docker Compose validation
+  - repo: local
+    hooks:
+      - id: docker-compose-check
+        name: Validate docker-compose.yml
+        entry: docker-compose
+        args: ['config', '--quiet']
+        language: system
+        files: docker-compose\.yml$
+        pass_filenames: false

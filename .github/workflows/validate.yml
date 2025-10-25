@@ -1,0 +1,90 @@
+name: Configuration Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  validate-environment:
+    name: Validate Environment Variables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Check required environment variables
+        run: |
+          python scripts/validate_env.py
+        env:
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          DOCKER_POSTGRES_PASSWORD: ${{ secrets.DOCKER_POSTGRES_PASSWORD }}
+          DOCKER_MARIADB_ROOT_PASSWORD: ${{ secrets.DOCKER_MARIADB_ROOT_PASSWORD }}
+          DOCKER_MARIADB_PASSWORD: ${{ secrets.DOCKER_MARIADB_PASSWORD }}
+          DOCKER_REDIS_PASSWORD: ${{ secrets.DOCKER_REDIS_PASSWORD }}
+          DOCKER_MINIO_ROOT_USER: ${{ secrets.DOCKER_MINIO_ROOT_USER }}
+          DOCKER_MINIO_ROOT_PASSWORD: ${{ secrets.DOCKER_MINIO_ROOT_PASSWORD }}
+          DOCKER_GRAFANA_ADMIN_PASSWORD: ${{ secrets.DOCKER_GRAFANA_ADMIN_PASSWORD }}
+          DOCKER_JUPYTER_TOKEN: ${{ secrets.DOCKER_JUPYTER_TOKEN }}
+          DOCKER_PGADMIN_PASSWORD: ${{ secrets.DOCKER_PGADMIN_PASSWORD }}
+
+  validate-configs:
+    name: Validate Configuration Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install validation tools
+        run: |
+          pip install yamllint==1.33.0
+
+      - name: Run config validation
+        run: |
+          python scripts/validate_configs.py
+
+  validate-docker-compose:
+    name: Validate Docker Compose
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml syntax
+        run: |
+          docker-compose config --quiet
+
+  validate-pre-commit:
+    name: Validate Pre-commit Hooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit==3.6.0
+
+      - name: Run pre-commit hooks
+        run: |
+          pre-commit run --all-files
+        env:
+          SKIP: docker-compose-check  # Skip docker-compose check in CI (requires env vars)

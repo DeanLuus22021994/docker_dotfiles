@@ -1,7 +1,7 @@
 # Makefile for Docker Cluster Implementation
 # Turn-key modern data platform with GPU support
 
-.PHONY: help build up down logs ps restart clean validate dev test-all test-health test-connectivity
+.PHONY: help build up down logs ps restart clean validate validate-configs validate-env dev test-all test-health test-connectivity
 
 help:
 	@echo "Docker Cluster - Modern Data Platform"
@@ -15,13 +15,17 @@ help:
 	@echo "  make logs        - View logs"
 	@echo "  make ps          - Show status"
 	@echo ""
+	@echo "Validation:"
+	@echo "  make validate          - Validate docker-compose syntax"
+	@echo "  make validate-configs  - Validate all config files"
+	@echo "  make validate-env      - Validate environment variables"
+	@echo ""
 	@echo "Testing:"
 	@echo "  make test-all    - Run all tests"
 	@echo "  make test-health - Check service health"
 	@echo "  make test-conn   - Test connectivity"
 	@echo ""
 	@echo "Maintenance:"
-	@echo "  make validate    - Validate configuration"
 	@echo "  make clean       - Clean resources"
 
 build:
@@ -50,9 +54,25 @@ restart: down up
 	@echo "Cluster restarted"
 
 validate:
-	@echo "Validating configuration..."
+	@echo "Validating docker-compose configuration..."
 	@docker-compose config > /dev/null
-	@echo "Configuration valid"
+	@echo "✅ docker-compose.yml syntax valid"
+
+validate-configs:
+	@echo "=========================================="
+	@echo "Validating Configuration Files"
+	@echo "=========================================="
+	@python scripts/validate_configs.py
+	@echo ""
+	@echo "✅ All config validations passed"
+
+validate-env:
+	@echo "=========================================="
+	@echo "Validating Environment Variables"
+	@echo "=========================================="
+	@python scripts/validate_env.py
+	@echo ""
+	@echo "✅ All required environment variables present"
 
 clean:
 	@echo "Cleaning up resources..."
@@ -102,5 +122,7 @@ test-conn:
 		curl -f http://cluster-minio:9000/minio/health/live \
 	"
 
-test-all: validate test-health test-conn
-	@echo "All tests completed"
+test-all: validate validate-configs validate-env test-health test-conn
+	@echo "=========================================="
+	@echo "✅ All tests completed successfully"
+	@echo "=========================================="

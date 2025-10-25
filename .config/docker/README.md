@@ -28,21 +28,42 @@ sudo systemctl restart docker
 # Restart Docker Desktop from system tray
 ```
 
-### `buildkit.toml`
-BuildKit-specific configuration for optimized builds.
+### `buildkitd.toml`
+BuildKit daemon configuration for the `cluster-buildkit` service.
 
-**Usage:**
-```bash
-# Set environment variable before building
-export BUILDKIT_CONFIG=$PWD/.config/docker/buildkit.toml
-docker-compose build
+**Usage:** Mounted into the BuildKit container via docker-compose.yml
+
+**Key Features:**
+- **10GB cache** with 3-day retention
+- **Multi-platform support**: amd64, arm64
+- **OCI workers** with rootless execution
+- **Garbage collection**: Automatic cleanup of old build cache
+- **Build history**: 7-day retention with max 50 records
+
+**Cache Settings:**
+```toml
+[worker.oci]
+  max-parallelism = 4
+  
+[[worker.oci.gcpolicy]]
+  keepBytes = 10737418240  # 10GB
+  keepDuration = 259200    # 3 days
+  filters = [ "type==source.local", "type==exec.cachemount", "type==source.git.checkout"]
 ```
 
-**Features:**
-- 512MB cache retention
-- 48-hour cache duration
-- Docker Hub mirror (gcr.io)
-- OCI worker enabled
+**Platform Support:**
+```toml
+platforms = ["linux/amd64", "linux/arm64"]
+```
+
+**Validation:**
+```bash
+# Check if mounted correctly
+docker exec cluster-buildkit cat /etc/buildkit/buildkitd.toml
+
+# View cache usage
+docker exec cluster-buildkit buildctl debug workers
+```
 
 ### `compose.override.example.yml`
 Template for local docker-compose overrides.
@@ -75,10 +96,11 @@ sudo systemctl restart docker
 
 ### 2. Set Up BuildKit (Optional)
 ```bash
-# Add to ~/.bashrc or ~/.zshrc
-export BUILDKIT_CONFIG=/path/to/docker_dotfiles/.config/docker/buildkit.toml
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
+# BuildKit is pre-configured in the cluster-buildkit service
+# No manual setup required - just use docker-compose
+
+# To verify BuildKit service
+docker-compose ps cluster-buildkit
 ```
 
 ### 3. Create Local Overrides

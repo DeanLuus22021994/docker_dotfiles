@@ -7,7 +7,7 @@
   - [x] `.config/nginx/` - nginx configurations
   - [x] `.config/database/` - database configurations
   - [x] `.config/services/` - service-specific configurations
-- [x] Migrated 7 config files from scattered locations to `.config/`
+- [x] Migrated 8 config files from scattered locations to `.config/`
   - [x] `nginx.conf` (root) → `.config/nginx/loadbalancer.conf`
   - [x] `dockerfile/configs/nginx.conf` → `.config/nginx/main.conf`
   - [x] `dockerfile/configs/default.conf` → `.config/nginx/default.conf`
@@ -47,78 +47,118 @@
   - [x] `dockerfile/buildkit.Dockerfile`
 - [x] Validated docker-compose.yml syntax (no errors)
 
-## Pending 🔄
-
 ### Phase 4: Cleanup
-- [ ] Delete `secrets/` directory and all contained files
-- [ ] Delete `dockerfile/configs/` directory and all contained files
-- [ ] Delete root-level `nginx.conf` (migrated to `.config/nginx/loadbalancer.conf`)
-- [ ] Remove `.config/docker/buildkit.toml` (replaced by `buildkitd.toml`)
+- [x] Deleted `secrets/` directory (entire directory)
+- [x] Deleted `dockerfile/configs/` directory (entire directory)
+- [x] Deleted root-level `nginx.conf` (migrated to `.config/nginx/loadbalancer.conf`)
+- [x] Removed `.config/docker/buildkit.toml` (replaced by `buildkitd.toml`)
 
 ### Phase 5: Pre-commit Automation
-- [ ] Create `dockerfile/pre-commit.Dockerfile`
-  - [ ] Base: Python 3.13-slim
-  - [ ] Install: pre-commit, yamllint, detect-secrets, Black, Ruff
-  - [ ] Configure entry point for hook installation
-- [ ] Create `.pre-commit-config.yaml` with strict error-enforcing hooks
-  - [ ] YAML/JSON validation
-  - [ ] Secrets detection (detect-secrets)
-  - [ ] docker-compose syntax validation
-  - [ ] Python formatting (Black, Ruff)
-  - [ ] Trailing whitespace, end-of-file fixer
-- [ ] Add `cluster-pre-commit` service to docker-compose.yml
-  - [ ] Use `profiles: ["dev"]`
-  - [ ] Mount workspace and `.git/` directory
-  - [ ] Auto-install hooks on startup
-  - [ ] Command: `pre-commit install && pre-commit run --all-files`
-- [ ] Make `devcontainer` depend on `cluster-pre-commit`
+- [x] Created `dockerfile/pre-commit.Dockerfile`
+  - [x] Base: Python 3.13-slim
+  - [x] Installed: pre-commit, yamllint, detect-secrets, Black, Ruff
+  - [x] Configured entry point for hook installation
+- [x] Created `.pre-commit-config.yaml` with strict error-enforcing hooks
+  - [x] YAML/JSON validation
+  - [x] Secrets detection (detect-secrets)
+  - [x] docker-compose syntax validation
+  - [x] Python formatting (Black, Ruff)
+  - [x] Trailing whitespace, end-of-file fixer
+- [x] Added `cluster-pre-commit` service to docker-compose.yml
+  - [x] Uses `profiles: ["dev"]`
+  - [x] Mounts workspace and `.git/` directory
+  - [x] Auto-installs hooks on startup
+  - [x] Command: `pre-commit install && pre-commit run --all-files`
+- [x] Made `devcontainer` depend on `cluster-pre-commit`
 
 ### Phase 6: VSCode Settings Split
-- [ ] Split `.vscode/settings.json` into team/personal configs
-  - [ ] Keep in tracked `settings.json`:
-    - [ ] YAML schemas
-    - [ ] File associations
-    - [ ] `github.copilot.chat.codeGeneration.useInstructionFiles: true`
-    - [ ] `github.copilot.chat.testGeneration.enabled: true`
-  - [ ] Move to gitignored `settings.local.json`:
-    - [ ] `github.copilot.advanced.debug.overrideEngine`
-    - [ ] `github.copilot.chat.localeOverride`
-    - [ ] `github.copilot.chat.terminalChatLocation`
-    - [ ] `github.copilot.chat.anthropic.thinking.maxTokens`
-- [ ] Create `.vscode/settings.local.example.json` as template
-- [ ] Update `.vscode/settings.json` with comment directing to local settings
+- [x] Split `.vscode/settings.json` into team/personal configs
+  - [x] Kept in tracked `settings.json`:
+    - [x] YAML schemas
+    - [x] File associations
+    - [x] `github.copilot.chat.codeGeneration.useInstructionFiles: true`
+    - [x] `github.copilot.chat.testGeneration.enabled: true`
+  - [x] Moved to gitignored `settings.local.json` pattern:
+    - [x] AI model preferences (anthropic thinking, model overrides)
+    - [x] Locale overrides
+    - [x] Terminal chat location
+    - [x] Personal Copilot settings
+- [x] Created `.vscode/settings.local.example.json` as template
+- [x] Updated `.vscode/settings.json` with header directing to local settings
 
 ### Phase 7: Config Validation Pipeline
-- [ ] Create `scripts/validate_configs.py`
-  - [ ] Validate YAML files (yamllint)
-  - [ ] Validate JSON files (jsonlint)
-  - [ ] Validate nginx configs (`nginx -t`)
-  - [ ] Validate PostgreSQL configs (syntax check)
-  - [ ] Validate MariaDB configs (syntax check)
-  - [ ] Return exit code (0=success, 1=failure)
-- [ ] Create `.github/workflows/validate.yml`
-  - [ ] Trigger on: push, pull_request
-  - [ ] Jobs:
-    - [ ] Environment validation (scripts/validate_env.py)
-    - [ ] Config validation (scripts/validate_configs.py)
-    - [ ] docker-compose syntax (docker-compose config)
-    - [ ] Pre-commit hooks (pre-commit run --all-files)
-- [ ] Add `validate-configs` target to Makefile
-  - [ ] Run all validation scripts
-  - [ ] Report errors clearly
-  - [ ] Exit with proper code
+- [x] Created `scripts/validate_configs.py`
+  - [x] Validates YAML files (yamllint)
+  - [x] Validates JSON files (syntax check)
+  - [x] Validates nginx configs (docker-based `nginx -t`)
+  - [x] Validates PostgreSQL configs (syntax check)
+  - [x] Validates MariaDB configs (syntax check)
+  - [x] Returns exit code (0=success, 1=failure)
+- [x] Created `.github/workflows/validate.yml`
+  - [x] Trigger on: push, pull_request, workflow_dispatch
+  - [x] Jobs:
+    - [x] Environment validation (scripts/validate_env.py)
+    - [x] Config validation (scripts/validate_configs.py)
+    - [x] docker-compose syntax (docker-compose config)
+    - [x] Pre-commit hooks (pre-commit run --all-files)
+- [x] Added validation targets to Makefile
+  - [x] `make validate` - docker-compose syntax
+  - [x] `make validate-configs` - all config files
+  - [x] `make validate-env` - environment variables
+  - [x] Updated `make test-all` to include all validations
 
 ### Phase 8: Documentation
-- [ ] Create root `AGENT.md` with development guidelines
-  - [ ] Brief: TDD, SRP, SSoT, Config-driven principles
-  - [ ] Explicit: File references, relative paths
-  - [ ] Unambiguous: Clear examples and validation commands
-  - [ ] AI-optimized: Human-in-the-loop workflow
-- [ ] Update root `README.md` with new config structure
-  - [ ] Environment variable setup instructions
-  - [ ] Config validation commands
-  - [ ] Pre-commit hook usage
-- [ ] Update `.config/docker/README.md` (if exists) with buildkitd.toml info
+- [x] AGENT.md already created with comprehensive development guidelines
+  - [x] Brief: TDD, SRP, SSoT, Config-driven principles
+  - [x] Explicit: File references, relative paths
+  - [x] Unambiguous: Clear examples and validation commands
+  - [x] AI-optimized: Human-in-the-loop workflow
+- [x] Updated root `README.md` with new config structure
+  - [x] Environment variable setup instructions (PowerShell, Linux, macOS)
+  - [x] Config validation commands (`make validate-configs`)
+  - [x] Pre-commit hook usage (automated in dev profile)
+  - [x] Updated project structure section
+  - [x] Updated configuration section with SSoT approach
+- [x] Updated `.config/docker/README.md` with buildkitd.toml info
+  - [x] Documented 10GB cache, 3-day retention
+  - [x] Multi-platform support (amd64, arm64)
+  - [x] Validation commands
+
+## Summary
+
+✅ **ALL PHASES COMPLETE** (8/8)
+
+All implementation tasks from the original TODO have been completed:
+1. ✅ Config organization - Centralized to `.config/` with native formats
+2. ✅ Secrets replacement - All using `DOCKER_` prefixed environment variables
+3. ✅ Docker updates - All Dockerfiles and compose file updated
+4. ✅ Cleanup - Removed obsolete `secrets/`, `dockerfile/configs/`, duplicate files
+5. ✅ Pre-commit automation - Container service with strict error enforcement
+6. ✅ VSCode settings split - Team (tracked) vs personal (gitignored)
+7. ✅ Validation pipeline - Python scripts, GitHub Actions, Makefile targets
+8. ✅ Documentation - README.md, AGENT.md, config-specific READMEs all updated
+
+## Summary
+
+✅ **ALL PHASES COMPLETE** (8/8)
+
+All implementation tasks from the original TODO have been completed:
+1. ✅ Config organization - Centralized to `.config/` with native formats
+2. ✅ Secrets replacement - All using `DOCKER_` prefixed environment variables
+3. ✅ Docker updates - All Dockerfiles and compose file updated
+4. ✅ Cleanup - Removed obsolete `secrets/`, `dockerfile/configs/`, duplicate files
+5. ✅ Pre-commit automation - Container service with strict error enforcement
+6. ✅ VSCode settings split - Team (tracked) vs personal (gitignored)
+7. ✅ Validation pipeline - Python scripts, GitHub Actions, Makefile targets
+8. ✅ Documentation - README.md, AGENT.md, config-specific READMEs all updated
+
+**Next Steps for Users:**
+1. Set up environment variables (see Environment Setup Instructions below)
+2. Run `make validate-env` to verify setup
+3. Start the stack: `make up` (production) or `make dev` (with devcontainer)
+4. Pre-commit hooks will run automatically in dev mode
+
+## Environment Setup Instructions
 
 ## Environment Setup Instructions
 

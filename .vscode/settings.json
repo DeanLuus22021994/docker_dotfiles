@@ -1,72 +1,23 @@
 {
-  // GitHub Copilot Chat Settings
+  // ============================================================================
+  // TEAM SETTINGS (tracked in git)
+  // For personal preferences, create .vscode/settings.local.json
+  // See .vscode/settings.local.example.json for template
+  // ============================================================================
+
+  // GitHub Copilot Chat Settings (Team Defaults)
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "github.copilot.chat.testGeneration.enabled": true,
   "github.copilot.chat.agent.autoFix": true,
   "github.copilot.chat.agent.currentEditorContext.enabled": true,
-  "github.copilot.chat.alternateGptPrompt.enabled": false,
-  "github.copilot.chat.anthropic.thinking.enabled": true,
-  "github.copilot.chat.anthropic.thinking.maxTokens": 16000,
-  "github.copilot.chat.azureModels": {},
-  "github.copilot.chat.byok.ollamaEndpoint": "http://localhost:11434",
-  "github.copilot.chat.claudeSonnet45AlternatePrompt": "default",
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "github.copilot.chat.codesearch.enabled": true,
-  "github.copilot.chat.commitMessageGeneration.instructions": [],
-  "github.copilot.chat.completionsFetcher": "node-fetch",
-  "github.copilot.chat.copilotDebugCommand.enabled": true,
-  "github.copilot.chat.customInstructionsInSystemMessage": true,
-  "github.copilot.chat.customOAIModels": {},
-  "github.copilot.chat.editor.temporalContext.enabled": true,
-  "github.copilot.chat.edits.suggestRelatedFilesForTests": true,
-  "github.copilot.chat.edits.suggestRelatedFilesFromGitHistory": true,
-  "github.copilot.chat.edits.temporalContext.enabled": true,
-  "github.copilot.chat.generateTests.codeLens": false,
-  "github.copilot.chat.gpt5AlternatePrompt": "default",
-  "github.copilot.chat.grokCodeAlternatePrompt": "default",
-  "github.copilot.chat.imageUpload.enabled": true,
-  "github.copilot.chat.languageContext.fix.typescript.enabled": false,
-  "github.copilot.chat.languageContext.inline.typescript.enabled": false,
-  "github.copilot.chat.languageContext.typescript.cacheTimeout": 500,
-  "github.copilot.chat.languageContext.typescript.enabled": false,
-  "github.copilot.chat.languageContext.typescript.includeDocumentation": false,
-  "github.copilot.chat.languageContext.typescript.items": "minimal",
-  "github.copilot.chat.localeOverride": "auto",
-  "github.copilot.chat.nesFetcher": "node-fetch",
-  "github.copilot.chat.newWorkspace.useContext7": false,
-  "github.copilot.chat.newWorkspaceCreation.enabled": true,
-  "github.copilot.chat.notebook.enhancedNextEditSuggestions.enabled": false,
-  "github.copilot.chat.notebook.followCellExecution.enabled": false,
-  "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [],
-  "github.copilot.chat.responsesApiReasoningEffort": "default",
-  "github.copilot.chat.responsesApiReasoningSummary": "detailed",
-  "github.copilot.chat.reviewAgent.enabled": true,
-  "github.copilot.chat.reviewSelection.enabled": true,
-  "github.copilot.chat.reviewSelection.instructions": [],
-  "github.copilot.chat.scopeSelection": false,
-  "github.copilot.chat.setupTests.enabled": true,
-  "github.copilot.chat.summarizeAgentConversationHistory.enabled": true,
-  "github.copilot.chat.terminalChatLocation": "chatView",
-  "github.copilot.chat.useProjectTemplates": true,
-  "github.copilot.chat.useResponsesApi": true,
-  "github.copilot.chat.virtualTools.threshold": 128,
-  "github.copilot.chat.testGeneration.enabled": true,
   "github.copilot.chat.search.enabled": true,
+  "github.copilot.chat.reviewAgent.enabled": true,
+  "github.copilot.chat.setupTests.enabled": true,
   
   // GitHub Copilot Editor Settings
   "github.copilot.editor.enableCodeActions": true,
-  
-  // GitHub Copilot Next Edit Suggestions
-  "github.copilot.nextEditSuggestions.allowWhitespaceOnlyChanges": true,
-  "github.copilot.nextEditSuggestions.enabled": false,
-  "github.copilot.nextEditSuggestions.fixes": true,
-  
-  // GitHub Copilot Rename Suggestions
   "github.copilot.renameSuggestions.triggerAutomatically": true,
-  
-  // ✅ ADD: Performance tuning
-  "github.copilot.advanced": {
-    "debug.overrideEngine": "gpt-4o",  // Use faster model
-    "debug.useNodeFetcher": true
-  },
 
   // YAML validation settings
   "yaml.schemas": {
@@ -77,13 +28,12 @@
     "!encrypted/pkcs1-oaep scalar",
     "!vault scalar"
   ],
-  // Disable auto schema detection for these paths
   "yaml.schemaStore.enable": true,
   "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
   "yaml.disableDefaultProperties": false,
   "yaml.maxItemsComputed": 5000,
   
-  // Grafana provisioning files - disable validation
+  // YAML formatting
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },

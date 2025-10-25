@@ -99,21 +99,82 @@ Internet → Load Balancer (nginx:8080)
 - Ports: 8080, 5432, 3306, 6379, 8888, 9000, 9001, 3002, 9090
 - Windows: WSL2 with Docker Desktop | Linux: Docker Engine | macOS: Docker Desktop
 
+### Environment Variables Setup
+
+**Required before starting the stack:**
+
+1. Copy environment template:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` with your credentials (use strong passwords):
+   ```bash
+   GITHUB_OWNER=YourUsername
+   GH_PAT=ghp_xxxxxxxxxxxxxxxxxxxx
+
+   # Database passwords (16+ chars, mixed case/numbers/symbols)
+   DOCKER_POSTGRES_PASSWORD=your_secure_password
+   DOCKER_MARIADB_ROOT_PASSWORD=your_secure_root_password
+   DOCKER_MARIADB_PASSWORD=your_secure_password
+
+   # Service credentials
+   DOCKER_REDIS_PASSWORD=your_redis_password
+   DOCKER_MINIO_ROOT_USER=minioadmin
+   DOCKER_MINIO_ROOT_PASSWORD=your_minio_password
+   DOCKER_GRAFANA_ADMIN_PASSWORD=your_grafana_password
+   DOCKER_JUPYTER_TOKEN=your_jupyter_token
+   DOCKER_PGADMIN_PASSWORD=your_pgadmin_password
+   ```
+
+3. Load environment variables (PowerShell):
+   ```powershell
+   Get-Content .env | ForEach-Object {
+     $var = $_.Split('=')
+     [Environment]::SetEnvironmentVariable($var[0], $var[1], 'Process')
+   }
+   ```
+
+   Or on Linux/macOS:
+   ```bash
+   export $(cat .env | xargs)
+   ```
+
+4. Validate environment:
+   ```bash
+   python scripts/validate_env.py
+   # Or use make:
+   make validate-env
+   ```
+
+**Security Notes:**
+- Never commit `.env` file (gitignored)
+- Use GitHub Secrets for CI/CD environments
+- Rotate passwords regularly (update `.env` and restart services)
+- All service passwords use `DOCKER_` prefix for consistency
+
 ## 📂 Project Structure
 
 ```
 docker/
+├── .config/                    # Centralized configuration (SSoT)
+│   ├── nginx/                  # Nginx configs (loadbalancer, main, default)
+│   ├── database/               # PostgreSQL and MariaDB configs
+│   ├── services/               # Service-specific configs (pgAdmin, LocalStack)
+│   ├── docker/                 # Docker daemon configs (buildkitd.toml)
+│   ├── github/                 # GitHub Actions workflows, Dependabot
+│   └── monitoring/             # Prometheus, Grafana, Alertmanager
 ├── .devcontainer/              # VS Code devcontainer config
 │   ├── devcontainer.json       # DevContainer settings + runServices
 │   └── devcontainer.dockerfile # Python 3.13 + Node 22 + kubectl
 ├── .github/                    # GitHub configuration
-│   └── copilot-instructions.md # Copilot coding standards
+│   ├── copilot-instructions.md # Copilot coding standards
+│   ├── TODO.md                 # Implementation tracking
+│   └── workflows/              # CI/CD pipelines (validation, pages)
+├── .vscode/                    # VS Code team settings
+│   ├── settings.json           # Team settings (tracked)
+│   └── settings.local.example.json # Personal settings template (gitignored)
 ├── dockerfile/                 # Dockerfile definitions (SRP)
-│   ├── configs/                # Configuration files
-│   │   ├── nginx.conf          # Load balancer config
-│   │   ├── default.conf        # Upstream servers
-│   │   ├── postgresql.conf     # PostgreSQL tuning
-│   │   └── mariadb.conf        # MariaDB optimization
 │   ├── nginx.Dockerfile        # Nginx Alpine
 │   ├── postgres.Dockerfile     # PostgreSQL 13 Alpine
 │   ├── mariadb.Dockerfile      # MariaDB 11 Jammy
@@ -123,20 +184,19 @@ docker/
 │   ├── grafana.Dockerfile      # Monitoring dashboards
 │   ├── prometheus.Dockerfile   # Metrics collection
 │   ├── github-mcp.Dockerfile   # MCP server for GitHub
-│   └── k9s.Dockerfile          # Kubernetes CLI UI
-├── docs/                       # Documentation
-│   ├── architecture.md         # System architecture
-│   ├── deployment.md           # Deployment guide
-│   └── troubleshooting.md      # Troubleshooting
-├── monitoring/                 # Monitoring configs
-│   └── prometheus.yml          # Prometheus scrape targets
-├── secrets/                    # Secrets directory (gitignored)
-│   └── README.md               # Secrets setup guide
+│   ├── k9s.Dockerfile          # Kubernetes CLI UI
+│   └── pre-commit.Dockerfile   # Pre-commit hooks automation
+├── scripts/                    # Automation scripts
+│   ├── validate_env.py         # Environment variable validation
+│   ├── validate_configs.py     # Configuration file validation
+│   └── serve_docs.ps1          # Documentation server
 ├── web-content/                # Static web content
 │   └── index.html              # Cluster landing page
-├── docker-compose.yml          # 14-service orchestration
-├── Makefile                    # Build + test commands
-├── pyproject.toml              # Python project metadata
+├── docker-compose.yml          # 26-service orchestration
+├── .pre-commit-config.yaml     # Pre-commit hooks configuration
+├── .env.example                # Environment variables template
+├── Makefile                    # Build + test + validate commands
+├── AGENT.md                    # Development guidelines
 └── README.md                   # This file
 ```
 
@@ -238,36 +298,82 @@ docker-compose down -v
 
 ## ⚙️ Configuration
 
+### Configuration Management (SSoT)
+
+All configurations are centralized in `.config/` directory using native formats:
+
+**Nginx Configs** (`.config/nginx/`):
+- `loadbalancer.conf` - Load balancer routing to web1/2/3
+- `main.conf` - Worker processes, gzip, security headers, rate limiting
+- `default.conf` - Static content, API endpoints, health checks
+
+**Database Configs** (`.config/database/`):
+- `postgresql.conf` - max_connections: 200, shared_buffers: 256MB, WAL settings
+- `mariadb.conf` - utf8mb4, innodb_buffer_pool: 256MB, binary logging
+
+**Service Configs** (`.config/services/`):
+- `pgadmin-servers.json` - Pre-configured PostgreSQL/MariaDB connections
+- `localstack-init.sh` - S3 buckets, DynamoDB tables, SQS queues, SNS topics
+
+**Docker Configs** (`.config/docker/`):
+- `buildkitd.toml` - 10GB cache, 3-day retention, multi-platform support
+
+**Validation Commands:**
+```bash
+# Validate all configs
+make validate-configs
+# Or directly:
+python scripts/validate_configs.py
+
+# Validate environment variables
+make validate-env
+
+# Validate docker-compose syntax
+make validate
+
+# Run all validations
+make test-all
+```
+
+### Pre-commit Hooks (Automated Quality)
+
+Pre-commit hooks run automatically in the `cluster-pre-commit` container service:
+
+**Enabled Hooks:**
+- YAML/JSON syntax validation
+- Secrets detection (detect-secrets)
+- docker-compose validation
+- Python formatting (Black, Ruff)
+- Trailing whitespace, end-of-file fixer
+
+**Usage:**
+```bash
+# Pre-commit runs automatically in dev profile
+make dev
+
+# Manual run (if needed)
+docker-compose run --rm cluster-pre-commit
+
+# Or install locally
+pre-commit install
+pre-commit run --all-files
+```
+
+**Configuration:** See `.pre-commit-config.yaml`
+
 ### Environment Variables
 
-Configure database in `cluster/docker-compose.yml`:
+Configure services using `DOCKER_` prefixed environment variables (see Prerequisites section above).
 
-```yaml
-environment:
-  POSTGRES_DB: clusterdb
-  POSTGRES_USER: cluster_user
-  POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-```
+**No Docker Secrets** - All credentials via environment variables for consistency and CI/CD compatibility.
 
 ### Scaling
 
 Scale web servers dynamically:
 
 ```bash
-cd cluster
-docker-compose up -d --scale web1=5 --scale web2=5 --scale web3=5
+docker-compose up -d --scale cluster-web1=5 --scale cluster-web2=5 --scale cluster-web3=5
 ```
-
-### Custom Nginx Configuration
-
-Edit load balancer configuration:
-- `cluster/nginx.conf` - Main nginx configuration
-- `cluster/dockerfiles/default.conf` - Upstream server configuration
-
-### PostgreSQL Configuration
-
-Customize PostgreSQL settings:
-- `cluster/dockerfiles/postgresql.conf` - Database parameters
 
 ## 📚 Documentation
 

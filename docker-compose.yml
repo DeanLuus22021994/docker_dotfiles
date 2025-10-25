@@ -1,4 +1,31 @@
 services:
+  cluster-pre-commit:
+    container_name: cluster-pre-commit
+    build:
+      context: .
+      dockerfile: dockerfile/pre-commit.Dockerfile
+    profiles: ["dev"]
+    volumes:
+      - .:/workspace:rw
+      - ./.git:/workspace/.git:rw
+    networks:
+      - cluster-network
+    command: sh -c "pre-commit install && pre-commit run --all-files"
+    restart: "no"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   devcontainer:
     container_name: cluster-devcontainer
     image: mcr.microsoft.com/devcontainers/base:ubuntu
@@ -15,6 +42,7 @@ services:
       - cluster-network
     command: sleep infinity
     depends_on:
+      - cluster-pre-commit
       - cluster-postgres
       - cluster-redis
       - cluster-mariadb
