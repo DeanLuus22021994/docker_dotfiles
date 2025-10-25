@@ -17,7 +17,7 @@ env:
 jobs:
   validate:
     name: Validate Stack Configuration
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
       - name: Checkout code
@@ -44,7 +44,7 @@ jobs:
 
   build:
     name: Build Docker Images
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: validate
     
     strategy:
@@ -88,7 +88,7 @@ jobs:
 
   security-scan:
     name: Security Scan
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
     
     strategy:
@@ -126,7 +126,7 @@ jobs:
 
   test:
     name: Run Tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: validate
     
     steps:
@@ -158,7 +158,7 @@ jobs:
 
   integration-test:
     name: Integration Tests
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
     
     services:
@@ -218,7 +218,7 @@ jobs:
 
   lint:
     name: Code Quality Checks
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     
     steps:
       - name: Checkout code
@@ -271,7 +271,7 @@ jobs:
 
   summary:
     name: Pipeline Summary
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [validate, build, security-scan, test, integration-test, lint]
     if: always()
     
