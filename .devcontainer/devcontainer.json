@@ -16,7 +16,12 @@
     "cluster-minio",
     "cluster-grafana",
     "cluster-prometheus",
-    "cluster-k9s"
+    "cluster-k9s",
+    "cluster-buildkit",
+    "cluster-localstack",
+    "cluster-mailhog",
+    "cluster-pgadmin",
+    "cluster-redis-commander"
   ],
   "shutdownAction": "stopCompose",
   "features": {
@@ -79,7 +84,13 @@
     9000,  // MinIO API
     9001,  // MinIO Console
     3002,  // Grafana
-    9090   // Prometheus
+    9090,  // Prometheus
+    1234,  // BuildKit
+    4566,  // LocalStack
+    1025,  // MailHog SMTP
+    8025,  // MailHog UI
+    5050,  // pgAdmin
+    8081   // Redis Commander
   ],
   "portsAttributes": {
     "8080": {
@@ -121,6 +132,30 @@
     "9090": {
       "label": "Prometheus Metrics",
       "onAutoForward": "notify"
+    },
+    "1234": {
+      "label": "BuildKit Daemon",
+      "onAutoForward": "silent"
+    },
+    "4566": {
+      "label": "LocalStack AWS",
+      "onAutoForward": "notify"
+    },
+    "1025": {
+      "label": "MailHog SMTP",
+      "onAutoForward": "silent"
+    },
+    "8025": {
+      "label": "MailHog Web UI",
+      "onAutoForward": "openBrowser"
+    },
+    "5050": {
+      "label": "pgAdmin Database UI",
+      "onAutoForward": "openBrowser"
+    },
+    "8081": {
+      "label": "Redis Commander",
+      "onAutoForward": "openBrowser"
     }
   }
 }

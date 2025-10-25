@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GPU](https://img.shields.io/badge/CUDA-12.2-green)](https://developer.nvidia.com/cuda-toolkit)
 
-A turn-key modern data platform featuring GPU-accelerated Jupyter, load-balanced web services, dual databases (PostgreSQL + MariaDB), Redis cache, S3-compatible storage (MinIO), GitHub MCP integration, and production-grade monitoring with Grafana/Prometheus.
+A turn-key modern data platform featuring GPU-accelerated Jupyter, load-balanced web services, dual databases (PostgreSQL + MariaDB), Redis cache, S3-compatible storage (MinIO), GitHub MCP integration, production-grade monitoring with Grafana/Prometheus, and complete local development stack (BuildKit, LocalStack, MailHog, pgAdmin, Redis Commander).
 
 ## 🚀 Quick Start
 
@@ -81,6 +81,12 @@ Internet → Load Balancer (nginx:8080)
 - ✅ **Production Monitoring**: Grafana dashboards + Prometheus metrics
 - ✅ **K8s Management**: k9s terminal UI for Kubernetes workflows
 - ✅ **DevContainer Ready**: VS Code integration with all services
+- ✅ **Local Development Stack**:
+  - BuildKit: Optimized Docker builds with cache
+  - LocalStack: Local AWS cloud emulation (S3, DynamoDB, SQS, SNS, Lambda)
+  - MailHog: Email testing and capture
+  - pgAdmin: Web-based database administration
+  - Redis Commander: Redis data browser and management
 - ✅ **Security**: Non-root execution, secrets management, network isolation
 - ✅ **Performance**: BuildKit caching, optimized Dockerfiles, health checks
 
@@ -224,6 +230,11 @@ docker-compose down -v
 - **Grafana**: http://localhost:3002 (Admin/Admin)
 - **Prometheus**: http://localhost:9090 (Metrics)
 - **GitHub MCP**: stdio-based (Node.js integration)
+- **BuildKit**: localhost:1234 (Build daemon)
+- **LocalStack**: http://localhost:4566 (AWS emulation)
+- **MailHog**: http://localhost:8025 (Email testing UI, SMTP: 1025)
+- **pgAdmin**: http://localhost:5050 (admin@cluster.local/admin)
+- **Redis Commander**: http://localhost:8081 (admin/admin)
 
 ## ⚙️ Configuration
 

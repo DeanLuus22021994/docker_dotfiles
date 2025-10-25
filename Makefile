@@ -30,7 +30,7 @@ build:
 
 up:
 	@echo "Starting production cluster..."
-	@docker-compose up -d loadbalancer cluster-web1 cluster-web2 cluster-web3 cluster-postgres cluster-redis cluster-mariadb cluster-github-mcp cluster-jupyter cluster-minio cluster-grafana cluster-prometheus
+	@docker-compose up -d loadbalancer cluster-web1 cluster-web2 cluster-web3 cluster-postgres cluster-redis cluster-mariadb cluster-github-mcp cluster-jupyter cluster-minio cluster-grafana cluster-prometheus cluster-buildkit cluster-localstack cluster-mailhog cluster-pgadmin cluster-redis-commander
 
 dev:
 	@echo "Starting development environment with all services..."
@@ -78,6 +78,14 @@ test-health:
 	@curl -f http://localhost:3002/api/health -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
 	@echo "Prometheus:"
 	@curl -f http://localhost:9090/-/healthy -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "LocalStack:"
+	@curl -f http://localhost:4566/_localstack/health -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "MailHog:"
+	@curl -f http://localhost:8025 -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "pgAdmin:"
+	@curl -f http://localhost:5050/misc/ping -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "Redis Commander:"
+	@curl -f http://localhost:8081 -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
 
 test-conn:
 	@echo "Testing connectivity from devcontainer..."

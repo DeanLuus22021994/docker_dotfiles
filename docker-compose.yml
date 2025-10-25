@@ -204,6 +204,121 @@ services:
       retries: 3
       start_period: 20s
 
+  # BuildKit - Docker build engine with cache optimization
+  cluster-buildkit:
+    container_name: cluster-buildkit
+    build:
+      context: .
+      dockerfile: dockerfile/buildkit.Dockerfile
+    privileged: true
+    volumes:
+      - cluster_buildkit_data:/var/lib/buildkit
+    ports:
+      - "1234:1234"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "buildctl", "debug", "workers"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  # LocalStack - Local AWS cloud stack for development
+  cluster-localstack:
+    container_name: cluster-localstack
+    build:
+      context: .
+      dockerfile: dockerfile/localstack.Dockerfile
+    environment:
+      SERVICES: s3,dynamodb,sqs,sns,lambda,apigateway,cloudformation,ec2,iam
+      DEBUG: 1
+      DATA_DIR: /var/lib/localstack
+      DOCKER_HOST: unix:///var/run/docker.sock
+    volumes:
+      - cluster_localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # MailHog - Email testing tool
+  cluster-mailhog:
+    container_name: cluster-mailhog
+    build:
+      context: .
+      dockerfile: dockerfile/mailhog.Dockerfile
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # pgAdmin - Database administration tool
+  cluster-pgadmin:
+    container_name: cluster-pgadmin
+    build:
+      context: .
+      dockerfile: dockerfile/pgadmin.Dockerfile
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@cluster.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - cluster_pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    depends_on:
+      - cluster-postgres
+      - cluster-mariadb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/misc/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Redis Commander - Redis management UI
+  cluster-redis-commander:
+    container_name: cluster-redis-commander
+    build:
+      context: .
+      dockerfile: dockerfile/redis-commander.Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    depends_on:
+      - cluster-redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
 volumes:
   cluster_postgres_data:
   cluster_redis_data:
@@ -216,6 +331,9 @@ volumes:
   cluster_k9s_config:
   cluster_github_mcp_data:
   cluster_mcp_data:
+  cluster_buildkit_data:
+  cluster_localstack_data:
+  cluster_pgadmin_data:
 
 networks:
   cluster-network:

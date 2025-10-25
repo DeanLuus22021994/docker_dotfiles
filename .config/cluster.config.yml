@@ -79,6 +79,36 @@ services:
     scrape_interval: "15s"
     health_check_interval: "30s"
 
+  buildkit:
+    enabled: true
+    port: 1234
+    privileged: true
+    health_check_interval: "30s"
+
+  localstack:
+    enabled: true
+    port: 4566
+    console_port: 4571
+    services: "s3,dynamodb,sqs,sns,lambda,apigateway"
+    health_check_interval: "60s"
+
+  mailhog:
+    enabled: true
+    smtp_port: 1025
+    web_port: 8025
+    health_check_interval: "30s"
+
+  pgadmin:
+    enabled: true
+    port: 5050
+    default_email: "admin@cluster.local"
+    health_check_interval: "30s"
+
+  redis_commander:
+    enabled: true
+    port: 8081
+    health_check_interval: "30s"
+
 volumes:
   cluster_postgres_data:
     driver: "local"
@@ -99,6 +129,12 @@ volumes:
   cluster_k9s_config:
     driver: "local"
   cluster_github_mcp_data:
+    driver: "local"
+  cluster_buildkit_data:
+    driver: "local"
+  cluster_localstack_data:
+    driver: "local"
+  cluster_pgadmin_data:
     driver: "local"
 
 devcontainer:
