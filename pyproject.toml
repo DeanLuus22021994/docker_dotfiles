@@ -26,19 +26,29 @@ Repository = "https://github.com/DeanLuus22021994/docker_dotfiles.git"
 Issues = "https://github.com/DeanLuus22021994/docker_dotfiles/issues"
 
 [tool.uv]
-dev-dependencies = ["black>=24.0", "ruff>=0.6", "mypy>=1.11", "pytest>=8.3"]
+dev-dependencies = [
+    "black>=24.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "pytest-mock>=3.14",
+    "pytest-asyncio>=0.24",
+]
 
 [tool.black]
 line-length = 100
-target-version = ['py313']
+target-version = ['py314']
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 # E402: Module level import not at top of file - Required for sys.path modification
-ignore = ["E402"]
+# F811: Redefinition of unused variable - Pytest fixtures intentionally shadow
+# ARG002: Unused function argument - Pytest fixtures are used by framework
+ignore = ["E402", "F811", "ARG002"]
 
 [tool.mypy]
 python_version = "3.14"
@@ -46,6 +56,51 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 mypy_path = "scripts"
+
+[tool.pytest.ini_options]
+minversion = "8.3"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=scripts/python",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=80",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["scripts/python"]
+omit = [
+    "*/tests/*",
+    "*/__init__.py",
+    "*/conftest.py",
+    "*/mcp/*",  # MCP modules not yet tested (Phase 4.3)
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
 
 [tool.pylint.main]
 init-hook = "import sys; sys.path.append('scripts')"

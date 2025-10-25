@@ -131,6 +131,23 @@
   "python-envs.defaultPackageManager": "ms-python.python:pip",
   "python-envs.pythonProjects": [],
   
+  // Python analysis settings for Pylance (pytest fixture compatibility)
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportGeneralTypeIssues": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportOptionalSubscript": "none",
+    "reportPrivateImportUsage": "none",
+    "reportConstantRedefinition": "none"
+  },
+  "python.analysis.ignore": [],
+  "python.analysis.exclude": [
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.venv",
+    "**/venv"
+  ],
+  
   // Terminal settings (2025 API)
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.defaultProfile.linux": "bash",

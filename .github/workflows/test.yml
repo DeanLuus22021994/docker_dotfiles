@@ -1,0 +1,164 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - "scripts/python/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "pytest.ini"
+      - ".github/workflows/test.yml"
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "scripts/python/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "pytest.ini"
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch: # Allow manual triggers
+
+jobs:
+  test:
+    name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: self-hosted
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [self-hosted]
+        python-version: ["3.14"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install UV package manager
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+
+      - name: Install dependencies with UV
+        run: |
+          uv pip install --system -e .
+          uv pip install --system pytest pytest-cov pytest-mock pytest-asyncio
+
+      - name: Display Python and package versions
+        run: |
+          python --version
+          python -m pip list
+
+      - name: Run pytest with coverage
+        run: |
+          pytest --cov=scripts/python --cov-report=xml --cov-report=term-missing --cov-fail-under=80 -v
+
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.14'
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-python-${{ matrix.python-version }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            htmlcov/
+            coverage.xml
+            .coverage
+
+  lint:
+    name: Lint and Type Check
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: "pip"
+
+      - name: Install UV and dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install --system black ruff mypy
+
+      - name: Run Black format check
+        run: |
+          black --check --line-length=100 scripts/python/ scripts/orchestrator.py
+
+      - name: Run Ruff linter
+        run: |
+          ruff check scripts/python/ scripts/orchestrator.py
+
+      - name: Run mypy type checker
+        run: |
+          mypy --strict scripts/python/ scripts/orchestrator.py
+
+  validation:
+    name: Validate Configurations
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install --system pyyaml yamllint
+
+      - name: Validate YAML files
+        run: |
+          yamllint -d "{extends: default, rules: {line-length: {max: 120}, document-start: disable}}" .
+        continue-on-error: true
+
+      - name: Validate JSON files
+        run: |
+          python scripts/python/validation/validate_configs.py
+
+  summary:
+    name: Test Suite Summary
+    needs: [test, lint, validation]
+    runs-on: self-hosted
+    if: always()
+
+    steps:
+      - name: Check test results
+        run: |
+          if [ "${{ needs.test.result }}" != "success" ]; then
+            echo "❌ Tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.lint.result }}" != "success" ]; then
+            echo "⚠️  Linting issues found"
+            exit 1
+          fi
+          if [ "${{ needs.validation.result }}" == "failure" ]; then
+            echo "⚠️  Validation issues found"
+            # Don't fail on validation warnings
+          fi
+          echo "✅ All checks passed!"
