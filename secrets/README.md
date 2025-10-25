@@ -1,66 +1,117 @@
 # Docker Secrets Directory
 
-This directory contains sensitive credentials used by Docker Compose services.
+This directory contains sensitive credentials for the Docker Compose stack using Docker Secrets.
 
-## ⚠️ Security Notice
+## 🔒 Security Notice
 
-**NEVER commit actual secret files to version control!**
+**NEVER commit actual secret values to git!** The `.gitignore` file is configured to exclude all files except examples and documentation.
 
-All files in this directory (except `.secrets.example` and this `README.md`) are excluded via `.gitignore`.
+## 📁 Required Secret Files
 
-## Setup Instructions
+Create these files with your secure passwords (minimum 16 characters recommended):
 
-1. Copy `.secrets.example` and review the format
-2. Create individual secret files for your services:
-   - `db_password.txt` - PostgreSQL database password
-   - `redis_password.txt` - Redis password (if needed)
-   - `api_key.txt` - External API keys (if needed)
+```bash
+# PostgreSQL
+secrets/postgres_password.txt
 
-3. Add one secret value per file (plain text, no newlines at the end)
+# MariaDB
+secrets/mariadb_root_password.txt
+secrets/mariadb_password.txt
 
-## Example: Database Password
+# Redis
+secrets/redis_password.txt
 
-Create `db_password.txt`:
+# MinIO
+secrets/minio_root_user.txt
+secrets/minio_root_password.txt
+
+# Grafana
+secrets/grafana_admin_password.txt
+
+# Jupyter
+secrets/jupyter_token.txt
+
+# pgAdmin
+secrets/pgadmin_password.txt
 ```
-MySecureP@ssw0rd123!
+
+## 🚀 Quick Setup
+
+### Development (Quick Start)
+```powershell
+# Copy examples to create actual secrets (placeholder values)
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\postgres_password.txt
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\mariadb_root_password.txt
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\mariadb_password.txt
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\redis_password.txt
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\minio_root_password.txt
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\grafana_admin_password.txt
+"changeme_secure_token_here" | Out-File -Encoding ASCII -NoNewline secrets\jupyter_token.txt
+"changeme_secure_password_here" | Out-File -Encoding ASCII -NoNewline secrets\pgadmin_password.txt
+"minioadmin" | Out-File -Encoding ASCII -NoNewline secrets\minio_root_user.txt
 ```
 
-## Usage in Docker Compose
 
-Secrets are referenced in `docker-compose.yml`:
+### Production (Secure Generation)
+```powershell
+# Generate random secure passwords (PowerShell 5.1+)
+function New-SecurePassword {
+    param([int]$Length = 32)
+    -join ((65..90) + (97..122) + (48..57) + (33,35,37,38,42,43,45,61,63,64) | Get-Random -Count $Length | ForEach-Object {[char]$_})
+}
+
+# Create secrets with random passwords
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\postgres_password.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\mariadb_root_password.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\mariadb_password.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\redis_password.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\minio_root_password.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\grafana_admin_password.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\jupyter_token.txt
+New-SecurePassword | Out-File -Encoding ASCII -NoNewline secrets\pgadmin_password.txt
+
+# MinIO username (no special characters)
+"minioadmin" | Out-File -Encoding ASCII -NoNewline secrets\minio_root_user.txt
+```
+
+## 🔄 How Docker Secrets Work
+
+Docker Secrets are mounted as files at `/run/secrets/<secret_name>` inside containers:
 
 ```yaml
 secrets:
-  db_password:
-    file: ./secrets/db_password.txt
+  postgres_password:
+    file: ./secrets/postgres_password.txt
 
 services:
-  postgres:
+  cluster-postgres:
     secrets:
-      - db_password
+      - postgres_password
     environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
 ```
 
-## Development vs Production
+## ⚠️ Important Notes
 
-- **Development**: Use simple passwords in `db_password.txt` for local testing
-- **Production**: Use strong, randomly generated passwords
-- **CI/CD**: Inject secrets via environment variables or secret management systems
+1. **File Format**: Secrets must be plain text files with NO newlines (use `-NoNewline` in PowerShell)
+2. **Permissions**: On Linux/Mac, set `chmod 600 secrets/*.txt` to restrict access
+3. **Backup**: Store production secrets in a secure password manager (1Password, LastPass, Bitwarden)
+4. **Rotation**: Change production passwords every 90 days
+5. **Never Log**: Ensure applications never log secret values
 
-## Generating Secure Passwords
+## 🧪 Testing Secrets
 
-```bash
-# Generate a random password (Linux/Mac)
-openssl rand -base64 32
+Verify secrets are properly mounted:
+```powershell
+# Check if secret file exists in container
+docker exec cluster-postgres ls -la /run/secrets/
 
-# Or use Python
-python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+# Read secret value (development only!)
+docker exec cluster-postgres cat /run/secrets/postgres_password
 ```
 
-## Files in This Directory
+## 📚 References
 
-- `.secrets.example` - Template showing secret file format (committed to git)
-- `README.md` - This file (committed to git)
-- `db_password.txt` - Database password (NOT in git, created by you)
-- `*.txt` - Other secret files (NOT in git, created by you)
+- [Docker Secrets Documentation](https://docs.docker.com/engine/swarm/secrets/)
+- [Docker Compose Secrets](https://docs.docker.com/compose/use-secrets/)
+- [OWASP Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html)
