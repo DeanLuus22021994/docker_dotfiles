@@ -388,10 +388,13 @@ services:
     secrets:
       - grafana_admin_password
     environment:
-      GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_INSTALL_PLUGINS: ''
     volumes:
       - cluster_grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/dashboards:/etc/grafana/dashboards:ro
     ports:
       - "3002:3000"
     networks:
@@ -447,6 +450,42 @@ services:
         reservations:
           cpus: '1.0'
           memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Alertmanager - Alert routing and notifications
+  cluster-alertmanager:
+    container_name: cluster-alertmanager
+    image: prom/alertmanager:latest
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://localhost:9093'
+    volumes:
+      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - cluster_alertmanager_data:/alertmanager
+    ports:
+      - "9093:9093"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
     logging:
       driver: "json-file"
       options:
@@ -894,6 +933,7 @@ volumes:
   cluster_minio_data:
   cluster_grafana_data:
   cluster_prometheus_data:
+  cluster_alertmanager_data:
   cluster_k9s_config:
   cluster_github_mcp_data:
   cluster_mcp_data:

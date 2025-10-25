@@ -9,7 +9,8 @@ global:
 alerting:
   alertmanagers:
     - static_configs:
-        - targets: []
+        - targets: ['cluster-alertmanager:9093']
+      timeout: 10s
 
 # Load rules once and periodically evaluate them
 rule_files:
@@ -33,14 +34,14 @@ scrape_configs:
           service: 'monitoring'
           tier: 'infrastructure'
   
-  # MinIO S3 storage
-  - job_name: 'minio'
-    metrics_path: '/minio/v2/metrics/cluster'
-    static_configs:
-      - targets: ['cluster-minio:9000']
-        labels:
-          service: 'storage'
-          tier: 'data'
+  # MinIO S3 storage (disabled - requires authentication)
+  # - job_name: 'minio'
+  #   metrics_path: '/minio/v2/metrics/cluster'
+  #   static_configs:
+  #     - targets: ['cluster-minio:9000']
+  #       labels:
+  #         service: 'storage'
+  #         tier: 'data'
 
   # Docker containers via cAdvisor
   - job_name: 'cadvisor'
