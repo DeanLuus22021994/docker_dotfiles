@@ -8,14 +8,14 @@
 
 ## 📊 Quick Status
 
-| Category | Status | Progress | Priority |
-|----------|--------|----------|----------|
-| Testing Infrastructure | 🟡 Not Started | 0/6 | 🔴 Critical |
-| Security Hardening | 🟡 Not Started | 0/6 | 🔴 Critical |
-| Planned Scripts | 🟡 Not Started | 0/6 | 🟠 High |
-| Documentation Consolidation | 🟡 Not Started | 0/4 | 🟠 High |
-| Code Quality Automation | 🟡 Not Started | 0/3 | 🟢 Medium |
-| Web Dashboard Enhancements | 🟡 Not Started | 0/5 | 🟢 Medium |
+| Category                    | Status         | Progress | Priority    |
+| --------------------------- | -------------- | -------- | ----------- |
+| Testing Infrastructure      | 🟡 Not Started | 0/6      | 🔴 Critical |
+| Security Hardening          | 🟡 Not Started | 0/6      | 🔴 Critical |
+| Planned Scripts             | 🟡 Not Started | 0/6      | 🟠 High     |
+| Documentation Consolidation | 🟡 Not Started | 0/4      | 🟠 High     |
+| Code Quality Automation     | 🟡 Not Started | 0/3      | 🟢 Medium   |
+| Web Dashboard Enhancements  | 🟡 Not Started | 0/5      | 🟢 Medium   |
 
 **Legend:**  
 🟢 Complete | 🔵 In Progress | 🟡 Not Started | 🔴 Blocked | ⚪ Optional
@@ -31,8 +31,10 @@
 ### Tasks
 
 #### 4.1.1 Setup pytest Framework ⚪ NOT STARTED
+
 **Description:** Install and configure pytest for Python 3.14  
 **Acceptance Criteria:**
+
 - [ ] pytest installed with all plugins (pytest-cov, pytest-mock, pytest-asyncio)
 - [ ] `pyproject.toml` updated with pytest configuration
 - [ ] Test discovery working for `tests/` directory
@@ -44,8 +46,10 @@
 ---
 
 #### 4.1.2 Create Test Structure ⚪ NOT STARTED
+
 **Description:** Create comprehensive test directory structure  
 **Acceptance Criteria:**
+
 - [ ] `tests/python/` directory created with `__init__.py`
 - [ ] `tests/python/audit/` for code_quality.py and dependencies.py tests
 - [ ] `tests/python/utils/` for colors.py, file_utils.py, logging_utils.py tests
@@ -53,6 +57,7 @@
 - [ ] `tests/fixtures/` for test data (sample configs, .env files)
 
 **Structure:**
+
 ```
 tests/
 ├── __init__.py
@@ -85,14 +90,17 @@ tests/
 ---
 
 #### 4.1.3 Write Unit Tests for Utils ⚪ NOT STARTED
+
 **Description:** Write comprehensive unit tests for utils module  
 **Acceptance Criteria:**
+
 - [ ] `test_colors.py` - Test all color output functions, terminals with/without ANSI support
 - [ ] `test_file_utils.py` - Test find_files(), safe_read_file(), ensure_directory()
 - [ ] `test_logging_utils.py` - Test all logging functions, log levels, formatters
 - [ ] All tests passing with >90% coverage for utils module
 
 **Key Test Cases:**
+
 - Colors: ANSI escape codes, non-ANSI terminals, success/error/warning/info
 - File Utils: File existence, directory creation, recursive search, error handling
 - Logging: Setup logger, log levels, file handlers, console handlers
@@ -103,14 +111,17 @@ tests/
 ---
 
 #### 4.1.4 Write Unit Tests for Validation ⚪ NOT STARTED
+
 **Description:** Write comprehensive unit tests for validation module  
 **Acceptance Criteria:**
+
 - [ ] `test_validate_env.py` - Test .env parsing, variable validation, missing variables detection
 - [ ] `test_validate_configs.py` - Test config file validation, nginx/postgres/mariadb configs
 - [ ] All tests passing with >90% coverage for validation module
 - [ ] Mock Docker commands (don't require Docker installed)
 
 **Key Test Cases:**
+
 - Validate Env: Valid .env, missing required vars, malformed .env, empty values
 - Validate Configs: Valid configs, invalid syntax, missing files, Docker validation
 
@@ -120,14 +131,17 @@ tests/
 ---
 
 #### 4.1.5 Write Unit Tests for Audit ⚪ NOT STARTED
+
 **Description:** Write comprehensive unit tests for audit module  
 **Acceptance Criteria:**
+
 - [ ] `test_code_quality.py` - Test Black/Ruff/mypy execution, output parsing
 - [ ] `test_dependencies.py` - Test dependency scanning, vulnerability checks
 - [ ] All tests passing with >90% coverage for audit module
 - [ ] Mock external tool execution (Black, Ruff, mypy)
 
 **Key Test Cases:**
+
 - Code Quality: Tool availability, successful runs, error handling, output parsing
 - Dependencies: Package detection, version checking, vulnerability scanning
 
@@ -137,8 +151,10 @@ tests/
 ---
 
 #### 4.1.6 Setup CI/CD Testing Pipeline ⚪ NOT STARTED
+
 **Description:** Add automated testing to GitHub Actions  
 **Acceptance Criteria:**
+
 - [ ] `.github/workflows/python-tests.yml` created
 - [ ] Runs pytest on every push/PR
 - [ ] Coverage reports generated and uploaded
@@ -146,6 +162,7 @@ tests/
 - [ ] Badge added to README.md showing test status
 
 **Workflow Steps:**
+
 1. Checkout code
 2. Setup Python 3.14
 3. Install dependencies (uv sync)
@@ -167,6 +184,7 @@ tests/
 ### Current Security Gaps (from analysis)
 
 **Web Dashboard:**
+
 - ❌ No authentication layer (OAuth, JWT, Basic Auth)
 - ❌ No rate limiting beyond nginx defaults
 - ❌ No HTTPS enforcement
@@ -174,12 +192,14 @@ tests/
 - ❌ Port information visible to users
 
 **API Endpoints:**
+
 - ⚠️ Docker socket mounted (read-only, but needs audit)
 - ⚠️ No request validation
 - ⚠️ No API authentication
 - ⚠️ CORS enabled for all origins
 
 **References:**
+
 - `web-content/INSTALL.md:205` - Security considerations section
 - `web-content/ARCHITECTURE.md:268` - Production recommendations
 - `api/README.md:58` - Security considerations
@@ -188,8 +208,10 @@ tests/
 ### Tasks
 
 #### 4.2.1 Implement Authentication Layer ⚪ NOT STARTED
+
 **Description:** Add authentication to web dashboard  
 **Acceptance Criteria:**
+
 - [ ] Choose auth method (OAuth 2.0, JWT, or Basic Auth for internal)
 - [ ] Implement auth middleware in `api/server.js`
 - [ ] Add login page to `web-content/`
@@ -200,6 +222,7 @@ tests/
 **Recommended:** JWT with refresh tokens for internal use, OAuth for production
 
 **Files to Modify:**
+
 - `api/server.js` - Add auth middleware
 - `web-content/src/` - Add login component
 - `web-content/src/services/dockerAPI.ts` - Add auth headers
@@ -211,27 +234,30 @@ tests/
 ---
 
 #### 4.2.2 Add Rate Limiting ⚪ NOT STARTED
+
 **Description:** Implement rate limiting for API endpoints  
 **Acceptance Criteria:**
+
 - [ ] Install `express-rate-limit` package
-- [ ] Configure rate limits: 100 requests per 15 min for /api/*
+- [ ] Configure rate limits: 100 requests per 15 min for /api/\*
 - [ ] Configure stricter limits: 10 requests per 15 min for /api/containers/:id/stats
 - [ ] Add rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining)
 - [ ] Return 429 Too Many Requests on limit exceeded
 - [ ] Document rate limits in `api/README.md`
 
 **Configuration:**
+
 ```javascript
 // api/server.js
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // 100 requests per window
-  message: 'Too many requests, please try again later.'
+  message: "Too many requests, please try again later.",
 });
 
-app.use('/api/', apiLimiter);
+app.use("/api/", apiLimiter);
 ```
 
 **Dependencies:** None  
@@ -240,8 +266,10 @@ app.use('/api/', apiLimiter);
 ---
 
 #### 4.2.3 Enable HTTPS & Reverse Proxy ⚪ NOT STARTED
+
 **Description:** Setup HTTPS for production deployment  
 **Acceptance Criteria:**
+
 - [ ] Create `dockerfile/traefik.Dockerfile` for reverse proxy
 - [ ] Configure Traefik for automatic HTTPS (Let's Encrypt)
 - [ ] Update `docker-compose.yml` with Traefik service
@@ -250,6 +278,7 @@ app.use('/api/', apiLimiter);
 - [ ] Document HTTPS setup in `docs/production-deployment.md`
 
 **Services to Proxy:**
+
 - Web Dashboard (port 80 → 443)
 - API Server (port 3001 → 443/api)
 - Grafana (port 3000 → 443/grafana)
@@ -261,8 +290,10 @@ app.use('/api/', apiLimiter);
 ---
 
 #### 4.2.4 API Request Validation ⚪ NOT STARTED
+
 **Description:** Add input validation and sanitization  
 **Acceptance Criteria:**
+
 - [ ] Install `express-validator` package
 - [ ] Validate container ID format (alphanumeric, 12-64 chars)
 - [ ] Sanitize all user inputs
@@ -271,6 +302,7 @@ app.use('/api/', apiLimiter);
 - [ ] Document validation rules in `api/README.md`
 
 **Validation Rules:**
+
 - Container ID: `/^[a-f0-9]{12,64}$/`
 - Query parameters: Whitelist allowed values
 - Headers: Validate Content-Type, Accept
@@ -281,8 +313,10 @@ app.use('/api/', apiLimiter);
 ---
 
 #### 4.2.5 Restrict CORS Origins ⚪ NOT STARTED
+
 **Description:** Configure CORS for specific origins only  
 **Acceptance Criteria:**
+
 - [ ] Update CORS config in `api/server.js`
 - [ ] Whitelist allowed origins (localhost:3000, production domain)
 - [ ] Deny all other origins
@@ -290,13 +324,14 @@ app.use('/api/', apiLimiter);
 - [ ] Document CORS configuration in `api/README.md`
 
 **Configuration:**
+
 ```javascript
 // api/server.js
-const cors = require('cors');
+const cors = require("cors");
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
-  optionsSuccessStatus: 200
+  origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:3000"],
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
@@ -308,8 +343,10 @@ app.use(cors(corsOptions));
 ---
 
 #### 4.2.6 Docker Socket Security Audit ⚪ NOT STARTED
+
 **Description:** Audit and document Docker socket security  
 **Acceptance Criteria:**
+
 - [ ] Verify socket mounted read-only in all services
 - [ ] Document socket permissions in `SECURITY.md`
 - [ ] Add alternative: Docker API over TCP with TLS
@@ -317,6 +354,7 @@ app.use(cors(corsOptions));
 - [ ] Consider Docker socket proxy (tecnativa/docker-socket-proxy)
 
 **Socket Proxy Benefits:**
+
 - Whitelists allowed API endpoints
 - No full socket access required
 - Better audit trail
@@ -336,8 +374,10 @@ app.use(cors(corsOptions));
 ### PowerShell Scripts (Windows)
 
 #### 4.3.1 cleanup/remove-old-images.ps1 ⚪ NOT STARTED
+
 **Description:** Remove old/unused Docker images to reclaim disk space  
 **Acceptance Criteria:**
+
 - [ ] List all images with created date and size
 - [ ] Filter images older than X days (default: 30)
 - [ ] Exclude images tagged 'latest' or in use by running containers
@@ -347,20 +387,23 @@ app.use(cors(corsOptions));
 - [ ] Document in `scripts/powershell/README.md`
 
 **Features:**
+
 - `-DaysOld` parameter (default: 30)
 - `-Force` switch to skip confirmation
 - `-WhatIf` to preview deletions
 - Color-coded output (red: deletable, green: kept)
 
-**Reference:** CLEANUP-REPORT.md recommendations  
+**Reference:** `.github/archive/CLEANUP-REPORT-v3.1-20251025.md` recommendations  
 **Dependencies:** None  
 **Estimated Time:** 2 hours
 
 ---
 
 #### 4.3.2 cleanup/clear-volumes.ps1 ⚪ NOT STARTED
+
 **Description:** Clear unused Docker volumes safely  
 **Acceptance Criteria:**
+
 - [ ] List all volumes with size and mount status
 - [ ] Identify volumes not attached to any containers
 - [ ] Interactive prompt showing volumes to delete
@@ -370,6 +413,7 @@ app.use(cors(corsOptions));
 - [ ] Document in `scripts/powershell/README.md`
 
 **Features:**
+
 - `-UnusedOnly` switch (default: true)
 - `-Force` switch to skip confirmation
 - `-ExcludePattern` to exclude volumes by name pattern
@@ -381,8 +425,10 @@ app.use(cors(corsOptions));
 ---
 
 #### 4.3.3 audit/security-scan.ps1 ⚪ NOT STARTED
+
 **Description:** Security vulnerability scan for Docker images and dependencies  
 **Acceptance Criteria:**
+
 - [ ] Scan Docker images with Trivy or Grype
 - [ ] Scan Python dependencies with `pip-audit`
 - [ ] Scan npm dependencies with `npm audit`
@@ -392,6 +438,7 @@ app.use(cors(corsOptions));
 - [ ] Document in `scripts/powershell/README.md`
 
 **Scan Tools:**
+
 1. Docker Images: `docker scan` or Trivy
 2. Python: `pip-audit` (already in dependencies.py)
 3. Node.js: `npm audit --json`
@@ -405,8 +452,10 @@ app.use(cors(corsOptions));
 ### Bash Scripts (Linux/macOS)
 
 #### 4.3.4 docker/build-images.sh ⚪ NOT STARTED
+
 **Description:** Build all Docker images with BuildKit optimization  
 **Acceptance Criteria:**
+
 - [ ] Read image list from `dockerfile/` directory
 - [ ] Build images in parallel (max 4 concurrent)
 - [ ] Use BuildKit cache mounts
@@ -416,6 +465,7 @@ app.use(cors(corsOptions));
 - [ ] Document in `scripts/bash/README.md`
 
 **Features:**
+
 - `--no-cache` flag to force rebuild
 - `--push` flag to push to registry
 - `--image <name>` to build single image
@@ -427,8 +477,10 @@ app.use(cors(corsOptions));
 ---
 
 #### 4.3.5 docker/cleanup-volumes.sh ⚪ NOT STARTED
+
 **Description:** Bash equivalent of PowerShell clear-volumes.ps1  
 **Acceptance Criteria:**
+
 - [ ] List unused volumes with `docker volume ls`
 - [ ] Filter volumes not attached to containers
 - [ ] Interactive confirmation before deletion
@@ -437,6 +489,7 @@ app.use(cors(corsOptions));
 - [ ] Document in `scripts/bash/README.md`
 
 **Features:**
+
 - `--force` flag to skip confirmation
 - `--dry-run` to preview deletions
 - Exclude volumes by pattern
@@ -447,8 +500,10 @@ app.use(cors(corsOptions));
 ---
 
 #### 4.3.6 docs/build-docs.sh ⚪ NOT STARTED
+
 **Description:** Build static documentation site with Jekyll or MkDocs  
 **Acceptance Criteria:**
+
 - [ ] Choose documentation tool (MkDocs recommended)
 - [ ] Create `mkdocs.yml` configuration
 - [ ] Convert existing Markdown to MkDocs format
@@ -458,6 +513,7 @@ app.use(cors(corsOptions));
 - [ ] Document in `scripts/bash/README.md`
 
 **Documentation Structure:**
+
 ```
 docs/
 ├── index.md (README.md)
@@ -485,15 +541,17 @@ docs/
 **Priority:** 🟠 HIGH  
 **Target:** Week 4
 
-### Current Issues (from CLEANUP-REPORT.md)
+### Current Issues (from archived CLEANUP-REPORT)
 
 **Scattered Documentation:**
-- Root: README.md, SETUP.md, AGENT.md, SECURITY.md, CLEANUP-REPORT.md
+
+- Root: README.md, SETUP.md, AGENT.md, SECURITY.md
 - web-content: 5 docs (README, ARCHITECTURE, IMPLEMENTATION, REFACTOR-SUMMARY, INSTALL, QUICKSTART)
 - .config: README, github/README
 - No clear hierarchy or index
 
 **Obsolete Documentation:**
+
 - ⚠️ ENHANCEMENTS-COMPLETE.md (review for archival)
 - ⚠️ ENVIRONMENT-INTEGRATION-COMPLETE.md (review for archival)
 - ⚠️ CLUSTER.md (consolidate into README or archive)
@@ -501,8 +559,10 @@ docs/
 ### Tasks
 
 #### 4.4.1 Create Documentation Index ⚪ NOT STARTED
+
 **Description:** Create centralized documentation index  
 **Acceptance Criteria:**
+
 - [ ] Create `docs/INDEX.md` with all documentation links
 - [ ] Organize by category (Setup, Development, Architecture, Scripts)
 - [ ] Add descriptions for each document
@@ -511,25 +571,30 @@ docs/
 - [ ] Update all docs to reference INDEX.md
 
 **Structure:**
+
 ```markdown
 # Documentation Index
 
 ## 🚀 Getting Started
+
 - [README](../README.md) - Project overview
 - [SETUP](../SETUP.md) - Installation guide
 - [Quickstart](web-content/quickstart.md) - 5-minute setup
 
 ## 🏗️ Architecture
+
 - [Web Dashboard Architecture](web-content/architecture.md)
 - [Docker Cluster Design](CLUSTER.md)
 - [Security Policy](../SECURITY.md)
 
 ## 🛠️ Development
+
 - [Scripts Guide](scripts/README.md)
 - [AI Agent Development](../AGENT.md)
 - [Migration Guide](scripts/MIGRATION.md)
 
 ## 📊 Monitoring
+
 - [Grafana Dashboards](.config/monitoring/README.md)
 - [Prometheus Config](.config/monitoring/prometheus/README.md)
 ```
@@ -540,8 +605,10 @@ docs/
 ---
 
 #### 4.4.2 Archive Obsolete Documentation ⚪ NOT STARTED
+
 **Description:** Review and archive completed/obsolete docs  
 **Acceptance Criteria:**
+
 - [ ] Review ENHANCEMENTS-COMPLETE.md for unique content
 - [ ] Review ENVIRONMENT-INTEGRATION-COMPLETE.md for unique content
 - [ ] Review CLUSTER.md vs README.md (consolidate or archive)
@@ -551,6 +618,7 @@ docs/
 - [ ] Document archival in CHANGELOG.md
 
 **Archive Candidates:**
+
 - `ENHANCEMENTS-COMPLETE.md` → `.github/archive/ENHANCEMENTS-v2.0-20251025.md`
 - `ENVIRONMENT-INTEGRATION-COMPLETE.md` → `.github/archive/ENVIRONMENT-v2.0-20251025.md`
 - `CLUSTER.md` → Consolidate into README or `.github/archive/CLUSTER-v3.0-20251025.md`
@@ -561,8 +629,10 @@ docs/
 ---
 
 #### 4.4.3 Consolidate Web-Content Docs ⚪ NOT STARTED
+
 **Description:** Reduce 5 web-content docs to 3 essential docs  
 **Acceptance Criteria:**
+
 - [ ] Keep: ARCHITECTURE.md (technical deep dive)
 - [ ] Keep: INSTALL.md (installation guide)
 - [ ] Merge: QUICKSTART.md + README.md → README.md (overview + quick start)
@@ -572,6 +642,7 @@ docs/
 - [ ] Test all links work
 
 **Rationale:**
+
 - QUICKSTART + README overlap significantly
 - IMPLEMENTATION & REFACTOR-SUMMARY document completed work (archive)
 - ARCHITECTURE covers technical details
@@ -583,8 +654,10 @@ docs/
 ---
 
 #### 4.4.4 Create MkDocs Site ⚪ NOT STARTED
+
 **Description:** Build searchable static documentation site  
 **Acceptance Criteria:**
+
 - [ ] Install MkDocs with Material theme
 - [ ] Create `mkdocs.yml` configuration
 - [ ] Add all markdown files to site
@@ -595,6 +668,7 @@ docs/
 - [ ] Add link to README.md
 
 **MkDocs Config:**
+
 ```yaml
 site_name: Modern Data Platform
 theme:
@@ -610,13 +684,13 @@ nav:
   - Home: index.md
   - Setup: setup.md
   - Web Dashboard:
-    - Installation: web-content/install.md
-    - Architecture: web-content/architecture.md
+      - Installation: web-content/install.md
+      - Architecture: web-content/architecture.md
   - Scripts:
-    - Overview: scripts/README.md
-    - Python: scripts/python/README.md
-    - PowerShell: scripts/powershell/README.md
-    - Bash: scripts/bash/README.md
+      - Overview: scripts/README.md
+      - Python: scripts/python/README.md
+      - PowerShell: scripts/powershell/README.md
+      - Bash: scripts/bash/README.md
   - Security: security.md
   - AI Agent: agent.md
 ```
@@ -635,8 +709,10 @@ nav:
 ### Tasks
 
 #### 4.5.1 Pre-commit Hooks Enhancement ⚪ NOT STARTED
+
 **Description:** Enhance pre-commit hooks for all file types  
 **Acceptance Criteria:**
+
 - [ ] Add yamllint for YAML files (.yml, .yaml)
 - [ ] Add shellcheck for bash scripts (.sh)
 - [ ] Add PSScriptAnalyzer for PowerShell scripts (.ps1)
@@ -646,6 +722,7 @@ nav:
 - [ ] Document in README.md
 
 **New Hooks:**
+
 ```yaml
 # .pre-commit-config.yaml additions
 - repo: https://github.com/adrienverge/yamllint
@@ -670,8 +747,10 @@ nav:
 ---
 
 #### 4.5.2 GitHub Actions Workflow for All Checks ⚪ NOT STARTED
+
 **Description:** Create comprehensive CI workflow for all code quality checks  
 **Acceptance Criteria:**
+
 - [ ] Create `.github/workflows/code-quality.yml`
 - [ ] Run Python checks (Black, Ruff, mypy)
 - [ ] Run YAML checks (yamllint)
@@ -682,6 +761,7 @@ nav:
 - [ ] Add status badge to README.md
 
 **Workflow Structure:**
+
 ```yaml
 name: Code Quality
 
@@ -697,19 +777,19 @@ jobs:
       - run: uv run black --check scripts/python
       - run: uv run ruff check scripts/python
       - run: uv run mypy scripts/python
-  
+
   yaml:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: yamllint .
-  
+
   markdown:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: markdownlint '**/*.md'
-  
+
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -725,8 +805,10 @@ jobs:
 ---
 
 #### 4.5.3 Automated Dependency Updates ⚪ NOT STARTED
+
 **Description:** Setup Dependabot for automated dependency PRs  
 **Acceptance Criteria:**
+
 - [ ] Create `.github/dependabot.yml`
 - [ ] Enable updates for Python (pyproject.toml)
 - [ ] Enable updates for Node.js (package.json)
@@ -737,6 +819,7 @@ jobs:
 - [ ] Document in README.md
 
 **Dependabot Config:**
+
 ```yaml
 version: 2
 updates:
@@ -745,22 +828,22 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
-  
+
   - package-ecosystem: "npm"
     directory: "/api"
     schedule:
       interval: "weekly"
-  
+
   - package-ecosystem: "npm"
     directory: "/web-content"
     schedule:
       interval: "weekly"
-  
+
   - package-ecosystem: "docker"
     directory: "/dockerfile"
     schedule:
       interval: "weekly"
-  
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -778,9 +861,10 @@ updates:
 **Priority:** 🟢 MEDIUM  
 **Target:** Week 6 (Optional)
 
-### From web-content/REFACTOR-SUMMARY.md:299
+### From archived REFACTOR-SUMMARY (v2.0)
 
 **Potential Improvements:**
+
 1. Layer-specific health checks (different polling intervals per layer)
 2. Layer metrics aggregation (per-layer resource stats)
 3. Visual layer grouping (collapsed/expanded sections in UI)
@@ -790,8 +874,10 @@ updates:
 ### Tasks
 
 #### 4.6.1 Layer-Specific Health Checks ⚪ NOT STARTED
+
 **Description:** Customize health check intervals per layer  
 **Acceptance Criteria:**
+
 - [ ] Update `useClusterHealth.ts` to support per-layer intervals
 - [ ] Configure intervals: Data (60s), Services (30s), Monitoring (45s), Compute (30s), Network (15s)
 - [ ] Add layer health status aggregation
@@ -799,6 +885,7 @@ updates:
 - [ ] Document in ARCHITECTURE.md
 
 **Rationale:**
+
 - Data layer changes slowly (60s is sufficient)
 - Network layer changes frequently (15s for load balancers)
 - Reduces API calls by 40%
@@ -809,8 +896,10 @@ updates:
 ---
 
 #### 4.6.2 Layer Metrics Aggregation ⚪ NOT STARTED
+
 **Description:** Add per-layer resource statistics  
 **Acceptance Criteria:**
+
 - [ ] Aggregate CPU/memory/network per layer
 - [ ] Add layer metrics endpoint to API (`/api/layers/:id/metrics`)
 - [ ] Display layer metrics in dashboard
@@ -818,6 +907,7 @@ updates:
 - [ ] Update ARCHITECTURE.md
 
 **New Metrics:**
+
 - Total CPU usage per layer
 - Total memory usage per layer
 - Total network I/O per layer
@@ -829,8 +919,10 @@ updates:
 ---
 
 #### 4.6.3 Visual Layer Grouping ⚪ NOT STARTED
+
 **Description:** Add collapsible layer sections in UI  
 **Acceptance Criteria:**
+
 - [ ] Add expand/collapse buttons to layer sections
 - [ ] Save layer collapsed state to localStorage
 - [ ] Animate expand/collapse transitions
@@ -838,6 +930,7 @@ updates:
 - [ ] Update ARCHITECTURE.md
 
 **UI Changes:**
+
 - Layer header becomes clickable
 - Chevron icon indicates collapsed/expanded state
 - Smooth CSS transitions
@@ -849,8 +942,10 @@ updates:
 ---
 
 #### 4.6.4 Layer Dependencies Visualization ⚪ NOT STARTED
+
 **Description:** Show explicit dependency trees between layers  
 **Acceptance Criteria:**
+
 - [ ] Define layer dependencies in config
 - [ ] Create dependency graph component
 - [ ] Visualize with D3.js or Cytoscape
@@ -859,6 +954,7 @@ updates:
 - [ ] Document in ARCHITECTURE.md
 
 **Dependencies:**
+
 ```
 Network (nginx, loadbalancer)
   ↓
@@ -875,8 +971,10 @@ Monitoring (grafana, prometheus)
 ---
 
 #### 4.6.5 Layer Scaling Controls ⚪ NOT STARTED
+
 **Description:** Add UI controls to scale services  
 **Acceptance Criteria:**
+
 - [ ] Add scale buttons (+/-) to each service card
 - [ ] Call Docker API to scale services
 - [ ] Show current replica count
@@ -885,6 +983,7 @@ Monitoring (grafana, prometheus)
 - [ ] Update ARCHITECTURE.md
 
 **API Endpoint:**
+
 ```javascript
 // POST /api/services/:id/scale
 {
@@ -893,6 +992,7 @@ Monitoring (grafana, prometheus)
 ```
 
 **UI Changes:**
+
 - Scale controls on service cards
 - Current replica count badge
 - Confirmation dialog for scaling
@@ -907,24 +1007,28 @@ Monitoring (grafana, prometheus)
 **Not planned for v4.0, but documented for future iterations**
 
 ### Infrastructure
+
 - [ ] Kubernetes migration guide
 - [ ] Terraform configurations for cloud deployment
 - [ ] Ansible playbooks for server provisioning
 - [ ] Docker Swarm mode support
 
 ### Monitoring Enhancements
+
 - [ ] Custom Grafana dashboards per layer
 - [ ] Alert rules for service failures
 - [ ] Log aggregation with Loki
 - [ ] Distributed tracing with Jaeger
 
 ### Development Experience
+
 - [ ] Dev containers for all services
 - [ ] Hot reload for all services
 - [ ] Debugging guides for each language
 - [ ] VS Code workspace settings
 
 ### Documentation
+
 - [ ] Video tutorials for setup
 - [ ] Interactive API documentation (Swagger/OpenAPI)
 - [ ] Troubleshooting flowcharts
@@ -936,15 +1040,15 @@ Monitoring (grafana, prometheus)
 
 ### Velocity Metrics
 
-| Phase | Tasks | Estimated Hours | Completed | In Progress | Not Started |
-|-------|-------|-----------------|-----------|-------------|-------------|
-| 4.1 Testing | 6 | 13h | 0 | 0 | 6 |
-| 4.2 Security | 6 | 18h | 0 | 0 | 6 |
-| 4.3 Scripts | 6 | 18h | 0 | 0 | 6 |
-| 4.4 Docs | 4 | 11h | 0 | 0 | 4 |
-| 4.5 Automation | 3 | 6h | 0 | 0 | 3 |
-| 4.6 Dashboard | 5 | 21h | 0 | 0 | 5 |
-| **TOTAL** | **30** | **87h** | **0** | **0** | **30** |
+| Phase          | Tasks  | Estimated Hours | Completed | In Progress | Not Started |
+| -------------- | ------ | --------------- | --------- | ----------- | ----------- |
+| 4.1 Testing    | 6      | 13h             | 0         | 0           | 6           |
+| 4.2 Security   | 6      | 18h             | 0         | 0           | 6           |
+| 4.3 Scripts    | 6      | 18h             | 0         | 0           | 6           |
+| 4.4 Docs       | 4      | 11h             | 0         | 0           | 4           |
+| 4.5 Automation | 3      | 6h              | 0         | 0           | 3           |
+| 4.6 Dashboard  | 5      | 21h             | 0         | 0           | 5           |
+| **TOTAL**      | **30** | **87h**         | **0**     | **0**       | **30**      |
 
 ### Timeline
 
@@ -953,7 +1057,7 @@ Monitoring (grafana, prometheus)
 **Week 3:** Phase 4.3 - Planned Scripts (18h)  
 **Week 4:** Phase 4.4 - Documentation (11h)  
 **Week 5:** Phase 4.5 - Code Quality (6h)  
-**Week 6:** Phase 4.6 - Dashboard Enhancements (21h) - *Optional*
+**Week 6:** Phase 4.6 - Dashboard Enhancements (21h) - _Optional_
 
 **Total Estimated Duration:** 6 weeks (87 hours)
 
@@ -964,6 +1068,7 @@ Monitoring (grafana, prometheus)
 ### v3.1.0 - Documentation & Python 3.14 Compliance (2025-10-25)
 
 **Completed:**
+
 - ✅ Created scripts/MIGRATION.md (400+ lines)
 - ✅ Created scripts/python/audit/README.md (300+ lines)
 - ✅ Created scripts/python/utils/README.md (400+ lines)
@@ -980,6 +1085,7 @@ Monitoring (grafana, prometheus)
 ### v3.0 - Scripts Reorganization (2025-10-25)
 
 **Completed:**
+
 - ✅ Reorganized scripts into powershell/, bash/, python/ subdirectories
 - ✅ Created orchestrators: orchestrator.ps1, orchestrator.py, orchestrator.sh
 - ✅ Extracted Colors class to scripts/python/utils/colors.py (DRY principle)
@@ -991,6 +1097,7 @@ Monitoring (grafana, prometheus)
 ### v2.0 - Web Dashboard Refactor (2025-10-24)
 
 **Completed:**
+
 - ✅ Refactored web-content services into 5 architectural layers
 - ✅ Created modular layer structure (data, services, monitoring, compute, network)
 - ✅ Generated 900+ lines of comprehensive documentation
@@ -1006,10 +1113,12 @@ Monitoring (grafana, prometheus)
 **Priority Order:**
 
 1. **Critical (Start Immediately):**
+
    - Phase 4.1: Testing Infrastructure
    - Phase 4.2: Security Hardening
 
 2. **High Priority (Week 3-4):**
+
    - Phase 4.3: Planned Scripts
    - Phase 4.4: Documentation Consolidation
 
@@ -1018,6 +1127,7 @@ Monitoring (grafana, prometheus)
    - Phase 4.6: Dashboard Enhancements (optional)
 
 **Next Steps:**
+
 1. Review this TODO with team/stakeholders
 2. Start with Phase 4.1.1 (Setup pytest)
 3. Work through tasks sequentially within each phase

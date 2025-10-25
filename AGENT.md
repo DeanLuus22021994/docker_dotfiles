@@ -12,11 +12,13 @@
 ## Python Environment
 
 ### Required Version
+
 - **Python 3.14.0+** for all scripts
 - **UV package manager** for dependency management (faster than pip)
 - **NOT** Microsoft Store Python (causes PATH issues on Windows)
 
 ### Setup (Windows)
+
 ```powershell
 # 1. Install Python 3.14.0 from python.org
 # 2. Disable Windows App Execution Aliases:
@@ -35,6 +37,7 @@ uv pip install -r requirements.txt
 ```
 
 ### Scripts Organization (SRP/DRY)
+
 ```
 scripts/
 ├── README.md
@@ -57,6 +60,7 @@ scripts/
 ```
 
 ### Shared Utilities (DRY Principle)
+
 - **`python/utils/colors.py`**: ANSI color codes for terminal output
 - **`python/utils/file_utils.py`**: File operations helpers
 - **`python/utils/logging_utils.py`**: Logging configuration
@@ -66,6 +70,7 @@ All Python scripts import from `scripts.python.utils` instead of duplicating cod
 ## Configuration Management
 
 ### Structure
+
 ```
 .config/
 ├── nginx/          # Web server configs
@@ -77,6 +82,7 @@ All Python scripts import from `scripts.python.utils` instead of duplicating cod
 ```
 
 ### Rules
+
 1. **All configs in `.config/`** - No scattered configs
 2. **Native formats** - Preserve .conf, .json, .sh (not YAML conversion)
 3. **Read-only mounts** - Configs mounted with `:ro` flag
@@ -85,11 +91,13 @@ All Python scripts import from `scripts.python.utils` instead of duplicating cod
 ## Environment Variables
 
 ### Naming Convention
+
 - **Prefix**: All service secrets use `DOCKER_` prefix
 - **Examples**: `DOCKER_POSTGRES_PASSWORD`, `DOCKER_MARIADB_ROOT_PASSWORD`
 - **Source**: GitHub Secrets (CI/CD) or host environment (local dev)
 
 ### Setup
+
 ```powershell
 # Copy template
 Copy-Item .env.example .env
@@ -108,6 +116,7 @@ python scripts/validate_env.py
 ```
 
 ### Required Variables
+
 - `GITHUB_OWNER`, `GH_PAT`
 - `DOCKER_POSTGRES_PASSWORD`
 - `DOCKER_MARIADB_ROOT_PASSWORD`, `DOCKER_MARIADB_PASSWORD`
@@ -120,12 +129,14 @@ python scripts/validate_env.py
 ## Code Quality
 
 ### Pre-commit Hooks (Automated)
+
 - Runs as `cluster-pre-commit` container service (dev profile)
 - Auto-installs hooks on devcontainer startup
 - Blocks commits on errors (no warnings)
 - Checks: YAML/JSON syntax, secrets detection, docker-compose validation
 
 ### Manual Validation
+
 ```powershell
 # Environment variables
 python scripts/validate_env.py
@@ -143,6 +154,7 @@ python scripts/validate_configs.py
 ## Docker Stack
 
 ### Services (25+)
+
 - **Databases**: PostgreSQL, MariaDB, Redis
 - **Storage**: MinIO (S3-compatible)
 - **Monitoring**: Prometheus, Grafana, Alertmanager
@@ -151,11 +163,13 @@ python scripts/validate_configs.py
 - **DevContainer**: Python 3.14.0 + Node 22
 
 ### Profiles
+
 - **Default**: Production services (databases, monitoring, web servers)
 - **dev**: Includes devcontainer, pre-commit, docs server
 - **docs**: GitHub Pages Jekyll server
 
 ### Commands
+
 ```powershell
 # Production stack
 docker-compose up -d
@@ -179,16 +193,18 @@ docker-compose down
 ## File Organization
 
 ### Config Locations
-| Type | Path | Purpose |
-|------|------|---------|
-| Nginx | `.config/nginx/` | loadbalancer.conf, main.conf, default.conf |
-| Database | `.config/database/` | postgresql.conf, mariadb.conf |
-| Services | `.config/services/` | pgadmin-servers.json, localstack-init.sh |
-| Docker | `.config/docker/` | buildkitd.toml, daemon.json |
-| Monitoring | `.config/monitoring/` | prometheus.yml, grafana/ |
-| CI/CD | `.config/github/` | workflows/, dependabot.yml |
+
+| Type       | Path                  | Purpose                                    |
+| ---------- | --------------------- | ------------------------------------------ |
+| Nginx      | `.config/nginx/`      | loadbalancer.conf, main.conf, default.conf |
+| Database   | `.config/database/`   | postgresql.conf, mariadb.conf              |
+| Services   | `.config/services/`   | pgadmin-servers.json, localstack-init.sh   |
+| Docker     | `.config/docker/`     | buildkitd.toml, daemon.json                |
+| Monitoring | `.config/monitoring/` | prometheus.yml, grafana/                   |
+| CI/CD      | `.config/github/`     | workflows/, dependabot.yml                 |
 
 ### Volume Mounts
+
 ```yaml
 # Example: nginx loadbalancer
 volumes:
@@ -200,6 +216,7 @@ volumes:
 ```
 
 ### Dockerfile COPY
+
 ```dockerfile
 # Example: MariaDB
 COPY --chown=mysql:mysql .config/database/mariadb.conf /etc/mysql/conf.d/custom.cnf
@@ -212,14 +229,17 @@ COPY --chown=nginx:nginx .config/nginx/default.conf /etc/nginx/conf.d/default.co
 ## VSCode Configuration
 
 ### Team Settings (Tracked)
+
 - `.vscode/settings.json` - YAML schemas, file associations, Copilot code gen enabled
 - Shared across team, committed to repo
 
 ### Personal Settings (Gitignored)
+
 - `.vscode/settings.local.json` - AI model preferences, locale overrides
 - Local only, added to `.gitignore`
 
 ### Usage
+
 ```json
 // .vscode/settings.json (tracked)
 {
@@ -237,17 +257,20 @@ COPY --chown=nginx:nginx .config/nginx/default.conf /etc/nginx/conf.d/default.co
 ## Security Guidelines
 
 ### Never Commit
+
 - `.env` file (contains credentials)
 - `.vscode/*.local.json` (personal preferences)
 - Any file with actual passwords or tokens
 
 ### Always Use
+
 - Environment variables with `DOCKER_` prefix
 - `.env.example` as template (no real credentials)
 - GitHub Secrets for CI/CD
 - Strong passwords (16+ chars, mixed characters)
 
 ### Password Rotation
+
 - Not automated (manual process)
 - Update `.env` file locally
 - Update GitHub Secrets in repository settings
@@ -256,6 +279,7 @@ COPY --chown=nginx:nginx .config/nginx/default.conf /etc/nginx/conf.d/default.co
 ## AI-Optimized Workflow
 
 ### Human-in-the-Loop
+
 1. **Agent proposes changes** - Clear file paths, specific edits
 2. **Human reviews** - Validation scripts provide clear errors
 3. **Manual approval** - Developer commits after verification
@@ -263,11 +287,13 @@ COPY --chown=nginx:nginx .config/nginx/default.conf /etc/nginx/conf.d/default.co
 5. **CI/CD validates** - GitHub Actions on push
 
 ### Error Messages
+
 - **Explicit**: Show exact file path, line number
 - **Actionable**: Provide fix command or example
 - **Unambiguous**: No vague errors, clear root cause
 
 ### Example Workflow
+
 ```powershell
 # 1. Agent makes changes (via Copilot)
 # ... file edits happen ...
@@ -291,6 +317,7 @@ git push origin main
 ## Quick Reference
 
 ### File Paths (Relative to Root)
+
 ```
 .config/nginx/loadbalancer.conf       # Load balancer nginx
 .config/nginx/main.conf                # Main nginx config
@@ -307,10 +334,11 @@ scripts/python/validation/validate_env.py       # Environment validator
 scripts/python/validation/validate_configs.py   # Config validator
 scripts/python/utils/colors.py                  # Shared ANSI colors
 .github/TODO.md                        # Implementation tasks
-CLEANUP-REPORT.md                      # Code quality audit results
+.github/archive/CLEANUP-REPORT-v3.1-20251025.md # Code quality audit (archived)
 ```
 
 ### Validation Commands
+
 ```powershell
 python scripts/python/validation/validate_env.py                         # Environment
 docker-compose config --quiet                                             # Compose syntax
@@ -319,6 +347,7 @@ python scripts/python/validation/validate_configs.py                      # All 
 ```
 
 ### Common Tasks
+
 ```powershell
 # Add new service
 # 1. Add to docker-compose.yml
