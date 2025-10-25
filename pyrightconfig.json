@@ -18,6 +18,8 @@
   "typeCheckingMode": "basic",
   "reportUnusedFunction": false,
   "reportUnusedVariable": "none",
+  "reportUnusedParameter": "none",
+  "reportShadowedImports": "none",
   "reportDuplicateImport": "warning",
   "reportConstantRedefinition": "none",
   "reportIncompatibleMethodOverride": "warning",

@@ -17,7 +17,7 @@ def project_root_path() -> Path:
 
 
 @pytest.fixture
-def scripts_path(project_root_path: Path) -> Path:  # noqa: F811
+def scripts_path(project_root_path: Path) -> Path:
     """Return the scripts directory path."""
     return project_root_path / "scripts"
 

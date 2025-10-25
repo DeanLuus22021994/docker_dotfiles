@@ -82,14 +82,14 @@ def cleanup_loggers() -> Generator[None, None, None]:
 class TestSetupLogger:
     """Test setup_logger function."""
 
-    def test_setup_logger_basic(self, cleanup_loggers: None) -> None:  # noqa: F811, ARG002
+    def test_setup_logger_basic(self, cleanup_loggers: None) -> None:
         """Test basic logger setup."""
         logger = setup_logger("test_logger")
         assert logger.name == "test_logger"
         assert logger.level == logging.INFO
         assert len(logger.handlers) == 1
 
-    def test_setup_logger_custom_level(self, cleanup_loggers: None) -> None:  # noqa: F811, ARG002
+    def test_setup_logger_custom_level(self, cleanup_loggers: None) -> None:
         """Test logger setup with custom level."""
         logger = setup_logger("test_logger", level=logging.WARNING)
         assert logger.level == logging.WARNING
@@ -103,7 +103,7 @@ class TestSetupLogger:
         handler = logger.handlers[0]
         assert isinstance(handler.formatter, ColoredFormatter)
 
-    def test_setup_logger_no_colors(self, cleanup_loggers: None) -> None:  # noqa: F811, ARG002
+    def test_setup_logger_no_colors(self, cleanup_loggers: None) -> None:
         """Test logger setup without colors."""
         logger = setup_logger("test_logger", use_colors=False)
         assert len(logger.handlers) == 1
@@ -137,7 +137,7 @@ class TestSetupLogger:
             logging.CRITICAL,
         ],
     )
-    def test_setup_logger_all_levels(  # noqa: F811, ARG002
+    def test_setup_logger_all_levels(
         self, level: int, cleanup_loggers: None
     ) -> None:
         """Test logger setup with various logging levels."""
