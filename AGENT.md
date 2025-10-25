@@ -5,8 +5,63 @@
 **TDD** (Test-Driven Development): Write tests before implementation  
 **SRP** (Single Responsibility Principle): One concern per module/file  
 **SSoT** (Single Source of Truth): No duplication, one authoritative source  
+**DRY** (Don't Repeat Yourself): Extract shared utilities, no code duplication  
 **Config-Driven**: Behavior controlled by configuration, not code  
 **Modular**: Loosely coupled, highly cohesive components
+
+## Python Environment
+
+### Required Version
+- **Python 3.13+** for all scripts
+- **UV package manager** for dependency management (faster than pip)
+- **NOT** Microsoft Store Python (causes PATH issues on Windows)
+
+### Setup (Windows)
+```powershell
+# 1. Install Python 3.13 from python.org
+# 2. Disable Windows App Execution Aliases:
+#    Settings → Apps → Advanced app settings → App execution aliases
+#    Disable: "App Installer python.exe" and "python3.exe"
+
+# 3. Verify installation
+python --version  # Should show Python 3.13.x
+where.exe python  # Should show actual Python path (not AppData\Local\Microsoft)
+
+# 4. Install UV
+pip install uv
+
+# 5. Install dependencies
+uv pip install -r requirements.txt
+```
+
+### Scripts Organization (SRP/DRY)
+```
+scripts/
+├── README.md
+├── orchestrator.ps1       # PowerShell orchestrator
+├── orchestrator.sh        # Bash orchestrator
+├── orchestrator.py        # Python orchestrator
+├── powershell/            # PowerShell scripts by task
+│   ├── config/            # Configuration management
+│   ├── docker/            # Docker operations
+│   ├── docs/              # Documentation tasks
+│   ├── audit/             # Auditing scripts
+│   └── cleanup/           # Cleanup operations
+├── python/                # Python scripts by task
+│   ├── validation/        # validate_env.py, validate_configs.py
+│   ├── audit/             # Code audit scripts
+│   └── utils/             # Shared utilities (colors.py, logging.py)
+└── bash/                  # Bash scripts by task
+    ├── docker/            # Docker operations
+    └── docs/              # Documentation tasks
+```
+
+### Shared Utilities (DRY Principle)
+- **`python/utils/colors.py`**: ANSI color codes for terminal output
+- **`python/utils/file_utils.py`**: File operations helpers
+- **`python/utils/logging_utils.py`**: Logging configuration
+
+All Python scripts import from `scripts.python.utils` instead of duplicating code.
 
 ## Configuration Management
 
@@ -248,16 +303,19 @@ git push origin main
 docker-compose.yml                     # Main compose file
 .env.example                           # Environment template
 .env                                   # Local env vars (gitignored)
-scripts/validate_env.py                # Environment validator
+scripts/python/validation/validate_env.py       # Environment validator
+scripts/python/validation/validate_configs.py   # Config validator
+scripts/python/utils/colors.py                  # Shared ANSI colors
 .github/TODO.md                        # Implementation tasks
+CLEANUP-REPORT.md                      # Code quality audit results
 ```
 
 ### Validation Commands
 ```powershell
-python scripts/validate_env.py                                          # Environment
-docker-compose config --quiet                                            # Compose syntax
+python scripts/python/validation/validate_env.py                         # Environment
+docker-compose config --quiet                                             # Compose syntax
 docker run --rm -v "${PWD}/.config/nginx:/etc/nginx:ro" nginx:alpine nginx -t  # Nginx
-python scripts/validate_configs.py                                       # All configs
+python scripts/python/validation/validate_configs.py                      # All configs
 ```
 
 ### Common Tasks

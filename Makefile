@@ -62,7 +62,7 @@ validate-configs:
 	@echo "=========================================="
 	@echo "Validating Configuration Files"
 	@echo "=========================================="
-	@python scripts/validate_configs.py
+	@python scripts/python/validation/validate_configs.py
 	@echo ""
 	@echo "✅ All config validations passed"
 
@@ -70,7 +70,7 @@ validate-env:
 	@echo "=========================================="
 	@echo "Validating Environment Variables"
 	@echo "=========================================="
-	@python scripts/validate_env.py
+	@python scripts/python/validation/validate_env.py
 	@echo ""
 	@echo "✅ All required environment variables present"
 

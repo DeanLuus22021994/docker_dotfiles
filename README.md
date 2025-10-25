@@ -90,8 +90,72 @@ Internet → Load Balancer (nginx:8080)
 - ✅ **Security**: Non-root execution, secrets management, network isolation
 - ✅ **Performance**: BuildKit caching, optimized Dockerfiles, health checks
 
-## 📦 Prerequisites
+## � Python Setup (Required for Scripts)
 
+**Windows Users: Critical Setup**
+
+Python 3.13+ is required for validation scripts. **Do NOT use Microsoft Store Python** (causes PATH issues).
+
+### Installation Steps:
+
+1. **Download Python 3.13** from [python.org](https://www.python.org/downloads/)
+2. **Run installer** with these options:
+   - ✅ "Add Python to PATH"
+   - ✅ "Install for all users" (or current user)
+   - Install location: `C:\Program Files\Python313` (recommended)
+
+3. **Disable Windows App Execution Aliases**:
+   - Open: Settings → Apps → Advanced app settings → App execution aliases
+   - Disable: "App Installer python.exe"
+   - Disable: "App Installer python3.exe"
+
+4. **Verify installation**:
+   ```powershell
+   python --version  # Should show Python 3.13.x
+   where.exe python  # Should show C:\Program Files\Python313\python.exe
+   ```
+
+5. **Install UV package manager** (recommended):
+   ```powershell
+   pip install uv
+   uv --version
+   ```
+
+6. **Install dependencies**:
+   ```powershell
+   # Using UV (fast)
+   uv pip install -r requirements.txt
+   
+   # Or using pip
+   pip install -r requirements.txt
+   ```
+
+### Troubleshooting:
+
+**Error: "Python was not found"**
+- Cause: Windows App Execution Aliases redirect to Microsoft Store
+- Fix: Follow step 3 above to disable aliases
+- Verify: `where.exe python` should show actual Python installation
+
+**Error: "'python' is not recognized"**
+- Cause: Python not in PATH
+- Fix: Reinstall Python with "Add to PATH" checked
+- Manual fix: Add `C:\Program Files\Python313` to System PATH
+
+### Linux/macOS:
+
+```bash
+# Install Python 3.13
+sudo apt install python3.13 python3-pip  # Debian/Ubuntu
+brew install python@3.13                  # macOS
+
+# Install dependencies
+pip3 install -r requirements.txt
+```
+
+## �📦 Prerequisites
+
+- **Python 3.13+** (see Python Setup above)
 - Docker Engine 24.0+ with BuildKit enabled
 - Docker Compose V2
 - 8GB RAM minimum (16GB recommended for Jupyter GPU workloads)
@@ -186,10 +250,24 @@ docker/
 │   ├── github-mcp.Dockerfile   # MCP server for GitHub
 │   ├── k9s.Dockerfile          # Kubernetes CLI UI
 │   └── pre-commit.Dockerfile   # Pre-commit hooks automation
-├── scripts/                    # Automation scripts
-│   ├── validate_env.py         # Environment variable validation
-│   ├── validate_configs.py     # Configuration file validation
-│   └── serve_docs.ps1          # Documentation server
+├── scripts/                    # Automation scripts (SRP/DRY organized)
+│   ├── README.md               # Scripts documentation
+│   ├── orchestrator.ps1        # PowerShell orchestrator
+│   ├── orchestrator.sh         # Bash orchestrator
+│   ├── orchestrator.py         # Python orchestrator
+│   ├── powershell/             # PowerShell scripts by task
+│   │   ├── config/             # Configuration management
+│   │   ├── docker/             # Docker operations
+│   │   ├── docs/               # Documentation tasks
+│   │   ├── audit/              # Auditing scripts
+│   │   └── cleanup/            # Cleanup operations
+│   ├── python/                 # Python scripts by task
+│   │   ├── validation/         # Configuration validation
+│   │   ├── audit/              # Code audit scripts
+│   │   └── utils/              # Shared utilities (Colors, logging)
+│   └── bash/                   # Bash scripts by task
+│       ├── docker/             # Docker operations
+│       └── docs/               # Documentation tasks
 ├── web-content/                # Static web content
 │   └── index.html              # Cluster landing page
 ├── docker-compose.yml          # 26-service orchestration
@@ -323,10 +401,12 @@ All configurations are centralized in `.config/` directory using native formats:
 # Validate all configs
 make validate-configs
 # Or directly:
-python scripts/validate_configs.py
+python scripts/python/validation/validate_configs.py
 
 # Validate environment variables
 make validate-env
+# Or directly:
+python scripts/python/validation/validate_env.py
 
 # Validate docker-compose syntax
 make validate

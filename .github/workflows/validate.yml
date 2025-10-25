@@ -22,7 +22,7 @@ jobs:
 
       - name: Check required environment variables
         run: |
-          python scripts/validate_env.py
+          python scripts/python/validation/validate_env.py
         env:
           GITHUB_OWNER: ${{ github.repository_owner }}
           GH_PAT: ${{ secrets.GH_PAT }}
@@ -54,7 +54,7 @@ jobs:
 
       - name: Run config validation
         run: |
-          python scripts/validate_configs.py
+          python scripts/python/validation/validate_configs.py
 
   validate-docker-compose:
     name: Validate Docker Compose
