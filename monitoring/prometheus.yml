@@ -13,7 +13,7 @@ alerting:
 
 # Load rules once and periodically evaluate them
 rule_files:
-  # - "alerts/*.yml"
+  - "alerts/*.yml"
 
 # Scrape configurations
 scrape_configs:
@@ -42,31 +42,51 @@ scrape_configs:
           service: 'storage'
           tier: 'data'
 
-  # Docker containers via cAdvisor (if added)
-  # - job_name: 'cadvisor'
-  #   static_configs:
-  #     - targets: ['cadvisor:8080']
+  # Docker containers via cAdvisor
+  - job_name: 'cadvisor'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['cluster-cadvisor:8080']
+        labels:
+          service: 'container-metrics'
+          tier: 'monitoring'
 
-  # PostgreSQL exporter (if added)
-  # - job_name: 'postgres'
-  #   static_configs:
-  #     - targets: ['postgres-exporter:9187']
+  # PostgreSQL database metrics
+  - job_name: 'postgres'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['cluster-postgres-exporter:9187']
+        labels:
+          service: 'database'
+          tier: 'data'
+          database: 'postgresql'
 
-  # Redis exporter (if added)
-  # - job_name: 'redis'
-  #   static_configs:
-  #     - targets: ['redis-exporter:9121']
+  # Redis cache metrics
+  - job_name: 'redis'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['cluster-redis-exporter:9121']
+        labels:
+          service: 'cache'
+          tier: 'data'
+          database: 'redis'
 
-  # Nginx exporters
-  # - job_name: 'nginx'
-  #   static_configs:
-  #     - targets:
-  #       - 'cluster-loadbalancer:9113'
-  #       - 'cluster-web1:9113'
-  #       - 'cluster-web2:9113'
-  #       - 'cluster-web3:9113'
+  # Node exporter - Host system metrics
+  - job_name: 'node'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['cluster-node-exporter:9100']
+        labels:
+          service: 'host-metrics'
+          tier: 'infrastructure'
 
-  # Node exporter (if added)
-  # - job_name: 'node'
-  #   static_configs:
-  #     - targets: ['node-exporter:9100']
+  # Docker API Proxy - Custom metrics endpoint (if added)
+  - job_name: 'docker-api'
+    scrape_interval: 15s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['cluster-docker-api:3001']
+        labels:
+          service: 'docker-api'
+          tier: 'monitoring'
+
