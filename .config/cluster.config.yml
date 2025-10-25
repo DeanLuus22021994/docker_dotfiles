@@ -1,0 +1,115 @@
+# Modern Data Platform Configuration
+# Centralized cluster configuration for all services
+# Note: This is a documentation file, not a Docker Compose schema
+
+name: "docker-modern-data-platform"
+version: "2.0.0"
+environment: "development"
+
+network:
+  cluster-network:
+    driver: "bridge"
+    subnet: "172.20.0.0/16"
+
+services:
+  loadbalancer:
+    enabled: true
+    port: 8080
+    replicas: 1
+    health_check_interval: "15s"
+    
+  web_servers:
+    enabled: true
+    replicas: 3
+    health_check_interval: "30s"
+    
+  postgresql:
+    enabled: true
+    port: 5432
+    database: "clusterdb"
+    user: "cluster_user"
+    max_connections: 100
+    health_check_interval: "10s"
+    
+  mariadb:
+    enabled: true
+    port: 3306
+    database: "clusterdb"
+    user: "cluster_user"
+    max_connections: 100
+    health_check_interval: "30s"
+    
+  redis:
+    enabled: true
+    port: 6379
+    persistence: true
+    health_check_interval: "30s"
+    
+  minio:
+    enabled: true
+    api_port: 9000
+    console_port: 9001
+    health_check_interval: "30s"
+    
+  jupyter:
+    enabled: true
+    port: 8888
+    gpu_enabled: true
+    cuda_version: "12.2"
+    health_check_interval: "60s"
+    
+  github_mcp:
+    enabled: true
+    mode: "stdio"
+    health_check_interval: "30s"
+    
+  k9s:
+    enabled: true
+    health_check_interval: "30s"
+    
+  grafana:
+    enabled: true
+    port: 3002
+    admin_user: "admin"
+    health_check_interval: "30s"
+    
+  prometheus:
+    enabled: true
+    port: 9090
+    scrape_interval: "15s"
+    health_check_interval: "30s"
+
+volumes:
+  cluster_postgres_data:
+    driver: "local"
+  cluster_mariadb_data:
+    driver: "local"
+  cluster_mariadb_logs:
+    driver: "local"
+  cluster_redis_data:
+    driver: "local"
+  cluster_jupyter_data:
+    driver: "local"
+  cluster_minio_data:
+    driver: "local"
+  cluster_grafana_data:
+    driver: "local"
+  cluster_prometheus_data:
+    driver: "local"
+  cluster_k9s_config:
+    driver: "local"
+  cluster_github_mcp_data:
+    driver: "local"
+
+devcontainer:
+  enabled: true
+  profile: "dev"
+  python_version: "3.13"
+  node_version: "22"
+  cuda: true
+  docker_in_docker: true
+  kubectl: true
+  cpus: 4
+  memory: "4gb"
+  storage: "8gb"
+  gpu: "optional"
