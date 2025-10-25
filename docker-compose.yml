@@ -56,6 +56,29 @@ services:
       - cluster-network
     restart: unless-stopped
 
+  # Cluster Dashboard - React monitoring dashboard
+  cluster-dashboard:
+    container_name: cluster-dashboard
+    build:
+      context: ./web-content
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - cluster-postgres
+      - cluster-redis
+      - cluster-mariadb
+      - loadbalancer
+
   cluster-postgres:
     container_name: cluster-postgres
     image: postgres:13-alpine
