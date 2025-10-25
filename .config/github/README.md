@@ -1,8 +1,64 @@
 # GitHub Configuration
 
-This directory contains GitHub-specific configuration files for repository automation, CI/CD, and development workflows.
+This directory contains GitHub-specific configuration files for repository automation, CI/CD, security, and development workflows.
 
-## Files
+**💰 Cost: $0/month** - All features are FREE for public repositories
+
+## Configuration Files
+
+### Repository Settings (`repository.yml`)
+Complete repository configuration as code. Apply with: `.\scripts\apply-settings.ps1 -ApplyRepository`
+
+**Includes:**
+- Repository metadata (name, description, homepage)
+- Topics/tags for discoverability (20+ tags)
+- Merge strategies and branch settings
+- Security features (secret scanning, Dependabot, push protection)
+
+**Cost: FREE**
+
+### Branch Protection (`branch-protection.yml`)
+Protection rules for `main` branch. Apply with: `.\scripts\apply-settings.ps1 -ApplyBranchProtection`
+
+**Enforces:**
+- Required status checks (4 validation jobs)
+- Required PR approvals (1 minimum)
+- Conversation resolution before merge
+- No force pushes or deletions
+
+**Cost: FREE**
+
+### GitHub Secrets (`secrets.yml`)
+Documentation for 11 required secrets. Set with: `.\scripts\setup_secrets.ps1 -SetGitHubSecrets`
+
+**Required Secrets:**
+- `GH_PAT` - GitHub Personal Access Token
+- 10× `DOCKER_*` prefixed service credentials
+
+**Cost: FREE** - Secrets storage is unlimited and free
+
+### Actions Configuration (`actions.yml`)
+GitHub Actions permissions and self-hosted runner setup.
+
+**Features:**
+- Unlimited free minutes (self-hosted)
+- Workflow permissions (read-only by default)
+- Fork PR workflows with approval
+- 90-day artifact retention
+
+**Cost: $0/month** - Self-hosted runners = unlimited free
+
+### Security Settings (`code-security.yml`)
+Code scanning, secret detection, and dependency review configuration.
+
+**Enabled Features:**
+- CodeQL analysis (Python, JavaScript, TypeScript)
+- Secret scanning with push protection
+- Dependabot alerts and security updates
+- Dependency review for PRs
+- Container scanning (Trivy)
+
+**Cost: FREE** - GitHub Advanced Security included for public repos
 
 ### `dependabot.yml`
 Automated dependency updates for Docker images, Python packages, Node.js modules, and GitHub Actions.
@@ -54,7 +110,32 @@ GitHub Action workflow to run the PR labeler.
 - Read: repository contents
 - Write: pull requests (to add labels)
 
-## Setup Instructions
+## Quick Start
+
+### Apply All Repository Settings
+
+```powershell
+# 1. Review configuration files
+Get-ChildItem .config\github\*.yml
+
+# 2. Apply repository settings (dry-run first)
+.\scripts\apply-settings.ps1 -DryRun
+
+# 3. Apply all settings
+.\scripts\apply-settings.ps1 -ApplyAll
+
+# 4. Set GitHub secrets
+.\scripts\setup_secrets.ps1 -SetGitHubSecrets
+
+# 5. Verify settings applied
+gh api repos/DeanLuus22021994/docker_dotfiles
+gh secret list --repo DeanLuus22021994/docker_dotfiles
+```
+
+**Total Setup Time:** ~5 minutes  
+**Total Cost:** $0/month
+
+## Detailed Setup Instructions
 
 ### 1. Enable Dependabot
 
@@ -115,66 +196,277 @@ gh api repos/DeanLuus22021994/docker_dotfiles/branches/main/protection \
    - ✅ Require conversation resolution
    - ✅ Include administrators
 
-### 4. Add GitHub Secrets
+### 4. Set GitHub Secrets
 
-Required secrets for CI/CD:
+**Automated via script:**
 
-```bash
-# Add via GitHub CLI
-gh secret set CODECOV_TOKEN --body "your-codecov-token"
-gh secret set DOCKER_ACCESS_TOKEN --body "your-docker-hub-token"
+```powershell
+# Edit .env file with actual credentials (replace placeholders)
+notepad .env
 
-# Or via GitHub UI
-# Settings → Secrets and variables → Actions → New repository secret
+# Set all 11 required secrets automatically
+.\scripts\setup_secrets.ps1 -SetGitHubSecrets
+
+# Verify all secrets created
+gh secret list --repo DeanLuus22021994/docker_dotfiles
 ```
 
-**Required secrets:**
-- `CODECOV_TOKEN` - For code coverage reporting
-- `DOCKER_ACCESS_TOKEN` - For pushing Docker images
-- `GH_PAT` - Personal access token (fine-grained)
+**Required Secrets** (documented in `.config/github/secrets.yml`):
+- `GH_PAT` - GitHub Personal Access Token
+- `DOCKER_POSTGRES_PASSWORD` - PostgreSQL password
+- `DOCKER_MARIADB_ROOT_PASSWORD` - MariaDB root password
+- `DOCKER_MARIADB_PASSWORD` - MariaDB user password
+- `DOCKER_REDIS_PASSWORD` - Redis password
+- `DOCKER_MINIO_ROOT_USER` - MinIO root username
+- `DOCKER_MINIO_ROOT_PASSWORD` - MinIO root password
+- `DOCKER_GRAFANA_ADMIN_PASSWORD` - Grafana admin password
+- `DOCKER_JUPYTER_TOKEN` - Jupyter notebook token
+- `DOCKER_PGADMIN_PASSWORD` - pgAdmin password
+
+**Optional Secrets:**
+- `DOCKER_ACCESS_TOKEN` - Docker Hub token (if pushing images)
+- `CODECOV_TOKEN` - Codecov token (if using code coverage)
+
+**💰 Cost Impact:** FREE - Secrets storage unlimited, used only in self-hosted runners ($0/month)
+
+### 5. Configure Self-Hosted Runner
+
+Required for all workflows to maintain $0/month cost.
+
+**Docker-Based Runner (Recommended):**
+
+```powershell
+docker run -d --restart always `
+  --name github-runner `
+  -e RUNNER_NAME="docker-stack-runner" `
+  -e REPO_URL="https://github.com/DeanLuus22021994/docker_dotfiles" `
+  -e ACCESS_TOKEN="${env:GH_PAT}" `
+  -v /var/run/docker.sock:/var/run/docker.sock `
+  myoung34/github-runner:latest
+
+# Verify runner registered
+gh api repos/DeanLuus22021994/docker_dotfiles/actions/runners
+```
+
+**Requirements:**
+- 2 CPU cores minimum
+- 4GB RAM minimum
+- 20GB disk space
+- Docker installed
+
+**Cost: $0/month** - Unlimited free minutes
+
+### 6. Enable Security Features
+
+```powershell
+# Open repository security settings
+Start-Process "https://github.com/DeanLuus22021994/docker_dotfiles/settings/security_analysis"
+```
+
+Enable via GitHub UI:
+- ✅ Dependabot alerts
+- ✅ Dependabot security updates
+- ✅ Secret scanning
+- ✅ Push protection
+- ✅ Code scanning (CodeQL)
+
+**Cost: FREE** - GitHub Advanced Security included for public repos
+
+### 7. Apply Repository Configuration
+
+```powershell
+# Apply repository settings (metadata, features, merge strategies)
+.\scripts\apply-settings.ps1 -ApplyRepository
+
+# Apply branch protection (required checks, PR approvals)
+.\scripts\apply-settings.ps1 -ApplyBranchProtection
+
+# Or apply everything at once
+.\scripts\apply-settings.ps1 -ApplyAll
+```
+
+**What Gets Applied:**
+- Repository name, description, homepage, topics (20+)
+- Merge strategies (squash, merge, rebase)
+- Security analysis settings
+- Branch protection with 4 required status checks
+- PR review requirements (1 approval minimum)
+
+### 8. Test Workflows
+
+```powershell
+# Trigger validation workflow manually
+gh workflow run validate.yml
+
+# Check workflow status
+gh run list --workflow=validate.yml --limit 5
+
+# View logs if needed
+gh run view --log
+```
+
+**Expected Results:**
+- 4 jobs: validate-environment, validate-configs, validate-docker-compose, validate-pre-commit
+- All jobs run on self-hosted runner
+- All jobs should pass after secrets configured
+
+## Cost Breakdown ($0/month)
+
+| Feature | GitHub-Hosted Cost | Self-Hosted Cost | This Repo |
+|---------|-------------------|------------------|-----------|
+| Actions Minutes | $0.008/min | FREE | **$0/month** (self-hosted) |
+| Artifact Storage | $0.25/GB | FREE | **$0/month** (90-day retention) |
+| Secrets Storage | FREE | FREE | **$0/month** (unlimited) |
+| GitHub Advanced Security | $49/user/month private repos | FREE public repos | **$0/month** (public repo) |
+| CodeQL Scanning | Included in GAS | Included in GAS | **$0/month** |
+| Secret Scanning | Included in GAS | Included in GAS | **$0/month** |
+| Dependabot | FREE | FREE | **$0/month** |
+| Self-Hosted Runner | N/A | Hardware cost | **$0/month** (existing hardware) |
+
+**Total: $0/month** 🎉
+
+## Automation Tools
+
+### `scripts/apply-settings.ps1`
+
+Applies all repository configuration from `.config/github/*.yml` files via GitHub CLI.
+
+**Usage:**
+
+```powershell
+# Show what would change (dry-run)
+.\scripts\apply-settings.ps1 -DryRun
+
+# Apply repository settings only
+.\scripts\apply-settings.ps1 -ApplyRepository
+
+# Apply branch protection only
+.\scripts\apply-settings.ps1 -ApplyBranchProtection
+
+# Apply all settings
+.\scripts\apply-settings.ps1 -ApplyAll
+
+# Show manual setup guidance for Actions
+.\scripts\apply-settings.ps1 -ConfigureActions
+
+# Show manual setup guidance for Security
+.\scripts\apply-settings.ps1 -ConfigureSecurity
+```
+
+**Features:**
+- ✅ Idempotent (safe to run multiple times)
+- ✅ Color-coded status output
+- ✅ Dry-run mode for safety
+- ✅ Validates gh CLI authentication
+- ✅ Minimal design (reads config files, no hardcoded values)
+
+### `scripts/setup_secrets.ps1`
+
+Sets all GitHub secrets from `.env` file.
+
+**Usage:**
+
+```powershell
+# Set all 11 required secrets
+.\scripts\setup_secrets.ps1 -SetGitHubSecrets
+
+# Validate .env file format
+.\scripts\setup_secrets.ps1 -ValidateOnly
+
+# List current secrets (without values)
+gh secret list --repo DeanLuus22021994/docker_dotfiles
+```
 
 ## New Developer Onboarding
 
-### Quick Setup
-```bash
-# 1. Clone repository
-git clone https://github.com/DeanLuus22021994/docker_dotfiles.git
-cd docker_dotfiles
+### Quick Setup (8 steps, ~10 minutes)
 
-# 2. Install GitHub CLI (if not installed)
-# Windows: winget install GitHub.cli
-# macOS: brew install gh
-# Linux: See https://cli.github.com/
+1. **Clone repository**
+   ```powershell
+   ```powershell
+   git clone https://github.com/DeanLuus22021994/docker_dotfiles.git
+   cd docker_dotfiles
+   ```
 
-# 3. Authenticate with GitHub
-gh auth login
+2. **Verify GitHub CLI installed and authenticated**
+   ```powershell
+   # Check installation
+   gh --version
+   
+   # Authenticate
+   gh auth login
+   
+   # Verify access
+   gh repo view DeanLuus22021994/docker_dotfiles
+   ```
 
-# 4. Install dependencies
-make install
+3. **Apply repository settings**
+   ```powershell
+   # Review config files
+   Get-ChildItem .config\github\*.yml
+   
+   # Apply all settings
+   .\scripts\apply-settings.ps1 -ApplyAll
+   ```
 
-# 5. Verify GitHub Actions
-gh workflow list
-gh run list --limit 5
+4. **Set up self-hosted runner** (if not already configured)
+   ```powershell
+   # See section 5 above for Docker-based runner setup
+   docker run -d --restart always --name github-runner ...
+   ```
 
-# 6. Create feature branch
-git checkout -b feature/your-feature
+5. **Install dependencies**
+   ```powershell
+   # Python (if needed)
+   uv sync
+   
+   # Node.js (if needed)
+   npm install --legacy-peer-deps
+   ```
 
-# 7. Make changes and push
-git add .
-git commit -m "feat: your feature description"
-git push origin feature/your-feature
+6. **Validate environment**
+   ```powershell
+   # Run validation scripts
+   python scripts\validate_env.py
+   python scripts\validate_configs.py
+   
+   # Trigger workflow
+   gh workflow run validate.yml
+   ```
 
-# 8. Create PR
-gh pr create --title "feat: your feature" --body "Description of changes"
+7. **Create feature branch**
+   ```powershell
+   git checkout -b feature/your-feature-name
+   ```
 
-# 9. Watch auto-labeling happen!
-gh pr view --web
-```
+8. **Make changes and create PR**
+   ```powershell
+   # Stage changes
+   git add .
+   
+   # Commit (follows conventional commits)
+   git commit -m "feat: your feature description"
+   
+   # Push
+   git push origin feature/your-feature-name
+   
+   # Create PR
+   gh pr create --title "feat: your feature" --body "Description of changes"
+   
+   # Watch auto-labeling and checks!
+   gh pr view --web
+   ```
+
+**Expected Outcome:**
+- ✅ Auto-labeling applies based on changed files
+- ✅ 4 validation checks run on self-hosted runner
+- ✅ CODEOWNERS automatically requests review from @DeanLuus22021994
+- ✅ All checks must pass before merge
 
 ## Workflow Examples
 
 ### Dependabot PR Workflow
-```bash
+```powershell
 # 1. Dependabot creates PR automatically
 # 2. Review changes in PR
 gh pr view 123

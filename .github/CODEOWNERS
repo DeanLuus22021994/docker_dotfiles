@@ -1,0 +1,32 @@
+# Code Owners
+# This file defines code ownership for automatic review requests on pull requests
+# Learn more: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo
+* @DeanLuus22021994
+
+# Critical Configuration Files
+/.github/ @DeanLuus22021994
+/.config/ @DeanLuus22021994
+/.devcontainer/ @DeanLuus22021994
+/.vscode/settings.json @DeanLuus22021994
+
+# Docker and Orchestration
+/docker-compose.yml @DeanLuus22021994
+/dockerfile/ @DeanLuus22021994
+/Makefile @DeanLuus22021994
+
+# Python Environment
+/pyproject.toml @DeanLuus22021994
+/requirements.txt @DeanLuus22021994
+
+# Scripts and Automation
+/scripts/ @DeanLuus22021994
+
+# Documentation
+/*.md @DeanLuus22021994
+/docs/ @DeanLuus22021994
+
+# Security
+/.env.example @DeanLuus22021994
+/SECURITY.md @DeanLuus22021994

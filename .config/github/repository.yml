@@ -1,0 +1,59 @@
+# GitHub Repository Settings Configuration
+# Apply using: gh api repos/DeanLuus22021994/docker_dotfiles --method PATCH --input .config/github/repository.yml
+# Or via apply-settings.ps1: .\scripts\apply-settings.ps1 -ApplyRepository
+
+name: docker_dotfiles
+description: "Modern Data Platform v2.0 - GPU-accelerated ML stack with 25+ microservices, dual databases (PostgreSQL + MariaDB), S3 storage, monitoring (Grafana/Prometheus), and complete dev tooling. Production-ready Docker Compose orchestration with TDD, SSoT config management."
+homepage: https://deanluu s22021994.github.io/docker_dotfiles
+topics:
+  - docker
+  - docker-compose
+  - kubernetes
+  - postgresql
+  - mariadb
+  - redis
+  - minio
+  - grafana
+  - prometheus
+  - jupyter
+  - machine-learning
+  - gpu
+  - cuda
+  - devops
+  - microservices
+  - monitoring
+  - observability
+  - infrastructure-as-code
+  - self-hosted
+  - data-platform
+
+# Repository Settings
+private: false
+has_issues: true
+has_projects: true
+has_wiki: false
+has_downloads: true
+is_template: false
+default_branch: main
+allow_squash_merge: true
+allow_merge_commit: true
+allow_rebase_merge: true
+allow_auto_merge: true
+delete_branch_on_merge: true
+allow_update_branch: true
+squash_merge_commit_title: PR_TITLE
+squash_merge_commit_message: COMMIT_MESSAGES
+merge_commit_title: PR_TITLE
+merge_commit_message: PR_BODY
+
+# Security & Analysis
+security_and_analysis:
+  secret_scanning:
+    status: enabled
+  secret_scanning_push_protection:
+    status: enabled
+  dependabot_security_updates:
+    status: enabled
+
+# Vulnerability Alerts
+vulnerability_alerts: enabled

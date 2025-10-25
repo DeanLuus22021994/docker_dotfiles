@@ -1,0 +1,133 @@
+# Code Security and Scanning Configuration
+# Repository security features
+# Apply via GitHub UI: Settings > Security > Code security and analysis
+# Or via apply-settings.ps1: .\scripts\apply-settings.ps1 -ConfigureSecurity
+
+# ==============================================================================
+# CODE SCANNING (GitHub Advanced Security - FREE for public repos)
+# ==============================================================================
+
+code_scanning:
+  enabled: true
+  default_setup: advanced
+  
+  codeql:
+    enabled: true
+    languages: ["python", "javascript", "typescript"]
+    queries: security-extended
+    build_mode: none
+    
+  third_party_tools:
+    - name: Trivy
+      enabled: true
+      scan_type: container-images
+      workflow: ".github/workflows/ci.yml"
+      cost: FREE
+
+# ==============================================================================
+# SECRET SCANNING (FREE for public repos)
+# ==============================================================================
+
+secret_scanning:
+  enabled: true
+  push_protection: true
+  
+  excluded_paths:
+    - "**/.env.example"
+    - "**/secrets/README.md"
+    - "**/*.md"
+    - "**/docs/**"
+    
+  custom_patterns: []
+
+# ==============================================================================
+# DEPENDENCY REVIEW (FREE for public repos)
+# ==============================================================================
+
+dependency_review:
+  enabled: true
+  fail_on_severity: high
+  
+  license_check: true
+  allowed_licenses:
+    - MIT
+    - Apache-2.0
+    - BSD-2-Clause
+    - BSD-3-Clause
+    - ISC
+    - GPL-3.0
+  deny_licenses:
+    - AGPL-3.0
+
+# ==============================================================================
+# DEPENDABOT ALERTS (FREE for public repos)
+# ==============================================================================
+
+dependabot_alerts:
+  enabled: true
+  severity_threshold: low
+  
+  auto_dismiss:
+    - scope: development
+      severity: low
+      reason: "Dev dependencies with low severity"
+
+# ==============================================================================
+# DEPENDABOT SECURITY UPDATES (FREE for public repos)
+# ==============================================================================
+
+dependabot_security_updates:
+  enabled: true
+  auto_merge: false
+  
+  groups:
+    docker:
+      patterns: ["dockerfile/*"]
+    python:
+      patterns: ["pyproject.toml", "requirements*.txt"]
+    npm:
+      patterns: ["package.json", "package-lock.json"]
+
+# ==============================================================================
+# PRIVATE VULNERABILITY REPORTING (FREE for public repos)
+# ==============================================================================
+
+private_vulnerability_reporting:
+  enabled: true
+  security_policy_file: "SECURITY.md"
+  disclosure_timeline: 90
+
+# ==============================================================================
+# CODE OWNERS
+# ==============================================================================
+
+codeowners:
+  enabled: true
+  file_path: ".github/CODEOWNERS"
+
+# ==============================================================================
+# SECURITY ADVISORIES (FREE for public repos)
+# ==============================================================================
+
+security_advisories:
+  enabled: true
+  allow_private_fork: true
+  request_cve: true
+
+# ==============================================================================
+# COST IMPLICATIONS
+# ==============================================================================
+# All Features: FREE for public repositories
+#
+# GitHub Advanced Security includes:
+# - Code scanning (CodeQL)
+# - Secret scanning with push protection
+# - Dependency review
+# - Security advisories
+#
+# Cost for Private Repositories:
+# - GitHub Advanced Security: $49/committer/month (NOT NEEDED for public repos)
+#
+# Current Repository (Public): $0/month
+# Third-Party Tools (Trivy, pre-commit, yamllint, detect-secrets): $0/month
+# Total Security Cost: $0/month

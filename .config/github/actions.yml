@@ -1,0 +1,112 @@
+# GitHub Actions Configuration
+# Repository-level settings for Actions
+# Apply using GitHub UI: Settings > Actions > General
+# Or via apply-settings.ps1: .\scripts\apply-settings.ps1 -ConfigureActions
+
+# ==============================================================================
+# ACTIONS PERMISSIONS
+# ==============================================================================
+
+permissions:
+  enabled: true
+  allowed_actions: all
+  allow_github_owned_actions: true
+  allow_verified_creator_actions: true
+  allow_specified_actions: false
+
+# ==============================================================================
+# FORK PULL REQUEST WORKFLOWS
+# ==============================================================================
+
+fork_pr_workflows:
+  enabled: true
+  approval_required: true
+  approve_new_contributors: maintainers_only
+
+# ==============================================================================
+# WORKFLOW PERMISSIONS (Default GITHUB_TOKEN)
+# ==============================================================================
+
+default_workflow_permissions:
+  contents: read
+  packages: read
+  statuses: write
+  actions: write
+  checks: write
+  pull_requests: write
+  issues: write
+
+actions_can_approve_pull_requests: false
+
+# ==============================================================================
+# ARTIFACT AND LOG RETENTION
+# ==============================================================================
+
+artifact_retention_days: 90
+log_retention_days: 90
+
+# ==============================================================================
+# SELF-HOSTED RUNNER CONFIGURATION
+# ==============================================================================
+
+runner_groups:
+  - name: default
+    visibility: all
+    runners:
+      - name: docker-stack-runner
+        os: linux
+        architecture: x64
+        labels: ["self-hosted", "docker", "linux"]
+        idle_timeout: never
+
+# Runner Requirements
+runner_requirements:
+  minimum_resources:
+    cpu: 2
+    memory: 4GB
+    disk: 20GB
+  required_tools:
+    - docker  # Docker Engine 24+
+    - docker-compose  # Docker Compose v2+
+    - python  # Python 3.13+
+    - node  # Node.js 22+
+    - git  # Git 2.40+
+  optional_tools:
+    - gh  # GitHub CLI
+    - yamllint  # YAML validation
+    - pre-commit  # Git hooks framework
+
+# ==============================================================================
+# COST IMPLICATIONS
+# ==============================================================================
+# Self-Hosted Runners: FREE (UNLIMITED)
+# - No cost for compute minutes
+# - No cost for concurrent jobs
+# - No cost for storage
+#
+# Total Cost: $0/month
+#
+# RECOMMENDATION: Continue using self-hosted runner on existing hardware
+
+# ==============================================================================
+# SETUP INSTRUCTIONS
+# ==============================================================================
+# Option 1: Docker-Based Runner (Recommended)
+# docker run -d --restart always \
+#   --name github-runner \
+#   -e RUNNER_NAME="docker-stack-runner" \
+#   -e RUNNER_WORKDIR="/tmp/github-runner" \
+#   -e RUNNER_SCOPE="repo" \
+#   -e REPO_URL="https://github.com/DeanLuus22021994/docker_dotfiles" \
+#   -e ACCESS_TOKEN="${GH_PAT}" \
+#   -v /var/run/docker.sock:/var/run/docker.sock \
+#   -v /tmp/github-runner:/tmp/github-runner \
+#   myoung34/github-runner:latest
+#
+# Option 2: Native Runner
+# 1. Go to: https://github.com/DeanLuus22021994/docker_dotfiles/settings/actions/runners/new
+# 2. Download runner for your OS
+# 3. Configure: ./config.sh --url https://github.com/DeanLuus22021994/docker_dotfiles --token <TOKEN>
+# 4. Start: ./run.sh (or install as service: ./svc.sh install && ./svc.sh start)
+#
+# Verify: gh api repos/DeanLuus22021994/docker_dotfiles/actions/runners
