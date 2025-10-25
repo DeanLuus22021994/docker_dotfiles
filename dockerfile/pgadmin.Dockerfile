@@ -18,7 +18,7 @@ RUN mkdir -p /var/lib/pgadmin/storage \
     && chown -R pgadmin:pgadmin /var/lib/pgadmin
 
 # Copy server definitions
-COPY dockerfile/configs/pgadmin-servers.json /pgadmin4/servers.json
+COPY .config/services/pgadmin-servers.json /pgadmin4/servers.json
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \

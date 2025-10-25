@@ -28,15 +28,17 @@
 
 # Environment
 .env
-.env.*
+.env.local
+!.env.example
 
-# Secrets
-secrets/*
-!secrets/README.md
+# Secrets - NO SECRETS FOLDER (using environment variables)
+# secrets/ directory removed - using DOCKER_ prefixed env vars instead
 
 # IDE
 .vscode/*
 !.vscode/settings.json
+!.vscode/*.json.example
+.vscode/*.local.json
 .idea/
 *.swp
 
@@ -48,4 +50,13 @@ Thumbs.db
 *.log
 
 # Docker
+# Docker
 volumes/
+
+# Jekyll
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+vendor/bundle/
+Gemfile.lock

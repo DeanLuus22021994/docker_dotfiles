@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: CI/CD Pipeline
 
 on:
@@ -9,9 +10,9 @@ on:
 env:
   DOCKER_BUILDKIT: 1
   COMPOSE_DOCKER_CLI_BUILD: 1
-  GITHUB_OWNER: ${{ secrets.GITHUB_OWNER || github.repository_owner }}
+  GITHUB_OWNER: ${{ github.repository_owner }}
   DOCKER_ACCESS_TOKEN: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-  GH_PAT: ${{ secrets.GH_PAT || github.token }}
+  GH_PAT: ${{ github.token }}
 
 jobs:
   validate:
@@ -148,13 +149,12 @@ jobs:
         run: |
           pytest tests/unit/ -v --cov=agent --cov-report=xml --cov-report=term
 
-      - name: Upload coverage reports
-        if: ${{ secrets.CODECOV_TOKEN != '' }}
+      - name: Upload coverage to Codecov
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
 
   integration-test:
     name: Integration Tests

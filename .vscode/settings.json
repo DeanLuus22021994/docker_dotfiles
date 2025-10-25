@@ -77,6 +77,11 @@
     "!encrypted/pkcs1-oaep scalar",
     "!vault scalar"
   ],
+  // Disable auto schema detection for these paths
+  "yaml.schemaStore.enable": true,
+  "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
+  "yaml.disableDefaultProperties": false,
+  "yaml.maxItemsComputed": 5000,
   
   // Grafana provisioning files - disable validation
   "[yaml]": {
@@ -86,7 +91,12 @@
   // File associations
   "files.associations": {
     "**/monitoring/grafana/provisioning/**/*.yml": "yaml",
+    "**/.config/monitoring/grafana/provisioning/**/*.yml": "yaml",
+    "**/.config/docker/compose.override*.yml": "yaml",
     "docker-compose*.yml": "yaml",
     "*.Dockerfile": "dockerfile"
-  }
+  },
+  
+  // Files to exclude from validation
+  "files.exclude": {}
 }

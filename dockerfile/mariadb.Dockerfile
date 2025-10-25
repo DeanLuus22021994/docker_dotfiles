@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy custom configuration
-COPY --chown=mysql:mysql dockerfile/configs/mariadb.conf /etc/mysql/conf.d/custom.cnf
+COPY --chown=mysql:mysql .config/database/mariadb.conf /etc/mysql/conf.d/custom.cnf
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /var/lib/mysql /var/log/mysql \

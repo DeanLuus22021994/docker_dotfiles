@@ -1,0 +1,119 @@
+theme: jekyll-theme-cayman
+title: Docker Cluster Stack Documentation
+description: Comprehensive documentation for the Docker-based development and production cluster platform
+repository: DeanLuus22021994/docker_dotfiles
+
+# GitHub Pages configuration
+url: "https://deanluus22021994.github.io"
+baseurl: "/docker_dotfiles"
+
+# Collections
+collections:
+  documentation:
+    output: true
+    permalink: /documentation/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "documentation"
+    values:
+      layout: "default"
+  - scope:
+      path: "documentation"
+    values:
+      layout: "default"
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Documentation
+    url: /documentation/
+  - title: GitHub
+    url: https://github.com/DeanLuus22021994/docker_dotfiles
+
+# Table of Contents
+toc:
+  - title: Getting Started
+    docs:
+      - architecture
+      - deployment
+      - ENVIRONMENT_SETUP
+      - configuration
+      - quick-reference
+  
+  - title: Documentation Guides
+    docs:
+      - LOCAL_DOCS
+      - GITHUB-PAGES-SETUP
+  
+  - title: Implementation Guides
+    docs:
+      - PHASE2-DEPLOYMENT
+      - PHASE3-DEPLOYMENT
+      - PHASE4-COMPLETION
+      - IMPLEMENTATION-SUMMARY
+  
+  - title: Operations
+    docs:
+      - RESOURCE-ALLOCATION
+      - troubleshooting
+
+# Plugins
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# Markdown settings
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .bundle
+  - .sass-cache
+  - .jekyll-cache
+  - .docker-compose
+  - dockerfile
+  - scripts
+  - tests
+  - agent
+  - web-content
+  - monitoring
+  - secrets
+  - __pycache__
+  - "*.pyc"
+  - docker-compose.yml
+  - Makefile
+  - pyproject.toml
+  - requirements.txt
+  - .env*
+  - .devcontainer
+  - .vscode
+  - .gitignore
+  - documentation/archive
+  - _site
+  - TODO.md
+  - CLUSTER.md
+  - ENHANCEMENTS-COMPLETE.md
+  - ENVIRONMENT-INTEGRATION-COMPLETE.md
+
+# Include .config and documentation directories
+include:
+  - .config
+  - documentation/archive

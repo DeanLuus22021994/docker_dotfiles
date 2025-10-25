@@ -30,6 +30,15 @@ def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
     required_vars = {
         'GITHUB_OWNER': 'GitHub organization/username for API access',
         'GH_PAT': 'GitHub Personal Access Token for authentication',
+        'DOCKER_POSTGRES_PASSWORD': 'PostgreSQL database password',
+        'DOCKER_MARIADB_ROOT_PASSWORD': 'MariaDB root password',
+        'DOCKER_MARIADB_PASSWORD': 'MariaDB cluster_user password',
+        'DOCKER_REDIS_PASSWORD': 'Redis authentication password',
+        'DOCKER_MINIO_ROOT_USER': 'MinIO root username',
+        'DOCKER_MINIO_ROOT_PASSWORD': 'MinIO root password',
+        'DOCKER_GRAFANA_ADMIN_PASSWORD': 'Grafana admin password',
+        'DOCKER_JUPYTER_TOKEN': 'Jupyter notebook access token',
+        'DOCKER_PGADMIN_PASSWORD': 'pgAdmin web interface password',
     }
     
     # Optional but recommended environment variables

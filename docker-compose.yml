@@ -1,23 +1,3 @@
-secrets:
-  postgres_password:
-    file: ./secrets/postgres_password.txt
-  mariadb_root_password:
-    file: ./secrets/mariadb_root_password.txt
-  mariadb_password:
-    file: ./secrets/mariadb_password.txt
-  redis_password:
-    file: ./secrets/redis_password.txt
-  minio_root_user:
-    file: ./secrets/minio_root_user.txt
-  minio_root_password:
-    file: ./secrets/minio_root_password.txt
-  grafana_admin_password:
-    file: ./secrets/grafana_admin_password.txt
-  jupyter_token:
-    file: ./secrets/jupyter_token.txt
-  pgadmin_password:
-    file: ./secrets/pgadmin_password.txt
-
 services:
   devcontainer:
     container_name: cluster-devcontainer
@@ -60,7 +40,7 @@ services:
     container_name: cluster-loadbalancer
     image: nginx:alpine
     volumes:
-      - ./dockerfile/configs/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.config/nginx/loadbalancer.conf:/etc/nginx/nginx.conf:ro
     ports:
       - "8080:80"
     depends_on:
@@ -213,12 +193,10 @@ services:
   cluster-postgres:
     container_name: cluster-postgres
     image: postgres:13-alpine
-    secrets:
-      - postgres_password
     environment:
       POSTGRES_DB: clusterdb
       POSTGRES_USER: cluster_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_PASSWORD: ${DOCKER_POSTGRES_PASSWORD}
     volumes:
       - cluster_postgres_data:/var/lib/postgresql/data
     ports:
@@ -282,14 +260,11 @@ services:
     build:
       context: .
       dockerfile: dockerfile/mariadb.Dockerfile
-    secrets:
-      - mariadb_root_password
-      - mariadb_password
     environment:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
+      MYSQL_ROOT_PASSWORD: ${DOCKER_MARIADB_ROOT_PASSWORD}
       MYSQL_DATABASE: clusterdb
       MYSQL_USER: cluster_user
-      MYSQL_PASSWORD_FILE: /run/secrets/mariadb_password
+      MYSQL_PASSWORD: ${DOCKER_MARIADB_PASSWORD}
     volumes:
       - cluster_mariadb_data:/var/lib/mysql
       - cluster_mariadb_logs:/var/log/mysql
@@ -299,7 +274,7 @@ services:
       - cluster-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p$$(cat /run/secrets/mariadb_root_password)"]
+      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -321,11 +296,9 @@ services:
   cluster-jupyter:
     container_name: cluster-jupyter
     image: jupyter/tensorflow-notebook:latest
-    secrets:
-      - jupyter_token
     environment:
       JUPYTER_ENABLE_LAB: "yes"
-      JUPYTER_TOKEN_FILE: /run/secrets/jupyter_token
+      JUPYTER_TOKEN: ${DOCKER_JUPYTER_TOKEN}
     volumes:
       - cluster_jupyter_data:/home/jovyan/work
     ports:
@@ -357,12 +330,9 @@ services:
     container_name: cluster-minio
     image: minio/minio:latest
     command: server /data --console-address ":9001"
-    secrets:
-      - minio_root_user
-      - minio_root_password
     environment:
-      MINIO_ROOT_USER_FILE: /run/secrets/minio_root_user
-      MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_root_password
+      MINIO_ROOT_USER: ${DOCKER_MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${DOCKER_MINIO_ROOT_PASSWORD}
     volumes:
       - cluster_minio_data:/data
     ports:
@@ -394,16 +364,14 @@ services:
   cluster-grafana:
     container_name: cluster-grafana
     image: grafana/grafana:latest
-    secrets:
-      - grafana_admin_password
     environment:
-      GF_SECURITY_ADMIN_PASSWORD__FILE: /run/secrets/grafana_admin_password
+      GF_SECURITY_ADMIN_PASSWORD: ${DOCKER_GRAFANA_ADMIN_PASSWORD}
       GF_USERS_ALLOW_SIGN_UP: 'false'
       GF_INSTALL_PLUGINS: ''
     volumes:
       - cluster_grafana_data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/dashboards:/etc/grafana/dashboards:ro
+      - ./.config/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./.config/monitoring/dashboards:/etc/grafana/dashboards:ro
     ports:
       - "3002:3000"
     networks:
@@ -437,8 +405,8 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.enable-lifecycle'
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ./monitoring/alerts:/etc/prometheus/alerts:ro
+      - ./.config/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./.config/monitoring/alerts:/etc/prometheus/alerts:ro
       - cluster_prometheus_data:/prometheus
     ports:
       - "9090:9090"
@@ -474,7 +442,7 @@ services:
       - '--storage.path=/alertmanager'
       - '--web.external-url=http://localhost:9093'
     volumes:
-      - ./monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./.config/monitoring/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - cluster_alertmanager_data:/alertmanager
     ports:
       - "9093:9093"
@@ -682,11 +650,9 @@ services:
     build:
       context: .
       dockerfile: dockerfile/pgadmin.Dockerfile
-    secrets:
-      - pgadmin_password
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@cluster.local
-      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+      PGADMIN_DEFAULT_PASSWORD: ${DOCKER_PGADMIN_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     volumes:
@@ -831,10 +797,8 @@ services:
   cluster-postgres-exporter:
     container_name: cluster-postgres-exporter
     image: prometheuscommunity/postgres-exporter:v0.15.0
-    secrets:
-      - postgres_password
     environment:
-      DATA_SOURCE_NAME: "postgresql://cluster_user:$(cat /run/secrets/postgres_password)@cluster-postgres:5432/clusterdb?sslmode=disable"
+      DATA_SOURCE_NAME: "postgresql://cluster_user:${DOCKER_POSTGRES_PASSWORD}@cluster-postgres:5432/clusterdb?sslmode=disable"
     ports:
       - "9187:9187"
     networks:
@@ -895,26 +859,24 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # Node Exporter - Host metrics for Prometheus
+    # Node Exporter - Host metrics for Prometheus
   cluster-node-exporter:
     container_name: cluster-node-exporter
-    image: prom/node-exporter:v1.7.0
+    image: prom/node-exporter:latest
     command:
+      - '--path.rootfs=/host'
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
-      - '--path.rootfs=/host'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/host:ro
+      - /:/host:ro,rslave
     ports:
       - "9100:9100"
     networks:
       - cluster-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9100/metrics"]
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9100/metrics"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -923,10 +885,42 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: 256M
+          memory: 128M
         reservations:
           cpus: '0.25'
-          memory: 128M
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # GitHub Pages - Documentation site (local development)
+  cluster-docs:
+    container_name: cluster-docs
+    image: jekyll/jekyll:4.2.2
+    command: sh -c "git config --global --add safe.directory /srv/jekyll && bundle config set --local path /usr/local/bundle && cd /srv/jekyll && BUNDLE_GEMFILE=.config/Gemfile bundle install && bundle exec jekyll serve --config .config/jekyll.config.yml --host 0.0.0.0 --port 4000 --livereload --force_polling"
+    volumes:
+      - .:/srv/jekyll:cached
+      - ./vendor/bundle:/usr/local/bundle:cached
+    ports:
+      - "4000:4000"
+      - "35729:35729"
+    networks:
+      - cluster-network
+    environment:
+      - JEKYLL_ENV=development
+      - PAGES_REPO_NWO=DeanLuus22021994/docker_dotfiles
+    restart: unless-stopped
+    profiles: ["docs", "dev"]
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
     logging:
       driver: "json-file"
       options:
@@ -949,6 +943,7 @@ volumes:
   cluster_buildkit_data:
   cluster_localstack_data:
   cluster_pgadmin_data:
+  cluster_docs_bundle:
 
 networks:
   cluster-network:

@@ -21,7 +21,7 @@ RUN addgroup -g 1000 buildkit || true \
     && chown -R buildkit:buildkit /var/lib/buildkit
 
 # Copy custom buildkit configuration
-COPY dockerfile/configs/buildkitd.toml /etc/buildkit/buildkitd.toml
+COPY .config/docker/buildkitd.toml /etc/buildkit/buildkitd.toml
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \

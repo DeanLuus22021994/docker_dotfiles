@@ -23,7 +23,7 @@ RUN pip3 install --no-cache-dir \
     botocore
 
 # Copy initialization scripts
-COPY dockerfile/configs/localstack-init.sh /etc/localstack/init/ready.d/init.sh
+COPY .config/services/localstack-init.sh /etc/localstack/init/ready.d/init.sh
 RUN chmod +x /etc/localstack/init/ready.d/init.sh
 
 # Create localstack directories

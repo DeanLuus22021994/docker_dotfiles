@@ -1,0 +1,21 @@
+# BuildKit configuration for Docker Compose builds
+# Apply with: export BUILDKIT_CONFIG=/path/to/buildkit.toml
+
+[worker.oci]
+  enabled = true
+  platforms = ["linux/amd64"]
+  
+[worker.containerd]
+  enabled = false
+
+[registry."docker.io"]
+  mirrors = ["https://mirror.gcr.io"]
+
+# Cache configuration
+[worker.oci.gcpolicy]
+  keepBytes = 536870912  # 512MB
+  keepDuration = 172800  # 48 hours
+  
+# Network configuration  
+[worker.oci.network]
+  mode = "auto"
