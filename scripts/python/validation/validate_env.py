@@ -7,7 +7,6 @@ Validates that all required environment variables are set before starting the st
 import os
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Add parent directory to path for imports
 _script_dir = Path(__file__).parent.parent.parent
@@ -25,7 +24,7 @@ from python.utils.colors import (
 )
 
 
-def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
+def validate_env_vars() -> tuple[bool, list[str], list[str]]:
     """
     Validate required and optional environment variables.
 
@@ -53,8 +52,8 @@ def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
         "CODECOV_TOKEN": "Codecov token for coverage reporting",
     }
 
-    missing_required: List[str] = []
-    missing_optional: List[str] = []
+    missing_required: list[str] = []
+    missing_optional: list[str] = []
 
     print(f"\n{header('=== Environment Variables Validation ===')}\n")
 
@@ -86,7 +85,7 @@ def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
 
 
 def print_summary(
-    all_valid: bool, missing_required: List[str], missing_optional: List[str]
+    all_valid: bool, missing_required: list[str], missing_optional: list[str]
 ) -> None:
     """Print validation summary and instructions"""
     print(f"\n{separator()}")

@@ -8,7 +8,6 @@ Exit code: 0=success, 1=failure
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Add parent directory to path for imports
 _script_dir = Path(__file__).parent.parent.parent
@@ -18,10 +17,10 @@ if str(_script_dir) not in sys.path:
 from python.utils.colors import error, header, info, separator, success, warning
 
 
-def check_outdated_packages() -> Tuple[bool, List[str]]:
+def check_outdated_packages() -> tuple[bool, list[str]]:
     """Check for outdated Python packages."""
     print(f"\n{header('=== Checking Outdated Packages ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     try:
         result = subprocess.run(
@@ -47,7 +46,7 @@ def check_outdated_packages() -> Tuple[bool, List[str]]:
         return False, errors
 
 
-def list_installed_packages() -> Tuple[bool, List[str]]:
+def list_installed_packages() -> tuple[bool, list[str]]:
     """List all installed packages and versions."""
     print(f"\n{header('=== Installed Packages ===')}")
 
@@ -68,10 +67,10 @@ def list_installed_packages() -> Tuple[bool, List[str]]:
         return False, ["pip not found"]
 
 
-def check_pyproject_dependencies() -> Tuple[bool, List[str]]:
+def check_pyproject_dependencies() -> tuple[bool, list[str]]:
     """Check if all pyproject.toml dependencies are installed."""
     print(f"\n{header('=== Checking pyproject.toml Dependencies ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     pyproject = Path("pyproject.toml")
 
@@ -97,7 +96,7 @@ def check_pyproject_dependencies() -> Tuple[bool, List[str]]:
 
         installed = result.stdout.lower()
 
-        missing: List[str] = []
+        missing: list[str] = []
         for pkg in required_packages:
             if pkg.lower() not in installed:
                 missing.append(pkg)
@@ -123,7 +122,7 @@ def main() -> int:
     print(header("Dependencies Audit"))
     print(separator())
 
-    all_errors: List[str] = []
+    all_errors: list[str] = []
     all_passed = True
 
     # Run all checks

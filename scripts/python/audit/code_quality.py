@@ -8,7 +8,6 @@ Exit code: 0=success, 1=failure
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Add parent directory to path for imports
 _script_dir = Path(__file__).parent.parent.parent
@@ -18,10 +17,10 @@ if str(_script_dir) not in sys.path:
 from python.utils.colors import error, header, info, separator, success, warning
 
 
-def run_black_check() -> Tuple[bool, List[str]]:
+def run_black_check() -> tuple[bool, list[str]]:
     """Run Black formatter in check mode."""
     print(f"\n{header('=== Running Black Format Check ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     python_dirs = ["scripts/python/", "scripts/orchestrator.py"]
 
@@ -49,10 +48,10 @@ def run_black_check() -> Tuple[bool, List[str]]:
         return False, errors
 
 
-def run_ruff_check() -> Tuple[bool, List[str]]:
+def run_ruff_check() -> tuple[bool, list[str]]:
     """Run Ruff linter."""
     print(f"\n{header('=== Running Ruff Linter ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     python_dirs = ["scripts/python/", "scripts/orchestrator.py"]
 
@@ -80,10 +79,10 @@ def run_ruff_check() -> Tuple[bool, List[str]]:
         return False, errors
 
 
-def run_mypy_check() -> Tuple[bool, List[str]]:
+def run_mypy_check() -> tuple[bool, list[str]]:
     """Run mypy type checker."""
     print(f"\n{header('=== Running mypy Type Check ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     python_dirs = ["scripts/python/", "scripts/orchestrator.py"]
 
@@ -116,7 +115,7 @@ def main() -> int:
     print(header("Code Quality Audit"))
     print(separator())
 
-    all_errors: List[str] = []
+    all_errors: list[str] = []
     all_passed = True
 
     # Run all checks

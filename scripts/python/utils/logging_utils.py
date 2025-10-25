@@ -1,8 +1,22 @@
 #!/usr/bin/env python3
 """
 Shared Logging Utilities Module
-Provides logging configuration helpers
+
+Provides centralized logging configuration with color-coded output support.
+Implements custom formatters for improved log readability and debugging
+across all Python scripts.
+
+Examples:
+    >>> from python.utils.logging_utils import setup_logger
+    >>> logger = setup_logger('my_script', use_colors=True)
+    >>> logger.info("Processing started")
 """
+
+__all__: list[str] = [
+    "ColoredFormatter",
+    "setup_logger",
+    "get_logger",
+]
 
 import logging
 import sys

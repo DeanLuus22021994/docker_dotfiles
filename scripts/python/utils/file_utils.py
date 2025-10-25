@@ -1,16 +1,35 @@
 #!/usr/bin/env python3
 """
 Shared File Utilities Module
-Provides file operation helpers
+
+Provides cross-platform file operation helpers with type-safe interfaces.
+Handles JSON parsing, file I/O, directory operations, and path management
+with proper error handling and encoding support.
+
+Examples:
+    >>> from python.utils.file_utils import read_json, ensure_dir
+    >>> config = read_json('.config/settings.json')
+    >>> ensure_dir('logs/')
 """
+
+__all__: list[str] = [
+    "read_json",
+    "write_json",
+    "read_lines",
+    "file_exists",
+    "ensure_dir",
+    "get_files_by_extension",
+    "get_file_size",
+    "get_relative_path",
+]
 
 import json
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 
-def read_json(file_path: str) -> Dict[str, Any]:
+def read_json(file_path: str) -> dict[str, Any]:
     """
     Read and parse JSON file
 
@@ -25,11 +44,11 @@ def read_json(file_path: str) -> Dict[str, Any]:
         json.JSONDecodeError: If file is not valid JSON
     """
     with open(file_path, "r", encoding="utf-8") as f:
-        result: Dict[str, Any] = json.load(f)
+        result: dict[str, Any] = json.load(f)
         return result
 
 
-def write_json(file_path: str, data: Dict[str, Any], indent: int = 2) -> None:
+def write_json(file_path: str, data: dict[str, Any], indent: int = 2) -> None:
     """
     Write dictionary to JSON file
 
@@ -42,7 +61,7 @@ def write_json(file_path: str, data: Dict[str, Any], indent: int = 2) -> None:
         json.dump(data, f, indent=indent)
 
 
-def read_lines(file_path: str, strip: bool = True) -> List[str]:
+def read_lines(file_path: str, strip: bool = True) -> list[str]:
     """
     Read file lines into list
 
@@ -84,7 +103,7 @@ def ensure_dir(dir_path: str) -> None:
     Path(dir_path).mkdir(parents=True, exist_ok=True)
 
 
-def get_files_by_extension(directory: str, extension: str, recursive: bool = True) -> List[Path]:
+def get_files_by_extension(directory: str, extension: str, recursive: bool = True) -> list[Path]:
     """
     Get all files with specific extension in directory
 

@@ -9,7 +9,6 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Add parent directory to path for imports
 _script_dir = Path(__file__).parent.parent.parent
@@ -19,10 +18,10 @@ if str(_script_dir) not in sys.path:
 from python.utils.colors import error, header, separator, success
 
 
-def validate_yaml_files() -> Tuple[bool, List[str]]:
+def validate_yaml_files() -> tuple[bool, list[str]]:
     """Validate all YAML files with yamllint."""
     print(f"\n{header('=== Validating YAML Files ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     yaml_files = list(Path(".").rglob("*.yml")) + list(Path(".").rglob("*.yaml"))
     # Exclude node_modules and .git
@@ -60,10 +59,10 @@ def validate_yaml_files() -> Tuple[bool, List[str]]:
         return False, errors
 
 
-def validate_json_files() -> Tuple[bool, List[str]]:
+def validate_json_files() -> tuple[bool, list[str]]:
     """Validate all JSON files."""
     print(f"\n{header('=== Validating JSON Files ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     json_files = list(Path(".").rglob("*.json"))
     # Exclude node_modules, .git, and .vscode (JSONC files with comments)
@@ -95,10 +94,10 @@ def validate_json_files() -> Tuple[bool, List[str]]:
     return True, []
 
 
-def validate_nginx_configs() -> Tuple[bool, List[str]]:
+def validate_nginx_configs() -> tuple[bool, list[str]]:
     """Validate nginx configuration files."""
     print(f"\n{header('=== Validating nginx Configs ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     nginx_configs = [
         ".config/nginx/loadbalancer.conf",
@@ -153,10 +152,10 @@ def validate_nginx_configs() -> Tuple[bool, List[str]]:
     return True, []
 
 
-def validate_postgresql_config() -> Tuple[bool, List[str]]:
+def validate_postgresql_config() -> tuple[bool, list[str]]:
     """Validate PostgreSQL configuration."""
     print(f"\n{header('=== Validating PostgreSQL Config ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     pg_config = Path(".config/database/postgresql.conf")
 
@@ -191,10 +190,10 @@ def validate_postgresql_config() -> Tuple[bool, List[str]]:
         return False, errors
 
 
-def validate_mariadb_config() -> Tuple[bool, List[str]]:
+def validate_mariadb_config() -> tuple[bool, list[str]]:
     """Validate MariaDB configuration."""
     print(f"\n{header('=== Validating MariaDB Config ===')}")
-    errors: List[str] = []
+    errors: list[str] = []
 
     maria_config = Path(".config/database/mariadb.conf")
 
@@ -240,7 +239,7 @@ def main() -> int:
     print(header("Configuration Validation"))
     print(separator())
 
-    all_errors: List[str] = []
+    all_errors: list[str] = []
     all_passed = True
 
     # Run all validations

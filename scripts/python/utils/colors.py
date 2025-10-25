@@ -1,8 +1,30 @@
 #!/usr/bin/env python3
 """
 Shared Colors Utility Module
-Provides ANSI color codes for terminal output
+
+Provides ANSI color codes and utility functions for terminal output formatting.
+Supports modern terminals with 256-color capability and provides consistent
+color schemes across all Python scripts.
+
+Examples:
+    >>> from python.utils.colors import success, error, warning
+    >>> print(success("Operation completed"))
+    ✓ Operation completed
+    >>> print(error("Something failed"))
+    ✗ Something failed
 """
+
+__all__: list[str] = [
+    "Colors",
+    "colorize",
+    "success",
+    "warning",
+    "error",
+    "info",
+    "bold",
+    "header",
+    "separator",
+]
 
 
 class Colors:
