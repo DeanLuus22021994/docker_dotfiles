@@ -45,6 +45,16 @@ python_version = "3.14"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
+mypy_path = "scripts"
+
+[tool.pylint.main]
+init-hook = "import sys; sys.path.append('scripts')"
+
+[tool.pylint.messages_control]
+disable = [
+    "C0413", # wrong-import-position - Required for sys.path modification
+    "E0401", # import-error - False positive for local modules after sys.path modification
+]
 
 [tool.docker-cluster]
 description = "Modern Data Platform - 14-service cluster with GPU, databases, monitoring, AI"

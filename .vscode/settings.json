@@ -33,6 +33,14 @@
   "yaml.disableDefaultProperties": false,
   "yaml.maxItemsComputed": 5000,
   
+  // Disable YAML validation for specific files that use custom schemas
+  "[.config/monitoring/grafana/provisioning/datasources/prometheus.yml]": {
+    "yaml.validate": false
+  },
+  "[.config/docker/compose.override.example.yml]": {
+    "yaml.validate": false
+  },
+  
   // YAML formatting
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
@@ -51,5 +59,8 @@
   "files.exclude": {},
   
   // Python settings
-  "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe"
+  "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe",
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.defaultPackageManager": "ms-python.python:pip",
+  "python-envs.pythonProjects": []
 }

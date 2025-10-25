@@ -22,7 +22,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 # Import local modules
-from python.utils.colors import error, header, info, success, warning
+from python.utils.colors import error, header, info, success
 
 
 def show_help() -> None:
@@ -35,12 +35,14 @@ def show_help() -> None:
     print("  configs   Validate configuration files\n")
 
     print("audit")
-    print("  code      Run code quality audit\n")
+    print("  code      Run code quality audit")
+    print("  deps      Check dependencies and packages\n")
 
     print("Examples:")
     print("  python orchestrator.py validate env")
     print("  python orchestrator.py validate configs")
-    print("  python orchestrator.py audit code\n")
+    print("  python orchestrator.py audit code")
+    print("  python orchestrator.py audit deps\n")
 
 
 def execute_task(task: str, action: str) -> None:
@@ -74,12 +76,28 @@ def execute_task(task: str, action: str) -> None:
 
     elif task == "audit":
         if action == "code":
-            print(info("Code quality audit not yet implemented"))
-            print(warning("Refer to CLEANUP-REPORT.md for manual audit results"))
-            sys.exit(0)
+            script = SCRIPT_DIR / "python" / "audit" / "code_quality.py"
+            if script.exists():
+                print(info("Running code quality audit..."))
+                result = subprocess.run([sys.executable, str(script)], check=False)
+                sys.exit(result.returncode)
+            else:
+                print(error(f"Script not found: {script}"))
+                sys.exit(1)
+
+        elif action == "deps":
+            script = SCRIPT_DIR / "python" / "audit" / "dependencies.py"
+            if script.exists():
+                print(info("Running dependencies audit..."))
+                result = subprocess.run([sys.executable, str(script)], check=False)
+                sys.exit(result.returncode)
+            else:
+                print(error(f"Script not found: {script}"))
+                sys.exit(1)
+
         else:
             print(error(f"Unknown audit action: {action}"))
-            print(info("Available: code"))
+            print(info("Available: code, deps"))
             sys.exit(1)
 
     elif task == "help":
