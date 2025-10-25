@@ -4,7 +4,6 @@
   "service": "devcontainer",
   "workspaceFolder": "/workspaces/docker",
   "runServices": [
-    "devcontainer",
     "cluster-postgres",
     "cluster-redis",
     "cluster-web1",
@@ -47,7 +46,7 @@
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.autoImportCompletions": true,
         "[dockerfile]": {
-          "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+          "editor.defaultFormatter": "ms-azuretools.vscode-containers"
         },
         "[yaml]": {
           "editor.defaultFormatter": "redhat.vscode-yaml"
@@ -83,10 +82,6 @@
   "portsAttributes": {
     "8080": {
       "label": "Load Balancer (HTTP)",
-      "onAutoForward": "notify"
-    },
-    "8443": {
-      "label": "Load Balancer (HTTPS)",
       "onAutoForward": "notify"
     },
     "5432": {
