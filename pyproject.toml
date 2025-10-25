@@ -104,11 +104,17 @@ exclude_lines = [
 
 [tool.pylint.main]
 init-hook = "import sys; sys.path.append('scripts')"
+max-line-length = 100
 
 [tool.pylint.messages_control]
 disable = [
     "C0413", # wrong-import-position - Required for sys.path modification
     "E0401", # import-error - False positive for local modules after sys.path modification
+    "W0611", # unused-import - pytest imports needed for test discovery
+    "W0613", # unused-argument - pytest fixtures used by framework via dependency injection
+    "W0621", # redefined-outer-name - pytest fixtures intentionally shadow fixture names
+    "W0612", # unused-variable - intentionally unused variables in test unpacking
+    "C0301", # line-too-long - handled by Black formatter (100 chars)
 ]
 
 [tool.docker-cluster]

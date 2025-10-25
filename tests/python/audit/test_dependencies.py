@@ -112,11 +112,14 @@ class TestCheckPyprojectDependencies:
     ) -> None:
         """Test when all required dependencies are installed."""
         mock_exists.return_value = True
-        mock_run.return_value = Mock(
-            returncode=0,
-            stdout="black      24.0.0\nruff       0.6.0\nmypy       1.11.0\nyamllint   1.35.0\npytest     8.3.0\n",
-            stderr="",
+        stdout_data = (
+            "black      24.0.0\n"
+            "ruff       0.6.0\n"
+            "mypy       1.11.0\n"
+            "yamllint   1.35.0\n"
+            "pytest     8.3.0\n"
         )
+        mock_run.return_value = Mock(returncode=0, stdout=stdout_data, stderr="")
 
         passed, errors = check_pyproject_dependencies()
 
@@ -173,11 +176,14 @@ class TestCheckPyprojectDependencies:
     ) -> None:
         """Test that package checking is case-insensitive."""
         mock_exists.return_value = True
-        mock_run.return_value = Mock(
-            returncode=0,
-            stdout="Black      24.0.0\nRuff       0.6.0\nMyPy       1.11.0\nYAMLLint   1.35.0\nPyTest     8.3.0\n",
-            stderr="",
+        stdout_data = (
+            "Black      24.0.0\n"
+            "Ruff       0.6.0\n"
+            "MyPy       1.11.0\n"
+            "YAMLLint   1.35.0\n"
+            "PyTest     8.3.0\n"
         )
+        mock_run.return_value = Mock(returncode=0, stdout=stdout_data, stderr="")
 
         passed, errors = check_pyproject_dependencies()
 

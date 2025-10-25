@@ -52,7 +52,9 @@ def clean_env() -> Generator[None, None, None]:
 class TestValidateEnvVars:
     """Test validate_env_vars function."""
 
-    def test_all_required_vars_set(self, clean_env: None, capsys: pytest.CaptureFixture[str]) -> None:
+    def test_all_required_vars_set(
+        self, clean_env: None, capsys: pytest.CaptureFixture[str]
+    ) -> None:
         """Test validation passes when all required vars are set."""
         required_vars = [
             "GITHUB_OWNER",
@@ -80,7 +82,9 @@ class TestValidateEnvVars:
         captured = capsys.readouterr()
         assert "Environment Variables Validation" in captured.out
 
-    def test_missing_required_vars(self, clean_env: None, capsys: pytest.CaptureFixture[str]) -> None:
+    def test_missing_required_vars(
+        self, clean_env: None, capsys: pytest.CaptureFixture[str]
+    ) -> None:
         """Test validation fails when required vars are missing."""
         # Set only some required vars
         os.environ["GITHUB_OWNER"] = "test_owner"
