@@ -49,7 +49,7 @@
   "github.copilot.chat.useResponsesApi": true,
   "github.copilot.chat.virtualTools.threshold": 128,
   "github.copilot.chat.testGeneration.enabled": true,
-  "github.copilot.chat.search.enabled": true
+  "github.copilot.chat.search.enabled": true,
   
   // GitHub Copilot Editor Settings
   "github.copilot.editor.enableCodeActions": true,
