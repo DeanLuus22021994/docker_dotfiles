@@ -12,19 +12,19 @@
 ## Python Environment
 
 ### Required Version
-- **Python 3.13+** for all scripts
+- **Python 3.14.0+** for all scripts
 - **UV package manager** for dependency management (faster than pip)
 - **NOT** Microsoft Store Python (causes PATH issues on Windows)
 
 ### Setup (Windows)
 ```powershell
-# 1. Install Python 3.13 from python.org
+# 1. Install Python 3.14.0 from python.org
 # 2. Disable Windows App Execution Aliases:
 #    Settings → Apps → Advanced app settings → App execution aliases
 #    Disable: "App Installer python.exe" and "python3.exe"
 
 # 3. Verify installation
-python --version  # Should show Python 3.13.x
+python --version  # Should show Python 3.14.0
 where.exe python  # Should show actual Python path (not AppData\Local\Microsoft)
 
 # 4. Install UV
@@ -148,7 +148,7 @@ python scripts/validate_configs.py
 - **Monitoring**: Prometheus, Grafana, Alertmanager
 - **Development**: Jupyter, pgAdmin, Redis Commander
 - **Infrastructure**: nginx loadbalancer, BuildKit, LocalStack
-- **DevContainer**: Python 3.13 + Node 22
+- **DevContainer**: Python 3.14.0 + Node 22
 
 ### Profiles
 - **Default**: Production services (databases, monitoring, web servers)

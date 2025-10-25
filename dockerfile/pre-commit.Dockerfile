@@ -1,5 +1,5 @@
 # Pre-commit hooks container for code quality enforcement
-FROM python:3.13-slim
+FROM python:3.14.0-slim
 
 LABEL maintainer="DeanLuus22021994"
 LABEL description="Pre-commit hooks automation with strict error enforcement"

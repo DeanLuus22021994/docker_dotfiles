@@ -58,12 +58,12 @@
 
 ---
 
-## Solution: Install Python 3.13 Standalone
+## Solution: Install Python 3.14.0 Standalone
 
 ### Step 1: Download Python
 
 1. Visit [python.org/downloads](https://www.python.org/downloads/)
-2. Download **Python 3.13.x** (latest stable)
+2. Download **Python 3.14.0** (latest stable)
 3. Choose **Windows installer (64-bit)**
 
 ### Step 2: Install Python
@@ -106,7 +106,7 @@ Open **new** PowerShell window (important - PATH changes require new session):
 ```powershell
 # Check Python version
 python --version
-# Expected: Python 3.13.x
+# Expected: Python 3.14.0
 
 # Check Python path
 where.exe python
@@ -118,7 +118,7 @@ pip --version
 
 # Check Python launcher
 py --version
-# Expected: Python 3.13.x
+# Expected: Python 3.14.0
 ```
 
 ### Step 5: Clean Up Stale PATH Entries
@@ -184,7 +184,7 @@ If you have WSL2 installed, you can use Python from Linux:
 ```bash
 # Install Python in WSL2 (Ubuntu)
 sudo apt update
-sudo apt install python3.13 python3-pip
+sudo apt install python3.14 python3-pip
 
 # Run scripts from WSL2
 python3 scripts/validate_env.py
@@ -225,10 +225,10 @@ python3 scripts/validate_env.py
 
 ## Verification Checklist
 
-- [ ] `python --version` shows Python 3.13.x
+- [ ] `python --version` shows Python 3.14.0
 - [ ] `where.exe python` shows `C:\Program Files\Python313\python.exe` (NOT `WindowsApps`)
 - [ ] `pip --version` shows pip 24.x
-- [ ] `py --version` shows Python 3.13.x
+- [ ] `py --version` shows Python 3.14.0
 - [ ] `uv --version` shows uv version (if installed)
 - [ ] `python scripts/validate_env.py` runs without errors
 - [ ] No stale Python 3.8 entries in PATH

@@ -68,7 +68,7 @@ runner_requirements:
   required_tools:
     - docker  # Docker Engine 24+
     - docker-compose  # Docker Compose v2+
-    - python  # Python 3.13+
+    - python  # Python 3.14.0+
     - node  # Node.js 22+
     - git  # Git 2.40+
   optional_tools:

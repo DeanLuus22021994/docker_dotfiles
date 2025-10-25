@@ -274,14 +274,14 @@ def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
 ## Python Environment
 
 **Requirements:**
-- Python 3.13+ (3.8+ compatible)
+- Python 3.14.0+ (3.8+ compatible)
 - UV package manager (recommended)
 - Dependencies: `yamllint`, `black`, `ruff`, `mypy`
 
 **Setup:**
 
 ```powershell
-# Install Python 3.13 from python.org (NOT Microsoft Store)
+# Install Python 3.14.0 from python.org (NOT Microsoft Store)
 # Disable Windows App Execution Aliases
 
 # Install UV

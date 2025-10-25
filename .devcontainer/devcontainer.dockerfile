@@ -21,17 +21,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     postgresql-client \
     redis-tools
 
-# Python layer - install Python 3.13 and UV
+# Python layer - install Python 3.14 and UV
 RUN add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update \
     && apt-get install -y \
-        python3.13 \
-        python3.13-venv \
-        python3.13-dev \
-        python3.13-distutils \
+        python3.14 \
+        python3.14-venv \
+        python3.14-dev \
+        python3.14-distutils \
         python3-pip \
-    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1 \
-    && update-alternatives --install /usr/bin/python python /usr/bin/python3.13 1 \
+    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.14 1 \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3.14 1 \
     && python3 -m pip install --upgrade pip setuptools wheel \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*

@@ -140,7 +140,7 @@ volumes:
 devcontainer:
   enabled: true
   profile: "dev"
-  python_version: "3.13"
+  python_version: "3.14.0"
   node_version: "22"
   cuda: true
   docker_in_docker: true

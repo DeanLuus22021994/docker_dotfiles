@@ -94,11 +94,11 @@ Internet → Load Balancer (nginx:8080)
 
 **Windows Users: Critical Setup**
 
-Python 3.13+ is required for validation scripts. **Do NOT use Microsoft Store Python** (causes PATH issues).
+Python 3.14.0+ is required for validation scripts. **Do NOT use Microsoft Store Python** (causes PATH issues).
 
 ### Installation Steps:
 
-1. **Download Python 3.13** from [python.org](https://www.python.org/downloads/)
+1. **Download Python 3.14.0** from [python.org](https://www.python.org/downloads/)
 2. **Run installer** with these options:
    - ✅ "Add Python to PATH"
    - ✅ "Install for all users" (or current user)
@@ -111,7 +111,7 @@ Python 3.13+ is required for validation scripts. **Do NOT use Microsoft Store Py
 
 4. **Verify installation**:
    ```powershell
-   python --version  # Should show Python 3.13.x
+   python --version  # Should show Python 3.14.0
    where.exe python  # Should show C:\Program Files\Python313\python.exe
    ```
 
@@ -145,9 +145,9 @@ Python 3.13+ is required for validation scripts. **Do NOT use Microsoft Store Py
 ### Linux/macOS:
 
 ```bash
-# Install Python 3.13
-sudo apt install python3.13 python3-pip  # Debian/Ubuntu
-brew install python@3.13                  # macOS
+# Install Python 3.14.0
+sudo apt install python3.14 python3-pip  # Debian/Ubuntu
+brew install python@3.14                  # macOS
 
 # Install dependencies
 pip3 install -r requirements.txt
@@ -155,7 +155,7 @@ pip3 install -r requirements.txt
 
 ## �📦 Prerequisites
 
-- **Python 3.13+** (see Python Setup above)
+- **Python 3.14.0+** (see Python Setup above)
 - Docker Engine 24.0+ with BuildKit enabled
 - Docker Compose V2
 - 8GB RAM minimum (16GB recommended for Jupyter GPU workloads)
@@ -230,7 +230,7 @@ docker/
 │   └── monitoring/             # Prometheus, Grafana, Alertmanager
 ├── .devcontainer/              # VS Code devcontainer config
 │   ├── devcontainer.json       # DevContainer settings + runServices
-│   └── devcontainer.dockerfile # Python 3.13 + Node 22 + kubectl
+│   └── devcontainer.dockerfile # Python 3.14.0 + Node 22 + kubectl
 ├── .github/                    # GitHub configuration
 │   ├── copilot-instructions.md # Copilot coding standards
 │   ├── TODO.md                 # Implementation tracking
@@ -310,7 +310,7 @@ code .
 
 3. **Development environment includes**:
    - Full cluster access (load balancer, web servers, database)
-   - Python 3.13 with UV package manager
+   - Python 3.14.0 with UV package manager
    - Node.js 22 with npm
    - Docker-in-Docker for managing cluster
    - VS Code extensions pre-installed

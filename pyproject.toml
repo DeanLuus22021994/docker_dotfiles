@@ -3,7 +3,7 @@ name = "docker-modern-data-platform"
 version = "2.0.0"
 description = "Turn-key modern data platform with GPU, dual databases, monitoring, and AI integration"
 authors = [{name = "Dean Luus", email = "dean@example.com"}]
-requires-python = ">=3.13"
+requires-python = ">=3.14.0"
 license = {text = "MIT"}
 readme = "README.md"
 keywords = ["docker", "data-platform", "gpu", "jupyter", "postgresql", "mariadb", "redis", "minio", "grafana", "prometheus", "mcp"]
@@ -30,7 +30,7 @@ line-length = 100
 target-version = "py313"
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
