@@ -37,6 +37,25 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   cluster-web2:
     container_name: cluster-web2
@@ -46,6 +65,25 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   cluster-web3:
     container_name: cluster-web3
@@ -55,6 +93,25 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.25'
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   # Cluster Dashboard - React monitoring dashboard
   cluster-dashboard:
@@ -93,6 +150,12 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cluster_user -d clusterdb"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   cluster-redis:
     container_name: cluster-redis
@@ -105,6 +168,12 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
   cluster-mariadb:
     container_name: cluster-mariadb
@@ -144,6 +213,12 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/api"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
 
   cluster-minio:
     container_name: cluster-minio
@@ -160,6 +235,12 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   cluster-grafana:
     container_name: cluster-grafana
@@ -174,6 +255,12 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   cluster-prometheus:
     container_name: cluster-prometheus
@@ -189,6 +276,12 @@ services:
     networks:
       - cluster-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   cluster-k9s:
     container_name: cluster-k9s
@@ -202,6 +295,12 @@ services:
     entrypoint: ["/bin/sh"]
     command: ["-c", "while true; do sleep 3600; done"]
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pgrep", "sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   # GitHub MCP Server - Model Context Protocol for GitHub integration
   cluster-github-mcp:
