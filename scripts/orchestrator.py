@@ -16,12 +16,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-# Add scripts directory to path
+# Add scripts directory to path before other imports
 SCRIPT_DIR = Path(__file__).parent
-sys.path.insert(0, str(SCRIPT_DIR))
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
 
-# Import after path modification (E402 is intentional)
-from python.utils.colors import error, header, info, success, warning  # noqa: E402
+# Import local modules
+from python.utils.colors import error, header, info, success, warning
 
 
 def show_help() -> None:
@@ -103,8 +104,8 @@ def main() -> None:
     try:
         execute_task(task, action)
         print(success(f"Task completed: {task} {action}"))
-    except Exception:  # pylint: disable=broad-except
-        print(error("Task failed"))
+    except (OSError, subprocess.SubprocessError, KeyboardInterrupt) as e:
+        print(error(f"Task failed: {type(e).__name__}"))
         sys.exit(1)
 
 

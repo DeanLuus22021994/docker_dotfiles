@@ -2,11 +2,23 @@
 name = "docker-modern-data-platform"
 version = "2.0.0"
 description = "Turn-key modern data platform with GPU, dual databases, monitoring, and AI integration"
-authors = [{name = "Dean Luus", email = "dean@example.com"}]
+authors = [{ name = "Dean Luus", email = "dean@example.com" }]
 requires-python = ">=3.14.0"
-license = {text = "MIT"}
+license = { text = "MIT" }
 readme = "README.md"
-keywords = ["docker", "data-platform", "gpu", "jupyter", "postgresql", "mariadb", "redis", "minio", "grafana", "prometheus", "mcp"]
+keywords = [
+    "docker",
+    "data-platform",
+    "gpu",
+    "jupyter",
+    "postgresql",
+    "mariadb",
+    "redis",
+    "minio",
+    "grafana",
+    "prometheus",
+    "mcp",
+]
 
 [project.urls]
 Homepage = "https://github.com/DeanLuus22021994/docker_dotfiles"
@@ -14,12 +26,7 @@ Repository = "https://github.com/DeanLuus22021994/docker_dotfiles.git"
 Issues = "https://github.com/DeanLuus22021994/docker_dotfiles/issues"
 
 [tool.uv]
-dev-dependencies = [
-    "black>=24.0",
-    "ruff>=0.6",
-    "mypy>=1.11",
-    "pytest>=8.3",
-]
+dev-dependencies = ["black>=24.0", "ruff>=0.6", "mypy>=1.11", "pytest>=8.3"]
 
 [tool.black]
 line-length = 100
@@ -28,6 +35,10 @@ target-version = ['py313']
 [tool.ruff]
 line-length = 100
 target-version = "py313"
+
+[tool.ruff.lint]
+# E402: Module level import not at top of file - Required for sys.path modification
+ignore = ["E402"]
 
 [tool.mypy]
 python_version = "3.14"

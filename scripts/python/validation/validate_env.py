@@ -10,9 +10,11 @@ from pathlib import Path
 from typing import List, Tuple
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+_script_dir = Path(__file__).parent.parent.parent
+if str(_script_dir) not in sys.path:
+    sys.path.insert(0, str(_script_dir))
 
-from python.utils.colors import (  # noqa: E402
+from python.utils.colors import (
     Colors,
     bold,
     error,
@@ -51,8 +53,8 @@ def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
         "CODECOV_TOKEN": "Codecov token for coverage reporting",
     }
 
-    missing_required = []
-    missing_optional = []
+    missing_required: List[str] = []
+    missing_optional: List[str] = []
 
     print(f"\n{header('=== Environment Variables Validation ===')}\n")
 

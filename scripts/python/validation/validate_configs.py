@@ -12,15 +12,17 @@ from pathlib import Path
 from typing import List, Tuple
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+_script_dir = Path(__file__).parent.parent.parent
+if str(_script_dir) not in sys.path:
+    sys.path.insert(0, str(_script_dir))
 
-from python.utils.colors import error, header, separator, success  # noqa: E402
+from python.utils.colors import error, header, separator, success
 
 
 def validate_yaml_files() -> Tuple[bool, List[str]]:
     """Validate all YAML files with yamllint."""
     print(f"\n{header('=== Validating YAML Files ===')}")
-    errors = []
+    errors: List[str] = []
 
     yaml_files = list(Path(".").rglob("*.yml")) + list(Path(".").rglob("*.yaml"))
     # Exclude node_modules and .git
@@ -61,7 +63,7 @@ def validate_yaml_files() -> Tuple[bool, List[str]]:
 def validate_json_files() -> Tuple[bool, List[str]]:
     """Validate all JSON files."""
     print(f"\n{header('=== Validating JSON Files ===')}")
-    errors = []
+    errors: List[str] = []
 
     json_files = list(Path(".").rglob("*.json"))
     # Exclude node_modules, .git, and .vscode (JSONC files with comments)
@@ -96,7 +98,7 @@ def validate_json_files() -> Tuple[bool, List[str]]:
 def validate_nginx_configs() -> Tuple[bool, List[str]]:
     """Validate nginx configuration files."""
     print(f"\n{header('=== Validating nginx Configs ===')}")
-    errors = []
+    errors: List[str] = []
 
     nginx_configs = [
         ".config/nginx/loadbalancer.conf",
@@ -154,7 +156,7 @@ def validate_nginx_configs() -> Tuple[bool, List[str]]:
 def validate_postgresql_config() -> Tuple[bool, List[str]]:
     """Validate PostgreSQL configuration."""
     print(f"\n{header('=== Validating PostgreSQL Config ===')}")
-    errors = []
+    errors: List[str] = []
 
     pg_config = Path(".config/database/postgresql.conf")
 
@@ -183,7 +185,7 @@ def validate_postgresql_config() -> Tuple[bool, List[str]]:
         print(success("PostgreSQL config valid (basic syntax check)"))
         return True, []
 
-    except Exception as e:  # pylint: disable=broad-except
+    except (OSError, IOError, PermissionError) as e:
         errors.append(f"{pg_config}: {e}")
         print(error(f"{pg_config}: {e}"))
         return False, errors
@@ -192,7 +194,7 @@ def validate_postgresql_config() -> Tuple[bool, List[str]]:
 def validate_mariadb_config() -> Tuple[bool, List[str]]:
     """Validate MariaDB configuration."""
     print(f"\n{header('=== Validating MariaDB Config ===')}")
-    errors = []
+    errors: List[str] = []
 
     maria_config = Path(".config/database/mariadb.conf")
 
@@ -226,7 +228,7 @@ def validate_mariadb_config() -> Tuple[bool, List[str]]:
         print(success("MariaDB config valid (basic syntax check)"))
         return True, []
 
-    except Exception as e:  # pylint: disable=broad-except
+    except (OSError, IOError, PermissionError) as e:
         errors.append(f"{maria_config}: {e}")
         print(error(f"{maria_config}: {e}"))
         return False, errors

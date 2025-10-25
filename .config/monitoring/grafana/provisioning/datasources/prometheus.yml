@@ -1,4 +1,4 @@
-# Grafana Datasource Provisioning Configuration  
+# Grafana Datasource Provisioning Configuration
 # Documentation: https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources
 # NOTE: VS Code YAML linter may show errors - this uses Grafana's provisioning schema, NOT docker-compose
 # This is expected and does not affect functionality - Grafana reads this file correctly
