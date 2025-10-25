@@ -16,12 +16,19 @@
     "cluster-minio",
     "cluster-grafana",
     "cluster-prometheus",
+    "cluster-alertmanager",
     "cluster-k9s",
     "cluster-buildkit",
     "cluster-localstack",
     "cluster-mailhog",
     "cluster-pgadmin",
-    "cluster-redis-commander"
+    "cluster-redis-commander",
+    "cluster-docker-api",
+    "cluster-cadvisor",
+    "cluster-postgres-exporter",
+    "cluster-redis-exporter",
+    "cluster-node-exporter",
+    "cluster-dashboard"
   ],
   "shutdownAction": "stopCompose",
   "features": {
@@ -53,10 +60,16 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "python.defaultInterpreterPath": "/usr/bin/python3.13",
+        "python.defaultInterpreterPath": "/usr/local/bin/python3.14",
         "python.terminal.activateEnvironment": true,
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.autoImportCompletions": true,
+        "terminal.integrated.env.linux": {
+          "GITHUB_OWNER": "${localEnv:GITHUB_OWNER}",
+          "DOCKER_ACCESS_TOKEN": "${localEnv:DOCKER_ACCESS_TOKEN}",
+          "GH_PAT": "${localEnv:GH_PAT}",
+          "CODECOV_TOKEN": "${localEnv:CODECOV_TOKEN}"
+        },
         "[dockerfile]": {
           "editor.defaultFormatter": "ms-azuretools.vscode-containers"
         },

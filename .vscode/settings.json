@@ -66,5 +66,27 @@
   "github.copilot.advanced": {
     "debug.overrideEngine": "gpt-4o",  // Use faster model
     "debug.useNodeFetcher": true
+  },
+
+  // YAML validation settings
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+  },
+  "yaml.validate": true,
+  "yaml.customTags": [
+    "!encrypted/pkcs1-oaep scalar",
+    "!vault scalar"
+  ],
+  
+  // Grafana provisioning files - disable validation
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  
+  // File associations
+  "files.associations": {
+    "**/monitoring/grafana/provisioning/**/*.yml": "yaml",
+    "docker-compose*.yml": "yaml",
+    "*.Dockerfile": "dockerfile"
   }
 }

@@ -23,6 +23,11 @@ services:
     container_name: cluster-devcontainer
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     profiles: ["dev"]
+    environment:
+      - GITHUB_OWNER=${GITHUB_OWNER:-DeanLuus22021994}
+      - DOCKER_ACCESS_TOKEN=${DOCKER_ACCESS_TOKEN}
+      - GH_PAT=${GH_PAT}
+      - CODECOV_TOKEN=${CODECOV_TOKEN}
     volumes:
       - ..:/workspaces/docker:cached
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -32,7 +37,11 @@ services:
     depends_on:
       - cluster-postgres
       - cluster-redis
+      - cluster-mariadb
       - loadbalancer
+      - cluster-grafana
+      - cluster-prometheus
+      - cluster-docker-api
     deploy:
       resources:
         limits:
