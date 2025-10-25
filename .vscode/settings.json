@@ -134,6 +134,17 @@
   // Terminal settings (2025 API)
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.defaultProfile.linux": "bash",
+  
+  // Shell integration - enables command visibility from Copilot
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.shellIntegration.showWelcome": false,
+  "terminal.integrated.shellIntegration.decorationsEnabled": "both",
+  
+  // Terminal automation - show commands when executed by extensions
+  "terminal.integrated.automationProfile.windows": null,
+  "terminal.integrated.automationProfile.linux": null,
+  
+  // Terminal profiles
   "terminal.integrated.profiles.windows": {
     "PowerShell": {
       "source": "PowerShell",
