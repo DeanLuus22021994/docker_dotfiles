@@ -62,7 +62,7 @@ def setup_logger(
         format_string = "%(levelname)s: %(message)s"
 
     if use_colors:
-        formatter = ColoredFormatter(format_string)
+        formatter: logging.Formatter = ColoredFormatter(format_string)
     else:
         formatter = logging.Formatter(format_string)
 

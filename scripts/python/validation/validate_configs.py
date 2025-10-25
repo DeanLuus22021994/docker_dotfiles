@@ -14,7 +14,7 @@ from typing import List, Tuple
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from python.utils.colors import success, error, header, separator
+from python.utils.colors import error, header, separator, success
 
 
 def validate_yaml_files() -> Tuple[bool, List[str]]:
@@ -164,7 +164,7 @@ def validate_postgresql_config() -> Tuple[bool, List[str]]:
 
     # Basic syntax check - look for obvious issues
     try:
-        with open(pg_config, "r") as f:
+        with open(pg_config, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         for i, line in enumerate(lines, 1):
@@ -202,7 +202,7 @@ def validate_mariadb_config() -> Tuple[bool, List[str]]:
 
     # Basic syntax check - look for obvious issues
     try:
-        with open(maria_config, "r") as f:
+        with open(maria_config, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         in_section = False
@@ -232,13 +232,13 @@ def validate_mariadb_config() -> Tuple[bool, List[str]]:
         return False, errors
 
 
-def main():
+def main() -> int:
     """Run all validation checks."""
     print(separator())
     print(header("Configuration Validation"))
     print(separator())
 
-    all_errors = []
+    all_errors: List[str] = []
     all_passed = True
 
     # Run all validations
@@ -250,7 +250,7 @@ def main():
         ("MariaDB", validate_mariadb_config),
     ]
 
-    for check_name, check_func in checks:
+    for _check_name, check_func in checks:
         passed, errors = check_func()
         if not passed:
             all_passed = False

@@ -52,15 +52,18 @@ function Test-PythonCommand {
             if ($version -like "*3.14.*") {
                 Write-ColorOutput "  ✓ Python 3.14.x detected" -Color Green
                 return $true
-            } else {
+            }
+            else {
                 Write-ColorOutput "  ✗ Wrong version: Expected 3.14.x, got $version" -Color Red
                 return $false
             }
-        } else {
+        }
+        else {
             Write-ColorOutput "  ✗ python command failed" -Color Red
             return $false
         }
-    } catch {
+    }
+    catch {
         Write-ColorOutput "  ✗ python command not found: $_" -Color Red
         return $false
     }
@@ -78,19 +81,23 @@ function Test-PythonPath {
             if ($pythonPath -like "*Python314*") {
                 Write-ColorOutput "  ✓ Correct Python 3.14 path" -Color Green
                 return $true
-            } elseif ($pythonPath -like "*WindowsApps*") {
+            }
+            elseif ($pythonPath -like "*WindowsApps*") {
                 Write-ColorOutput "  ✗ Windows App Alias still active!" -Color Red
                 Write-ColorOutput "    Please disable in Settings → Apps → App execution aliases" -Color Yellow
                 return $false
-            } else {
+            }
+            else {
                 Write-ColorOutput "  ⚠ Unexpected path (not Python314)" -Color Yellow
                 return $true
             }
-        } else {
+        }
+        else {
             Write-ColorOutput "  ✗ python.exe not in PATH" -Color Red
             return $false
         }
-    } catch {
+    }
+    catch {
         Write-ColorOutput "  ✗ PATH test failed: $_" -Color Red
         return $false
     }
@@ -104,11 +111,13 @@ function Test-PipCommand {
         if ($LASTEXITCODE -eq 0) {
             Write-ColorOutput "  ✓ pip --version: $($pipVersion -split "`n" | Select-Object -First 1)" -Color Green
             return $true
-        } else {
+        }
+        else {
             Write-ColorOutput "  ✗ pip command failed" -Color Red
             return $false
         }
-    } catch {
+    }
+    catch {
         Write-ColorOutput "  ✗ pip command not found: $_" -Color Red
         return $false
     }
@@ -127,7 +136,8 @@ function Test-RequiredPackages {
             if ($installedPackages -match "^$package==") {
                 $version = ($installedPackages | Select-String "^$package==").ToString().Split("==")[1]
                 Write-ColorOutput "  ✓ $package ($version)" -Color Green
-            } else {
+            }
+            else {
                 Write-ColorOutput "  ✗ $package (not installed)" -Color Red
                 $missing += $package
             }
@@ -141,14 +151,16 @@ function Test-RequiredPackages {
                 pip install -r requirements.txt --quiet
                 Write-ColorOutput "  ✓ Dependencies installed" -Color Green
                 return $true
-            } else {
+            }
+            else {
                 Write-ColorOutput "  Run with -InstallDependencies to install" -Color Yellow
                 return $false
             }
         }
         
         return $true
-    } catch {
+    }
+    catch {
         Write-ColorOutput "  ✗ Package check failed: $_" -Color Red
         return $false
     }
@@ -173,15 +185,18 @@ function Test-RepositoryScripts {
                 python $scriptPath --help 2>&1 | Out-Null
                 if ($LASTEXITCODE -eq 0 -or $LASTEXITCODE -eq 2) {
                     Write-ColorOutput "    ✓ Script executable" -Color Green
-                } else {
+                }
+                else {
                     Write-ColorOutput "    ✗ Script execution failed (exit code: $LASTEXITCODE)" -Color Red
                     $allPassed = $false
                 }
-            } catch {
+            }
+            catch {
                 Write-ColorOutput "    ✗ Script error: $_" -Color Red
                 $allPassed = $false
             }
-        } else {
+        }
+        else {
             Write-ColorOutput "  ✗ Script not found: $script" -Color Red
             $allPassed = $false
         }
@@ -194,8 +209,8 @@ function Test-Orchestrators {
     Write-Header "Testing Orchestrators"
     
     $orchestrators = @(
-        @{Path = "scripts\orchestrator.ps1"; Command = "powershell"; Args = @("-File")}
-        @{Path = "scripts\orchestrator.py"; Command = "python"; Args = @()}
+        @{Path = "scripts\orchestrator.ps1"; Command = "powershell"; Args = @("-File") }
+        @{Path = "scripts\orchestrator.py"; Command = "python"; Args = @() }
     )
     
     $allPassed = $true
@@ -207,22 +222,26 @@ function Test-Orchestrators {
             
             try {
                 if ($orch.Args.Count -gt 0) {
-                    $result = & $orch.Command $orch.Args $orchPath help 2>&1
-                } else {
-                    $result = & $orch.Command $orchPath help 2>&1
+                    $null = & $orch.Command $orch.Args $orchPath help 2>&1
                 }
-                
+                else {
+                    $null = & $orch.Command $orchPath help 2>&1
+                }
+
                 if ($LASTEXITCODE -eq 0) {
                     Write-ColorOutput "    ✓ Orchestrator working" -Color Green
-                } else {
+                }
+                else {
                     Write-ColorOutput "    ✗ Orchestrator failed (exit code: $LASTEXITCODE)" -Color Red
                     $allPassed = $false
                 }
-            } catch {
+            }
+            catch {
                 Write-ColorOutput "    ✗ Orchestrator error: $_" -Color Red
                 $allPassed = $false
             }
-        } else {
+        }
+        else {
             Write-ColorOutput "  ✗ Orchestrator not found: $($orch.Path)" -Color Red
             $allPassed = $false
         }
@@ -244,12 +263,12 @@ function Get-ValidationSummary {
     Write-Header "Validation Summary"
     
     $results = @(
-        @{Name = "Python Command"; Status = $PythonCmd},
-        @{Name = "Python PATH"; Status = $PythonPath},
-        @{Name = "Pip Command"; Status = $PipCmd},
-        @{Name = "Required Packages"; Status = $Packages},
-        @{Name = "Repository Scripts"; Status = $Scripts},
-        @{Name = "Orchestrators"; Status = $Orchestrators}
+        @{Name = "Python Command"; Status = $PythonCmd },
+        @{Name = "Python PATH"; Status = $PythonPath },
+        @{Name = "Pip Command"; Status = $PipCmd },
+        @{Name = "Required Packages"; Status = $Packages },
+        @{Name = "Repository Scripts"; Status = $Scripts },
+        @{Name = "Orchestrators"; Status = $Orchestrators }
     )
     
     $passed = 0
@@ -259,7 +278,8 @@ function Get-ValidationSummary {
         if ($result.Status) {
             Write-ColorOutput "  ✓ $($result.Name)" -Color Green
             $passed++
-        } else {
+        }
+        else {
             Write-ColorOutput "  ✗ $($result.Name)" -Color Red
             $failed++
         }
@@ -291,7 +311,8 @@ if ($allValid) {
     Write-ColorOutput "  Python 3.14.0 is properly configured" -Color Green
     Write-ColorOutput "  Repository is fully compatible" -Color Green
     exit 0
-} else {
+}
+else {
     Write-ColorOutput "`n✗ VALIDATION FAILED" -Color Red
     Write-ColorOutput "  Please review errors above" -Color Yellow
     

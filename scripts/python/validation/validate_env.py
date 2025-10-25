@@ -12,7 +12,7 @@ from typing import List, Tuple
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from python.utils.colors import Colors, header, success, error, warning, bold, separator
+from python.utils.colors import Colors, bold, error, header, separator, success, warning
 
 
 def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
@@ -106,9 +106,11 @@ def print_summary(
         print("  2. Edit .env and fill in your values")
         print("  3. Source the .env file:")
         print("     export $(cat .env | xargs)  # Linux/macOS")
-        print(
-            "     Get-Content .env | ForEach-Object { $var = $_.Split('='); [Environment]::SetEnvironmentVariable($var[0], $var[1], 'Process') }  # PowerShell"
+        powershell_cmd = (
+            "     Get-Content .env | ForEach-Object { $var = $_.Split('='); "
+            "[Environment]::SetEnvironmentVariable($var[0], $var[1], 'Process') }  # PowerShell"
         )
+        print(powershell_cmd)
         print("  4. Run this script again to verify")
 
     print(f"{separator()}\n")

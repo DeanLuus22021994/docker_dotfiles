@@ -25,7 +25,8 @@ def read_json(file_path: str) -> Dict[str, Any]:
         json.JSONDecodeError: If file is not valid JSON
     """
     with open(file_path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        result: Dict[str, Any] = json.load(f)
+        return result
 
 
 def write_json(file_path: str, data: Dict[str, Any], indent: int = 2) -> None:

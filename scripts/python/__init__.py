@@ -2,4 +2,4 @@
 Python scripts package
 """
 
-__all__ = ["utils", "validation", "audit"]
+__all__: list[str] = []
