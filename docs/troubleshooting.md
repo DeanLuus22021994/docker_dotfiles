@@ -1,377 +1,323 @@
 # Troubleshooting Guide
 
-Common issues and their solutions for Docker Compose Examples.
+Common issues and solutions for the Docker cluster implementation.
 
-## Container Issues
+## Service Issues
 
-### Containers Won't Start
-
-**Symptom**: Services fail to start or immediately exit
-
-**Possible Causes**:
-1. Port conflicts
-2. Missing dependencies
-3. Invalid configuration
-4. Resource constraints
-
-**Solutions**:
+### Services Won't Start
 
 ```bash
 # Check logs
-docker compose -f .docker-compose/basic-stack/docker-compose.yml logs <service-name>
+make logs
 
-# Check for port conflicts
-sudo netstat -tulpn | grep <port-number>
-# Or
-lsof -i :<port-number>
+# Validate configuration
+make validate
 
-# Restart Docker daemon
-sudo systemctl restart docker
-
-# Rebuild images
-docker compose -f .docker-compose/basic-stack/docker-compose.yml build --no-cache
-
-# Check disk space
-docker system df
-df -h
+# Check service health
+docker-compose ps
 ```
 
-### Container Keeps Restarting
-
-**Symptom**: Container status shows "Restarting"
-
-**Solutions**:
+### Port Conflicts
 
 ```bash
-# Check logs for errors
-docker compose -f .docker-compose/basic-stack/docker-compose.yml logs --tail=100 <service-name>
+# Windows
+netstat -ano | findstr :8080
+netstat -ano | findstr :5432
 
-# Check health check status
-docker inspect <container-id> | grep -A 20 Health
+# Linux/Mac
+lsof -i :8080
+lsof -i :5432
 
-# Disable auto-restart temporarily
-docker update --restart=no <container-id>
+# Solution: Stop conflicting service or change ports in docker-compose.yml
+```
 
-# Debug interactively
-docker compose -f .docker-compose/basic-stack/docker-compose.yml run --rm <service-name> bash
+### Container Exits Immediately
+
+```bash
+# Check container logs
+docker-compose logs <service_name>
+
+# Check exit code
+docker-compose ps
+
+# Restart service
+docker-compose restart <service_name>
 ```
 
 ## Database Issues
 
-### Cannot Connect to PostgreSQL
-
-**Symptom**: Connection refused or timeout errors
-
-**Solutions**:
+### Cannot Connect to Database
 
 ```bash
-# Verify database is running
-docker compose -f .docker-compose/basic-stack/docker-compose.yml ps db
+# Test connection
+docker-compose exec db psql -U cluster_user -d clusterdb -c "SELECT 1;"
 
-# Check database logs
-docker compose -f .docker-compose/basic-stack/docker-compose.yml logs db
+# Check database is running
+docker-compose ps db
 
-# Verify password secret exists
-ls -la secrets/db_password.txt
+# Check logs
+docker-compose logs db
 
-# Test connection manually
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec db psql -U user -d mydb
-
-# Check if database initialized
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec db pg_isready
+# Restart database
+docker-compose restart db
 ```
 
-### Database Data Lost
-
-**Symptom**: Data disappears after restart
-
-**Solutions**:
+### Database Performance Issues
 
 ```bash
-# Verify volume exists
-docker volume ls | grep docker_examples_db_data
+# Check connections
+docker-compose exec db psql -U cluster_user -d clusterdb -c "SELECT count(*) FROM pg_stat_activity;"
 
-# Don't use -v flag when stopping
-docker compose -f .docker-compose/basic-stack/docker-compose.yml down  # Good
-# NOT: docker compose down -v  # Bad - removes volumes!
+# Check database size
+docker-compose exec db psql -U cluster_user -d clusterdb -c "SELECT pg_size_pretty(pg_database_size('clusterdb'));"
 
-# Restore from backup
-cat backup.sql | docker compose -f .docker-compose/basic-stack/docker-compose.yml exec -T db psql -U user mydb
+# Vacuum database
+docker-compose exec db psql -U cluster_user -d clusterdb -c "VACUUM ANALYZE;"
 ```
 
-## Network Issues
+## Load Balancer Issues
 
-### Services Can't Communicate
-
-**Symptom**: Service A cannot reach Service B
-
-**Solutions**:
+### Load Balancer Not Distributing Traffic
 
 ```bash
-# Verify both services on same network
-docker network inspect docker_examples_basic-stack-network
+# Check upstream servers
+docker-compose exec loadbalancer cat /etc/nginx/conf.d/default.conf
 
-# Test connectivity
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python ping db
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python curl http://node:3000
+# Check nginx logs
+docker-compose logs loadbalancer
 
-# Check DNS resolution
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec python nslookup db
+# Test each web server directly
+docker-compose exec web1 curl localhost
+docker-compose exec web2 curl localhost
+docker-compose exec web3 curl localhost
 ```
 
-### Port Already in Use
-
-**Symptom**: "port is already allocated" error
-
-**Solutions**:
+### 502 Bad Gateway
 
 ```bash
-# Find what's using the port
-sudo lsof -i :3000
-sudo netstat -tulpn | grep :3000
+# Check if web servers are healthy
+docker-compose ps
 
-# Kill the process
-sudo kill -9 <PID>
+# Check web server logs
+docker-compose logs web1 web2 web3
 
-# Or change port in docker-compose.yml
-# Change "3000:3000" to "3001:3000"
+# Restart web servers
+docker-compose restart web1 web2 web3
 ```
 
-## Build Issues
+## DevContainer Issues
 
-### Build Fails with "No Space Left"
-
-**Symptom**: Build fails with disk space errors
-
-**Solutions**:
+### DevContainer Won't Start
 
 ```bash
-# Clean up Docker resources
-docker system prune -af
-docker volume prune -f
+# Check Docker is running
+docker ps
 
-# Check disk space
-docker system df
-df -h
+# Rebuild devcontainer
+docker-compose build devcontainer
 
-# Remove unused images
-docker image prune -af
-
-# Remove build cache
-docker builder prune -af
+# Start with logs
+docker-compose --profile dev up devcontainer
 ```
 
-### Build Fails with Network Timeout
-
-**Symptom**: Cannot download packages during build
-
-**Solutions**:
+### VS Code Extensions Not Loading
 
 ```bash
-# Use Docker BuildKit with better caching
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
+# Check volume
+docker volume ls | grep vscode
 
-# Retry build
-docker compose -f .docker-compose/basic-stack/docker-compose.yml build --no-cache
-
-# Check internet connection
-ping google.com
-
-# Use different package mirror (in Dockerfile)
-# RUN --mount=type=cache... apt-get update
+# Remove and recreate
+docker volume rm cluster_vscode_extensions
+# Reopen in container
 ```
 
 ## Performance Issues
 
-### Services Running Slow
-
-**Symptom**: High CPU or memory usage
-
-**Solutions**:
+### High CPU Usage
 
 ```bash
 # Check resource usage
 docker stats
 
-# Increase Docker resources (Docker Desktop)
-# Settings -> Resources -> Increase CPUs and Memory
+# Identify problematic container
+docker stats --no-stream | sort -k3 -rh
 
-# Add resource limits to docker-compose.yml
-deploy:
-  resources:
-    limits:
-      cpus: '2'
-      memory: 2G
-
-# Optimize images (multi-stage builds already implemented)
+# Add resource limits in docker-compose.yml
 ```
 
-### Database Slow Queries
-
-**Symptom**: Slow database operations
-
-**Solutions**:
+### High Memory Usage
 
 ```bash
-# Connect to database
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec db psql -U user -d mydb
+# Check memory
+docker stats --format "table {{.Name}}\t{{.MemUsage}}"
 
-# Check slow queries
-SELECT * FROM pg_stat_activity WHERE state = 'active';
-
-# Add indexes if needed
-CREATE INDEX idx_name ON table(column);
-
-# Increase shared_buffers (in postgresql.conf)
+# Clear Docker cache
+docker system prune -a
 ```
 
-## Secret Management Issues
-
-### Secret File Not Found
-
-**Symptom**: "no such file or directory: /run/secrets/db_password"
-
-**Solutions**:
+### Slow Build Times
 
 ```bash
-# Verify secret file exists
-ls -la secrets/db_password.txt
+# Enable BuildKit
+export DOCKER_BUILDKIT=1
 
-# Verify secrets configuration in docker-compose.yml
-# Should have:
-secrets:
-  db_password:
-    file: ../../secrets/db_password.txt
+# Use cache
+make build  # without --no-cache
 
-# Recreate containers
-docker compose -f .docker-compose/basic-stack/docker-compose.yml down
-docker compose -f .docker-compose/basic-stack/docker-compose.yml up -d
+# Check disk space
+docker system df
 ```
 
-## Health Check Failures
+## Network Issues
 
-### All Health Checks Failing
-
-**Symptom**: Containers show "unhealthy" status
-
-**Solutions**:
+### Cannot Access Services
 
 ```bash
-# Check health check logs
-docker inspect <container-id> | grep -A 50 Health
+# Check port forwarding
+docker-compose port loadbalancer 80
 
-# Test health check command manually
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec <service> <health-check-command>
+# Check firewall
+# Windows: Check Windows Firewall
+# Linux: sudo iptables -L
 
-# Example for PostgreSQL
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec db pg_isready -U user -d mydb
-
-# Increase start_period if services take longer to start
-healthcheck:
-  start_period: 60s  # Increase from 40s
+# Test from inside network
+docker-compose exec loadbalancer curl http://web1
 ```
 
-## Environment Variable Issues
-
-### Environment Variables Not Set
-
-**Symptom**: Application cannot find configuration
-
-**Solutions**:
+### Services Can't Communicate
 
 ```bash
-# Verify .env file exists and is loaded
-cat .env
+# Check network
+docker network ls
+docker network inspect cluster-network
 
-# Check environment variables in container
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec <service> env
-
-# Ensure .env file is in same directory as docker-compose.yml
-# Or explicitly specify:
-docker compose --env-file .env.development -f .docker-compose/basic-stack/docker-compose.yml up
+# Restart networking
+docker-compose down
+docker-compose up -d
 ```
 
-## Volume Permission Issues
+## Volume Issues
 
-### Permission Denied Errors
-
-**Symptom**: Cannot write to mounted volumes
-
-**Solutions**:
+### Data Not Persisting
 
 ```bash
-# Check volume ownership
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec <service> ls -la /path/to/volume
+# Check volumes
+docker volume ls | grep cluster
 
-# Fix permissions
-docker compose -f .docker-compose/basic-stack/docker-compose.yml exec <service> chown -R app:app /path/to/volume
+# Inspect volume
+docker volume inspect cluster_db_data
 
-# Or run container as root temporarily (not recommended for production)
-user: root
+# Backup before cleanup
+make clean
 ```
 
-## Docker Compose Version Issues
-
-### Unsupported Compose File Format
-
-**Symptom**: "version is obsolete" or similar errors
-
-**Solutions**:
+### Volume Permission Issues
 
 ```bash
-# Check Docker Compose version
-docker compose version
+# Check permissions
+docker-compose exec db ls -la /var/lib/postgresql/data
 
-# Update Docker Compose
-sudo apt-get update
-sudo apt-get install docker-compose-plugin
-
-# Or use Docker Compose V2 syntax (no version field)
-# Modern docker-compose.yml files don't need version field
+# Fix permissions (if needed)
+docker-compose exec -u root db chown -R postgres:postgres /var/lib/postgresql/data
 ```
 
-## Getting More Help
+## Build Issues
 
-### Useful Commands for Debugging
+### Build Fails
 
 ```bash
-# Full system information
+# Check BuildKit
+docker buildx version
+
+# Build with verbose output
+docker-compose build --progress=plain
+
+# Clean build
+make clean
+make build --no-cache
+```
+
+### Image Pull Fails
+
+```bash
+# Check internet connection
+ping google.com
+
+# Check Docker Hub status
+curl https://status.docker.com/
+
+# Use mirror (if available)
+# Edit /etc/docker/daemon.json
+```
+
+## Common Solutions
+
+### Complete Reset
+
+```bash
+# Stop everything
+docker-compose down -v --remove-orphans
+
+# Clean Docker system
+docker system prune -a -f
+docker volume prune -f
+
+# Rebuild
+make build
+make up
+```
+
+### Check Configuration
+
+```bash
+# Validate compose file
+make validate
+
+# Check Docker version
+docker --version
+docker-compose version
+
+# Check system resources
+docker system df
+```
+
+### Enable Debug Logging
+
+Add to `docker-compose.yml`:
+
+```yaml
+services:
+  <service_name>:
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+```
+
+## Getting Help
+
+1. Check logs: `make logs`
+2. Validate config: `make validate`
+3. Review docs: `docs/architecture.md`
+4. Check GitHub issues
+5. Run health checks: `make ps`
+
+## Diagnostic Commands
+
+```bash
+# Full system check
 docker info
-docker version
+docker-compose ps
+docker-compose logs --tail=50
+docker stats --no-stream
+docker system df
 
-# Inspect container
-docker inspect <container-id>
+# Network diagnostic
+docker network ls
+docker network inspect cluster-network
 
-# Container processes
-docker top <container-id>
-
-# Resource usage
-docker stats
-
-# Network details
-docker network inspect <network-name>
-
-# Volume details
-docker volume inspect <volume-name>
+# Volume diagnostic  
+docker volume ls
+docker volume inspect cluster_db_data
 ```
-
-### Where to Get Help
-
-1. Check logs: `docker compose logs`
-2. Review this troubleshooting guide
-3. Check GitHub Issues: https://github.com/DeanLuus22021994/docker_dotfiles/issues
-4. Docker documentation: https://docs.docker.com
-5. Stack Overflow: https://stackoverflow.com/questions/tagged/docker-compose
-
-## Common Error Messages
-
-| Error Message | Likely Cause | Solution |
-|---------------|--------------|----------|
-| "Cannot connect to Docker daemon" | Docker not running | `sudo systemctl start docker` |
-| "Conflict. The container name is already in use" | Container already exists | `docker rm <container>` or use `docker compose down` |
-| "No space left on device" | Disk full | `docker system prune -af` |
-| "port is already allocated" | Port conflict | Change port or stop other service |
-| "manifest unknown" | Image not found | Check image name and tag |
-| "network not found" | Network deleted or not created | `docker compose up` creates networks |
-| "volume in use" | Volume mounted elsewhere | `docker volume rm` with force |

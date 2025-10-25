@@ -1,182 +1,223 @@
-# Docker Compose Examples - Architecture
+# Docker Cluster Implementation - Architecture
 
-This document describes the architecture of the Docker Compose Examples project, including service relationships, data flow, and deployment patterns.
+This document describes the architecture of the Docker cluster implementation, including service relationships, data flow, and deployment patterns.
 
 ## System Architecture
 
 ```mermaid
 graph TB
-    subgraph "External Services"
+    subgraph "External Access"
         User[User Browser]
-        GitHub[GitHub API]
-        Docker[Docker Hub]
     end
 
-    subgraph "Frontend Layer"
-        Node[Node.js Service<br/>Port 3000]
+    subgraph "Load Balancer Layer"
+        LB[Nginx Load Balancer<br/>Port 8080]
     end
 
-    subgraph "Backend Layer"
-        Python[Python Service<br/>Port 8000]
-        API[FastAPI Application]
+    subgraph "Web Server Layer"
+        Web1[Nginx Web Server 1]
+        Web2[Nginx Web Server 2]
+        Web3[Nginx Web Server 3]
     end
 
     subgraph "Data Layer"
         PostgreSQL[(PostgreSQL Database<br/>Port 5432)]
-        Redis[(Redis Cache<br/>Port 6379)]
     end
 
-    subgraph "Infrastructure"
-        LoadBalancer[Nginx Load Balancer<br/>Port 80/443]
-    end
-
-    User --> Node
-    User --> LoadBalancer
-    LoadBalancer --> Node
-    LoadBalancer --> Python
-    Node --> API
-    Python --> API
-    API --> PostgreSQL
-    API --> Redis
-    Python --> GitHub
-    Python --> Docker
+    User --> LB
+    LB --> Web1
+    LB --> Web2
+    LB --> Web3
+    Web1 -.-> PostgreSQL
+    Web2 -.-> PostgreSQL
+    Web3 -.-> PostgreSQL
 ```
 
 ## Service Components
 
-### Frontend Services
+### Load Balancer
 
-#### Node.js Service
-- **Purpose**: Serves the React/Vite frontend application
-- **Port**: 3000
-- **Technology**: Node.js 22, Vite, React
-- **Dependencies**: PostgreSQL (for data), Python API (for backend)
+#### Nginx Load Balancer
+- **Purpose**: Distributes incoming traffic across multiple web servers
+- **Port**: 8080 (external)
+- **Technology**: Nginx on Alpine Linux
+- **Features**:
+  - Round-robin load balancing
+  - Health check integration
+  - Upstream server monitoring
+  - Graceful failover
+  - Non-root user execution
 
-### Backend Services
+### Web Servers
 
-#### Python Service
-- **Purpose**: FastAPI backend application providing REST API
-- **Port**: 8000
-- **Technology**: Python 3.14, FastAPI, Uvicorn
-- **Dependencies**: PostgreSQL, Redis, External APIs
+#### Nginx Web Servers (web1, web2, web3)
+- **Purpose**: Serve static content with high availability
+- **Replicas**: 3 instances
+- **Technology**: Nginx on Alpine Linux
+- **Features**:
+  - Static content serving
+  - Caching layer
+  - Health monitoring
+  - Horizontal scalability
+  - Non-root user execution
+- **Content**: Mounted from `web-content/` directory
 
-### Data Services
+### Database
 
 #### PostgreSQL
-- **Purpose**: Primary relational database
-- **Port**: 5432
-- **Version**: Latest
-- **Features**: 
+- **Purpose**: Persistent data storage
+- **Port**: 5432 (external)
+- **Version**: PostgreSQL 16
+- **Features**:
   - Docker secrets for password management
   - Persistent volumes for data
-  - Health checks
-  - Custom initialization scripts
-
-#### Redis
-- **Purpose**: Caching and session management
-- **Port**: 6379
-- **Version**: Latest
-- **Features**:
-  - In-memory data storage
-  - Pub/Sub messaging
-  - Session storage
-
-### Infrastructure Services
-
-#### Nginx (Cluster Mode)
-- **Purpose**: Load balancing and reverse proxy
-- **Port**: 80, 443
-- **Configuration**: Round-robin load balancing
-- **Upstream**: Multiple Python/Node instances
+  - Transaction logging
+  - Health checks via pg_isready
+  - Custom configuration
+  - Non-root user execution
 
 ## Data Flow
 
 ### Request Flow
-1. User requests reach Nginx load balancer
-2. Nginx routes requests to appropriate service (Node.js or Python)
-3. Node.js serves static frontend assets
-4. Frontend makes API calls to Python backend
-5. Python processes requests, queries PostgreSQL/Redis
-6. Responses flow back through the chain
+1. User browser sends HTTP request to load balancer (port 8080)
+2. Nginx load balancer receives request
+3. Load balancer selects web server using round-robin algorithm
+4. Selected web server processes request and serves static content
+5. Response flows back through load balancer to user
+6. Load balancer monitors web server health continuously
+
+### Health Check Flow
+1. Docker Compose health check executes curl command
+2. Service responds with status
+3. Docker marks service as healthy/unhealthy
+4. Dependent services wait for health confirmation
+5. Load balancer only routes to healthy servers
 
 ### Data Persistence
 - PostgreSQL data: Stored in `docker_examples_db_data` volume
 - PostgreSQL logs: Stored in `docker_examples_db_logs` volume
 - Redis data: Ephemeral (in-memory only)
-- Application cache: Stored in respective cache volumes
 
 ## Network Architecture
 
-All services communicate over internal Docker networks:
-- `basic-stack-network`: For basic-stack deployment
-- `cluster-network`: For cluster-example deployment
-- `swarm-overlay`: For swarm-stack deployment (overlay network)
+Services communicate over the `cluster-network` bridge network:
+- Internal DNS resolution via service names
+- Isolated from external networks
+- Secure inter-service communication
+- Only specified ports exposed externally
+
+### Network Configuration
+```yaml
+networks:
+  cluster-network:
+    driver: bridge
+```
+
+## Storage Architecture
+
+### Persistent Volumes
+- `cluster_db_data`: PostgreSQL data persistence
+- `cluster_db_logs`: PostgreSQL transaction and error logs
+- `cluster_nginx_cache`: Nginx caching for performance
+
+### Volume Configuration
+All volumes use local driver for simplicity:
+```yaml
+volumes:
+  cluster_db_data:
+    driver: local
+```
 
 ## Security Architecture
 
 ### Secret Management
 - Database passwords stored in Docker secrets
-- Secrets mounted as files in `/run/secrets/`
+- Secrets mounted as read-only files in `/run/secrets/`
 - Environment variables reference secret files
 - `.gitignore` prevents secret files from being committed
+- File permissions: 600 (read/write for owner only)
 
 ### Network Isolation
-- Services isolated in Docker networks
-- Only exposed ports are accessible externally
+- Services isolated in Docker bridge network
+- Only ports 8080 and 5432 exposed externally
 - Internal communication uses service names
+- No direct external access to web servers
 
 ### User Permissions
-- Containers run as non-root users (UID 1001)
+- All containers run as non-root users
+- Nginx runs as user `nginx` (UID 101)
+- PostgreSQL runs as user `postgres` (UID 999)
 - Minimal system dependencies installed
-- Read-only filesystem where possible
+- Read-only volumes where possible
 
-## Deployment Patterns
+### Security Best Practices
+- Alpine Linux base images for minimal attack surface
+- Regular security updates via base image rebuilds
+- No hardcoded credentials
+- Principle of least privilege
+- Health checks for service monitoring
 
-### Basic Stack
-Single-instance deployment for development:
-- One instance of each service
-- Development-focused configuration
-- Quick startup and teardown
+## Deployment Pattern
 
-### Cluster Example
-Multiple instances with load balancing:
-- 3 Python service replicas
-- Nginx load balancer
-- Production-like configuration
+### Cluster Implementation
+Production-ready multi-instance deployment:
+- Nginx load balancer for traffic distribution
+- 3 web server replicas for high availability
+- PostgreSQL database for persistent storage
+- Health checks for all services
+- Graceful degradation on failures
 
-### Swarm Stack
-Docker Swarm orchestration:
-- Service replicas managed by Swarm
-- Overlay networking
-- Service discovery
-- Rolling updates
+### Scaling Strategy
+Horizontal scaling of web servers:
+```bash
+docker-compose up -d --scale web1=5 --scale web2=5 --scale web3=5
+```
+
+Load balancer automatically detects and routes to available instances.
 
 ## Health Checks
 
-All services implement health checks:
-- **Interval**: 30s
-- **Timeout**: 10s
-- **Retries**: 3
-- **Start Period**: 40s
+All services implement comprehensive health checks:
+- **Interval**: 30s (time between health checks)
+- **Timeout**: 10s (maximum time for health check)
+- **Retries**: 3 (failures before marking unhealthy)
+- **Start Period**: 40s (time before first health check)
 
-Health check commands:
-- PostgreSQL: `pg_isready`
-- Python: `python -c "import sys; sys.exit(0)"`
-- Node.js: `curl -f http://localhost:3000/`
-- Redis: `redis-cli ping`
+### Health Check Commands
+- **Load Balancer**: `curl -f http://localhost`
+- **Web Servers**: `curl -f http://localhost`
+- **PostgreSQL**: `pg_isready -U cluster_user -d clusterdb`
 
-## Monitoring and Observability
+### Health Check Benefits
+- Automatic service recovery
+- Load balancer failover
+- Dependency management
+- Service orchestration
+- Monitoring integration
 
-### Logs
-- Container logs via `docker logs`
-- Centralized logging (optional: ELK or Loki)
-- Log rotation policies
+## Performance Optimization
 
-### Metrics
-- Container metrics via Docker stats
-- Application metrics (optional: Prometheus)
-- Custom application metrics
+### Build Performance
+- Multi-stage Dockerfiles for minimal image size
+- BuildKit caching for faster builds
+- Layer caching strategy
+- Optimized dependency installation
 
-### Tracing
-- Request tracing (optional: Jaeger)
-- Distributed tracing across services
+### Runtime Performance
+- Nginx caching layer
+- Named volumes for persistent data
+- Efficient resource allocation
+- Health-based routing
+- Connection pooling
+
+### Resource Limits
+Configure in docker-compose.yml:
+```yaml
+deploy:
+  resources:
+    limits:
+      cpus: '1.0'
+      memory: 512M
+    reservations:
+      memory: 256M
+```

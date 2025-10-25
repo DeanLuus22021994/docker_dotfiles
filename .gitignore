@@ -3,37 +3,26 @@
 **/__pycache__/
 **/.mypy_cache/
 **/.pytest_cache/
-**/.ruff_cache/
-**/htmlcov/
 **/*.pyc
 **/*.pyo
-**/*.egg-info/
-**/.coverage
-**/coverage.xml
 
 # Node.js
 **/node_modules/
 **/npm-debug.log
-**/yarn-error.log
 
-# Environment files (keep only examples)
+# Environment
 .env
-.env.local
-.env.development
-.env.production
-.env.docker
-!.env.example
+.env.*
 
-# Secrets (keep only examples)
-secrets/
-!secrets/.secrets.example
+# Secrets
+secrets/*
 !secrets/README.md
 
 # IDE
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 *.swp
-*.swo
 
 # OS
 .DS_Store

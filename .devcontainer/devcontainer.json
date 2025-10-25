@@ -1,30 +1,34 @@
 {
-  "build": {
-    "dockerfile": "devcontainer.dockerfile"
-  },
+  "name": "Docker Cluster Development",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/docker",
+  "runServices": [
+    "devcontainer",
+    "cluster-postgres",
+    "cluster-redis",
+    "cluster-web1",
+    "cluster-web2",
+    "cluster-web3",
+    "loadbalancer",
+    "cluster-github-mcp",
+    "cluster-jupyter",
+    "cluster-minio",
+    "cluster-grafana",
+    "cluster-prometheus",
+    "cluster-k9s"
+  ],
+  "shutdownAction": "stopCompose",
   "features": {
     "ghcr.io/devcontainers/features/nvidia-cuda:2": {
       "installCudnn": false,
       "installNvtx": false
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerDashComposeVersion": "v2"
     }
   },
-  "mounts": [
-    {
-        "type": "volume",
-        "source": "docker_examples_python_cache",
-        "target": "/home/vscode/.cache/pip"
-      },
-    {
-        "type": "volume",
-        "source": "docker_examples_node_cache",
-        "target": "/home/vscode/.npm"
-      },
-    {
-        "type": "volume",
-        "source": "docker_examples_mariadb_data",
-        "target": "/var/lib/mysql"
-      }
-  ],
   "hostRequirements": {
     "cpus": 4,
     "memory": "4gb",
@@ -32,78 +36,90 @@
     "gpu": "optional"
   },
   "waitFor": "onCreateCommand",
-  "updateContentCommand": "npm install --legacy-peer-deps",
-  "postStartCommand": "chown -R mysql:mysql /var/lib/mysql && service mariadb start && sudo chown -R vscode:vscode /workspaces/${localWorkspaceFolderBasename}/node_modules 2>/dev/null || true",
-  "postAttachCommand": "",
+  "onCreateCommand": "echo 'Cluster development environment ready'",
+  "updateContentCommand": "npm install --legacy-peer-deps || true",
+  "postStartCommand": "sudo chown -R vscode:vscode /workspaces/docker/node_modules 2>/dev/null || true",
   "customizations": {
-    "codespaces": {
-      "openFiles": ["src/App.jsx"]
-    },
     "vscode": {
       "settings": {
-        // Python settings for container environment
-        "python.defaultInterpreterPath": "/usr/bin/python3.14",
+        "python.defaultInterpreterPath": "/usr/bin/python3.13",
         "python.terminal.activateEnvironment": true,
-        "python.terminal.activateEnvInCurrentTerminal": true,
-        "python.terminal.shellIntegration.enabled": true,
         "python.analysis.typeCheckingMode": "basic",
         "python.analysis.autoImportCompletions": true,
-        "python.analysis.packageIndexDepths": [
-          {
-            "name": "",
-            "depth": 2,
-            "includeAllSymbols": true
-          }
-        ],
-        // UV integration
-        "python.createEnvironment.contentButton": "hide",
-        "python.createEnvironment.trigger": "off"
+        "[dockerfile]": {
+          "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        },
+        "files.associations": {
+          "docker-compose*.yml": "yaml",
+          "*.Dockerfile": "dockerfile"
+        }
       },
       "extensions": [
-        "GitHub.copilot-chat",
-        "GitHub.copilot",
-        "esbenp.prettier-vscode",
-        "redhat.vscode-yaml",
-        "ms-vscode.copilot-mermaid-diagram",
-        "ms-vscode.vscode-copilot-vision",
-        "ms-vscode.vscode-websearchforcopilot",
-        "vscjava.migrate-java-to-azure",
-        "vscjava.vscode-java-upgrade",
-        "dbaeumer.vscode-eslint",
-        "github.vscode-github-actions",
-        "GitHub.vscode-pull-request-github",
-        "christian-kohler.npm-intellisense",
-        "Orta.vscode-jest",
-        "VisualStudioExptTeam.intellicode-api-usage-examples",
-        "ms-azuretools.vscode-containers",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-azuretools.vscode-docker",
         "ms-python.python",
         "ms-python.black-formatter",
-        "ms-python.isort",
-        "ms-python.pylint"
-      ],
-      "mcp": {
-        "servers": {
-          "github-official": {
-            "command": "docker",
-            "args": ["run", "-i", "--rm", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "ghcr.io/github/github-mcp-server"],
-            "env": {
-              "GITHUB_PERSONAL_ACCESS_TOKEN": "${localEnv:GH_PAT}"
-            }
-          },
-          "MCP_DOCKER": {
-            "command": "docker",
-            "args": ["mcp", "gateway", "run"],
-            "type": "stdio"
-          }
-        }
-      }
+        "redhat.vscode-yaml",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
+      ]
     }
   },
+  "forwardPorts": [
+    8080,  // Load Balancer
+    5432,  // PostgreSQL
+    6379,  // Redis
+    3001,  // GitHub MCP Server
+    8888,  // Jupyter Lab
+    9000,  // MinIO API
+    9001,  // MinIO Console
+    3002,  // Grafana
+    9090   // Prometheus
+  ],
   "portsAttributes": {
+    "8080": {
+      "label": "Load Balancer (HTTP)",
+      "onAutoForward": "notify"
+    },
+    "8443": {
+      "label": "Load Balancer (HTTPS)",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL Database",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis Cache",
+      "onAutoForward": "silent"
+    },
     "3001": {
-      "label": "Application",
-      "onAutoForward": "openPreview"
+      "label": "GitHub MCP Server",
+      "onAutoForward": "notify"
+    },
+    "8888": {
+      "label": "Jupyter Lab",
+      "onAutoForward": "openBrowser"
+    },
+    "9000": {
+      "label": "MinIO API (S3)",
+      "onAutoForward": "silent"
+    },
+    "9001": {
+      "label": "MinIO Console",
+      "onAutoForward": "openBrowser"
+    },
+    "3002": {
+      "label": "Grafana Dashboard",
+      "onAutoForward": "openBrowser"
+    },
+    "9090": {
+      "label": "Prometheus Metrics",
+      "onAutoForward": "notify"
     }
-  },
-  "forwardPorts": [3001]
+  }
 }

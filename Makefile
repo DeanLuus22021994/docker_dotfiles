@@ -1,67 +1,94 @@
-# Makefile for Docker Compose Examples Project
-# Provides common development tasks for managing Docker Compose stacks
+# Makefile for Docker Cluster Implementation
+# Turn-key modern data platform with GPU support
 
-.PHONY: help validate build test clean format lint security all
+.PHONY: help build up down logs ps restart clean validate dev test-all test-health test-connectivity
 
-# Default target - show help
 help:
-@echo "Docker Compose Examples - Available Commands:"
-@echo ""
-@echo "  make validate    - Validate all docker-compose.yml files"
-@echo "  make build       - Build all Docker Compose stacks"
-@echo "  make test        - Run validation and build steps"
-@echo "  make clean       - Clean up Docker resources (images, containers, volumes)"
-@echo "  make format      - Format Python code with black and ruff"
-@echo "  make lint        - Lint Python code and Dockerfiles"
-@echo "  make security    - Run security scans on Docker images"
-@echo "  make all         - Run validate, build, and test"
-@echo ""
+	@echo "Docker Cluster - Modern Data Platform"
+	@echo ""
+	@echo "Core Commands:"
+	@echo "  make build       - Build all images"
+	@echo "  make up          - Start production cluster"
+	@echo "  make dev         - Start with devcontainer"
+	@echo "  make down        - Stop cluster"
+	@echo "  make restart     - Restart cluster"
+	@echo "  make logs        - View logs"
+	@echo "  make ps          - Show status"
+	@echo ""
+	@echo "Testing:"
+	@echo "  make test-all    - Run all tests"
+	@echo "  make test-health - Check service health"
+	@echo "  make test-conn   - Test connectivity"
+	@echo ""
+	@echo "Maintenance:"
+	@echo "  make validate    - Validate configuration"
+	@echo "  make clean       - Clean resources"
 
-# Validate all docker-compose.yml files
-validate:
-@echo "🔍 Validating Docker Compose stacks..."
-@python .docker-compose/validate_stacks.py
-@echo "✅ Validation complete"
-
-# Build all Docker Compose stacks
 build:
-@echo "🔨 Building Docker Compose stacks..."
-@python .docker-compose/validate_stacks.py --build
-@echo "✅ Build complete"
+	@echo "Building all images with BuildKit..."
+	@docker-compose build
 
-# Run validation and build steps
-test: validate build
-@echo "✅ All tests passed"
+up:
+	@echo "Starting production cluster..."
+	@docker-compose up -d loadbalancer cluster-web1 cluster-web2 cluster-web3 cluster-postgres cluster-redis cluster-github-mcp cluster-jupyter cluster-minio cluster-grafana cluster-prometheus
 
-# Clean up Docker resources
+dev:
+	@echo "Starting development environment with all services..."
+	@docker-compose --profile dev up -d
+
+down:
+	@echo "Stopping cluster..."
+	@docker-compose down
+
+logs:
+	@docker-compose logs -f
+
+ps:
+	@docker-compose ps
+
+restart: down up
+	@echo "Cluster restarted"
+
+validate:
+	@echo "Validating configuration..."
+	@docker-compose config > /dev/null
+	@echo "Configuration valid"
+
 clean:
-@echo "🧹 Cleaning up Docker resources..."
-@docker system prune -f
-@docker image prune -f
-@docker volume prune -f
-@echo "✅ Cleanup complete"
+	@echo "Cleaning up resources..."
+	@docker-compose down -v --remove-orphans
+	@docker system prune -f
+	@echo "Cleanup complete"
 
-# Format Python code
-format:
-@echo "📝 Formatting Python code..."
-@cd .docker-compose/mcp/python_utils && python -m black . || echo "black not installed, skipping..."
-@cd .docker-compose/mcp/python_utils && python -m ruff check --fix . || echo "ruff not installed, skipping..."
-@echo "✅ Formatting complete"
+test-health:
+	@echo "Checking service health..."
+	@echo "Load Balancer:"
+	@curl -f http://localhost:8080 -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "PostgreSQL:"
+	@docker exec cluster-postgres pg_isready -U cluster_user -d clusterdb || echo "  FAILED"
+	@echo "Redis:"
+	@docker exec cluster-redis redis-cli ping || echo "  FAILED"
+	@echo "Jupyter:"
+	@curl -f http://localhost:8888/api -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "MinIO:"
+	@curl -f http://localhost:9000/minio/health/live -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "Grafana:"
+	@curl -f http://localhost:3002/api/health -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
+	@echo "Prometheus:"
+	@curl -f http://localhost:9090/-/healthy -o /dev/null -w "  HTTP: %{http_code}\n" || echo "  FAILED"
 
-# Lint Python code and Dockerfiles
-lint:
-@echo "🔍 Linting code..."
-@cd .docker-compose/mcp/python_utils && python -m ruff check . || echo "ruff not installed, skipping..."
-@cd .docker-compose/mcp/python_utils && python -m mypy . || echo "mypy not installed, skipping..."
-@find .docker-compose -name "Dockerfile" -o -name "*.Dockerfile" | xargs -I {} sh -c 'echo "Linting: {}" && docker run --rm -i hadolint/hadolint < {} || echo "hadolint not available"'
-@echo "✅ Linting complete"
+test-conn:
+	@echo "Testing connectivity from devcontainer..."
+	@docker exec cluster-devcontainer /bin/bash -c " \
+		echo 'PostgreSQL:' && \
+		psql -h cluster-postgres -U cluster_user -d clusterdb -c 'SELECT version();' && \
+		echo 'Redis:' && \
+		redis-cli -h cluster-redis ping && \
+		echo 'Web Services:' && \
+		curl -f http://cluster-loadbalancer && \
+		echo 'MinIO:' && \
+		curl -f http://cluster-minio:9000/minio/health/live \
+	"
 
-# Run security scans
-security:
-@echo "🔒 Running security scans..."
-@docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity HIGH,CRITICAL $$(docker images --format "{{.Repository}}:{{.Tag}}" | grep docker_examples | head -1) || echo "Trivy not available or no images to scan"
-@echo "✅ Security scan complete"
-
-# Run all tasks
-all: validate build test
-@echo "✅ All tasks completed successfully"
+test-all: validate test-health test-conn
+	@echo "All tests completed"
