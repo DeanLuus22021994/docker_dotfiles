@@ -115,6 +115,12 @@ bash bash/docs/serve-docs.sh
 | audit | test-integration | Run integration tests |
 | validate | env | Validate environment (Python) |
 | validate | configs | Validate configs (Python) |
+| mcp | new-profiles | Generate MCP profiles (core, fullstack, testing, data) |
+| mcp | set-profile | Switch to a specific MCP profile |
+| mcp | get-profile | Display current active MCP profile |
+| mcp | test-servers | Health check all MCP servers |
+| mcp | compare-profiles | Compare tool counts and token usage across profiles |
+| mcp | test-profiles | Run comprehensive profile generation and validation tests |
 
 ### Bash Tasks
 
@@ -132,6 +138,8 @@ bash bash/docs/serve-docs.sh
 | validate | env | Validate environment variables |
 | validate | configs | Validate configuration files |
 | audit | code | Code quality audit (planned) |
+| mcp | validate | Validate MCP configuration schema |
+| mcp | analyze | Analyze MCP token usage (supports --json, --compare) |
 
 ## Python Utilities (Shared)
 
@@ -252,7 +260,64 @@ chmod +x bash/**/*.sh
 - [PowerShell Scripts](powershell/README.md) - PowerShell-specific documentation
 - [Python Scripts](python/README.md) - Python-specific documentation
 - [Bash Scripts](bash/README.md) - Bash-specific documentation
+- [MCP Configuration](.vscode/configs/mcp/README.md) - MCP profile management (VS Code Insiders)
 - [Python Setup Guide](../docs/python-setup-troubleshooting.md) - Python installation help
+
+## MCP Management (VS Code Insiders)
+
+The MCP (Model Context Protocol) system provides tool integration for AI agents in VS Code Insiders. Use profiles to optimize token usage.
+
+### Quick Start
+
+```powershell
+# Generate all profiles (core, fullstack, testing, data)
+.\orchestrator.ps1 mcp new-profiles
+
+# Switch to core profile (53 tools, ~50% token reduction)
+.\orchestrator.ps1 mcp set-profile -Profile core
+
+# Restart VS Code for changes to take effect
+
+# Check active profile
+.\orchestrator.ps1 mcp get-profile
+
+# Test server health
+.\orchestrator.ps1 mcp test-servers
+
+# Compare profiles
+.\orchestrator.ps1 mcp compare-profiles
+```
+
+### Python Validation
+
+```bash
+# Validate MCP configuration
+python orchestrator.py mcp validate
+
+# Analyze token usage
+python orchestrator.py mcp analyze
+
+# Compare profiles with JSON output
+python orchestrator.py mcp analyze --compare --json
+```
+
+### Profile System
+
+| Profile | Tools | Servers | Tokens | Use Case |
+|---------|-------|---------|--------|----------|
+| core | 53 | github, filesystem, git, fetch | 8-10k | Daily development (50% reduction) |
+| fullstack | 80 | github, filesystem + 6 more | 11-14k | Web development + testing |
+| testing | 87 | github, filesystem, playwright, git, fetch, postgres | 12-15k | Browser automation + QA |
+| data | 47 | github, filesystem, postgres, sqlite, memory, git, fetch | 7-9k | Database/analytics work |
+| all | 107 | All 9 servers | 15-20k | Full toolset (baseline) |
+
+**Token Optimization:**
+- Tools loaded at VS Code startup (not per-request)
+- Each tool schema: ~180 tokens + 50 tokens per server
+- core profile: 50% startup reduction vs all
+- Profile switch requires VS Code restart
+
+**See:** [.vscode/configs/mcp/README.md](../.vscode/configs/mcp/README.md) for detailed configuration docs.
 
 ## Contributing
 

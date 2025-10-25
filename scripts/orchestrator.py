@@ -38,11 +38,15 @@ def show_help() -> None:
     print("  code      Run code quality audit")
     print("  deps      Check dependencies and packages\n")
 
+    print("mcp")
+    print("  validate  Validate MCP configuration")
+    print("  analyze   Analyze token usage\n")
+
     print("Examples:")
     print("  python orchestrator.py validate env")
-    print("  python orchestrator.py validate configs")
-    print("  python orchestrator.py audit code")
-    print("  python orchestrator.py audit deps\n")
+    print("  python orchestrator.py mcp validate")
+    print("  python orchestrator.py mcp analyze --json")
+    print("  python orchestrator.py audit code\n")
 
 
 def execute_task(task: str, action: str) -> None:
@@ -98,6 +102,36 @@ def execute_task(task: str, action: str) -> None:
         else:
             print(error(f"Unknown audit action: {action}"))
             print(info("Available: code, deps"))
+            sys.exit(1)
+
+    elif task == "mcp":
+        if action == "validate":
+            script = SCRIPT_DIR / "python" / "mcp" / "validate_config.py"
+            if script.exists():
+                print(info("Validating MCP configuration..."))
+                result = subprocess.run([sys.executable, str(script)], check=False)
+                sys.exit(result.returncode)
+            else:
+                print(error(f"Script not found: {script}"))
+                sys.exit(1)
+
+        elif action == "analyze":
+            script = SCRIPT_DIR / "python" / "mcp" / "analyze_tokens.py"
+            if script.exists():
+                print(info("Analyzing MCP token usage..."))
+                # Pass through any additional arguments
+                extra_args = sys.argv[3:] if len(sys.argv) > 3 else []
+                result = subprocess.run(
+                    [sys.executable, str(script)] + extra_args, check=False
+                )
+                sys.exit(result.returncode)
+            else:
+                print(error(f"Script not found: {script}"))
+                sys.exit(1)
+
+        else:
+            print(error(f"Unknown mcp action: {action}"))
+            print(info("Available: validate, analyze"))
             sys.exit(1)
 
     elif task == "help":

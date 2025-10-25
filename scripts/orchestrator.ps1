@@ -26,11 +26,14 @@
 
 param(
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet('config', 'docker', 'docs', 'audit', 'cleanup', 'validate', 'help')]
+    [ValidateSet('config', 'docker', 'docs', 'audit', 'cleanup', 'validate', 'mcp', 'help')]
     [string]$Task,
 
     [Parameter(Mandatory=$false, Position=1)]
-    [string]$Action
+    [string]$Action,
+    
+    [Parameter(Mandatory=$false)]
+    [string]$Profile
 )
 
 $ErrorActionPreference = 'Stop'
@@ -64,10 +67,18 @@ function Show-Help {
     Write-Host "  env               Validate environment variables (uses Python)"
     Write-Host "  configs           Validate configuration files (uses Python)"
     
+    Write-Host "`nmcp" -ForegroundColor Yellow
+    Write-Host "  new-profiles      Generate MCP profile configurations"
+    Write-Host "  set-profile       Switch active MCP profile (-Profile <name>)"
+    Write-Host "  get-profile       Show current active profile"
+    Write-Host "  test-servers      Health check all MCP servers"
+    Write-Host "  compare-profiles  Compare two profiles"
+    Write-Host "  test-profiles     Run comprehensive profile tests"
+    
     Write-Host "`nExamples:"
     Write-Host "  .\orchestrator.ps1 config apply-settings" -ForegroundColor Gray
-    Write-Host "  .\orchestrator.ps1 docker start-devcontainer" -ForegroundColor Gray
-    Write-Host "  .\orchestrator.ps1 validate env" -ForegroundColor Gray
+    Write-Host "  .\orchestrator.ps1 mcp set-profile -Profile core" -ForegroundColor Gray
+    Write-Host "  .\orchestrator.ps1 mcp test-servers" -ForegroundColor Gray
     Write-Host ""
 }
 
@@ -191,6 +202,78 @@ function Invoke-Task {
                 default {
                     Write-Error-Custom "Unknown validate action: $Action"
                     Write-Info "Available: env, configs"
+                    exit 1
+                }
+            }
+        }
+        
+        'mcp' {
+            switch ($Action) {
+                'new-profiles' {
+                    $script = Join-Path $ScriptRoot "powershell\mcp\New-McpProfiles.ps1"
+                    if (Test-Path $script) {
+                        Write-Info "Generating MCP profiles..."
+                        & $script
+                    } else {
+                        Write-Error-Custom "Script not found: $script"
+                        exit 1
+                    }
+                }
+                'set-profile' {
+                    if ([string]::IsNullOrEmpty($Profile)) {
+                        Write-Error-Custom "Profile parameter required: -Profile <core|fullstack|testing|data|all>"
+                        exit 1
+                    }
+                    $script = Join-Path $ScriptRoot "powershell\mcp\Set-McpProfile.ps1"
+                    if (Test-Path $script) {
+                        Write-Info "Switching to $Profile profile..."
+                        & $script -Profile $Profile
+                    } else {
+                        Write-Error-Custom "Script not found: $script"
+                        exit 1
+                    }
+                }
+                'get-profile' {
+                    $script = Join-Path $ScriptRoot "powershell\mcp\Get-McpProfile.ps1"
+                    if (Test-Path $script) {
+                        & $script
+                    } else {
+                        Write-Error-Custom "Script not found: $script"
+                        exit 1
+                    }
+                }
+                'test-servers' {
+                    $script = Join-Path $ScriptRoot "powershell\mcp\Test-McpServers.ps1"
+                    if (Test-Path $script) {
+                        Write-Info "Testing MCP servers..."
+                        & $script
+                    } else {
+                        Write-Error-Custom "Script not found: $script"
+                        exit 1
+                    }
+                }
+                'compare-profiles' {
+                    $script = Join-Path $ScriptRoot "powershell\mcp\Compare-McpProfiles.ps1"
+                    if (Test-Path $script) {
+                        & $script
+                    } else {
+                        Write-Error-Custom "Script not found: $script"
+                        exit 1
+                    }
+                }
+                'test-profiles' {
+                    $script = Join-Path $ScriptRoot "powershell\mcp\Test-McpProfileGeneration.ps1"
+                    if (Test-Path $script) {
+                        Write-Info "Running profile generation tests..."
+                        & $script
+                    } else {
+                        Write-Error-Custom "Script not found: $script"
+                        exit 1
+                    }
+                }
+                default {
+                    Write-Error-Custom "Unknown mcp action: $Action"
+                    Write-Info "Available: new-profiles, set-profile, get-profile, test-servers, compare-profiles, test-profiles"
                     exit 1
                 }
             }

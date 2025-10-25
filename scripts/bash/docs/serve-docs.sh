@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Serve GitHub Pages documentation locally
 
-set -e
+set -euo pipefail
+
+# Error handler
+trap 'echo "✗ Error on line $LINENO. Exit code: $?" >&2' ERR
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"

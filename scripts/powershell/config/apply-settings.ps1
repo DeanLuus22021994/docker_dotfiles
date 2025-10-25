@@ -1,6 +1,52 @@
-# Apply GitHub Repository Settings
-# This script applies all repository configuration from .config/github/*.yml files
-# Usage: .\scripts\apply-settings.ps1 [-DryRun] [-ApplyAll] [-ApplyRepository] [-ApplyBranchProtection] [-ConfigureActions] [-ConfigureSecurity]
+#!/usr/bin/env pwsh
+<#
+.SYNOPSIS
+    Apply GitHub repository configuration settings.
+
+.DESCRIPTION
+    Applies repository configuration from .config/github/*.yml files using GitHub CLI.
+    Supports repository settings, branch protection, GitHub Actions, and security configurations.
+    Can perform dry-run to preview changes without applying them.
+
+.PARAMETER DryRun
+    Preview changes without applying them.
+
+.PARAMETER ApplyAll
+    Apply all configuration categories (repository, branch protection, actions, security).
+
+.PARAMETER ApplyRepository
+    Apply only repository settings (name, description, visibility, features).
+
+.PARAMETER ApplyBranchProtection
+    Apply only branch protection rules.
+
+.PARAMETER ConfigureActions
+    Apply only GitHub Actions settings (workflows, environments, permissions).
+
+.PARAMETER ConfigureSecurity
+    Apply only security settings (dependabot, code scanning, secret scanning).
+
+.EXAMPLE
+    .\scripts\powershell\config\apply-settings.ps1 -DryRun
+    Preview all configuration changes without applying them.
+
+.EXAMPLE
+    .\scripts\powershell\config\apply-settings.ps1 -ApplyRepository
+    Apply only repository settings.
+
+.EXAMPLE
+    .\scripts\powershell\config\apply-settings.ps1 -ApplyAll
+    Apply all configuration categories.
+
+.NOTES
+    Requires:
+    - GitHub CLI (gh) installed and authenticated
+    - Repository admin permissions
+    - Configuration files in .config/github/ directory
+    
+    Version: 1.0.0
+    Last Updated: 2025-10-26
+#>
 
 param(
     [switch]$DryRun,
@@ -12,6 +58,20 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+# Parameter validation: At least one action must be specified
+if (-not ($DryRun -or $ApplyAll -or $ApplyRepository -or $ApplyBranchProtection -or $ConfigureActions -or $ConfigureSecurity)) {
+    Write-Host "ERROR: No action specified. Use at least one of:" -ForegroundColor Red
+    Write-Host "  -DryRun                  Preview changes without applying" -ForegroundColor Yellow
+    Write-Host "  -ApplyAll                Apply all configurations" -ForegroundColor Yellow
+    Write-Host "  -ApplyRepository         Apply repository settings" -ForegroundColor Yellow
+    Write-Host "  -ApplyBranchProtection   Apply branch protection rules" -ForegroundColor Yellow
+    Write-Host "  -ConfigureActions        Configure GitHub Actions" -ForegroundColor Yellow
+    Write-Host "  -ConfigureSecurity       Configure security settings" -ForegroundColor Yellow
+    Write-Host "`nExample: .\apply-settings.ps1 -DryRun" -ForegroundColor Cyan
+    exit 1
+}
+
 $ConfigPath = ".config/github"
 $RepoOwner = "DeanLuus22021994"
 $RepoName = "docker_dotfiles"
@@ -29,7 +89,7 @@ function Test-GitHubCLI {
         exit 1
     }
     
-    $authStatus = gh auth status 2>&1
+    gh auth status 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Status "GitHub CLI not authenticated. Run: gh auth login" "Error"
         exit 1
@@ -38,7 +98,7 @@ function Test-GitHubCLI {
     Write-Status "✓ GitHub CLI authenticated" "Success"
 }
 
-function Apply-RepositorySettings {
+function Set-RepositorySettings {
     Write-Status "Applying repository settings..." "Info"
     
     $configFile = Join-Path $ConfigPath "repository.yml"
@@ -88,7 +148,7 @@ function Apply-RepositorySettings {
     }
 }
 
-function Apply-BranchProtection {
+function Set-BranchProtection {
     Write-Status "Applying branch protection rules..." "Info"
     
     $configFile = Join-Path $ConfigPath "branch-protection.yml"
@@ -186,11 +246,11 @@ $results = @{
 }
 
 if ($ApplyAll -or $ApplyRepository) {
-    $results.Repository = Apply-RepositorySettings
+    $results.Repository = Set-RepositorySettings
 }
 
 if ($ApplyAll -or $ApplyBranchProtection) {
-    $results.BranchProtection = Apply-BranchProtection
+    $results.BranchProtection = Set-BranchProtection
 }
 
 if ($ApplyAll -or $ConfigureActions) {

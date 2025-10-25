@@ -1,0 +1,27 @@
+{
+  "name": "@docker-dotfiles/mcp-tools",
+  "version": "1.0.0",
+  "description": "MCP (Model Context Protocol) management utilities for VS Code Copilot integration",
+  "private": true,
+  "scripts": {
+    "discover": "node discover-tools.js",
+    "health": "node health-check.js",
+    "health:json": "node health-check.js --json"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "vscode",
+    "copilot",
+    "tools"
+  ],
+  "author": "Dean Luus",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DeanLuus22021994/docker_dotfiles"
+  }
+}

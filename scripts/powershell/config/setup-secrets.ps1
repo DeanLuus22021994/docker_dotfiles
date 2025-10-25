@@ -1,5 +1,48 @@
-# Setup GitHub Secrets and Environment Variables
-# This script helps configure all required secrets for the docker_dotfiles project
+#!/usr/bin/env pwsh
+<#
+.SYNOPSIS
+    Setup GitHub secrets and environment variables.
+
+.DESCRIPTION
+    Configures all required secrets and environment variables for the docker_dotfiles project.
+    Supports GitHub repository secrets, environment variables from .env files, and validation.
+    Helps maintain secure credential management across local and CI/CD environments.
+
+.PARAMETER SetGitHubSecrets
+    Set GitHub repository secrets using GitHub CLI.
+
+.PARAMETER LoadEnvVars
+    Load and validate environment variables from .env file.
+
+.PARAMETER ValidateAll
+    Validate all secrets and environment variables are properly configured.
+
+.EXAMPLE
+    .\scripts\powershell\config\setup-secrets.ps1 -SetGitHubSecrets
+    Set GitHub repository secrets interactively.
+
+.EXAMPLE
+    .\scripts\powershell\config\setup-secrets.ps1 -LoadEnvVars
+    Load environment variables from .env file.
+
+.EXAMPLE
+    .\scripts\powershell\config\setup-secrets.ps1 -ValidateAll
+    Validate all secrets and environment variables.
+
+.NOTES
+    Requires:
+    - GitHub CLI (gh) installed and authenticated
+    - .env file (created from .env.example if missing)
+    - Repository admin permissions for setting secrets
+    
+    Security:
+    - Never commit .env file to version control
+    - Keep secrets encrypted in GitHub Secrets
+    - Rotate credentials regularly
+    
+    Version: 1.0.0
+    Last Updated: 2025-10-26
+#>
 
 param(
     [switch]$SetGitHubSecrets,
@@ -8,6 +51,16 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+
+# Parameter validation: At least one action must be specified
+if (-not ($SetGitHubSecrets -or $LoadEnvVars -or $ValidateAll)) {
+    Write-Host "ERROR: No action specified. Use at least one of:" -ForegroundColor Red
+    Write-Host "  -SetGitHubSecrets   Set GitHub repository secrets" -ForegroundColor Yellow
+    Write-Host "  -LoadEnvVars        Load environment variables from .env" -ForegroundColor Yellow
+    Write-Host "  -ValidateAll        Validate all secrets and variables" -ForegroundColor Yellow
+    Write-Host "`nExample: .\setup-secrets.ps1 -ValidateAll" -ForegroundColor Cyan
+    exit 1
+}
 
 function Write-Status {
     param([string]$Message, [string]$Type = "Info")

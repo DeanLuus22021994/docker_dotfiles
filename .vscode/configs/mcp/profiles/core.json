@@ -1,0 +1,12 @@
+{ "servers": {
+  "github":     {"command":"npx","args":["-y","@modelcontextprotocol/server-github"],"env":{"GITHUB_TOKEN":"${env:GITHUB_TOKEN}"}},
+  "filesystem":     {"command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","${workspaceFolder}"]},
+  "git":     {"command":"uvx","args":["mcp-server-git"]},
+  "fetch":     {"command":"uvx","args":["mcp-server-fetch"]}
+}, "_metadata": {
+  "profile_name": "core",
+  "tool_count": 53,
+  "estimated_tokens": "8-10k",
+  "last_generated": "2025-10-25T22:20:13Z",
+  "servers_enabled": ["github", "filesystem", "git", "fetch"]
+}}

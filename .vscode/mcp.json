@@ -13,31 +13,47 @@
     },
     "postgres": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://postgres:${env:DOCKER_POSTGRES_PASSWORD}@localhost:5432/postgres"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://postgres:${env:DOCKER_POSTGRES_PASSWORD}@localhost:5432/postgres"
+      ]
     },
-    "git": {
-      "command": "uvx",
-      "args": ["mcp-server-git"]
+    "sqlite": {
+      "command": "npx",
+      "args": ["-y", "mcp-server-sqlite-npx", "${workspaceFolder}/db.sqlite"]
     },
     "memory": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-memory"]
     },
-    "puppeteer": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    "git": {
+      "command": "uvx",
+      "args": ["mcp-server-git"]
     },
     "fetch": {
       "command": "uvx",
       "args": ["mcp-server-fetch"]
-    },
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@executeautomation/playwright-mcp-server"]
-    },
-    "sqlite": {
-      "command": "npx",
-      "args": ["-y", "mcp-server-sqlite-npx", "${workspaceFolder}/db.sqlite"]
     }
+  },
+  "_metadata": {
+    "profile_name": "data",
+    "tool_count": 47,
+    "estimated_tokens": "7-9k",
+    "last_generated": "2025-10-25T21:54:30Z",
+    "servers_enabled": [
+      "github",
+      "filesystem",
+      "postgres",
+      "sqlite",
+      "memory",
+      "git",
+      "fetch"
+    ]
   }
 }
+
+
+
+
+

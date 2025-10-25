@@ -34,7 +34,20 @@
 
 [CmdletBinding()]
 param(
+    [ValidateNotNullOrEmpty()]
+    [ValidateScript({
+        # Validate path doesn't contain invalid characters
+        if ($_ -match '[\<\>\:\"\|\?\*]') {
+            throw "Install path contains invalid characters: $_"
+        }
+        # Validate path is not too long (Windows MAX_PATH limitation)
+        if ($_.Length -gt 200) {
+            throw "Install path exceeds maximum length (200 characters): $_"
+        }
+        return $true
+    })]
     [string]$InstallPath = "$env:LOCALAPPDATA\Programs\Python\Python314",
+    
     [switch]$SkipAliasWarning,
     [switch]$Force,
     [switch]$CleanRegistry
@@ -287,7 +300,7 @@ function Install-Python314Winget {
     
     try {
         # First uninstall if exists
-        $uninstallOutput = winget uninstall --id Python.Python.3.14 --silent 2>&1
+        winget uninstall --id Python.Python.3.14 --silent 2>&1 | Out-Null
         if ($LASTEXITCODE -eq 0) {
             Write-ColorOutput "  ✓ Uninstalled existing Python 3.14.0" -Color Green
             Start-Sleep -Seconds 3
