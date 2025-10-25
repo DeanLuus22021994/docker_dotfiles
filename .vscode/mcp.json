@@ -35,23 +35,10 @@
       "command": "uvx",
       "args": ["mcp-server-fetch"]
     }
-  },
-  "_metadata": {
-    "profile_name": "data",
-    "tool_count": 47,
-    "estimated_tokens": "7-9k",
-    "last_generated": "2025-10-25T21:54:30Z",
-    "servers_enabled": [
-      "github",
-      "filesystem",
-      "postgres",
-      "sqlite",
-      "memory",
-      "git",
-      "fetch"
-    ]
   }
 }
+
+
 
 
 

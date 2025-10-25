@@ -7,10 +7,5 @@
   "postgres":     {"command":"npx","args":["-y","@modelcontextprotocol/server-postgres","postgresql://postgres:${env:DOCKER_POSTGRES_PASSWORD}@localhost:5432/postgres"]},
   "sqlite":     {"command":"npx","args":["-y","mcp-server-sqlite-npx","${workspaceFolder}/db.sqlite"]},
   "memory":     {"command":"npx","args":["-y","@modelcontextprotocol/server-memory"]}
-}, "_metadata": {
-  "profile_name": "fullstack",
-  "tool_count": 80,
-  "estimated_tokens": "11-14k",
-  "last_generated": "2025-10-25T22:20:13Z",
-  "servers_enabled": ["github", "filesystem", "git", "fetch", "playwright", "postgres", "sqlite", "memory"]
-}}
+  }
+}

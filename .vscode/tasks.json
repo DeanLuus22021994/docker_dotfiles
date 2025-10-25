@@ -217,6 +217,135 @@
         "panel": "shared"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "MCP: Switch Profile",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Set-McpProfile.ps1",
+      "args": ["-Profile", "${input:mcpProfile}"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Switch to Core Profile",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Set-McpProfile.ps1",
+      "args": ["-Profile", "core"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Switch to Fullstack Profile",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Set-McpProfile.ps1",
+      "args": ["-Profile", "fullstack"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Switch to Testing Profile",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Set-McpProfile.ps1",
+      "args": ["-Profile", "testing"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Switch to Data Profile",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Set-McpProfile.ps1",
+      "args": ["-Profile", "data"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Switch to All Servers",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Set-McpProfile.ps1",
+      "args": ["-Profile", "all"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Show Current Profile",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Get-McpProfile.ps1",
+      "args": ["-Detailed"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Generate Profiles",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\New-McpProfiles.ps1",
+      "args": ["-Force"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Test Server Health",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Test-McpServers.ps1",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "MCP: Compare Profiles",
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\mcp\\Compare-McpProfiles.ps1",
+      "args": ["-Profile1", "${input:mcpProfile1}", "-Profile2", "${input:mcpProfile2}", "-ShowServers"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      },
+      "problemMatcher": []
     }
   ],
   "inputs": [
@@ -241,6 +370,43 @@
         "clean"
       ],
       "default": "up"
+    },
+    {
+      "id": "mcpProfile",
+      "type": "pickString",
+      "description": "Select MCP profile to switch to",
+      "options": [
+        "core",
+        "fullstack",
+        "testing",
+        "data",
+        "all"
+      ],
+      "default": "core"
+    },
+    {
+      "id": "mcpProfile1",
+      "type": "pickString",
+      "description": "Select first MCP profile to compare",
+      "options": [
+        "core",
+        "fullstack",
+        "testing",
+        "data"
+      ],
+      "default": "core"
+    },
+    {
+      "id": "mcpProfile2",
+      "type": "pickString",
+      "description": "Select second MCP profile to compare",
+      "options": [
+        "core",
+        "fullstack",
+        "testing",
+        "data"
+      ],
+      "default": "fullstack"
     }
   ]
 }

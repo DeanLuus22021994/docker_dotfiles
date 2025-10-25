@@ -126,30 +126,8 @@ foreach ($profileName in $expectedProfiles) {
                 Write-TestFail "$profileName second server is '$($serverNames[1])', expected 'filesystem'"
             }
             
-            # Check metadata exists
-            if ($content._metadata) {
-                Write-TestPass "$profileName has _metadata object"
-                
-                # Validate metadata fields
-                $requiredFields = @('profile_name', 'tool_count', 'estimated_tokens', 'last_generated', 'servers_enabled')
-                foreach ($field in $requiredFields) {
-                    if ($content._metadata.PSObject.Properties.Name -contains $field) {
-                        Write-TestPass "$profileName metadata has '$field'"
-                    } else {
-                        Write-TestFail "$profileName metadata missing '$field'"
-                    }
-                }
-                
-                # Verify servers_enabled matches actual servers
-                $enabledServers = $content._metadata.servers_enabled
-                if ($enabledServers[0] -eq 'github' -and $enabledServers[1] -eq 'filesystem') {
-                    Write-TestPass "$profileName metadata servers_enabled has github, filesystem first"
-                } else {
-                    Write-TestFail "$profileName metadata servers_enabled order incorrect"
-                }
-            } else {
-                Write-TestFail "$profileName missing _metadata object"
-            }
+            # Note: _metadata property removed to prevent JSON schema validation warnings
+            # Profiles now only contain servers object for clean validation
             
         } catch {
             Write-TestFail "$profileName JSON parse error: $_"

@@ -84,13 +84,9 @@ function New-ProfileConfig {
         }
     }
     $jsonLines += ($serverJsonLines -join ",`n")
-    $jsonLines += '}, "_metadata": {'
-    $jsonLines += "  `"profile_name`": `"$Name`","
-    $jsonLines += "  `"tool_count`": $ToolCount,"
-    $jsonLines += "  `"estimated_tokens`": `"$Tokens`","
-    $jsonLines += "  `"last_generated`": `"$(Get-Date -AsUTC -Format 'yyyy-MM-ddTHH:mm:ssZ')`","
-    $jsonLines += "  `"servers_enabled`": [" + (($orderedServers | ForEach-Object { "`"$_`"" }) -join ', ') + "]"
-    $jsonLines += '}}'
+    $jsonLines += '  }'
+    $jsonLines += '}'
+    # Note: _metadata property removed to prevent JSON schema validation warnings
     
     return ($jsonLines -join "`n")
 }

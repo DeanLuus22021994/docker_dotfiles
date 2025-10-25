@@ -236,9 +236,9 @@ def main() -> None:
             logger.info(f"\n{Colors.CYAN}Token Breakdown:{Colors.RESET}")
             logger.info(f"  Tool definitions: {stats['tool_tokens']:,} tokens")
             logger.info(f"  Server overhead: {stats['server_overhead']:,} tokens")
-            logger.info(
-                f"  {Colors.BOLD}Estimated Total: {stats['estimated_tokens']:,} tokens{Colors.RESET}"
-            )
+            total_msg = f"  {Colors.BOLD}Estimated Total: "
+            total_msg += f"{stats['estimated_tokens']:,} tokens{Colors.RESET}"
+            logger.info(total_msg)
             logger.info(f"  Range: {stats['token_range']} tokens")
             logger.info(f"  Compact: {stats['token_range_k']}")
             logger.info(f"\n{Colors.GREEN}Servers Enabled:{Colors.RESET}")
