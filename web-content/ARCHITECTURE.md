@@ -305,7 +305,6 @@ manualChunks: {
 | `ARCHITECTURE.md` | **(This file)** Technical architecture |
 | `QUICKSTART.md` | Quick start guide |
 | `INSTALL.md` | Detailed installation |
-| `CLUSTER.md` | Full cluster documentation |
 | `IMPLEMENTATION.md` | Implementation summary |
 | `src/services/layers/README.md` | Service layer architecture |
 

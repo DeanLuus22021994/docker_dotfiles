@@ -109,9 +109,6 @@ exclude:
   - documentation/archive
   - _site
   - TODO.md
-  - CLUSTER.md
-  - ENHANCEMENTS-COMPLETE.md
-  - ENVIRONMENT-INTEGRATION-COMPLETE.md
 
 # Include .config and documentation directories
 include:

@@ -1,239 +1,266 @@
-# Docker Configuration Migration - TODO
+---
+title: "Docker Infrastructure Refactoring - TODO"
+version: "3.0.0"
+date: "2025-10-25"
+status: "IN_PROGRESS"
+previous_version: "2.0.0"
+archived_date: "2025-10-25"
+iteration: 3
+---
 
-## Completed ✅
+# Docker Infrastructure Refactoring - TODO v3.0
 
-### Phase 1: Config Organization
-- [x] Created `.config/` directory structure
-  - [x] `.config/nginx/` - nginx configurations
-  - [x] `.config/database/` - database configurations
-  - [x] `.config/services/` - service-specific configurations
-- [x] Migrated 8 config files from scattered locations to `.config/`
-  - [x] `nginx.conf` (root) → `.config/nginx/loadbalancer.conf`
-  - [x] `dockerfile/configs/nginx.conf` → `.config/nginx/main.conf`
-  - [x] `dockerfile/configs/default.conf` → `.config/nginx/default.conf`
-  - [x] `dockerfile/configs/postgresql.conf` → `.config/database/postgresql.conf`
-  - [x] `dockerfile/configs/mariadb.conf` → `.config/database/mariadb.conf`
-  - [x] `dockerfile/configs/pgadmin-servers.json` → `.config/services/pgadmin-servers.json`
-  - [x] `dockerfile/configs/localstack-init.sh` → `.config/services/localstack-init.sh`
-  - [x] `dockerfile/configs/buildkitd.toml` → `.config/docker/buildkitd.toml`
-- [x] Created comprehensive README.md files for each config subdirectory
-  - [x] `.config/nginx/README.md`
-  - [x] `.config/database/README.md`
-  - [x] `.config/services/README.md`
+## 🎯 Overview
 
-### Phase 2: Secrets to Environment Variables
-- [x] Removed `secrets:` block from docker-compose.yml (lines 1-18)
-- [x] Replaced all `*_PASSWORD_FILE` with `*_PASSWORD: ${DOCKER_*}` pattern
-  - [x] PostgreSQL: `DOCKER_POSTGRES_PASSWORD`
-  - [x] MariaDB: `DOCKER_MARIADB_ROOT_PASSWORD`, `DOCKER_MARIADB_PASSWORD`
-  - [x] Redis: `DOCKER_REDIS_PASSWORD`
-  - [x] MinIO: `DOCKER_MINIO_ROOT_USER`, `DOCKER_MINIO_ROOT_PASSWORD`
-  - [x] Grafana: `DOCKER_GRAFANA_ADMIN_PASSWORD`
-  - [x] Jupyter: `DOCKER_JUPYTER_TOKEN`
-  - [x] pgAdmin: `DOCKER_PGADMIN_PASSWORD`
-- [x] Updated `scripts/validate_env.py` to check all 11 required variables
-- [x] Updated `.env.example` with DOCKER_ prefixed variables and security guidelines
-- [x] Updated `.gitignore` to exclude `.env.local` and `.vscode/*.local.json`
+This iteration focuses on **codebase cleanup, Python environment resolution, and scripts reorganization** following SRP (Single Responsibility Principle) and DRY (Don't Repeat Yourself) principles.
 
-### Phase 3: Docker Configuration Updates
-- [x] Updated docker-compose.yml volume mounts
-  - [x] Loadbalancer: Uses `.config/nginx/loadbalancer.conf`
-- [x] Updated all Dockerfiles to use new config paths
-  - [x] `dockerfile/mariadb.Dockerfile`
-  - [x] `dockerfile/postgres.Dockerfile`
-  - [x] `dockerfile/pgadmin.Dockerfile`
-  - [x] `dockerfile/nginx.Dockerfile`
-  - [x] `dockerfile/localstack.Dockerfile`
-  - [x] `dockerfile/buildkit.Dockerfile`
-- [x] Validated docker-compose.yml syntax (no errors)
+**Critical Issue:** Python not found on host system - blocking all validation workflows and scripts.
 
-### Phase 4: Cleanup
-- [x] Deleted `secrets/` directory (entire directory)
-- [x] Deleted `dockerfile/configs/` directory (entire directory)
-- [x] Deleted root-level `nginx.conf` (migrated to `.config/nginx/loadbalancer.conf`)
-- [x] Removed `.config/docker/buildkit.toml` (replaced by `buildkitd.toml`)
+**Goal:** Clean, maintainable, organized scripts architecture with proper Python environment setup.
 
-### Phase 5: Pre-commit Automation
-- [x] Created `dockerfile/pre-commit.Dockerfile`
-  - [x] Base: Python 3.13-slim
-  - [x] Installed: pre-commit, yamllint, detect-secrets, Black, Ruff
-  - [x] Configured entry point for hook installation
-- [x] Created `.pre-commit-config.yaml` with strict error-enforcing hooks
-  - [x] YAML/JSON validation
-  - [x] Secrets detection (detect-secrets)
-  - [x] docker-compose syntax validation
-  - [x] Python formatting (Black, Ruff)
-  - [x] Trailing whitespace, end-of-file fixer
-- [x] Added `cluster-pre-commit` service to docker-compose.yml
-  - [x] Uses `profiles: ["dev"]`
-  - [x] Mounts workspace and `.git/` directory
-  - [x] Auto-installs hooks on startup
-  - [x] Command: `pre-commit install && pre-commit run --all-files`
-- [x] Made `devcontainer` depend on `cluster-pre-commit`
+---
 
-### Phase 6: VSCode Settings Split
-- [x] Split `.vscode/settings.json` into team/personal configs
-  - [x] Kept in tracked `settings.json`:
-    - [x] YAML schemas
-    - [x] File associations
-    - [x] `github.copilot.chat.codeGeneration.useInstructionFiles: true`
-    - [x] `github.copilot.chat.testGeneration.enabled: true`
-  - [x] Moved to gitignored `settings.local.json` pattern:
-    - [x] AI model preferences (anthropic thinking, model overrides)
-    - [x] Locale overrides
-    - [x] Terminal chat location
-    - [x] Personal Copilot settings
-- [x] Created `.vscode/settings.local.example.json` as template
-- [x] Updated `.vscode/settings.json` with header directing to local settings
+## 📋 Phase 1: Codebase Cleanup & Maintenance ⏳ IN PROGRESS
 
-### Phase 7: Config Validation Pipeline
-- [x] Created `scripts/validate_configs.py`
-  - [x] Validates YAML files (yamllint)
-  - [x] Validates JSON files (syntax check)
-  - [x] Validates nginx configs (docker-based `nginx -t`)
-  - [x] Validates PostgreSQL configs (syntax check)
-  - [x] Validates MariaDB configs (syntax check)
-  - [x] Returns exit code (0=success, 1=failure)
-- [x] Created `.github/workflows/validate.yml`
-  - [x] Trigger on: push, pull_request, workflow_dispatch
-  - [x] Jobs:
-    - [x] Environment validation (scripts/validate_env.py)
-    - [x] Config validation (scripts/validate_configs.py)
-    - [x] docker-compose syntax (docker-compose config)
-    - [x] Pre-commit hooks (pre-commit run --all-files)
-- [x] Added validation targets to Makefile
-  - [x] `make validate` - docker-compose syntax
-  - [x] `make validate-configs` - all config files
-  - [x] `make validate-env` - environment variables
-  - [x] Updated `make test-all` to include all validations
+**Objective:** Ensure absolutely clean code implementations before new features.
 
-### Phase 8: Documentation
-- [x] AGENT.md already created with comprehensive development guidelines
-  - [x] Brief: TDD, SRP, SSoT, Config-driven principles
-  - [x] Explicit: File references, relative paths
-  - [x] Unambiguous: Clear examples and validation commands
-  - [x] AI-optimized: Human-in-the-loop workflow
-- [x] Updated root `README.md` with new config structure
-  - [x] Environment variable setup instructions (PowerShell, Linux, macOS)
-  - [x] Config validation commands (`make validate-configs`)
-  - [x] Pre-commit hook usage (automated in dev profile)
-  - [x] Updated project structure section
-  - [x] Updated configuration section with SSoT approach
-- [x] Updated `.config/docker/README.md` with buildkitd.toml info
-  - [x] Documented 10GB cache, 3-day retention
-  - [x] Multi-platform support (amd64, arm64)
-  - [x] Validation commands
+### Task 1.1: Code Quality Audit ⏳ IN PROGRESS
+- [ ] Run semantic search for code smells, duplications, and inconsistencies
+- [ ] Identify unused files, deprecated code, and orphaned configurations
+- [ ] Document findings in `CLEANUP-REPORT.md`
+- [ ] Create removal plan for obsolete code
 
-## Summary
+**Acceptance Criteria:**
+- ✅ Comprehensive audit report generated
+- ✅ Zero duplicate configuration blocks identified
+- ✅ All orphaned files documented
+- ✅ Removal plan approved
 
-✅ **ALL PHASES COMPLETE** (8/8)
+---
 
-All implementation tasks from the original TODO have been completed:
-1. ✅ Config organization - Centralized to `.config/` with native formats
-2. ✅ Secrets replacement - All using `DOCKER_` prefixed environment variables
-3. ✅ Docker updates - All Dockerfiles and compose file updated
-4. ✅ Cleanup - Removed obsolete `secrets/`, `dockerfile/configs/`, duplicate files
-5. ✅ Pre-commit automation - Container service with strict error enforcement
-6. ✅ VSCode settings split - Team (tracked) vs personal (gitignored)
-7. ✅ Validation pipeline - Python scripts, GitHub Actions, Makefile targets
-8. ✅ Documentation - README.md, AGENT.md, config-specific READMEs all updated
+### Task 1.2: Remove Deprecated Code
+- [ ] Delete archived documentation (already excluded from Jekyll)
+- [ ] Remove unused Docker images/services
+- [ ] Clean up obsolete scripts (if any identified in audit)
+- [ ] Remove commented-out code blocks
 
-## Summary
+**Files to Review:**
+- `documentation/archive/` - Already excluded, verify removal
+- ~~`ENHANCEMENTS-COMPLETE.md`~~ - Does not exist (references removed)
+- ~~`ENVIRONMENT-INTEGRATION-COMPLETE.md`~~ - Does not exist (references removed)
+- ~~`CLUSTER.md`~~ - Does not exist (references removed)
 
-✅ **ALL PHASES COMPLETE** (8/8)
+---
 
-All implementation tasks from the original TODO have been completed:
-1. ✅ Config organization - Centralized to `.config/` with native formats
-2. ✅ Secrets replacement - All using `DOCKER_` prefixed environment variables
-3. ✅ Docker updates - All Dockerfiles and compose file updated
-4. ✅ Cleanup - Removed obsolete `secrets/`, `dockerfile/configs/`, duplicate files
-5. ✅ Pre-commit automation - Container service with strict error enforcement
-6. ✅ VSCode settings split - Team (tracked) vs personal (gitignored)
-7. ✅ Validation pipeline - Python scripts, GitHub Actions, Makefile targets
-8. ✅ Documentation - README.md, AGENT.md, config-specific READMEs all updated
+### Task 1.3: Standardize Code Formatting
+- [ ] Run Black on all Python files
+- [ ] Run Ruff linter and fix issues
+- [ ] Run mypy type checking (strict mode)
+- [ ] Ensure pre-commit hooks pass on all files
 
-**Next Steps for Users:**
-1. Set up environment variables (see Environment Setup Instructions below)
-2. Run `make validate-env` to verify setup
-3. Start the stack: `make up` (production) or `make dev` (with devcontainer)
-4. Pre-commit hooks will run automatically in dev mode
+---
 
-## Environment Setup Instructions
+### Task 1.4: Documentation Cleanup
+- [ ] Remove outdated sections from README.md
+- [ ] Update AGENT.md with new scripts structure
+- [ ] Consolidate scattered documentation into centralized locations
+- [ ] Ensure all code blocks have correct language identifiers
 
-## Environment Setup Instructions
+---
 
-### Required Before Stack Startup
+## 🐍 Phase 2: Python Environment Resolution (CRITICAL)
 
-1. **Copy and configure environment file:**
-   ```powershell
-   Copy-Item .env.example .env
-   # Edit .env with your actual credentials
-   ```
+**Objective:** Resolve "Python was not found" error on Windows host.
 
-2. **Load environment variables:**
-   ```powershell
-   Get-Content .env | ForEach-Object {
-     $var = $_.Split('=')
-     [Environment]::SetEnvironmentVariable($var[0], $var[1], 'Process')
-   }
-   ```
+### Task 2.1: Diagnose Python Installation
+- [ ] Document current Python installations on host
+- [ ] Identify PATH issues
+- [ ] Check Windows App Execution Aliases
+- [ ] Determine if using Python from Microsoft Store (problematic)
 
-3. **Validate environment:**
-   ```powershell
-   python scripts/validate_env.py
-   ```
+---
 
-4. **Start the stack:**
-   ```powershell
-   docker-compose up -d                # Production services
-   docker-compose --profile dev up -d  # Include devcontainer
-   ```
+### Task 2.2: Install Python 3.13 (Standalone)
+- [ ] Download Python 3.13 from python.org (NOT Microsoft Store)
+- [ ] Install for all users OR current user (document choice)
+- [ ] Add Python to PATH during installation
+- [ ] Disable Windows App Execution Aliases for Python
 
-## File Migration Summary
+---
 
-### Migrated Files
-| Original Path | New Path | Status |
-|--------------|----------|--------|
-| `nginx.conf` | `.config/nginx/loadbalancer.conf` | ✅ Migrated |
-| `dockerfile/configs/nginx.conf` | `.config/nginx/main.conf` | ✅ Migrated |
-| `dockerfile/configs/default.conf` | `.config/nginx/default.conf` | ✅ Migrated |
-| `dockerfile/configs/postgresql.conf` | `.config/database/postgresql.conf` | ✅ Migrated |
-| `dockerfile/configs/mariadb.conf` | `.config/database/mariadb.conf` | ✅ Migrated |
-| `dockerfile/configs/pgadmin-servers.json` | `.config/services/pgadmin-servers.json` | ✅ Migrated |
-| `dockerfile/configs/localstack-init.sh` | `.config/services/localstack-init.sh` | ✅ Migrated |
-| `dockerfile/configs/buildkitd.toml` | `.config/docker/buildkitd.toml` | ✅ Migrated |
+### Task 2.3: Configure Python for Scripts
+- [ ] Update pyproject.toml if needed
+- [ ] Install Python dependencies via UV
+- [ ] Test all validation scripts
+- [ ] Update GitHub Actions if Python version changed
 
-### Files to Delete (After Validation)
-- `secrets/` directory (entire directory)
-- `dockerfile/configs/` directory (entire directory)
-- `nginx.conf` (root level)
-- `.config/docker/buildkit.toml` (replaced by buildkitd.toml)
+---
 
-## Validation Commands
+### Task 2.4: Update Documentation
+- [ ] Add Python setup instructions to README.md
+- [ ] Create troubleshooting guide for Python issues
+- [ ] Update SETUP.md with Python prerequisites
+- [ ] Document UV vs pip usage
 
-```powershell
-# Validate docker-compose syntax
-docker-compose config --quiet
+---
 
-# Validate environment variables
-python scripts/validate_env.py
+## 📁 Phase 3: Scripts Reorganization (SRP & DRY)
 
-# Validate nginx configs
-docker run --rm -v "${PWD}/.config/nginx:/etc/nginx:ro" nginx:alpine nginx -t
+**Objective:** Organize scripts into language-specific folders with task-based structure.
 
-# Test stack startup (dry-run)
-docker-compose --profile dev config
-
-# Full integration test (after all phases complete)
-docker-compose --profile dev up -d
-docker-compose ps
-docker-compose logs --tail=50
+### Task 3.1: Design New Scripts Structure
+**Proposed Structure:**
+```
+scripts/
+├── README.md
+├── orchestrator.ps1
+├── orchestrator.sh
+├── orchestrator.py
+├── powershell/
+│   ├── config/
+│   ├── docker/
+│   ├── docs/
+│   ├── audit/
+│   └── cleanup/
+├── python/
+│   ├── validation/
+│   ├── audit/
+│   └── utils/
+└── bash/
+    ├── docker/
+    └── docs/
 ```
 
-## Notes
+---
 
-- **Security**: Never commit `.env` file - contains sensitive credentials
-- **DOCKER_ Prefix**: All service passwords use `DOCKER_` prefix for consistency
-- **Native Formats**: Configs preserved in native format (.conf, .json, .sh) not YAML
-- **Pre-commit**: Will be automated as container service, not manual install
-- **Human-in-Loop**: All validations provide clear error messages for manual fixes
+### Task 3.2: Create Orchestrator Scripts
+- [ ] `scripts/orchestrator.ps1`
+- [ ] `scripts/orchestrator.sh`
+- [ ] `scripts/orchestrator.py`
+
+---
+
+### Task 3.3: Migrate Existing Scripts
+- [ ] Move PowerShell scripts to `powershell/` subfolders
+- [ ] Move Python scripts to `python/` subfolders
+- [ ] Move Bash scripts to `bash/` subfolders
+- [ ] Update all references
+
+---
+
+### Task 3.4: Extract Shared Utilities (DRY)
+- [ ] Create `python/utils/colors.py`
+- [ ] Create `python/utils/file_utils.py`
+- [ ] Create `python/utils/logging_utils.py`
+- [ ] Update all Python scripts to import shared utilities
+
+---
+
+### Task 3.5: Update References
+- [ ] Update `.github/workflows/validate.yml`
+- [ ] Update `.github/workflows/ci.yml`
+- [ ] Update `Makefile`
+- [ ] Update documentation
+
+---
+
+### Task 3.6: Create Scripts Documentation
+- [ ] Create `scripts/README.md`
+- [ ] Create `scripts/powershell/README.md`
+- [ ] Create `scripts/python/README.md`
+- [ ] Create `scripts/bash/README.md`
+
+---
+
+## 🧪 Phase 4: Testing & Validation
+
+### Task 4.1: Test Python Scripts
+### Task 4.2: Test PowerShell Scripts
+### Task 4.3: Test Bash Scripts
+### Task 4.4: Integration Testing
+
+---
+
+## 📊 Phase 5: Documentation Updates
+
+### Task 5.1: Update Core Documentation
+### Task 5.2: Create New Documentation
+### Task 5.3: Update Workflow Documentation
+
+---
+
+## ✅ Acceptance Criteria (All Phases)
+
+### Phase 1: Cleanup
+- ✅ Zero code smells (Ruff clean)
+- ✅ 100% Black formatting compliance
+- ✅ Mypy strict mode passes
+- ✅ Pre-commit hooks green
+- ✅ All obsolete files archived/removed
+
+### Phase 2: Python
+- ✅ Python 3.13 installed and in PATH
+- ✅ UV package manager installed
+- ✅ All Python scripts run without errors
+
+### Phase 3: Scripts
+- ✅ Scripts organized by language and task
+- ✅ Orchestrators working
+- ✅ Shared utilities extracted (DRY)
+- ✅ Each script follows SRP
+
+### Phase 4: Testing
+- ✅ All scripts tested individually
+- ✅ GitHub Actions workflows pass
+
+### Phase 5: Documentation
+- ✅ All documentation updated
+- ✅ New docs created
+
+---
+
+## 📝 Critical Issue Resolution
+
+**Problem:** `Python was not found; run without arguments to install from the Microsoft Store`
+
+**Root Cause:** Windows App Execution Aliases redirect `python` to Microsoft Store.
+
+**Solution:** Phase 2 (Tasks 2.1 - 2.4)
+
+---
+
+## 📅 Timeline Estimate
+
+- **Phase 1: Cleanup** - 2-3 hours
+- **Phase 2: Python** - 1-2 hours
+- **Phase 3: Scripts** - 4-6 hours
+- **Phase 4: Testing** - 2-3 hours
+- **Phase 5: Documentation** - 2-3 hours
+
+**Total:** 11-17 hours over 2-3 days
+
+---
+
+## 🔄 Migration Tracking
+
+| Old Path | New Path | Status |
+|----------|----------|--------|
+| `scripts/apply-settings.ps1` | `scripts/powershell/config/apply-settings.ps1` | ⏳ Pending |
+| `scripts/setup_secrets.ps1` | `scripts/powershell/config/setup-secrets.ps1` | ⏳ Pending |
+| `scripts/validate_env.py` | `scripts/python/validation/validate_env.py` | ⏳ Pending |
+| `scripts/validate_configs.py` | `scripts/python/validation/validate_configs.py` | ⏳ Pending |
+
+---
+
+## ✍️ Changelog
+
+### v3.0.0 (2025-10-25)
+- Initial planning for codebase cleanup and scripts reorganization
+- Identified critical Python installation issue
+- Designed new scripts structure (SRP, DRY principles)
+- Created orchestrator pattern
+
+---
+
+**Status:** 🟢 IN PROGRESS - Phase 1 Task 1.1
+**Next Action:** Run codebase audit using semantic search
