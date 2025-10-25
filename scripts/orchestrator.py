@@ -20,8 +20,8 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
-# Import after path modification
-from python.utils.colors import error, header, info, success, warning
+# Import after path modification (E402 is intentional)
+from python.utils.colors import error, header, info, success, warning  # noqa: E402
 
 
 def show_help() -> None:
@@ -103,7 +103,7 @@ def main() -> None:
     try:
         execute_task(task, action)
         print(success(f"Task completed: {task} {action}"))
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         print(error("Task failed"))
         sys.exit(1)
 

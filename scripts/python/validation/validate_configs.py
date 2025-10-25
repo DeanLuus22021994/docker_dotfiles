@@ -14,7 +14,7 @@ from typing import List, Tuple
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from python.utils.colors import error, header, separator, success
+from python.utils.colors import error, header, separator, success  # noqa: E402
 
 
 def validate_yaml_files() -> Tuple[bool, List[str]]:
@@ -183,7 +183,7 @@ def validate_postgresql_config() -> Tuple[bool, List[str]]:
         print(success("PostgreSQL config valid (basic syntax check)"))
         return True, []
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         errors.append(f"{pg_config}: {e}")
         print(error(f"{pg_config}: {e}"))
         return False, errors
@@ -226,7 +226,7 @@ def validate_mariadb_config() -> Tuple[bool, List[str]]:
         print(success("MariaDB config valid (basic syntax check)"))
         return True, []
 
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         errors.append(f"{maria_config}: {e}")
         print(error(f"{maria_config}: {e}"))
         return False, errors

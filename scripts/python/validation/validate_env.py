@@ -12,7 +12,15 @@ from typing import List, Tuple
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from python.utils.colors import Colors, bold, error, header, separator, success, warning
+from python.utils.colors import (  # noqa: E402
+    Colors,
+    bold,
+    error,
+    header,
+    separator,
+    success,
+    warning,
+)
 
 
 def validate_env_vars() -> Tuple[bool, List[str], List[str]]:
