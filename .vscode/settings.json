@@ -5,7 +5,19 @@
   // See .vscode/settings.local.example.json for template
   // ============================================================================
 
-  // GitHub Copilot Chat Settings (Team Defaults)
+  // ============================================================================
+  // GitHub Copilot Chat Agents (Stable - October 2025)
+  // Enable @workspace, @terminal, @vscode, @git agent participants
+  // ============================================================================
+  "github.copilot.chat.participants.enabled": true,
+  "github.copilot.chat.workspaceAgent.enabled": true,
+  "github.copilot.chat.terminalAgent.enabled": true,
+  "github.copilot.chat.vscodeAgent.enabled": true,
+  "github.copilot.chat.gitAgent.enabled": true,
+
+  // ============================================================================
+  // GitHub Copilot Chat Settings (Stable - Team Defaults)
+  // ============================================================================
   "github.copilot.chat.codeGeneration.useInstructionFiles": true,
   "github.copilot.chat.testGeneration.enabled": true,
   "github.copilot.chat.agent.autoFix": true,
@@ -14,10 +26,65 @@
   "github.copilot.chat.search.enabled": true,
   "github.copilot.chat.reviewAgent.enabled": true,
   "github.copilot.chat.setupTests.enabled": true,
+  "github.copilot.chat.localeOverride": "auto",
+  "github.copilot.chat.terminalChatLocation": "chatView",
+  "github.copilot.chat.useResponsesApi": true,
+  "github.copilot.chat.responsesApiReasoningEffort": "default",
+  "github.copilot.chat.responsesApiReasoningSummary": "detailed",
+  "github.copilot.chat.newWorkspaceCreation.enabled": true,
+  "github.copilot.chat.useProjectTemplates": true,
+  "github.copilot.chat.copilotDebugCommand.enabled": true,
+  "github.copilot.chat.customInstructionsInSystemMessage": true,
+  "github.copilot.chat.editor.temporalContext.enabled": true,
+  "github.copilot.chat.edits.temporalContext.enabled": true,
+  "github.copilot.chat.edits.suggestRelatedFilesForTests": true,
+  "github.copilot.chat.edits.suggestRelatedFilesFromGitHistory": true,
+  "github.copilot.chat.imageUpload.enabled": true,
+  "github.copilot.chat.reviewSelection.enabled": true,
+  "github.copilot.chat.summarizeAgentConversationHistory.enabled": true,
   
-  // GitHub Copilot Editor Settings
+  // ============================================================================
+  // GitHub Copilot Context & Follow-ups (Stable)
+  // ============================================================================
+  "github.copilot.chat.followUps.enabled": true,
+  "github.copilot.chat.contextSelection.enabled": true,
+  "github.copilot.chat.verboseContext": false,
+  
+  // ============================================================================
+  // GitHub Copilot Advanced Settings (Experimental - Bleeding Edge)
+  // ============================================================================
+  "github.copilot.chat.anthropic.thinking.enabled": true,
+  "github.copilot.chat.anthropic.thinking.maxTokens": 16000,
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "github.copilot.nextEditSuggestions.allowWhitespaceOnlyChanges": true,
+  "github.copilot.nextEditSuggestions.fixes": true,
+  
+  // Experimental: Multi-file edits (Team enabled for collaborative workflows)
+  "github.copilot.chat.edits.enableMultiFileEdits": true,
+  "github.copilot.chat.edits.confirmations": "ask",
+  
+  // Experimental: Workspace indexing (Improves context awareness)
+  "github.copilot.chat.indexing.enabled": true,
+  "github.copilot.chat.documentationSearch.enabled": true,
+  
+  // Experimental: Model selection (Workspace default, override in settings.local.json)
+  "github.copilot.chat.modelSelection.enabled": true,
+  "github.copilot.chat.preferredModel": "claude-sonnet-4.5",
+  
+  // ============================================================================
+  // GitHub Copilot Editor Settings (Stable)
+  // ============================================================================
   "github.copilot.editor.enableCodeActions": true,
+  "github.copilot.editor.enableAutoCompletions": true,
+  "github.copilot.editor.iterativeFixing.enabled": true,
   "github.copilot.renameSuggestions.triggerAutomatically": true,
+  "github.copilot.inlineSuggest.enable": true,
+  "github.copilot.editor.inlineSuggest.enabled": true,
+  
+  // ============================================================================
+  // GitHub Copilot - Language Model Tools & Chat Participants (October 2025)
+  // ============================================================================
+  "github.copilot.chat.languageModelTools.enabled": true,
 
   // YAML validation settings
   "yaml.schemas": {
@@ -62,5 +129,38 @@
   "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe",
   "python-envs.defaultEnvManager": "ms-python.python:system",
   "python-envs.defaultPackageManager": "ms-python.python:pip",
-  "python-envs.pythonProjects": []
+  "python-envs.pythonProjects": [],
+  
+  // Terminal settings (2025 API)
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": [
+        "${env:windir}\\Sysnative\\cmd.exe",
+        "${env:windir}\\System32\\cmd.exe"
+      ],
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "source": "Git Bash"
+    }
+  },
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "icon": "terminal-bash"
+    },
+    "zsh": {
+      "path": "zsh"
+    },
+    "fish": {
+      "path": "fish"
+    }
+  }
 }

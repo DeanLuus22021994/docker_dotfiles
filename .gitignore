@@ -37,8 +37,13 @@
 # IDE
 .vscode/*
 !.vscode/settings.json
-!.vscode/*.json.example
-.vscode/*.local.json
+!.vscode/settings.local.example.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/keybindings.json
+!.vscode/mcp.json
+.vscode/settings.local.json
 .idea/
 *.swp
 

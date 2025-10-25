@@ -1,0 +1,158 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Python: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Python: Orchestrator Script",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/scripts/orchestrator.py",
+      "console": "integratedTerminal",
+      "args": ["validate", "env"],
+      "justMyCode": true,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/scripts"
+      }
+    },
+    {
+      "name": "Python: Module (scripts)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "scripts.orchestrator",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Python: Attach to Process",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "justMyCode": true
+    },
+    {
+      "name": "Node: API Server",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/api/server.js",
+      "cwd": "${workspaceFolder}/api",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "name": "Node: Attach to API",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"],
+      "localRoot": "${workspaceFolder}/api",
+      "remoteRoot": "/app"
+    },
+    {
+      "name": "Docker: Attach to Python Container",
+      "type": "debugpy",
+      "request": "attach",
+      "connect": {
+        "host": "localhost",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/workspace"
+        }
+      ],
+      "justMyCode": false
+    },
+    {
+      "name": "Docker: Attach to Node Container",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "address": "localhost",
+      "localRoot": "${workspaceFolder}/api",
+      "remoteRoot": "/app",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Python: Test Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "${file}",
+        "-v",
+        "--tb=short"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    },
+    {
+      "name": "Python: Test with Coverage",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "--cov=scripts",
+        "--cov-report=html",
+        "--cov-report=term",
+        "-v"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: API + Web",
+      "configurations": ["Node: API Server"],
+      "preLaunchTask": "Web: Start Dev Server",
+      "presentation": {
+        "hidden": false,
+        "group": "full-stack",
+        "order": 1
+      }
+    },
+    {
+      "name": "Docker: Attach All Services",
+      "configurations": [
+        "Docker: Attach to Python Container",
+        "Docker: Attach to Node Container"
+      ],
+      "presentation": {
+        "hidden": false,
+        "group": "docker",
+        "order": 2
+      }
+    }
+  ]
+}

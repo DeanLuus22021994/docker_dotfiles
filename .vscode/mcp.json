@@ -1,0 +1,43 @@
+{
+  "servers": {
+    "docker-github-mcp": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "cluster-github-mcp",
+        "npx",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}"
+      }
+    },
+    "docker-filesystem": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "cluster-github-mcp",
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/workspace"
+      ]
+    },
+    "docker-postgres": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "cluster-postgres",
+        "psql",
+        "-U",
+        "postgres"
+      ],
+      "env": {
+        "PGPASSWORD": "${env:POSTGRES_PASSWORD}"
+      }
+    }
+  }
+}

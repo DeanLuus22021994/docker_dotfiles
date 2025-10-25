@@ -1,0 +1,150 @@
+[
+  {
+    "key": "ctrl+shift+i",
+    "command": "workbench.action.chat.open",
+    "when": "!inChat"
+  },
+  {
+    "key": "ctrl+alt+i",
+    "command": "workbench.action.chat.openInEditor"
+  },
+  {
+    "key": "ctrl+i",
+    "command": "inlineChat.start",
+    "when": "editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+shift+/",
+    "command": "workbench.action.chat.sendToNewChat"
+  },
+  {
+    "key": "ctrl+shift+.",
+    "command": "github.copilot.terminal.suggestCommand",
+    "when": "terminalFocus"
+  },
+  {
+    "key": "ctrl+alt+a",
+    "command": "workbench.action.chat.attachContext"
+  },
+  {
+    "key": "ctrl+shift+a",
+    "command": "workbench.action.chat.attachContext.selection",
+    "when": "editorHasSelection"
+  },
+  {
+    "key": "ctrl+alt+w",
+    "command": "workbench.action.chat.sendToChat",
+    "args": "@workspace"
+  },
+  {
+    "key": "ctrl+alt+t",
+    "command": "workbench.action.chat.sendToChat",
+    "args": "@terminal"
+  },
+  {
+    "key": "ctrl+alt+v",
+    "command": "workbench.action.chat.sendToChat",
+    "args": "@vscode"
+  },
+  {
+    "key": "ctrl+alt+g",
+    "command": "workbench.action.chat.sendToChat",
+    "args": "@git"
+  },
+  {
+    "key": "tab",
+    "command": "editor.action.inlineSuggest.commit",
+    "when": "inlineSuggestionVisible && !editorReadonly"
+  },
+  {
+    "key": "alt+]",
+    "command": "editor.action.inlineSuggest.showNext",
+    "when": "inlineSuggestionVisible && !editorReadonly"
+  },
+  {
+    "key": "alt+[",
+    "command": "editor.action.inlineSuggest.showPrevious",
+    "when": "inlineSuggestionVisible && !editorReadonly"
+  },
+  {
+    "key": "escape",
+    "command": "editor.action.inlineSuggest.hide",
+    "when": "inlineSuggestionVisible"
+  },
+  {
+    "key": "ctrl+shift+enter",
+    "command": "github.copilot.generate",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+alt+enter",
+    "command": "github.copilot.generateTests",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+d",
+    "command": "github.copilot.generateDocs",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+alt+f",
+    "command": "github.copilot.fix",
+    "when": "editorHasSelection"
+  },
+  {
+    "key": "ctrl+alt+e",
+    "command": "github.copilot.explain",
+    "when": "editorHasSelection"
+  },
+  {
+    "key": "ctrl+alt+r",
+    "command": "github.copilot.review",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+k ctrl+i",
+    "command": "editor.action.showHover",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+space",
+    "command": "editor.action.triggerParameterHints",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+.",
+    "command": "editor.action.quickFix",
+    "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+shift+r",
+    "command": "editor.action.refactor",
+    "when": "editorHasCodeActionsProvider && editorTextFocus && !editorReadonly"
+  },
+  {
+    "key": "ctrl+alt+c",
+    "command": "github.copilot.chat.clearSession"
+  },
+  {
+    "key": "ctrl+alt+h",
+    "command": "github.copilot.chat.history"
+  },
+  {
+    "key": "ctrl+alt+s",
+    "command": "github.copilot.chat.shareSession"
+  },
+  {
+    "key": "ctrl+k ctrl+m",
+    "command": "github.copilot.chat.modelSelection"
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "testing.runAtCursor",
+    "when": "editorTextFocus"
+  },
+  {
+    "key": "ctrl+shift+alt+t",
+    "command": "testing.debugAtCursor",
+    "when": "editorTextFocus"
+  }
+]
