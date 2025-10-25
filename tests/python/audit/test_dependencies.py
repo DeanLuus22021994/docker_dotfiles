@@ -107,9 +107,7 @@ class TestCheckPyprojectDependencies:
 
     @patch("subprocess.run")
     @patch("pathlib.Path.exists")
-    def test_all_dependencies_installed(
-        self, mock_exists: Mock, mock_run: Mock
-    ) -> None:
+    def test_all_dependencies_installed(self, mock_exists: Mock, mock_run: Mock) -> None:
         """Test when all required dependencies are installed."""
         mock_exists.return_value = True
         stdout_data = (
@@ -128,9 +126,7 @@ class TestCheckPyprojectDependencies:
 
     @patch("subprocess.run")
     @patch("pathlib.Path.exists")
-    def test_missing_dependencies(
-        self, mock_exists: Mock, mock_run: Mock
-    ) -> None:
+    def test_missing_dependencies(self, mock_exists: Mock, mock_run: Mock) -> None:
         """Test when some dependencies are missing."""
         mock_exists.return_value = True
         mock_run.return_value = Mock(
@@ -157,9 +153,7 @@ class TestCheckPyprojectDependencies:
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     @patch("pathlib.Path.exists")
-    def test_pip_not_found(
-        self, mock_exists: Mock, mock_run: Mock
-    ) -> None:
+    def test_pip_not_found(self, mock_exists: Mock, mock_run: Mock) -> None:
         """Test when pip is not available."""
         mock_exists.return_value = True
 
@@ -171,9 +165,7 @@ class TestCheckPyprojectDependencies:
 
     @patch("subprocess.run")
     @patch("pathlib.Path.exists")
-    def test_case_insensitive_check(
-        self, mock_exists: Mock, mock_run: Mock
-    ) -> None:
+    def test_case_insensitive_check(self, mock_exists: Mock, mock_run: Mock) -> None:
         """Test that package checking is case-insensitive."""
         mock_exists.return_value = True
         stdout_data = (

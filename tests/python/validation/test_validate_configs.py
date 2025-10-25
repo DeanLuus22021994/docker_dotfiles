@@ -37,9 +37,7 @@ class TestValidateYamlFiles:
 
     @patch("subprocess.run")
     @patch("pathlib.Path.rglob")
-    def test_validate_yaml_success(
-        self, mock_rglob: Mock, mock_run: Mock
-    ) -> None:
+    def test_validate_yaml_success(self, mock_rglob: Mock, mock_run: Mock) -> None:
         """Test successful YAML validation."""
         mock_rglob.return_value = [Path("test.yml"), Path("config.yaml")]
         mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
@@ -52,9 +50,7 @@ class TestValidateYamlFiles:
 
     @patch("subprocess.run")
     @patch("pathlib.Path.rglob")
-    def test_validate_yaml_failure(
-        self, mock_rglob: Mock, mock_run: Mock
-    ) -> None:
+    def test_validate_yaml_failure(self, mock_rglob: Mock, mock_run: Mock) -> None:
         """Test YAML validation failure."""
         mock_rglob.return_value = [Path("test.yml")]
         mock_run.return_value = Mock(
@@ -69,9 +65,7 @@ class TestValidateYamlFiles:
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     @patch("pathlib.Path.rglob")
-    def test_validate_yaml_no_yamllint(
-        self, mock_rglob: Mock, mock_run: Mock
-    ) -> None:
+    def test_validate_yaml_no_yamllint(self, mock_rglob: Mock, mock_run: Mock) -> None:
         """Test YAML validation when yamllint is not installed."""
         mock_rglob.return_value = [Path("test.yml")]
 
@@ -147,7 +141,7 @@ class TestValidateJsonFiles:
 
         json1.write_text('{"valid": true}', encoding="utf-8")
         json2.write_text('{"also": "valid"}', encoding="utf-8")
-        json3.write_text('{invalid}', encoding="utf-8")
+        json3.write_text("{invalid}", encoding="utf-8")
 
         with patch("pathlib.Path.rglob", return_value=[json1, json2, json3]):
             passed, errors = validate_json_files()
@@ -160,9 +154,7 @@ class TestValidateNginxConfigs:
     """Test validate_nginx_configs function."""
 
     @patch("subprocess.run")
-    def test_validate_nginx_success(
-        self, mock_run: Mock, temp_project_dir: Path
-    ) -> None:
+    def test_validate_nginx_success(self, mock_run: Mock, temp_project_dir: Path) -> None:
         """Test successful nginx validation."""
         nginx_config = temp_project_dir / ".config" / "nginx" / "main.conf"
         nginx_config.parent.mkdir(parents=True, exist_ok=True)
@@ -177,13 +169,9 @@ class TestValidateNginxConfigs:
         assert len(errors) == 0
 
     @patch("subprocess.run")
-    def test_validate_nginx_failure(
-        self, mock_run: Mock, temp_project_dir: Path
-    ) -> None:
+    def test_validate_nginx_failure(self, mock_run: Mock, temp_project_dir: Path) -> None:
         """Test nginx validation failure."""
-        mock_run.return_value = Mock(
-            returncode=1, stdout="", stderr="nginx: configuration error"
-        )
+        mock_run.return_value = Mock(returncode=1, stdout="", stderr="nginx: configuration error")
 
         with patch("pathlib.Path.exists", return_value=True):
             passed, errors = validate_nginx_configs()
@@ -220,51 +208,48 @@ class TestValidatePostgresqlConfig:
             "# PostgreSQL configuration\nmax_connections = 100\n", encoding="utf-8"
         )
 
-        with patch(
-            "pathlib.Path.exists", return_value=True
-        ), patch(
-            "builtins.open",
-            return_value=open(pg_config, "r", encoding="utf-8"),
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch(
+                "builtins.open",
+                return_value=open(pg_config, "r", encoding="utf-8"),
+            ),
         ):
             passed, errors = validate_postgresql_config()
 
         assert passed is True
         assert len(errors) == 0
 
-    def test_validate_postgresql_invalid_syntax(
-        self, temp_project_dir: Path
-    ) -> None:
+    def test_validate_postgresql_invalid_syntax(self, temp_project_dir: Path) -> None:
         """Test PostgreSQL config with invalid syntax."""
         pg_config = temp_project_dir / ".config" / "database" / "postgresql.conf"
         pg_config.parent.mkdir(parents=True, exist_ok=True)
         pg_config.write_text("invalid_line_without_equals\n", encoding="utf-8")
 
-        with patch(
-            "pathlib.Path.exists", return_value=True
-        ), patch(
-            "builtins.open",
-            return_value=open(pg_config, "r", encoding="utf-8"),
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch(
+                "builtins.open",
+                return_value=open(pg_config, "r", encoding="utf-8"),
+            ),
         ):
             passed, errors = validate_postgresql_config()
 
         assert passed is False
         assert len(errors) == 1
 
-    def test_validate_postgresql_comments_ignored(
-        self, temp_project_dir: Path
-    ) -> None:
+    def test_validate_postgresql_comments_ignored(self, temp_project_dir: Path) -> None:
         """Test PostgreSQL config ignores comments."""
         pg_config = temp_project_dir / ".config" / "database" / "postgresql.conf"
         pg_config.parent.mkdir(parents=True, exist_ok=True)
-        pg_config.write_text(
-            "# This is a comment\nmax_connections = 100\n", encoding="utf-8"
-        )
+        pg_config.write_text("# This is a comment\nmax_connections = 100\n", encoding="utf-8")
 
-        with patch(
-            "pathlib.Path.exists", return_value=True
-        ), patch(
-            "builtins.open",
-            return_value=open(pg_config, "r", encoding="utf-8"),
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch(
+                "builtins.open",
+                return_value=open(pg_config, "r", encoding="utf-8"),
+            ),
         ):
             passed, errors = validate_postgresql_config()
 
@@ -287,34 +272,32 @@ class TestValidateMariadbConfig:
         """Test successful MariaDB config validation."""
         maria_config = temp_project_dir / ".config" / "database" / "mariadb.conf"
         maria_config.parent.mkdir(parents=True, exist_ok=True)
-        maria_config.write_text(
-            "[mysqld]\nmax_connections = 100\n", encoding="utf-8"
-        )
+        maria_config.write_text("[mysqld]\nmax_connections = 100\n", encoding="utf-8")
 
-        with patch(
-            "pathlib.Path.exists", return_value=True
-        ), patch(
-            "builtins.open",
-            return_value=open(maria_config, "r", encoding="utf-8"),
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch(
+                "builtins.open",
+                return_value=open(maria_config, "r", encoding="utf-8"),
+            ),
         ):
             passed, errors = validate_mariadb_config()
 
         assert passed is True
         assert len(errors) == 0
 
-    def test_validate_mariadb_invalid_syntax(
-        self, temp_project_dir: Path
-    ) -> None:
+    def test_validate_mariadb_invalid_syntax(self, temp_project_dir: Path) -> None:
         """Test MariaDB config with invalid syntax."""
         maria_config = temp_project_dir / ".config" / "database" / "mariadb.conf"
         maria_config.parent.mkdir(parents=True, exist_ok=True)
         maria_config.write_text("[mysqld]\ninvalid line\n", encoding="utf-8")
 
-        with patch(
-            "pathlib.Path.exists", return_value=True
-        ), patch(
-            "builtins.open",
-            return_value=open(maria_config, "r", encoding="utf-8"),
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch(
+                "builtins.open",
+                return_value=open(maria_config, "r", encoding="utf-8"),
+            ),
         ):
             passed, errors = validate_mariadb_config()
 

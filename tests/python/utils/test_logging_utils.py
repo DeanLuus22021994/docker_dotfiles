@@ -18,41 +18,31 @@ class TestColoredFormatter:
         formatter = ColoredFormatter("%(levelname)s: %(message)s")
 
         # Test DEBUG level
-        record = logging.LogRecord(
-            "test", logging.DEBUG, "", 0, "test message", (), None
-        )
+        record = logging.LogRecord("test", logging.DEBUG, "", 0, "test message", (), None)
         result = formatter.format(record)
         assert Colors.CYAN in result
         assert Colors.RESET in result
 
         # Test INFO level
-        record = logging.LogRecord(
-            "test", logging.INFO, "", 0, "test message", (), None
-        )
+        record = logging.LogRecord("test", logging.INFO, "", 0, "test message", (), None)
         result = formatter.format(record)
         assert Colors.BLUE in result
         assert Colors.RESET in result
 
         # Test WARNING level
-        record = logging.LogRecord(
-            "test", logging.WARNING, "", 0, "test message", (), None
-        )
+        record = logging.LogRecord("test", logging.WARNING, "", 0, "test message", (), None)
         result = formatter.format(record)
         assert Colors.YELLOW in result
         assert Colors.RESET in result
 
         # Test ERROR level
-        record = logging.LogRecord(
-            "test", logging.ERROR, "", 0, "test message", (), None
-        )
+        record = logging.LogRecord("test", logging.ERROR, "", 0, "test message", (), None)
         result = formatter.format(record)
         assert Colors.RED in result
         assert Colors.RESET in result
 
         # Test CRITICAL level
-        record = logging.LogRecord(
-            "test", logging.CRITICAL, "", 0, "test message", (), None
-        )
+        record = logging.LogRecord("test", logging.CRITICAL, "", 0, "test message", (), None)
         result = formatter.format(record)
         assert Colors.BOLD in result
         assert Colors.RED in result
@@ -61,9 +51,7 @@ class TestColoredFormatter:
     def test_colored_formatter_message_preserved(self) -> None:
         """Test formatter preserves message content."""
         formatter = ColoredFormatter("%(levelname)s: %(message)s")
-        record = logging.LogRecord(
-            "test", logging.INFO, "", 0, "custom message", (), None
-        )
+        record = logging.LogRecord("test", logging.INFO, "", 0, "custom message", (), None)
         result = formatter.format(record)
         assert "custom message" in result
 
@@ -137,9 +125,7 @@ class TestSetupLogger:
             logging.CRITICAL,
         ],
     )
-    def test_setup_logger_all_levels(
-        self, level: int, cleanup_loggers: None
-    ) -> None:
+    def test_setup_logger_all_levels(self, level: int, cleanup_loggers: None) -> None:
         """Test logger setup with various logging levels."""
         logger = setup_logger("test_logger", level=level)
         assert logger.level == level

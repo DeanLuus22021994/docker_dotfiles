@@ -195,9 +195,7 @@ class TestPrintSummary:
         assert "DOCKER_POSTGRES_PASSWORD" in captured.out
         assert ".env.example" in captured.out
 
-    def test_summary_includes_fix_instructions(
-        self, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_summary_includes_fix_instructions(self, capsys: pytest.CaptureFixture[str]) -> None:
         """Test summary includes instructions for fixing issues."""
         print_summary(False, ["GH_PAT"], [])
 

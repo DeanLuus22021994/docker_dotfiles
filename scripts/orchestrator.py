@@ -121,9 +121,7 @@ def execute_task(task: str, action: str) -> None:
                 print(info("Analyzing MCP token usage..."))
                 # Pass through any additional arguments
                 extra_args = sys.argv[3:] if len(sys.argv) > 3 else []
-                result = subprocess.run(
-                    [sys.executable, str(script)] + extra_args, check=False
-                )
+                result = subprocess.run([sys.executable, str(script)] + extra_args, check=False)
                 sys.exit(result.returncode)
             else:
                 print(error(f"Script not found: {script}"))
