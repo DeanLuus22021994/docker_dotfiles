@@ -3,7 +3,7 @@
 # Or via apply-settings.ps1: .\scripts\apply-settings.ps1 -ApplyRepository
 
 name: docker_dotfiles
-description: "Modern Data Platform v2.0 - GPU-accelerated ML stack with 25+ microservices, dual databases (PostgreSQL + MariaDB), S3 storage, monitoring (Grafana/Prometheus), and complete dev tooling. Production-ready Docker Compose orchestration with TDD, SSoT config management."
+description: "Modern Data Platform v4.0 - Production-ready GPU-accelerated ML stack with 25+ microservices, enterprise security, comprehensive testing, dual databases (PostgreSQL + MariaDB), S3 storage, monitoring (Grafana/Prometheus), and complete dev tooling. Docker Compose orchestration with TDD, SSoT config management."
 homepage: https://deanluu s22021994.github.io/docker_dotfiles
 topics:
   - docker
