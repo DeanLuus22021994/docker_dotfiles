@@ -2,4 +2,4 @@
 Python utilities package for shared functionality
 """
 
-__all__ = ['colors']
+__all__ = ["colors"]

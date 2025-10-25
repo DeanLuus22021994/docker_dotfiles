@@ -48,5 +48,8 @@
   },
   
   // Files to exclude from validation
-  "files.exclude": {}
+  "files.exclude": {},
+  
+  // Python settings
+  "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe"
 }
