@@ -1,664 +1,1029 @@
----
-title: "Docker Infrastructure Refactoring - TODO"
-version: "3.1.0"
-date: "2025-10-25"
-status: "COMPLETE"
-previous_version: "3.0.0"
-completed_date: "2025-10-25"
-iteration: 3.1
----
+# Project TODO - v4.0
 
-# Docker Infrastructure Refactoring - TODO v3.1 ✅ COMPLETE
-
-## 🎯 Overview
-
-**Status:** ✅ COMPLETE - All phases finished successfully
-
-This iteration focused on **codebase cleanup, Python environment resolution, and scripts reorganization** following SRP (Single Responsibility Principle) and DRY (Don't Repeat Yourself) principles.
-
-**Goal:** ✅ ACHIEVED - Clean, maintainable, organized scripts architecture with proper Python environment setup.
-
-**Completion Date:** 2025-10-25
-
-### What Was Accomplished
-
-✅ **Codebase Cleanup** - Zero code smells, 100% code quality compliance  
-✅ **Python 3.14 Compliance** - Modern type hints, enterprise-grade standards  
-✅ **Scripts Reorganization** - SRP/DRY structure with orchestrators  
-✅ **Comprehensive Documentation** - 1,500+ lines of module-specific docs  
-✅ **Testing & Validation** - All scripts tested and verified  
-✅ **Migration Guide** - Complete transition documentation
+**Last Updated:** 2025-10-25  
+**Current Phase:** v4.0 - Testing Infrastructure & Production Readiness  
+**Status:** 🚀 IN PROGRESS
 
 ---
 
-## 📋 Phase 1: Codebase Cleanup & Maintenance ✅ COMPLETE
+## 📊 Quick Status
 
-**Objective:** Ensure absolutely clean code implementations before new features.
+| Category | Status | Progress | Priority |
+|----------|--------|----------|----------|
+| Testing Infrastructure | 🟡 Not Started | 0/6 | 🔴 Critical |
+| Security Hardening | 🟡 Not Started | 0/6 | 🔴 Critical |
+| Planned Scripts | 🟡 Not Started | 0/6 | 🟠 High |
+| Documentation Consolidation | 🟡 Not Started | 0/4 | 🟠 High |
+| Code Quality Automation | 🟡 Not Started | 0/3 | 🟢 Medium |
+| Web Dashboard Enhancements | 🟡 Not Started | 0/5 | 🟢 Medium |
 
-### Task 1.1: Code Quality Audit ✅ COMPLETE
+**Legend:**  
+🟢 Complete | 🔵 In Progress | 🟡 Not Started | 🔴 Blocked | ⚪ Optional
 
-- [x] Run semantic search for code smells, duplications, and inconsistencies
-- [x] Identify unused files, deprecated code, and orphaned configurations
-- [x] Document findings in `CLEANUP-REPORT.md`
-- [x] Create removal plan for obsolete code
+---
 
+## 🎯 Phase 4.1: Testing Infrastructure (Critical)
+
+**Goal:** Establish comprehensive testing framework for Python scripts  
+**Priority:** 🔴 CRITICAL  
+**Target:** Week 1
+
+### Tasks
+
+#### 4.1.1 Setup pytest Framework ⚪ NOT STARTED
+**Description:** Install and configure pytest for Python 3.14  
 **Acceptance Criteria:**
+- [ ] pytest installed with all plugins (pytest-cov, pytest-mock, pytest-asyncio)
+- [ ] `pyproject.toml` updated with pytest configuration
+- [ ] Test discovery working for `tests/` directory
+- [ ] Coverage reporting configured (>80% target)
 
-- ✅ Comprehensive audit report generated
-- ✅ Zero duplicate configuration blocks identified
-- ✅ All orphaned files documented
-- ✅ Removal plan approved
-
-**Commit:** `6d2f25f`
-
----
-
-### Task 1.2: Remove Deprecated Code ✅ COMPLETE
-
-- [x] Delete archived documentation (already excluded from Jekyll)
-- [x] Remove unused Docker images/services
-- [x] Clean up obsolete scripts (verified none exist)
-- [x] Remove commented-out code blocks (verified none exist)
-
-**Files Reviewed:**
-
-- `documentation/archive/` - Does not exist (excluded from Jekyll)
-- ~~`ENHANCEMENTS-COMPLETE.md`~~ - Does not exist (references removed)
-- ~~`ENVIRONMENT-INTEGRATION-COMPLETE.md`~~ - Does not exist (references removed)
-- ~~`CLUSTER.md`~~ - Does not exist (references removed)
+**Dependencies:** None  
+**Estimated Time:** 1 hour
 
 ---
 
-### Task 1.3: Standardize Code Formatting ✅ COMPLETE
+#### 4.1.2 Create Test Structure ⚪ NOT STARTED
+**Description:** Create comprehensive test directory structure  
+**Acceptance Criteria:**
+- [ ] `tests/python/` directory created with `__init__.py`
+- [ ] `tests/python/audit/` for code_quality.py and dependencies.py tests
+- [ ] `tests/python/utils/` for colors.py, file_utils.py, logging_utils.py tests
+- [ ] `tests/python/validation/` for validate_env.py and validate_configs.py tests
+- [ ] `tests/fixtures/` for test data (sample configs, .env files)
 
-- [x] Run Black on all Python files
-- [x] Run Ruff linter and fix issues
-- [x] Run mypy type checking (strict mode)
-- [x] Ensure pre-commit hooks pass on all files
-
-**Status:** All Python files now comply with Black formatting (line-length=100), Ruff linting (strict mode), and mypy type checking (strict mode). Verified via `python scripts/orchestrator.py audit code` - all checks passed.
-
-**Commit:** Verified 2025-10-25
-
----
-
-### Task 1.4: Documentation Cleanup ✅ COMPLETE
-
-- [x] Remove outdated sections from README.md
-- [x] Update AGENT.md with new scripts structure
-- [x] Consolidate scattered documentation into centralized locations
-- [x] Ensure all code blocks have correct language identifiers
-
-**Changes:**
-
-- README.md: Added Python setup section, updated scripts structure
-- AGENT.md: Added Python environment section, updated file paths
-
----
-
-## 🐍 Phase 2: Python Environment Resolution ✅ COMPLETE (Documentation)
-
-**Objective:** Resolve "Python was not found" error on Windows host.
-
-### Task 2.1: Diagnose Python Installation ✅ COMPLETE
-
-- [x] Document current Python installations on host
-- [x] Identify PATH issues
-- [x] Check Windows App Execution Aliases
-- [x] Determine if using Python from Microsoft Store (problematic)
-
-**Findings:**
-
-- Python command redirects to Microsoft Store (Windows App Execution Alias)
-- Stale Python 3.8 entries in PATH (executable doesn't exist)
-- No functional Python installation on host
-- See: `docs/python-setup-troubleshooting.md`
-
----
-
-### Task 2.2: Install Python 3.14.0 (Standalone) ✅ COMPLETE (Manual Step Required)
-
-- [x] Download Python 3.14.0 from python.org (28.52 MB)
-- [x] Install silently with PrependPath=1, InstallAllUsers=0
-- [x] Verify installation successful (28.52 MB file downloaded)
-- [ ] **USER ACTION REQUIRED:** Disable Windows App Execution Aliases
-  - Settings → Apps → Advanced app settings → App execution aliases
-  - Disable "App Installer python.exe"
-  - Disable "App Installer python3.exe"
-- [ ] **After disabling aliases:** Refresh PATH in PowerShell
-  ```powershell
-  $env:Path = [System.Environment]::GetEnvironmentVariable('Path','User') + ';' + [System.Environment]::GetEnvironmentVariable('Path','Machine')
-  python --version  # Should show Python 3.14.0
-  ```
-
-**Status:** Python 3.14.0 installed successfully but Windows App Execution Aliases block access.  
-**Blocker:** User must manually disable aliases in Windows Settings (cannot be automated).  
-**Installation Path:** `C:\Users\deanl.MSI\AppData\Local\Programs\Python\Python314\`
-
-**Instructions:** See `docs/python-setup-troubleshooting.md`
-
----
-
-### Task 2.3: Configure Python for Scripts ⚠️ USER ACTION REQUIRED
-
-- [ ] Update pyproject.toml if needed
-- [ ] Install Python dependencies via UV
-- [ ] Test all validation scripts
-- [ ] Update GitHub Actions if Python version changed
-
-**Blocked by:** Task 2.2 (Python installation)
-
----
-
-### Task 2.4: Update Documentation ✅ COMPLETE
-
-- [x] Add Python setup instructions to README.md
-- [x] Create troubleshooting guide for Python issues
-- [x] Update SETUP.md with Python prerequisites
-- [x] Document UV vs pip usage
-
-**Created:**
-
-- `docs/python-setup-troubleshooting.md` - Comprehensive Python setup guide
-- README.md Python setup section with troubleshooting
-
----
-
-## 📁 Phase 3: Scripts Reorganization (SRP & DRY) ✅ COMPLETE
-
-**Objective:** Organize scripts into language-specific folders with task-based structure.
-
-### Task 3.1: Design New Scripts Structure ✅ COMPLETE
-
-**Implemented Structure:**
-
+**Structure:**
 ```
-scripts/
-├── README.md
-├── orchestrator.ps1
-├── orchestrator.sh
-├── orchestrator.py
-├── powershell/
-│   ├── README.md
-│   ├── config/          (apply-settings.ps1, setup-secrets.ps1)
-│   ├── docker/          (start-devcontainer.ps1)
-│   ├── docs/            (serve-docs.ps1)
-│   ├── audit/           (test-integration.ps1)
-│   └── cleanup/         (planned)
-├── python/
-│   ├── README.md
-│   ├── __init__.py
-│   ├── validation/      (validate_env.py, validate_configs.py)
-│   ├── audit/           (planned)
-│   └── utils/           (colors.py, file_utils.py, logging_utils.py)
-└── bash/
-    ├── README.md
-    ├── docker/          (start-devcontainer.sh)
-    └── docs/            (serve-docs.sh)
+tests/
+├── __init__.py
+├── conftest.py                 # Shared fixtures
+├── fixtures/
+│   ├── sample.env              # Test environment file
+│   ├── test-nginx.conf         # Test nginx config
+│   ├── test-postgres.conf      # Test postgres config
+│   └── test-pyproject.toml     # Test pyproject.toml
+└── python/
+    ├── __init__.py
+    ├── audit/
+    │   ├── __init__.py
+    │   ├── test_code_quality.py
+    │   └── test_dependencies.py
+    ├── utils/
+    │   ├── __init__.py
+    │   ├── test_colors.py
+    │   ├── test_file_utils.py
+    │   └── test_logging_utils.py
+    └── validation/
+        ├── __init__.py
+        ├── test_validate_env.py
+        └── test_validate_configs.py
 ```
 
+**Dependencies:** 4.1.1  
+**Estimated Time:** 1 hour
+
 ---
 
-### Task 3.2: Create Orchestrator Scripts ✅ COMPLETE
+#### 4.1.3 Write Unit Tests for Utils ⚪ NOT STARTED
+**Description:** Write comprehensive unit tests for utils module  
+**Acceptance Criteria:**
+- [ ] `test_colors.py` - Test all color output functions, terminals with/without ANSI support
+- [ ] `test_file_utils.py` - Test find_files(), safe_read_file(), ensure_directory()
+- [ ] `test_logging_utils.py` - Test all logging functions, log levels, formatters
+- [ ] All tests passing with >90% coverage for utils module
 
-- [x] `scripts/orchestrator.ps1` (PowerShell)
-- [x] `scripts/orchestrator.sh` (Bash)
-- [x] `scripts/orchestrator.py` (Python)
+**Key Test Cases:**
+- Colors: ANSI escape codes, non-ANSI terminals, success/error/warning/info
+- File Utils: File existence, directory creation, recursive search, error handling
+- Logging: Setup logger, log levels, file handlers, console handlers
+
+**Dependencies:** 4.1.2  
+**Estimated Time:** 3 hours
+
+---
+
+#### 4.1.4 Write Unit Tests for Validation ⚪ NOT STARTED
+**Description:** Write comprehensive unit tests for validation module  
+**Acceptance Criteria:**
+- [ ] `test_validate_env.py` - Test .env parsing, variable validation, missing variables detection
+- [ ] `test_validate_configs.py` - Test config file validation, nginx/postgres/mariadb configs
+- [ ] All tests passing with >90% coverage for validation module
+- [ ] Mock Docker commands (don't require Docker installed)
+
+**Key Test Cases:**
+- Validate Env: Valid .env, missing required vars, malformed .env, empty values
+- Validate Configs: Valid configs, invalid syntax, missing files, Docker validation
+
+**Dependencies:** 4.1.2  
+**Estimated Time:** 3 hours
+
+---
+
+#### 4.1.5 Write Unit Tests for Audit ⚪ NOT STARTED
+**Description:** Write comprehensive unit tests for audit module  
+**Acceptance Criteria:**
+- [ ] `test_code_quality.py` - Test Black/Ruff/mypy execution, output parsing
+- [ ] `test_dependencies.py` - Test dependency scanning, vulnerability checks
+- [ ] All tests passing with >90% coverage for audit module
+- [ ] Mock external tool execution (Black, Ruff, mypy)
+
+**Key Test Cases:**
+- Code Quality: Tool availability, successful runs, error handling, output parsing
+- Dependencies: Package detection, version checking, vulnerability scanning
+
+**Dependencies:** 4.1.2  
+**Estimated Time:** 3 hours
+
+---
+
+#### 4.1.6 Setup CI/CD Testing Pipeline ⚪ NOT STARTED
+**Description:** Add automated testing to GitHub Actions  
+**Acceptance Criteria:**
+- [ ] `.github/workflows/python-tests.yml` created
+- [ ] Runs pytest on every push/PR
+- [ ] Coverage reports generated and uploaded
+- [ ] Failing tests block PR merges
+- [ ] Badge added to README.md showing test status
+
+**Workflow Steps:**
+1. Checkout code
+2. Setup Python 3.14
+3. Install dependencies (uv sync)
+4. Run pytest with coverage
+5. Upload coverage to Codecov/Coveralls
+6. Fail if coverage <80%
+
+**Dependencies:** 4.1.3, 4.1.4, 4.1.5  
+**Estimated Time:** 2 hours
+
+---
+
+## 🔒 Phase 4.2: Security Hardening (Critical)
+
+**Goal:** Production-ready security for web dashboard and services  
+**Priority:** 🔴 CRITICAL  
+**Target:** Week 2
+
+### Current Security Gaps (from analysis)
+
+**Web Dashboard:**
+- ❌ No authentication layer (OAuth, JWT, Basic Auth)
+- ❌ No rate limiting beyond nginx defaults
+- ❌ No HTTPS enforcement
+- ❌ Direct service URLs exposed in frontend
+- ❌ Port information visible to users
+
+**API Endpoints:**
+- ⚠️ Docker socket mounted (read-only, but needs audit)
+- ⚠️ No request validation
+- ⚠️ No API authentication
+- ⚠️ CORS enabled for all origins
+
+**References:**
+- `web-content/INSTALL.md:205` - Security considerations section
+- `web-content/ARCHITECTURE.md:268` - Production recommendations
+- `api/README.md:58` - Security considerations
+- `SECURITY.md:116` - Security features
+
+### Tasks
+
+#### 4.2.1 Implement Authentication Layer ⚪ NOT STARTED
+**Description:** Add authentication to web dashboard  
+**Acceptance Criteria:**
+- [ ] Choose auth method (OAuth 2.0, JWT, or Basic Auth for internal)
+- [ ] Implement auth middleware in `api/server.js`
+- [ ] Add login page to `web-content/`
+- [ ] Store tokens securely (httpOnly cookies or localStorage)
+- [ ] Redirect unauthenticated users to login
+- [ ] Document authentication setup in `web-content/SECURITY.md`
+
+**Recommended:** JWT with refresh tokens for internal use, OAuth for production
+
+**Files to Modify:**
+- `api/server.js` - Add auth middleware
+- `web-content/src/` - Add login component
+- `web-content/src/services/dockerAPI.ts` - Add auth headers
+- `.env.example` - Add JWT_SECRET, AUTH_ENABLED
+
+**Dependencies:** None  
+**Estimated Time:** 6 hours
+
+---
+
+#### 4.2.2 Add Rate Limiting ⚪ NOT STARTED
+**Description:** Implement rate limiting for API endpoints  
+**Acceptance Criteria:**
+- [ ] Install `express-rate-limit` package
+- [ ] Configure rate limits: 100 requests per 15 min for /api/*
+- [ ] Configure stricter limits: 10 requests per 15 min for /api/containers/:id/stats
+- [ ] Add rate limit headers (X-RateLimit-Limit, X-RateLimit-Remaining)
+- [ ] Return 429 Too Many Requests on limit exceeded
+- [ ] Document rate limits in `api/README.md`
+
+**Configuration:**
+```javascript
+// api/server.js
+const rateLimit = require('express-rate-limit');
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window
+  message: 'Too many requests, please try again later.'
+});
+
+app.use('/api/', apiLimiter);
+```
+
+**Dependencies:** None  
+**Estimated Time:** 2 hours
+
+---
+
+#### 4.2.3 Enable HTTPS & Reverse Proxy ⚪ NOT STARTED
+**Description:** Setup HTTPS for production deployment  
+**Acceptance Criteria:**
+- [ ] Create `dockerfile/traefik.Dockerfile` for reverse proxy
+- [ ] Configure Traefik for automatic HTTPS (Let's Encrypt)
+- [ ] Update `docker-compose.yml` with Traefik service
+- [ ] Redirect HTTP to HTTPS
+- [ ] Add HSTS headers
+- [ ] Document HTTPS setup in `docs/production-deployment.md`
+
+**Services to Proxy:**
+- Web Dashboard (port 80 → 443)
+- API Server (port 3001 → 443/api)
+- Grafana (port 3000 → 443/grafana)
+- Jupyter (port 8888 → 443/jupyter)
+
+**Dependencies:** None  
+**Estimated Time:** 4 hours
+
+---
+
+#### 4.2.4 API Request Validation ⚪ NOT STARTED
+**Description:** Add input validation and sanitization  
+**Acceptance Criteria:**
+- [ ] Install `express-validator` package
+- [ ] Validate container ID format (alphanumeric, 12-64 chars)
+- [ ] Sanitize all user inputs
+- [ ] Return 400 Bad Request on invalid input
+- [ ] Add validation middleware to all endpoints
+- [ ] Document validation rules in `api/README.md`
+
+**Validation Rules:**
+- Container ID: `/^[a-f0-9]{12,64}$/`
+- Query parameters: Whitelist allowed values
+- Headers: Validate Content-Type, Accept
+
+**Dependencies:** None  
+**Estimated Time:** 2 hours
+
+---
+
+#### 4.2.5 Restrict CORS Origins ⚪ NOT STARTED
+**Description:** Configure CORS for specific origins only  
+**Acceptance Criteria:**
+- [ ] Update CORS config in `api/server.js`
+- [ ] Whitelist allowed origins (localhost:3000, production domain)
+- [ ] Deny all other origins
+- [ ] Add CORS_ORIGIN environment variable
+- [ ] Document CORS configuration in `api/README.md`
+
+**Configuration:**
+```javascript
+// api/server.js
+const cors = require('cors');
+
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000'],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+```
+
+**Dependencies:** None  
+**Estimated Time:** 1 hour
+
+---
+
+#### 4.2.6 Docker Socket Security Audit ⚪ NOT STARTED
+**Description:** Audit and document Docker socket security  
+**Acceptance Criteria:**
+- [ ] Verify socket mounted read-only in all services
+- [ ] Document socket permissions in `SECURITY.md`
+- [ ] Add alternative: Docker API over TCP with TLS
+- [ ] Create `docs/docker-socket-security.md` guide
+- [ ] Consider Docker socket proxy (tecnativa/docker-socket-proxy)
+
+**Socket Proxy Benefits:**
+- Whitelists allowed API endpoints
+- No full socket access required
+- Better audit trail
+- Defense in depth
+
+**Dependencies:** None  
+**Estimated Time:** 3 hours
+
+---
+
+## 🛠️ Phase 4.3: Implement Planned Scripts (High Priority)
+
+**Goal:** Complete all planned scripts documented in READMEs  
+**Priority:** 🟠 HIGH  
+**Target:** Week 3
+
+### PowerShell Scripts (Windows)
+
+#### 4.3.1 cleanup/remove-old-images.ps1 ⚪ NOT STARTED
+**Description:** Remove old/unused Docker images to reclaim disk space  
+**Acceptance Criteria:**
+- [ ] List all images with created date and size
+- [ ] Filter images older than X days (default: 30)
+- [ ] Exclude images tagged 'latest' or in use by running containers
+- [ ] Interactive prompt before deletion (unless -Force)
+- [ ] Display total space reclaimed
+- [ ] Add to `scripts/powershell/cleanup/` directory
+- [ ] Document in `scripts/powershell/README.md`
 
 **Features:**
+- `-DaysOld` parameter (default: 30)
+- `-Force` switch to skip confirmation
+- `-WhatIf` to preview deletions
+- Color-coded output (red: deletable, green: kept)
 
-- Help command showing all available tasks
-- Task delegation to language-specific scripts
-- Consistent color output across all orchestrators
-- Error handling and exit codes
-
----
-
-### Task 3.3: Migrate Existing Scripts ✅ COMPLETE
-
-- [x] Move PowerShell scripts to `powershell/` subfolders
-- [x] Move Python scripts to `python/` subfolders
-- [x] Move Bash scripts to `bash/` subfolders
-- [x] Update all references
-
-**Migrated:**
-
-- `apply-settings.ps1` → `powershell/config/apply-settings.ps1`
-- `setup_secrets.ps1` → `powershell/config/setup-secrets.ps1`
-- `start_devcontainer.ps1` → `powershell/docker/start-devcontainer.ps1`
-- `serve_docs.ps1` → `powershell/docs/serve-docs.ps1`
-- `test_integration.ps1` → `powershell/audit/test-integration.ps1`
-- `validate_env.py` → `python/validation/validate_env.py`
-- `validate_configs.py` → `python/validation/validate_configs.py`
-- `start_devcontainer.sh` → `bash/docker/start-devcontainer.sh`
-- `serve_docs.sh` → `bash/docs/serve-docs.sh`
-
-**Note:** Old scripts remain in root for backward compatibility (deprecated)
+**Reference:** CLEANUP-REPORT.md recommendations  
+**Dependencies:** None  
+**Estimated Time:** 2 hours
 
 ---
 
-### Task 3.4: Extract Shared Utilities (DRY) ✅ COMPLETE
+#### 4.3.2 cleanup/clear-volumes.ps1 ⚪ NOT STARTED
+**Description:** Clear unused Docker volumes safely  
+**Acceptance Criteria:**
+- [ ] List all volumes with size and mount status
+- [ ] Identify volumes not attached to any containers
+- [ ] Interactive prompt showing volumes to delete
+- [ ] Exclude volumes with specific labels (production, backup)
+- [ ] Display total space reclaimed
+- [ ] Add to `scripts/powershell/cleanup/` directory
+- [ ] Document in `scripts/powershell/README.md`
 
-- [x] Create `python/utils/colors.py`
-- [x] Create `python/utils/file_utils.py`
-- [x] Create `python/utils/logging_utils.py`
-- [x] Update all Python scripts to import shared utilities
+**Features:**
+- `-UnusedOnly` switch (default: true)
+- `-Force` switch to skip confirmation
+- `-ExcludePattern` to exclude volumes by name pattern
+- Dry-run mode with `-WhatIf`
 
-**Created:**
-
-- `python/utils/colors.py` - ANSI color codes, success/error/warning helpers (fixes Colors duplication)
-- `python/utils/file_utils.py` - JSON, file operations, directory management
-- `python/utils/logging_utils.py` - Colored logging configuration
-- `python/utils/__init__.py` - Package marker
-
-**Fixed:** Colors class duplication (was in validate_env.py and validate_env.ps1)
-
----
-
-### Task 3.5: Update References ✅ COMPLETE
-
-- [x] Update `.github/workflows/validate.yml`
-- [x] Update `Makefile`
-- [x] Update documentation
-
-**Updated:**
-
-- `.github/workflows/validate.yml`: Updated paths to new script locations
-- `Makefile`: Updated validate-env and validate-configs targets
-- `README.md`: Updated scripts structure, added Python setup
-- `AGENT.md`: Updated file paths, added Python environment section
+**Dependencies:** None  
+**Estimated Time:** 2 hours
 
 ---
 
-### Task 3.6: Create Scripts Documentation ✅ COMPLETE
+#### 4.3.3 audit/security-scan.ps1 ⚪ NOT STARTED
+**Description:** Security vulnerability scan for Docker images and dependencies  
+**Acceptance Criteria:**
+- [ ] Scan Docker images with Trivy or Grype
+- [ ] Scan Python dependencies with `pip-audit`
+- [ ] Scan npm dependencies with `npm audit`
+- [ ] Generate security report (HTML + JSON)
+- [ ] Fail if critical vulnerabilities found (CI/CD integration)
+- [ ] Add to `scripts/powershell/audit/` directory
+- [ ] Document in `scripts/powershell/README.md`
 
-- [x] Create `scripts/README.md`
-- [x] Create `scripts/powershell/README.md`
-- [x] Create `scripts/python/README.md`
-- [x] Create `scripts/bash/README.md`
-- [x] Create `scripts/python/audit/README.md`
-- [x] Create `scripts/python/utils/README.md`
-- [x] Create `scripts/python/validation/README.md`
-- [x] Create `scripts/MIGRATION.md`
-- [x] Refactor main Python README to reference module docs
+**Scan Tools:**
+1. Docker Images: `docker scan` or Trivy
+2. Python: `pip-audit` (already in dependencies.py)
+3. Node.js: `npm audit --json`
+4. Secrets: `gitleaks` or `trufflehog`
 
-**Created:**
-
-- `scripts/README.md` - Main scripts documentation (structure, usage, design principles)
-- `scripts/powershell/README.md` - PowerShell scripts reference (50+ lines)
-- `scripts/python/README.md` - Python scripts overview with quick links (refactored)
-- `scripts/bash/README.md` - Bash scripts reference (60+ lines)
-- `scripts/python/audit/README.md` - Comprehensive audit module docs (300+ lines)
-- `scripts/python/utils/README.md` - Comprehensive utils module docs (400+ lines)
-- `scripts/python/validation/README.md` - Comprehensive validation module docs (350+ lines)
-- `scripts/MIGRATION.md` - Complete migration guide (400+ lines)
-
-**Commit:** Completed 2025-10-25
+**Dependencies:** Install Trivy/Grype  
+**Estimated Time:** 4 hours
 
 ---
 
-## 🧪 Phase 4: Testing & Validation ✅ COMPLETE
+### Bash Scripts (Linux/macOS)
 
-**Objective:** Validate all scripts work correctly in new structure.
+#### 4.3.4 docker/build-images.sh ⚪ NOT STARTED
+**Description:** Build all Docker images with BuildKit optimization  
+**Acceptance Criteria:**
+- [ ] Read image list from `dockerfile/` directory
+- [ ] Build images in parallel (max 4 concurrent)
+- [ ] Use BuildKit cache mounts
+- [ ] Tag images with git commit SHA and 'latest'
+- [ ] Display build progress and total time
+- [ ] Add to `scripts/bash/docker/` directory
+- [ ] Document in `scripts/bash/README.md`
 
-### Tasks ✅ COMPLETE
+**Features:**
+- `--no-cache` flag to force rebuild
+- `--push` flag to push to registry
+- `--image <name>` to build single image
+- Colored output (green: success, red: failure)
 
-- [x] Test Python scripts individually (validate_env.py, validate_configs.py)
-- [x] Test code quality audit scripts (code_quality.py, dependencies.py)
-- [x] Test PowerShell scripts individually (all 5 scripts)
-- [x] Test Bash scripts individually (2 scripts)
-- [x] Run integration tests
-- [x] Test orchestrators (ps1, sh, py)
-- [x] Verify GitHub Actions workflows
-- [x] Verify Makefile targets
-
-**Verification Results:**
-
-- ✅ Python validation scripts: Tested and working
-- ✅ Python audit scripts: `audit code` and `audit deps` verified
-- ✅ Code quality checks: Black, Ruff, mypy all passing (strict mode)
-- ✅ Runtime imports: All package imports functional
-- ✅ Wildcard imports: `from python.audit import *` working
-- ✅ Type hints: Python 3.14 compliance verified (PEP 585, PEP 649)
-- ✅ GitHub workflows: Paths verified in `.github/workflows/validate.yml`
-- ✅ Makefile: Targets verified (validate-env, validate-configs)
-
-**Status:** All testing complete. Scripts fully functional in new structure.
-
-**Commit:** Verified 2025-10-25
+**Dependencies:** BuildKit enabled  
+**Estimated Time:** 3 hours
 
 ---
 
-## 📊 Phase 5: Documentation Updates ✅ COMPLETE
+#### 4.3.5 docker/cleanup-volumes.sh ⚪ NOT STARTED
+**Description:** Bash equivalent of PowerShell clear-volumes.ps1  
+**Acceptance Criteria:**
+- [ ] List unused volumes with `docker volume ls`
+- [ ] Filter volumes not attached to containers
+- [ ] Interactive confirmation before deletion
+- [ ] Display space reclaimed
+- [ ] Add to `scripts/bash/docker/` directory
+- [ ] Document in `scripts/bash/README.md`
 
-**Objective:** Final documentation polish and updates.
+**Features:**
+- `--force` flag to skip confirmation
+- `--dry-run` to preview deletions
+- Exclude volumes by pattern
 
-### Tasks ✅ COMPLETE
-
-- [x] Update core README.md with final structure
-- [x] Create migration guide for old scripts (`scripts/MIGRATION.md`)
-- [x] Create module-specific documentation (audit, utils, validation)
-- [x] Add troubleshooting guide for common issues
-- [x] Update changelog with Phase 3 completion
-- [x] Document Python 3.14 compliance standards
-- [x] Create comprehensive examples and usage patterns
-
-**Completed Documentation:**
-
-- `scripts/MIGRATION.md` - Complete migration guide (400+ lines)
-- `scripts/python/audit/README.md` - Audit module documentation
-- `scripts/python/utils/README.md` - Utils module documentation
-- `scripts/python/validation/README.md` - Validation module documentation
-- `scripts/python/README.md` - Refactored overview with quick links
-- `README.md` - Updated with new structure
-- `docs/python-setup-troubleshooting.md` - Python setup guide
-
-**Status:** All documentation complete and comprehensive.
-
-**Commit:** Completed 2025-10-25
+**Dependencies:** None  
+**Estimated Time:** 1 hour
 
 ---
 
-## ✅ Acceptance Criteria Summary
+#### 4.3.6 docs/build-docs.sh ⚪ NOT STARTED
+**Description:** Build static documentation site with Jekyll or MkDocs  
+**Acceptance Criteria:**
+- [ ] Choose documentation tool (MkDocs recommended)
+- [ ] Create `mkdocs.yml` configuration
+- [ ] Convert existing Markdown to MkDocs format
+- [ ] Build static site to `docs/site/`
+- [ ] Add search functionality
+- [ ] Add to `scripts/bash/docs/` directory
+- [ ] Document in `scripts/bash/README.md`
 
-### Phase 1: Cleanup ✅ COMPLETE
+**Documentation Structure:**
+```
+docs/
+├── index.md (README.md)
+├── setup.md (SETUP.md)
+├── security.md (SECURITY.md)
+├── agent.md (AGENT.md)
+├── web-content/
+│   ├── quickstart.md
+│   ├── install.md
+│   └── architecture.md
+└── scripts/
+    ├── python.md
+    ├── powershell.md
+    └── bash.md
+```
 
-- ✅ Zero code smells (audit complete, no issues found)
-- ✅ 100% Black formatting compliance (verified via audit code)
-- ✅ Mypy strict mode passes (verified via audit code)
-- ✅ Pre-commit hooks configuration updated
-- ✅ All obsolete files archived/removed
-- ✅ Documentation cleanup complete
-
-**Status:** Phase 1 fully complete. All code quality standards met.
-**Verification:** `python scripts/orchestrator.py audit code` - ALL CHECKS PASSED
-**Date:** 2025-10-25
-
-### Phase 2: Python ✅ COMPLETE (Documentation + Installation, Manual Step Pending)
-
-- ✅ Python diagnosis documented (comprehensive guide: docs/python-setup-troubleshooting.md)
-- ✅ Python 3.14.0 downloaded and installed (28.52 MB, silent install)
-- ⚠️ **USER ACTION REQUIRED:** Disable Windows App Execution Aliases (see Task 2.2)
-- ⚠️ UV package manager installation (blocked until aliases disabled)
-- ⚠️ All Python scripts run without errors (blocked until aliases disabled)
-
-### Phase 3: Scripts ✅ COMPLETE
-
-- ✅ Scripts organized by language and task
-- ✅ Orchestrators created (ps1, sh, py) and tested
-- ✅ Shared utilities extracted (DRY): colors.py, file_utils.py, logging_utils.py
-- ✅ Each script follows SRP
-- ✅ All references updated (Makefile, workflows, documentation)
-- ✅ Main documentation complete (4 comprehensive READMEs)
-- ✅ Module-specific documentation complete (audit, utils, validation)
-- ✅ Migration guide created (`scripts/MIGRATION.md`)
-- ✅ Old duplicate scripts removed from root
-- ✅ Python 3.14 compliance achieved (PEP 585, PEP 649, PEP 484)
-
-**Status:** Phase 3 fully complete with comprehensive documentation.
-**Date:** 2025-10-25
-
-### Phase 4: Testing ✅ COMPLETE
-
-- ✅ All scripts tested individually
-- ✅ Python scripts verified (validate_env.py, validate_configs.py)
-- ✅ Audit scripts verified (code_quality.py, dependencies.py)
-- ✅ Code quality checks passing (Black, Ruff, mypy strict)
-- ✅ Runtime imports validated
-- ✅ GitHub Actions workflows verified
-- ✅ Makefile targets verified
-- ✅ Orchestrators functional
-
-**Status:** All testing complete. Scripts fully operational.
-**Date:** 2025-10-25
-
-### Phase 5: Documentation ✅ COMPLETE
-
-- ✅ Core README.md updated with final structure
-- ✅ Migration guide created (`scripts/MIGRATION.md`)
-- ✅ Module-specific READMEs created (audit, utils, validation)
-- ✅ Troubleshooting guides complete
-- ✅ Changelog updated with v3.1.0
-- ✅ Python 3.14 standards documented
-- ✅ Comprehensive examples and patterns documented
-
-**Status:** All documentation complete and comprehensive.
-**Date:** 2025-10-25
+**Dependencies:** Install MkDocs  
+**Estimated Time:** 4 hours
 
 ---
 
-## 🔄 Session 2 Progress (Current) - 2025-01-XX
+## 📚 Phase 4.4: Documentation Consolidation (High Priority)
 
-### Completed Tasks
+**Goal:** Organize documentation into single source of truth  
+**Priority:** 🟠 HIGH  
+**Target:** Week 4
 
-1. ✅ **GitHub Secrets Configuration**
+### Current Issues (from CLEANUP-REPORT.md)
 
-   - Configured all 10 missing secrets via GitHub CLI
-   - GH_PAT, DOCKER_POSTGRES_PASSWORD, DOCKER_MARIADB_ROOT_PASSWORD, DOCKER_MARIADB_PASSWORD
-   - DOCKER_REDIS_PASSWORD, DOCKER_MINIO_ROOT_USER, DOCKER_MINIO_ROOT_PASSWORD
-   - DOCKER_GRAFANA_ADMIN_PASSWORD, DOCKER_JUPYTER_TOKEN, DOCKER_PGADMIN_PASSWORD
-   - Verified: `gh secret list` shows 14 secrets total
+**Scattered Documentation:**
+- Root: README.md, SETUP.md, AGENT.md, SECURITY.md, CLEANUP-REPORT.md
+- web-content: 5 docs (README, ARCHITECTURE, IMPLEMENTATION, REFACTOR-SUMMARY, INSTALL, QUICKSTART)
+- .config: README, github/README
+- No clear hierarchy or index
 
-2. ✅ **Python Version Update: 3.13 → 3.14.0**
+**Obsolete Documentation:**
+- ⚠️ ENHANCEMENTS-COMPLETE.md (review for archival)
+- ⚠️ ENVIRONMENT-INTEGRATION-COMPLETE.md (review for archival)
+- ⚠️ CLUSTER.md (consolidate into README or archive)
 
-   - Updated 37 references across 13 files
-   - Workflows: validate.yml (3 instances), ci.yml (already 3.14)
-   - Documentation: README.md (7), AGENT.md (4), python-setup-troubleshooting.md (6)
-   - Scripts: scripts/python/README.md (2)
-   - Configs: pyproject.toml (2), .pre-commit-config.yaml (1), cluster.config.yml (1), actions.yml (1)
-   - Dockerfiles: pre-commit.Dockerfile (1), devcontainer.dockerfile (6)
-   - TODO.md (3)
-   - Only archive reference remains (expected)
+### Tasks
 
-3. ✅ **Python 3.14.0 Installation**
+#### 4.4.1 Create Documentation Index ⚪ NOT STARTED
+**Description:** Create centralized documentation index  
+**Acceptance Criteria:**
+- [ ] Create `docs/INDEX.md` with all documentation links
+- [ ] Organize by category (Setup, Development, Architecture, Scripts)
+- [ ] Add descriptions for each document
+- [ ] Create quick reference section
+- [ ] Link from main README.md
+- [ ] Update all docs to reference INDEX.md
 
-   - Downloaded: https://www.python.org/ftp/python/3.14.0/python-3.14.0-amd64.exe (28.52 MB)
-   - Installed silently: `/quiet InstallAllUsers=0 PrependPath=1 Include_test=0 Include_pip=1`
-   - Installation path: `C:\Users\deanl.MSI\AppData\Local\Programs\Python\Python314\`
-   - **Blocker:** Windows App Execution Aliases redirect `python` command to Microsoft Store
-   - **Solution:** User must manually disable aliases (Settings → Apps → Advanced app settings)
+**Structure:**
+```markdown
+# Documentation Index
 
-4. ✅ **Scripts Root Cleanup**
+## 🚀 Getting Started
+- [README](../README.md) - Project overview
+- [SETUP](../SETUP.md) - Installation guide
+- [Quickstart](web-content/quickstart.md) - 5-minute setup
 
-   - Removed: validate_env.py, validate_env.ps1, validate_configs.py
-   - Remaining: orchestrator.ps1, orchestrator.py, orchestrator.sh, README.md
-   - New locations: scripts/python/validation/validate_env.py, validate_configs.py
+## 🏗️ Architecture
+- [Web Dashboard Architecture](web-content/architecture.md)
+- [Docker Cluster Design](CLUSTER.md)
+- [Security Policy](../SECURITY.md)
 
-5. ✅ **YAML Schema Validation**
-   - compose.override.example.yml: Has explanatory comment about linter warnings (expected)
-   - Grafana prometheus.yml: Has explanatory comment about schema (Grafana provisioning format, not docker-compose)
-   - No action needed - comments explain false positives
+## 🛠️ Development
+- [Scripts Guide](scripts/README.md)
+- [AI Agent Development](../AGENT.md)
+- [Migration Guide](scripts/MIGRATION.md)
 
-### Remaining Tasks (Blocked by Python Aliases)
+## 📊 Monitoring
+- [Grafana Dashboards](.config/monitoring/README.md)
+- [Prometheus Config](.config/monitoring/prometheus/README.md)
+```
 
-- ⚠️ Install UV package manager (requires `python` command)
-- ⚠️ Install requirements with GIL flag handling (requires `pip` command)
-- ⚠️ Run Black, Ruff, mypy strict mode (requires Python)
-- ⚠️ Test orchestrators and validation scripts (requires Python)
-- ⚠️ Run integration tests (requires Python)
-
-## 📝 Critical Issue Resolution
-
-**Problem:** `Python was not found; run without arguments to install from the Microsoft Store`
-
-**Root Cause:** Windows App Execution Aliases redirect `python` to Microsoft Store.
-
-**Solution:** See `docs/python-setup-troubleshooting.md` for complete diagnosis and installation instructions.
-
-**Status:** ✅ DIAGNOSED - User action required to install Python 3.14.0 from python.org
+**Dependencies:** None  
+**Estimated Time:** 2 hours
 
 ---
 
-## 📅 Timeline - Final
+#### 4.4.2 Archive Obsolete Documentation ⚪ NOT STARTED
+**Description:** Review and archive completed/obsolete docs  
+**Acceptance Criteria:**
+- [ ] Review ENHANCEMENTS-COMPLETE.md for unique content
+- [ ] Review ENVIRONMENT-INTEGRATION-COMPLETE.md for unique content
+- [ ] Review CLUSTER.md vs README.md (consolidate or archive)
+- [ ] Move archived docs to `.github/archive/`
+- [ ] Add archive date to filename
+- [ ] Update references in other docs
+- [ ] Document archival in CHANGELOG.md
 
-| Phase                     | Estimated | Actual   | Status      |
-| ------------------------- | --------- | -------- | ----------- |
-| Phase 1: Cleanup          | 2-3 hours | ~2 hours | ✅ COMPLETE |
-| Phase 2: Python (Docs)    | 1-2 hours | ~1 hour  | ✅ COMPLETE |
-| Phase 2: Python (Install) | -         | ~1 hour  | ✅ COMPLETE |
-| Phase 3: Scripts          | 4-6 hours | ~5 hours | ✅ COMPLETE |
-| Phase 4: Testing          | 2-3 hours | ~2 hours | ✅ COMPLETE |
-| Phase 5: Documentation    | 2-3 hours | ~3 hours | ✅ COMPLETE |
+**Archive Candidates:**
+- `ENHANCEMENTS-COMPLETE.md` → `.github/archive/ENHANCEMENTS-v2.0-20251025.md`
+- `ENVIRONMENT-INTEGRATION-COMPLETE.md` → `.github/archive/ENVIRONMENT-v2.0-20251025.md`
+- `CLUSTER.md` → Consolidate into README or `.github/archive/CLUSTER-v3.0-20251025.md`
 
-**Total Time:** ~14 hours  
-**Status:** All phases complete  
-**Completion Date:** 2025-10-25
-
----
-
-## 🔄 Migration Tracking - Complete
-
-All scripts successfully migrated to new structure:
-
-| Old Path                         | New Path                                           | Status      |
-| -------------------------------- | -------------------------------------------------- | ----------- |
-| `scripts/validate_env.py`        | `scripts/python/validation/validate_env.py`        | ✅ COMPLETE |
-| `scripts/validate_configs.py`    | `scripts/python/validation/validate_configs.py`    | ✅ COMPLETE |
-| `scripts/apply-settings.ps1`     | `scripts/powershell/config/apply-settings.ps1`     | ✅ COMPLETE |
-| `scripts/setup_secrets.ps1`      | `scripts/powershell/config/setup-secrets.ps1`      | ✅ COMPLETE |
-| `scripts/start_devcontainer.ps1` | `scripts/powershell/docker/start-devcontainer.ps1` | ✅ COMPLETE |
-| `scripts/serve_docs.ps1`         | `scripts/powershell/docs/serve-docs.ps1`           | ✅ COMPLETE |
-| `scripts/test_integration.ps1`   | `scripts/powershell/audit/test-integration.ps1`    | ✅ COMPLETE |
-| `scripts/start_devcontainer.sh`  | `scripts/bash/docker/start-devcontainer.sh`        | ✅ COMPLETE |
-| `scripts/serve_docs.sh`          | `scripts/bash/docs/serve-docs.sh`                  | ✅ COMPLETE |
-
-**Migration Guide:** See `scripts/MIGRATION.md` for complete transition documentation.
+**Dependencies:** 4.4.1 (update index after archival)  
+**Estimated Time:** 2 hours
 
 ---
 
-## ✍️ Changelog
+#### 4.4.3 Consolidate Web-Content Docs ⚪ NOT STARTED
+**Description:** Reduce 5 web-content docs to 3 essential docs  
+**Acceptance Criteria:**
+- [ ] Keep: ARCHITECTURE.md (technical deep dive)
+- [ ] Keep: INSTALL.md (installation guide)
+- [ ] Merge: QUICKSTART.md + README.md → README.md (overview + quick start)
+- [ ] Archive: IMPLEMENTATION.md (completed work, archive to .github/archive/)
+- [ ] Archive: REFACTOR-SUMMARY.md (completed work, archive to .github/archive/)
+- [ ] Update all cross-references
+- [ ] Test all links work
 
-### v3.1.0 (2025-10-25) - Documentation & Validation Complete
+**Rationale:**
+- QUICKSTART + README overlap significantly
+- IMPLEMENTATION & REFACTOR-SUMMARY document completed work (archive)
+- ARCHITECTURE covers technical details
+- INSTALL covers setup procedures
 
-**Status:** ✅ COMPLETE
-
-**Phase 1: Codebase Cleanup** ✅
-
-- Completed comprehensive code quality audit
-- Verified zero code smells, duplications, or inconsistencies
-- Achieved 100% Black formatting compliance (line-length=100)
-- Passed Ruff linting (strict mode)
-- Passed mypy type checking (strict mode)
-- Removed all obsolete code and documentation
-
-**Phase 2: Python Environment** ✅
-
-- Documented Python 3.14.0 installation process
-- Created comprehensive troubleshooting guide
-- Resolved Windows App Execution Aliases issue
-- Updated all references from Python 3.13 to 3.14.0 (37 instances)
-
-**Phase 3: Scripts Reorganization** ✅
-
-- Organized scripts by language and task (SRP/DRY)
-- Created orchestrators (ps1, sh, py) for unified interface
-- Extracted shared utilities (colors.py, file_utils.py, logging_utils.py)
-- Migrated all scripts to new structure
-- Updated all references (Makefile, workflows, documentation)
-- Created comprehensive module-specific documentation
-
-**Phase 4: Testing & Validation** ✅
-
-- Tested all Python scripts (validation, audit)
-- Verified code quality checks (Black, Ruff, mypy)
-- Validated runtime imports and package structure
-- Verified GitHub Actions workflows
-- Verified Makefile targets
-- Confirmed orchestrators functional
-
-**Phase 5: Documentation** ✅
-
-- Created `scripts/MIGRATION.md` (400+ lines migration guide)
-- Created `scripts/python/audit/README.md` (300+ lines)
-- Created `scripts/python/utils/README.md` (400+ lines)
-- Created `scripts/python/validation/README.md` (350+ lines)
-- Refactored `scripts/python/README.md` with quick links
-- Updated core README.md with new structure
-- Documented Python 3.14 compliance standards
-
-**Python 3.14 Compliance Achievements:**
-
-- ✅ PEP 585: Built-in generics (`list[str]`, `dict[str, Any]`, `tuple[bool, list[str]]`)
-- ✅ PEP 649: Deferred annotation evaluation
-- ✅ PEP 484: Type hints on all functions
-- ✅ PEP 8: Code style compliance
-- ✅ PEP 257: Docstring conventions
-- ✅ Zero type: ignore comments or suppressions
-- ✅ Enterprise-grade quality standards
-
-**Files Created:**
-
-- `scripts/MIGRATION.md`
-- `scripts/python/audit/README.md`
-- `scripts/python/utils/README.md`
-- `scripts/python/validation/README.md`
-- `docs/python-3.14-installation-issue.md` (archived)
-- `docs/python-setup-troubleshooting.md`
-
-**Files Modified:**
-
-- `scripts/python/README.md` (refactored to overview)
-- `scripts/python/__init__.py` (comprehensive docstring)
-- `scripts/python/audit/__init__.py` (fixed imports + docs)
-- `scripts/python/validation/__init__.py` (fixed imports + docs)
-- `scripts/python/utils/__init__.py` (proper exports)
-- All Python files: Modern type hints (PEP 585)
-- `README.md`, `AGENT.md`, `TODO.md` (updated references)
-
-**Impact:**
-
-- 🎯 100% SRP/DRY compliance
-- 📚 1,500+ lines of comprehensive documentation
-- ✅ Zero Pylance errors
-- ✅ All code quality checks passing
-- 🚀 Enterprise-grade code standards
+**Dependencies:** 4.4.2  
+**Estimated Time:** 3 hours
 
 ---
 
-### v3.0.0 (2025-10-25)
+#### 4.4.4 Create MkDocs Site ⚪ NOT STARTED
+**Description:** Build searchable static documentation site  
+**Acceptance Criteria:**
+- [ ] Install MkDocs with Material theme
+- [ ] Create `mkdocs.yml` configuration
+- [ ] Add all markdown files to site
+- [ ] Configure navigation structure
+- [ ] Add search functionality
+- [ ] Build and test locally (`mkdocs serve`)
+- [ ] Deploy to GitHub Pages or docs/ folder
+- [ ] Add link to README.md
 
-- Initial planning for codebase cleanup and scripts reorganization
-- Identified critical Python installation issue
-- Designed new scripts structure (SRP, DRY principles)
-- Created orchestrator pattern
+**MkDocs Config:**
+```yaml
+site_name: Modern Data Platform
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+
+nav:
+  - Home: index.md
+  - Setup: setup.md
+  - Web Dashboard:
+    - Installation: web-content/install.md
+    - Architecture: web-content/architecture.md
+  - Scripts:
+    - Overview: scripts/README.md
+    - Python: scripts/python/README.md
+    - PowerShell: scripts/powershell/README.md
+    - Bash: scripts/bash/README.md
+  - Security: security.md
+  - AI Agent: agent.md
+```
+
+**Dependencies:** 4.4.1, 4.4.2, 4.4.3  
+**Estimated Time:** 4 hours
 
 ---
 
-## 📝 Summary
+## ⚙️ Phase 4.5: Code Quality Automation (Medium Priority)
 
-**Current Version:** v3.1.0  
-**Status:** ✅ COMPLETE  
-**Completion Date:** 2025-10-25
+**Goal:** Automate code quality checks in CI/CD  
+**Priority:** 🟢 MEDIUM  
+**Target:** Week 5
 
-### All Phases Complete
+### Tasks
 
-✅ **Phase 1: Codebase Cleanup** - Code quality audit, formatting standards, documentation cleanup  
-✅ **Phase 2: Python Environment** - Python 3.14.0 setup, troubleshooting documentation  
-✅ **Phase 3: Scripts Reorganization** - SRP/DRY structure, orchestrators, shared utilities, comprehensive docs  
-✅ **Phase 4: Testing & Validation** - All scripts tested, code quality verified  
-✅ **Phase 5: Documentation** - Migration guide, module docs, troubleshooting guides
+#### 4.5.1 Pre-commit Hooks Enhancement ⚪ NOT STARTED
+**Description:** Enhance pre-commit hooks for all file types  
+**Acceptance Criteria:**
+- [ ] Add yamllint for YAML files (.yml, .yaml)
+- [ ] Add shellcheck for bash scripts (.sh)
+- [ ] Add PSScriptAnalyzer for PowerShell scripts (.ps1)
+- [ ] Add markdownlint for Markdown files (.md)
+- [ ] Add prettier for JSON/YAML formatting
+- [ ] Update `.pre-commit-config.yaml`
+- [ ] Document in README.md
 
-### Key Achievements
+**New Hooks:**
+```yaml
+# .pre-commit-config.yaml additions
+- repo: https://github.com/adrienverge/yamllint
+  rev: v1.35.1
+  hooks:
+    - id: yamllint
 
-- 🎯 **100% SRP/DRY Compliance** - Scripts organized by language and task
-- 📚 **1,500+ Lines Documentation** - Comprehensive guides for all modules
-- ✅ **Zero Pylance Errors** - All type checking passing
-- 🚀 **Enterprise-Grade Standards** - Python 3.14 compliance (PEP 585, 649, 484, 8, 257)
-- 🔧 **All Quality Checks Passing** - Black, Ruff, mypy (strict mode)
+- repo: https://github.com/shellcheck-py/shellcheck-py
+  rev: v0.10.0.1
+  hooks:
+    - id: shellcheck
 
-### Project Status
+- repo: https://github.com/igorshubovych/markdownlint-cli
+  rev: v0.41.0
+  hooks:
+    - id: markdownlint
+```
 
-All planned work complete. Infrastructure refactoring successful with:
-
-- Organized scripts structure (powershell/, python/, bash/)
-- Unified orchestrator interface across platforms
-- Shared utilities eliminating code duplication
-- Comprehensive module-specific documentation
-- Complete migration guide for developers
-
-**Next Steps:** Regular maintenance and feature development using established patterns.
+**Dependencies:** None  
+**Estimated Time:** 2 hours
 
 ---
 
-**Status:** 🟢 COMPLETE - All phases finished
-**Last Updated:** 2025-10-25
+#### 4.5.2 GitHub Actions Workflow for All Checks ⚪ NOT STARTED
+**Description:** Create comprehensive CI workflow for all code quality checks  
+**Acceptance Criteria:**
+- [ ] Create `.github/workflows/code-quality.yml`
+- [ ] Run Python checks (Black, Ruff, mypy)
+- [ ] Run YAML checks (yamllint)
+- [ ] Run Markdown checks (markdownlint)
+- [ ] Run Docker checks (hadolint for Dockerfiles)
+- [ ] Run on every push/PR
+- [ ] Fail PR if any check fails
+- [ ] Add status badge to README.md
+
+**Workflow Structure:**
+```yaml
+name: Code Quality
+
+on: [push, pull_request]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - run: uv run black --check scripts/python
+      - run: uv run ruff check scripts/python
+      - run: uv run mypy scripts/python
+  
+  yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: yamllint .
+  
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: markdownlint '**/*.md'
+  
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: dockerfile/*.Dockerfile
+```
+
+**Dependencies:** 4.5.1  
+**Estimated Time:** 3 hours
+
+---
+
+#### 4.5.3 Automated Dependency Updates ⚪ NOT STARTED
+**Description:** Setup Dependabot for automated dependency PRs  
+**Acceptance Criteria:**
+- [ ] Create `.github/dependabot.yml`
+- [ ] Enable updates for Python (pyproject.toml)
+- [ ] Enable updates for Node.js (package.json)
+- [ ] Enable updates for Docker (Dockerfile)
+- [ ] Enable updates for GitHub Actions
+- [ ] Schedule: weekly
+- [ ] Auto-merge minor/patch updates (optional)
+- [ ] Document in README.md
+
+**Dependabot Config:**
+```yaml
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+  
+  - package-ecosystem: "npm"
+    directory: "/api"
+    schedule:
+      interval: "weekly"
+  
+  - package-ecosystem: "npm"
+    directory: "/web-content"
+    schedule:
+      interval: "weekly"
+  
+  - package-ecosystem: "docker"
+    directory: "/dockerfile"
+    schedule:
+      interval: "weekly"
+  
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+```
+
+**Dependencies:** None  
+**Estimated Time:** 1 hour
+
+---
+
+## 🎨 Phase 4.6: Web Dashboard Enhancements (Medium Priority)
+
+**Goal:** Implement future enhancements from REFACTOR-SUMMARY.md  
+**Priority:** 🟢 MEDIUM  
+**Target:** Week 6 (Optional)
+
+### From web-content/REFACTOR-SUMMARY.md:299
+
+**Potential Improvements:**
+1. Layer-specific health checks (different polling intervals per layer)
+2. Layer metrics aggregation (per-layer resource stats)
+3. Visual layer grouping (collapsed/expanded sections in UI)
+4. Layer dependencies (explicit dependency trees)
+5. Layer scaling controls (UI to scale services within a layer)
+
+### Tasks
+
+#### 4.6.1 Layer-Specific Health Checks ⚪ NOT STARTED
+**Description:** Customize health check intervals per layer  
+**Acceptance Criteria:**
+- [ ] Update `useClusterHealth.ts` to support per-layer intervals
+- [ ] Configure intervals: Data (60s), Services (30s), Monitoring (45s), Compute (30s), Network (15s)
+- [ ] Add layer health status aggregation
+- [ ] Display per-layer health in UI
+- [ ] Document in ARCHITECTURE.md
+
+**Rationale:**
+- Data layer changes slowly (60s is sufficient)
+- Network layer changes frequently (15s for load balancers)
+- Reduces API calls by 40%
+
+**Dependencies:** None  
+**Estimated Time:** 3 hours
+
+---
+
+#### 4.6.2 Layer Metrics Aggregation ⚪ NOT STARTED
+**Description:** Add per-layer resource statistics  
+**Acceptance Criteria:**
+- [ ] Aggregate CPU/memory/network per layer
+- [ ] Add layer metrics endpoint to API (`/api/layers/:id/metrics`)
+- [ ] Display layer metrics in dashboard
+- [ ] Add layer comparison charts
+- [ ] Update ARCHITECTURE.md
+
+**New Metrics:**
+- Total CPU usage per layer
+- Total memory usage per layer
+- Total network I/O per layer
+- Service count per layer
+
+**Dependencies:** 4.6.1  
+**Estimated Time:** 4 hours
+
+---
+
+#### 4.6.3 Visual Layer Grouping ⚪ NOT STARTED
+**Description:** Add collapsible layer sections in UI  
+**Acceptance Criteria:**
+- [ ] Add expand/collapse buttons to layer sections
+- [ ] Save layer collapsed state to localStorage
+- [ ] Animate expand/collapse transitions
+- [ ] Add "Expand All" / "Collapse All" buttons
+- [ ] Update ARCHITECTURE.md
+
+**UI Changes:**
+- Layer header becomes clickable
+- Chevron icon indicates collapsed/expanded state
+- Smooth CSS transitions
+- Persist state across page reloads
+
+**Dependencies:** None  
+**Estimated Time:** 3 hours
+
+---
+
+#### 4.6.4 Layer Dependencies Visualization ⚪ NOT STARTED
+**Description:** Show explicit dependency trees between layers  
+**Acceptance Criteria:**
+- [ ] Define layer dependencies in config
+- [ ] Create dependency graph component
+- [ ] Visualize with D3.js or Cytoscape
+- [ ] Highlight dependency paths on hover
+- [ ] Add to Architecture page
+- [ ] Document in ARCHITECTURE.md
+
+**Dependencies:**
+```
+Network (nginx, loadbalancer)
+  ↓
+Services (api, web-content)
+  ↓
+Data (postgres, redis)
+  ↓
+Monitoring (grafana, prometheus)
+```
+
+**Dependencies:** None  
+**Estimated Time:** 6 hours
+
+---
+
+#### 4.6.5 Layer Scaling Controls ⚪ NOT STARTED
+**Description:** Add UI controls to scale services  
+**Acceptance Criteria:**
+- [ ] Add scale buttons (+/-) to each service card
+- [ ] Call Docker API to scale services
+- [ ] Show current replica count
+- [ ] Disable for non-scalable services
+- [ ] Add scale limits (min: 1, max: 10)
+- [ ] Update ARCHITECTURE.md
+
+**API Endpoint:**
+```javascript
+// POST /api/services/:id/scale
+{
+  "replicas": 3
+}
+```
+
+**UI Changes:**
+- Scale controls on service cards
+- Current replica count badge
+- Confirmation dialog for scaling
+
+**Dependencies:** 4.2.1 (requires authentication)  
+**Estimated Time:** 5 hours
+
+---
+
+## 📋 Backlog (Low Priority / Future)
+
+**Not planned for v4.0, but documented for future iterations**
+
+### Infrastructure
+- [ ] Kubernetes migration guide
+- [ ] Terraform configurations for cloud deployment
+- [ ] Ansible playbooks for server provisioning
+- [ ] Docker Swarm mode support
+
+### Monitoring Enhancements
+- [ ] Custom Grafana dashboards per layer
+- [ ] Alert rules for service failures
+- [ ] Log aggregation with Loki
+- [ ] Distributed tracing with Jaeger
+
+### Development Experience
+- [ ] Dev containers for all services
+- [ ] Hot reload for all services
+- [ ] Debugging guides for each language
+- [ ] VS Code workspace settings
+
+### Documentation
+- [ ] Video tutorials for setup
+- [ ] Interactive API documentation (Swagger/OpenAPI)
+- [ ] Troubleshooting flowcharts
+- [ ] Performance tuning guide
+
+---
+
+## 📊 Progress Tracking
+
+### Velocity Metrics
+
+| Phase | Tasks | Estimated Hours | Completed | In Progress | Not Started |
+|-------|-------|-----------------|-----------|-------------|-------------|
+| 4.1 Testing | 6 | 13h | 0 | 0 | 6 |
+| 4.2 Security | 6 | 18h | 0 | 0 | 6 |
+| 4.3 Scripts | 6 | 18h | 0 | 0 | 6 |
+| 4.4 Docs | 4 | 11h | 0 | 0 | 4 |
+| 4.5 Automation | 3 | 6h | 0 | 0 | 3 |
+| 4.6 Dashboard | 5 | 21h | 0 | 0 | 5 |
+| **TOTAL** | **30** | **87h** | **0** | **0** | **30** |
+
+### Timeline
+
+**Week 1:** Phase 4.1 - Testing Infrastructure (13h)  
+**Week 2:** Phase 4.2 - Security Hardening (18h)  
+**Week 3:** Phase 4.3 - Planned Scripts (18h)  
+**Week 4:** Phase 4.4 - Documentation (11h)  
+**Week 5:** Phase 4.5 - Code Quality (6h)  
+**Week 6:** Phase 4.6 - Dashboard Enhancements (21h) - *Optional*
+
+**Total Estimated Duration:** 6 weeks (87 hours)
+
+---
+
+## ✅ Completed Work
+
+### v3.1.0 - Documentation & Python 3.14 Compliance (2025-10-25)
+
+**Completed:**
+- ✅ Created scripts/MIGRATION.md (400+ lines)
+- ✅ Created scripts/python/audit/README.md (300+ lines)
+- ✅ Created scripts/python/utils/README.md (400+ lines)
+- ✅ Created scripts/python/validation/README.md (350+ lines)
+- ✅ Refactored scripts/python/README.md to overview
+- ✅ Updated all Python files with PEP 585 built-in generics
+- ✅ Deleted scripts/python/PYTHON-314-COMPLIANCE.md
+- ✅ Updated TODO.md to v3.1.0 COMPLETE status
+- ✅ Git commit: fed8689 (17 files, 2337 insertions, 209 deletions)
+- ✅ Archived TODO-v3.1-20251025.md
+
+**Details:** See `.github/archive/TODO-v3.1-20251025.md` for full v3.1.0 completion
+
+### v3.0 - Scripts Reorganization (2025-10-25)
+
+**Completed:**
+- ✅ Reorganized scripts into powershell/, bash/, python/ subdirectories
+- ✅ Created orchestrators: orchestrator.ps1, orchestrator.py, orchestrator.sh
+- ✅ Extracted Colors class to scripts/python/utils/colors.py (DRY principle)
+- ✅ Created comprehensive READMEs for each script category
+- ✅ Maintained backward compatibility with root scripts
+
+**Details:** See `.github/archive/TODO-v3.0-20251025.md` (if exists)
+
+### v2.0 - Web Dashboard Refactor (2025-10-24)
+
+**Completed:**
+- ✅ Refactored web-content services into 5 architectural layers
+- ✅ Created modular layer structure (data, services, monitoring, compute, network)
+- ✅ Generated 900+ lines of comprehensive documentation
+- ✅ Aligned dashboard with docker-compose.yml cluster structure
+- ✅ Zero breaking changes (internal refactor)
+
+**Details:** See `.github/archive/TODO-v2.0-20251025.md`
+
+---
+
+## 🚀 Getting Started with v4.0
+
+**Priority Order:**
+
+1. **Critical (Start Immediately):**
+   - Phase 4.1: Testing Infrastructure
+   - Phase 4.2: Security Hardening
+
+2. **High Priority (Week 3-4):**
+   - Phase 4.3: Planned Scripts
+   - Phase 4.4: Documentation Consolidation
+
+3. **Medium Priority (Week 5-6):**
+   - Phase 4.5: Code Quality Automation
+   - Phase 4.6: Dashboard Enhancements (optional)
+
+**Next Steps:**
+1. Review this TODO with team/stakeholders
+2. Start with Phase 4.1.1 (Setup pytest)
+3. Work through tasks sequentially within each phase
+4. Update task status as you complete work
+5. Commit progress regularly
+
+---
+
+**Ready to make this platform production-ready! 🎯**
