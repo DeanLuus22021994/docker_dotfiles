@@ -44,11 +44,15 @@ exclude_lines = [
 ]
 ```
 
-## pytest.ini Additional Settings
+## Additional Settings
+
+Additional pytest configuration located in `.config/python/pytest.ini`:
 
 - Async mode: `asyncio_mode = auto`
 - Log level: DEBUG for test output
 - Console output: short format
+
+Root `pytest.ini` redirects to `.config/python/pytest.ini`.
 
 ## Installation
 

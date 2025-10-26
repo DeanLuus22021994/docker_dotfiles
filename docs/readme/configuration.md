@@ -11,6 +11,24 @@ description: "Configuration management and validation procedures"
 
 All configurations centralized in `.config/` directory:
 
+**Web Configs** (`.config/web/`):
+- `nginx.conf` - React web dashboard nginx settings
+- `vite.config.ts` - Vite build configuration
+- `tsconfig.json` - TypeScript compiler options
+- `.eslintrc.cjs` - ESLint rules
+- `postcss.config.js` - PostCSS plugins
+- `tailwind.config.js` - Tailwind CSS theme
+
+**Python Configs** (`.config/python/`):
+- `pytest.ini` - Pytest additional settings
+- `pyrightconfig.json` - Pyright type checking rules
+
+**Git Configs** (`.config/git/`):
+- `.pre-commit-config.yaml` - Pre-commit hooks
+
+**DevContainer** (`.config/devcontainer/`):
+- `devcontainer.json` - VS Code DevContainer settings
+
 **Nginx Configs** (`.config/nginx/`):
 - `loadbalancer.conf` - Load balancer routing
 - `main.conf` - Worker processes, gzip, security headers
@@ -26,6 +44,8 @@ All configurations centralized in `.config/` directory:
 
 **Docker Configs** (`.config/docker/`):
 - `buildkitd.toml` - 10GB cache, 3-day retention
+
+**Note:** Root-level config files (`.pre-commit-config.yaml`, `pytest.ini`, `pyrightconfig.json`, `.devcontainer/`) are symlinks or redirects to `.config/` for tool compatibility.
 
 ## Validation Commands
 
