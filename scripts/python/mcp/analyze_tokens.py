@@ -1,36 +1,69 @@
-"""
-Token Usage Analyzer for MCP Configurations
-Estimates token usage based on tool counts and server configurations.
+#!/usr/bin/env python3
+"""Token Usage Analyzer for MCP Configurations.
+
+Estimates token usage based on tool counts and server configurations
+using Python 3.14 type system features.
+
+Examples:
+    >>> analyzer = TokenAnalyzer(Path("mcp.json"))
+    >>> stats = analyzer.analyze()
+    >>> print(stats["estimated_tokens"])
 """
 
-# pylint: disable=logging-fstring-interpolation  # CLI display output, not internal logging
+# pylint: disable=logging-fstring-interpolation  # CLI display output
 
 import argparse
 import json
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Final, TypeAlias
 
 # Add parent directories to path for imports
-scripts_dir = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(scripts_dir))
-from python.utils.colors import Colors
-from python.utils.logging_utils import setup_logger
+_SCRIPTS_DIR: Final[Path] = Path(__file__).parent.parent.parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from scripts.python.utils.colors import Colors
+from scripts.python.utils.logging_utils import setup_logger
 
 logger = setup_logger("token_analyzer")
+
+# Type aliases
+ServerName: TypeAlias = str
+ConfigPath: TypeAlias = Path
+TokenCount: TypeAlias = int
+ToolCount: TypeAlias = int
+ServerConfig: TypeAlias = dict[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class TokenStats:
+    """Token usage statistics."""
+
+    server_count: int
+    tool_count: int
+    tokens_per_tool: int
+    tokens_per_server: int
+    tool_tokens: int
+    server_overhead: int
+    estimated_tokens: int
+    token_range: str
+    token_range_k: str
+    servers: tuple[ServerName, ...]
 
 
 class TokenAnalyzer:
     """Analyzes token usage for MCP configurations."""
 
     # Token estimates per tool (average from schema analysis)
-    TOKENS_PER_TOOL = 180  # Average: name, description, input schema
+    TOKENS_PER_TOOL: Final[int] = 180  # Average: name, description, input schema
 
     # Base overhead tokens per server
-    TOKENS_PER_SERVER = 50  # Server metadata, connection info
+    TOKENS_PER_SERVER: Final[int] = 50  # Server metadata, connection info
 
     # Tool count estimates per server (from discovery)
-    KNOWN_TOOL_COUNTS = {
+    KNOWN_TOOL_COUNTS: Final[dict[ServerName, ToolCount]] = {
         "playwright": 32,
         "github": 26,
         "filesystem": 14,
@@ -42,16 +75,20 @@ class TokenAnalyzer:
         "fetch": 1,
     }
 
-    def __init__(self, config_path: Path):
+    def __init__(self, config_path: ConfigPath) -> None:
         """Initialize analyzer with config file path."""
-        self.config_path = config_path
-        self.config: dict[str, Any] | None = None
+        self.config_path: ConfigPath = config_path
+        self._config: ServerConfig | None = None
 
     def load_config(self) -> bool:
-        """Load MCP configuration from file."""
+        """Load MCP configuration from file.
+
+        Returns:
+            True if config loaded successfully, False otherwise
+        """
         try:
             with open(self.config_path, encoding="utf-8") as f:
-                self.config = json.load(f)
+                self._config = json.load(f)
             return True
         except (FileNotFoundError, json.JSONDecodeError, OSError) as e:
             logger.error("Failed to load config: %s", e)
@@ -64,11 +101,11 @@ class TokenAnalyzer:
         Returns:
             Dictionary with token usage statistics
         """
-        if not self.config:
+        if not self._config:
             return {}
 
-        servers = self.config.get("servers", {})
-        metadata = self.config.get("_metadata", {})
+        servers = self._config.get("servers", {})
+        metadata = self._config.get("_metadata", {})
 
         # Get tool count from metadata or calculate
         if "tool_count" in metadata:

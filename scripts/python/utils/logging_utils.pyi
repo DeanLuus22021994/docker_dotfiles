@@ -39,7 +39,7 @@ class ColoredFormatter(logging.Formatter):
 def setup_logger(
     name: LoggerName,
     *,
-    level: LogLevel = INFO,
+    level: LogLevel = ...,
     format_string: FormatString | None = None,
     use_colors: bool = True,
 ) -> logging.Logger:

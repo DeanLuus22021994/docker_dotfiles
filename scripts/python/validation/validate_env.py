@@ -70,7 +70,8 @@ class EnvVarConfig:
     @property
     def is_set(self) -> bool:
         """Check if environment variable is currently set."""
-        return os.getenv(self.name) is not None
+        # Type ignore: os.getenv accepts str, mypy overly strict with EnvVarName alias
+        return os.getenv(self.name) is not None  # type: ignore[arg-type]
 
     def get_masked_value(self) -> str:
         """Get masked value for display.
@@ -78,7 +79,8 @@ class EnvVarConfig:
         Returns:
             Masked value string, or empty if not set
         """
-        value = os.getenv(self.name)
+        # Type ignore: os.getenv accepts str, mypy overly strict with EnvVarName alias
+        value = os.getenv(self.name)  # type: ignore[arg-type]
         if not value:
             return ""
 
@@ -303,7 +305,9 @@ def validate_env_vars() -> tuple[bool, list[str], list[str]]:
     return result.is_valid, missing_req, missing_opt
 
 
-def print_summary(all_valid: bool, missing_required: list[str], missing_optional: list[str]) -> None:
+def print_summary(
+    all_valid: bool, missing_required: list[str], missing_optional: list[str]
+) -> None:
     """Legacy wrapper: Print validation summary.
 
     Args:
@@ -318,13 +322,13 @@ def print_summary(all_valid: bool, missing_required: list[str], missing_optional
     all_vars = REQUIRED_ENV_VARS + OPTIONAL_ENV_VARS
     missing_all = set(missing_required + missing_optional)
     present_configs = tuple(var for var in all_vars if var.name not in missing_all)
-    
+
     result = ValidationResult(
         missing_required=missing_req_configs,
         missing_optional=missing_opt_configs,
         present_vars=present_configs,
     )
-    
+
     reporter = ValidationReporter()
     reporter.print_summary(result)
 

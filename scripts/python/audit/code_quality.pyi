@@ -110,7 +110,7 @@ class CodeQualityAuditor:
     def __init__(
         self,
         *,
-        target_paths: Sequence[str] = DEFAULT_PYTHON_DIRS,
+        target_paths: Sequence[str] = ...,
         verbose: bool = True,
     ) -> None: ...
     def run_all_checks(self) -> CodeQualityReport: ...

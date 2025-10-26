@@ -58,8 +58,8 @@ class EnvValidator:
     def __init__(
         self,
         *,
-        required_vars: tuple[EnvVarConfig, ...] = REQUIRED_ENV_VARS,
-        optional_vars: tuple[EnvVarConfig, ...] = OPTIONAL_ENV_VARS,
+        required_vars: tuple[EnvVarConfig, ...] = ...,
+        optional_vars: tuple[EnvVarConfig, ...] = ...,
         verbose: bool = True,
     ) -> None: ...
     def validate(self) -> ValidationResult: ...
@@ -79,7 +79,9 @@ def validate_env_vars() -> tuple[bool, list[str], list[str]]:
     """Legacy wrapper: Validate environment variables."""
     ...
 
-def print_summary(all_valid: bool, missing_required: list[str], missing_optional: list[str]) -> None:
+def print_summary(
+    all_valid: bool, missing_required: list[str], missing_optional: list[str]
+) -> None:
     """Legacy wrapper: Print validation summary."""
     ...
 

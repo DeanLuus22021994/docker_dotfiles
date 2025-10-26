@@ -1,43 +1,94 @@
-"""
-MCP Configuration Validator
-Validates MCP server configurations against JSON schema and protocol requirements.
+#!/usr/bin/env python3
+"""MCP Configuration Validator.
+
+Validates MCP server configurations against JSON schema and
+protocol requirements using Python 3.14 type system features.
+
+Examples:
+    >>> validator = MCPConfigValidator(Path("mcp.json"))
+    >>> success, errors, warnings = validator.validate()
+    >>> print(f"Valid: {success}")
 """
 
-# pylint: disable=logging-fstring-interpolation  # CLI display output, not internal logging
+# pylint: disable=logging-fstring-interpolation  # CLI display output
 
 import argparse
 import json
 import sys
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Final, TypeAlias
 
 # Add parent directories to path for imports
-scripts_dir = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(scripts_dir))
-from python.utils.colors import Colors
-from python.utils.logging_utils import setup_logger
+_SCRIPTS_DIR: Final[Path] = Path(__file__).parent.parent.parent
+if str(_SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from scripts.python.utils.colors import Colors
+from scripts.python.utils.logging_utils import setup_logger
 
 logger = setup_logger("mcp_validator")
+
+# Type aliases
+ServerName: TypeAlias = str
+FieldName: TypeAlias = str
+ErrorMessage: TypeAlias = str
+WarningMessage: TypeAlias = str
+ServerConfig: TypeAlias = dict[str, Any]
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationResult:
+    """Result of MCP configuration validation."""
+
+    success: bool
+    errors: tuple[ErrorMessage, ...]
+    warnings: tuple[WarningMessage, ...]
+
+    @property
+    def has_errors(self) -> bool:
+        """Check if validation has errors."""
+        return len(self.errors) > 0
+
+    @property
+    def has_warnings(self) -> bool:
+        """Check if validation has warnings."""
+        return len(self.warnings) > 0
 
 
 class MCPConfigValidator:
     """Validates MCP configuration files."""
 
     # MCP protocol version
-    PROTOCOL_VERSION = "2024-11-05"
+    PROTOCOL_VERSION: Final[str] = "2024-11-05"
 
     # Valid commands
-    VALID_COMMANDS = ["npx", "uvx", "node", "python", "python3"]
+    VALID_COMMANDS: Final[tuple[str, ...]] = ("npx", "uvx", "node", "python", "python3")
 
     # Required fields
-    REQUIRED_SERVER_FIELDS = ["command", "args"]
+    REQUIRED_SERVER_FIELDS: Final[tuple[FieldName, ...]] = ("command", "args")
 
-    def __init__(self, config_path: Path):
+    def __init__(self, config_path: Path) -> None:
         """Initialize validator with config file path."""
-        self.config_path = config_path
-        self.errors: list[str] = []
-        self.warnings: list[str] = []
-        self.config: dict[str, Any] | None = None
+        self.config_path: Path = config_path
+        self._errors: list[ErrorMessage] = []
+        self._warnings: list[WarningMessage] = []
+        self._config: ServerConfig | None = None
+
+    @property
+    def errors(self) -> list[ErrorMessage]:
+        """Get validation errors."""
+        return self._errors
+
+    @property
+    def warnings(self) -> list[WarningMessage]:
+        """Get validation warnings."""
+        return self._warnings
+
+    @property
+    def config(self) -> ServerConfig | None:
+        """Get loaded configuration."""
+        return self._config
 
     def validate(self) -> tuple[bool, list[str], list[str]]:
         """
