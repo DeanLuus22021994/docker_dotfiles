@@ -3,23 +3,190 @@
  * 
  * Provides a secure HTTP API for accessing Docker Engine metrics
  * and container health information for the dashboard.
+ * 
+ * Security Features:
+ * - JWT authentication (optional, controlled by AUTH_ENABLED env var)
+ * - Rate limiting (100 req/15min general, 10 req/15min stats, 5 req/15min auth)
+ * - Input validation and sanitization
+ * - CORS origin whitelisting
+ * - Helmet security headers
+ * - Docker socket read-only access
  */
 
+require('dotenv').config();
 const express = require('express');
 const Docker = require('dockerode');
 const cors = require('cors');
+const helmet = require('helmet');
+
+const auth = require('./auth');
+const {
+  apiLimiter,
+  statsLimiter,
+  authLimiter,
+  validateContainerId,
+  validateLogin,
+  validateRefreshToken,
+  handleValidationErrors,
+  sanitizeError,
+} = require('./middleware');
 
 const app = express();
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
-// Middleware
-app.use(cors());
+// Security middleware - Helmet (must be first)
+app.use(helmet());
+
+// CORS configuration with origin whitelisting
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',')
+  : ['http://localhost:3000', 'http://localhost:5173'];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200,
+  })
+);
+
+// Body parsing middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ============================================================================
+// AUTHENTICATION ENDPOINTS (No auth required, but rate limited)
+// ============================================================================
+
+/**
+ * POST /auth/login
+ * Authenticate user and return JWT tokens
+ */
+app.post(
+  '/auth/login',
+  authLimiter,
+  validateLogin,
+  handleValidationErrors,
+  async (req, res) => {
+    try {
+      const { username, password } = req.body;
+
+      // Verify credentials
+      const user = await auth.verifyCredentials(username, password);
+      if (!user) {
+        return res.status(401).json({
+          error: 'Unauthorized',
+          message: 'Invalid username or password',
+        });
+      }
+
+      // Generate tokens
+      const accessToken = auth.generateAccessToken(user);
+      const refreshToken = auth.generateRefreshToken(user);
+
+      res.json({
+        success: true,
+        accessToken,
+        refreshToken,
+        expiresIn: process.env.JWT_EXPIRES_IN || '8h',
+        user: {
+          username: user.username,
+          role: user.role,
+        },
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({
+        error: 'Internal Server Error',
+        message: 'Login failed',
+      });
+    }
+  }
+);
+
+/**
+ * POST /auth/refresh
+ * Refresh access token using refresh token
+ */
+app.post(
+  '/auth/refresh',
+  authLimiter,
+  validateRefreshToken,
+  handleValidationErrors,
+  async (req, res) => {
+    try {
+      const { refreshToken } = req.body;
+
+      // Verify refresh token
+      const decoded = auth.verifyToken(refreshToken);
+      if (!decoded || decoded.type !== 'refresh') {
+        return res.status(401).json({
+          error: 'Unauthorized',
+          message: 'Invalid refresh token',
+        });
+      }
+
+      // Generate new access token
+      const user = { username: decoded.username, role: decoded.role || 'user' };
+      const accessToken = auth.generateAccessToken(user);
+
+      res.json({
+        success: true,
+        accessToken,
+        expiresIn: process.env.JWT_EXPIRES_IN || '8h',
+      });
+    } catch (error) {
+      console.error('Refresh token error:', error);
+      res.status(500).json({
+        error: 'Internal Server Error',
+        message: 'Token refresh failed',
+      });
+    }
+  }
+);
+
+/**
+ * POST /auth/logout
+ * Logout user (client should discard tokens)
+ */
+app.post('/auth/logout', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Logged out successfully',
+  });
+});
+
+// ============================================================================
+// PUBLIC ENDPOINTS (No authentication required)
+// ============================================================================
+
+// ============================================================================
+// PUBLIC ENDPOINTS (No authentication required)
+// ============================================================================
 
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
+
+// ============================================================================
+// PROTECTED API ENDPOINTS (Authentication + Rate limiting)
+// ============================================================================
+
+// Apply authentication middleware to all /api/* routes (if enabled)
+app.use('/api', auth.authenticate);
+
+// Apply rate limiting to all API endpoints
+app.use('/api', apiLimiter);
 
 // Get all containers with health status
 app.get('/api/containers', async (req, res) => {
@@ -55,10 +222,15 @@ app.get('/api/containers', async (req, res) => {
 });
 
 // Get container stats (real-time metrics)
-app.get('/api/containers/:id/stats', async (req, res) => {
-  try {
-    const container = docker.getContainer(req.params.id);
-    const stats = await container.stats({ stream: false });
+app.get(
+  '/api/containers/:id/stats',
+  statsLimiter,
+  validateContainerId,
+  handleValidationErrors,
+  async (req, res) => {
+    try {
+      const container = docker.getContainer(req.params.id);
+      const stats = await container.stats({ stream: false });
     
     // Calculate CPU percentage
     const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
@@ -180,16 +352,25 @@ app.get('/api/stats/aggregate', async (req, res) => {
       containers: validStats
     });
   } catch (error) {
-    console.error('Error fetching aggregate stats:', error);
+    console.error('Error fetching container stats:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error', message: err.message });
+// ============================================================================
+// ERROR HANDLING
+// ============================================================================
+
+// 404 handler for undefined routes
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'Not Found',
+    message: `Route ${req.method} ${req.path} not found`,
+  });
 });
+
+// Global error handling middleware (must be last)
+app.use(sanitizeError);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
