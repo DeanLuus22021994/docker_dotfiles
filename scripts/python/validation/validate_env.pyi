@@ -74,15 +74,4 @@ def main() -> ExitCode:
     """Run environment validation."""
     ...
 
-# Backward-compatible wrapper functions
-def validate_env_vars() -> tuple[bool, list[str], list[str]]:
-    """Legacy wrapper: Validate environment variables."""
-    ...
-
-def print_summary(
-    all_valid: bool, missing_required: list[str], missing_optional: list[str]
-) -> None:
-    """Legacy wrapper: Print validation summary."""
-    ...
-
 __all__: list[str]

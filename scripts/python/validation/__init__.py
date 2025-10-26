@@ -23,7 +23,7 @@ See Also:
 # Import submodules to make them available in the package namespace
 from . import validate_configs, validate_env
 
-# Import new class-based APIs
+# Import class-based APIs
 from .validate_configs import (
     BaseConfigValidator,
     ConfigurationAuditor,
@@ -39,12 +39,6 @@ from .validate_configs import (
     YAML_LINE_LENGTH,
     YamlValidator,
     main as configs_main,
-    # Backward-compatible function wrappers
-    validate_json_files,
-    validate_mariadb_config,
-    validate_nginx_configs,
-    validate_postgresql_config,
-    validate_yaml_files,
 )
 from .validate_env import (
     EnvVarConfig,
@@ -57,9 +51,6 @@ from .validate_env import (
     ValidationReporter,
     ValidationResult as EnvValidationResult,
     main as env_main,
-    # Legacy function wrappers for backward compatibility
-    print_summary,
-    validate_env_vars,
 )
 
 __all__: list[str] = [
@@ -92,12 +83,4 @@ __all__: list[str] = [
     "MASK_SUFFIX",
     "SHORT_MASK",
     "env_main",
-    # Legacy/backward-compatible validation functions
-    "validate_env_vars",
-    "validate_json_files",
-    "validate_mariadb_config",
-    "validate_nginx_configs",
-    "validate_postgresql_config",
-    "validate_yaml_files",
-    "print_summary",
 ]
