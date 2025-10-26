@@ -32,11 +32,14 @@ class ValidationResult:
     errors: tuple[ErrorMessage, ...]
 
     @property
-    def file_count(self) -> int: ...
+    def file_count(self) -> int:
+        """Number of files validated."""
     @property
-    def error_count(self) -> int: ...
+    def error_count(self) -> int:
+        """Number of errors found."""
     @property
-    def has_errors(self) -> bool: ...
+    def has_errors(self) -> bool:
+        """Check if any errors exist."""
 
 @dataclass(frozen=True, slots=True)
 class ValidationReport:
@@ -45,81 +48,112 @@ class ValidationReport:
     results: tuple[ValidationResult, ...]
 
     @property
-    def is_valid(self) -> bool: ...
+    def is_valid(self) -> bool:
+        """Check if all validations passed."""
     @property
-    def total_files(self) -> int: ...
+    def total_files(self) -> int:
+        """Total number of files validated."""
     @property
-    def total_errors(self) -> int: ...
+    def total_errors(self) -> int:
+        """Total number of errors found."""
     @property
-    def all_errors(self) -> tuple[ErrorMessage, ...]: ...
+    def all_errors(self) -> tuple[ErrorMessage, ...]:
+        """All error messages combined."""
     @property
-    def failed_validators(self) -> tuple[ConfigType, ...]: ...
+    def failed_validators(self) -> tuple[ConfigType, ...]:
+        """Config types that failed validation."""
 
 class ConfigValidatorProtocol(Protocol):
     """Protocol for configuration validators."""
 
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate configuration files."""
 
 class BaseConfigValidator(ABC):
     """Abstract base class for configuration validators."""
 
     verbose: bool
 
-    def __init__(self, *, verbose: bool = True) -> None: ...
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
-    def _should_exclude_path(self, path: Path) -> bool: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate configuration files."""
+    def _should_exclude_path(self, _path: Path, /) -> bool:
+        """Check if path should be excluded from validation."""
 
 class YamlValidator(BaseConfigValidator):
     """Validates YAML configuration files."""
 
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate YAML configuration files."""
 
 class JsonValidator(BaseConfigValidator):
     """Validates JSON configuration files."""
 
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate JSON configuration files."""
 
 class NginxValidator(BaseConfigValidator):
     """Validates nginx configuration files."""
 
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate nginx configuration files."""
 
 class PostgresqlValidator(BaseConfigValidator):
     """Validates PostgreSQL configuration file."""
 
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate PostgreSQL configuration file."""
 
 class MariadbValidator(BaseConfigValidator):
     """Validates MariaDB configuration file."""
 
     @property
-    def config_type(self) -> ConfigType: ...
-    def validate(self) -> ValidationResult: ...
+    def config_type(self) -> ConfigType:
+        """Type of configuration being validated."""
+    def validate(self) -> ValidationResult:
+        """Validate MariaDB configuration file."""
 
 class ConfigurationAuditor:
     """Orchestrates configuration validation."""
 
-    verbose: bool
     validators: tuple[BaseConfigValidator, ...]
 
-    def __init__(self, *, verbose: bool = True) -> None: ...
-    def validate_all(self) -> ValidationReport: ...
-    def print_summary(self, report: ValidationReport) -> None: ...
+    def validate_all(self) -> ValidationReport:
+        """Validate all configured validators."""
+
+def validate_yaml_files() -> ValidationResult:
+    """Validate YAML configuration files."""
+
+def validate_json_files() -> ValidationResult:
+    """Validate JSON configuration files."""
+
+def validate_nginx_configs() -> ValidationResult:
+    """Validate nginx configuration files."""
+
+def validate_postgresql_config() -> ValidationResult:
+    """Validate PostgreSQL configuration file."""
+
+def validate_mariadb_config() -> ValidationResult:
+    """Validate MariaDB configuration file."""
 
 def main() -> ExitCode:
     """Run all configuration validations."""
-    ...
 
 __all__: list[str]

@@ -370,11 +370,9 @@ class CodeQualityAuditor:
         if report.passed:
             print(success("ALL CODE QUALITY CHECKS PASSED"))
         else:
-            print(
-                error(
-                    f"CODE QUALITY AUDIT FAILED ({report.failed_checks}/{report.total_checks} checks)"
-                )
-            )
+            failed = report.failed_checks
+            total = report.total_checks
+            print(error(f"CODE QUALITY AUDIT FAILED ({failed}/{total} checks)"))
 
         print(separator())
 
@@ -389,6 +387,53 @@ class CodeQualityAuditor:
                     print(f"\nInstall {result.tool_name}: {result.install_hint}")
 
 
+def run_black_check() -> tuple[bool, list[str]]:
+    """Run Black format check (simplified interface).
+    
+    Returns:
+        Tuple of (passed, errors)
+    """
+    checker = BlackChecker()
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+def run_ruff_check() -> tuple[bool, list[str]]:
+    """Run Ruff lint check (simplified interface).
+    
+    Returns:
+        Tuple of (passed, errors)
+    """
+    checker = RuffChecker()
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+def run_mypy_check() -> tuple[bool, list[str]]:
+    """Run mypy type check (simplified interface).
+    
+    Returns:
+        Tuple of (passed, errors)
+    """
+    checker = MypyChecker()
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+__all__ = [
+    "CheckResult",
+    "CodeQualityReport",
+    "BaseChecker",
+    "BlackChecker",
+    "RuffChecker",
+    "MypyChecker",
+    "CodeQualityAuditor",
+    "run_black_check",
+    "run_ruff_check",
+    "run_mypy_check",
+]
+
+
 def main() -> ExitCode:
     """Run all code quality checks and return exit code.
 
@@ -400,40 +445,6 @@ def main() -> ExitCode:
     auditor.print_summary(report)
 
     return 0 if report.passed else 1
-
-
-# Backward-compatible wrapper functions for legacy test code
-def run_black_check() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Run Black format check.
-
-    Returns:
-        Tuple of (passed, errors) for backward compatibility
-    """
-    checker = BlackChecker(verbose=False)
-    result = checker.run(DEFAULT_PYTHON_DIRS)
-    return result.passed, list(result.errors)
-
-
-def run_ruff_check() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Run Ruff linting check.
-
-    Returns:
-        Tuple of (passed, errors) for backward compatibility
-    """
-    checker = RuffChecker(verbose=False)
-    result = checker.run(DEFAULT_PYTHON_DIRS)
-    return result.passed, list(result.errors)
-
-
-def run_mypy_check() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Run mypy type check.
-
-    Returns:
-        Tuple of (passed, errors) for backward compatibility
-    """
-    checker = MypyChecker(verbose=False)
-    result = checker.run(DEFAULT_PYTHON_DIRS)
-    return result.passed, list(result.errors)
 
 
 if __name__ == "__main__":

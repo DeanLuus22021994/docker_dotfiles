@@ -14,15 +14,9 @@ pytest_plugins = ["tests.fixtures.common"]
 
 
 @pytest.fixture
-def project_root_path() -> Path:
-    """Return the project root directory path."""
-    return Path(__file__).parent.parent
-
-
-@pytest.fixture
-def scripts_path(project_root_path: Path) -> Path:
+def scripts_path() -> Path:
     """Return the scripts directory path."""
-    return project_root_path / "scripts"
+    return project_root / "scripts"
 
 
 @pytest.fixture

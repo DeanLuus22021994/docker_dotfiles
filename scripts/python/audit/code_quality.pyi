@@ -30,7 +30,8 @@ class CheckResult:
     install_hint: str
 
     @property
-    def has_errors(self) -> bool: ...
+    def has_errors(self) -> bool:
+        """Check if any errors exist."""
 
 @dataclass(frozen=True, slots=True)
 class CodeQualityReport:
@@ -39,66 +40,89 @@ class CodeQualityReport:
     results: tuple[CheckResult, ...]
 
     @property
-    def passed(self) -> bool: ...
+    def passed(self) -> bool:
+        """Check if all checks passed."""
     @property
-    def total_checks(self) -> int: ...
+    def total_checks(self) -> int:
+        """Total number of checks run."""
     @property
-    def passed_checks(self) -> int: ...
+    def passed_checks(self) -> int:
+        """Number of passed checks."""
     @property
-    def failed_checks(self) -> int: ...
+    def failed_checks(self) -> int:
+        """Number of failed checks."""
     @property
-    def all_errors(self) -> tuple[ErrorMessage, ...]: ...
+    def all_errors(self) -> tuple[ErrorMessage, ...]:
+        """All error messages combined."""
 
 class CheckerProtocol(Protocol):
     """Protocol for code quality checkers."""
 
     @property
-    def tool_name(self) -> ToolName: ...
-    def run(self, target_paths: Sequence[str]) -> CheckResult: ...
+    def tool_name(self) -> ToolName:
+        """Name of the checking tool."""
+    def run(self, _target_paths: Sequence[str], /) -> CheckResult:
+        """Run the checker."""
 
 class BaseChecker(ABC):
     """Abstract base class for code quality checkers."""
 
     verbose: bool
 
-    def __init__(self, *, verbose: bool = True) -> None: ...
     @property
-    def tool_name(self) -> ToolName: ...
+    def tool_name(self) -> ToolName:
+        """Name of the checking tool."""
     @property
-    def install_command(self) -> str: ...
-    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
-    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
-    def run(self, target_paths: Sequence[str]) -> CheckResult: ...
+    def install_command(self) -> str:
+        """Command to install the tool."""
+    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+        """Build command arguments."""
+    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+        """Format tool output."""
+    def run(self, _target_paths: Sequence[str], /) -> CheckResult:
+        """Run the checker."""
 
 class BlackChecker(BaseChecker):
     """Black code formatter checker."""
 
     @property
-    def tool_name(self) -> ToolName: ...
+    def tool_name(self) -> ToolName:
+        """Name of the checking tool."""
     @property
-    def install_command(self) -> str: ...
-    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
-    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+    def install_command(self) -> str:
+        """Command to install Black."""
+    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+        """Build Black command arguments."""
+    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+        """Format Black output."""
 
 class RuffChecker(BaseChecker):
     """Ruff linter checker."""
 
     @property
-    def tool_name(self) -> ToolName: ...
+    def tool_name(self) -> ToolName:
+        """Name of the checking tool."""
     @property
-    def install_command(self) -> str: ...
-    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
-    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+    def install_command(self) -> str:
+        """Command to install Ruff."""
+    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+        """Build Ruff command arguments."""
+    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+        """Format Ruff output."""
 
 class MypyChecker(BaseChecker):
     """Mypy type checker."""
 
     @property
-    def tool_name(self) -> ToolName: ...
+    def tool_name(self) -> ToolName:
+        """Name of the checking tool."""
     @property
-    def install_command(self) -> str: ...
-    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
-    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+    def install_command(self) -> str:
+        """Command to install mypy."""
+    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+        """Build mypy command arguments."""
+    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+        """Format mypy output."""
 
 class CodeQualityAuditor:
     """Orchestrates code quality checks."""
@@ -107,30 +131,21 @@ class CodeQualityAuditor:
     verbose: bool
     checkers: tuple[BaseChecker, ...]
 
-    def __init__(
-        self,
-        *,
-        target_paths: Sequence[str] = ...,
-        verbose: bool = True,
-    ) -> None: ...
-    def run_all_checks(self) -> CodeQualityReport: ...
-    def print_summary(self, report: CodeQualityReport) -> None: ...
+    def run_all_checks(self) -> CodeQualityReport:
+        """Run all configured code quality checks."""
+    def print_summary(self, _report: CodeQualityReport, /) -> None:
+        """Print summary of check results."""
+
+def run_black_check() -> tuple[bool, list[str]]:
+    """Run Black format check."""
+
+def run_ruff_check() -> tuple[bool, list[str]]:
+    """Run Ruff lint check."""
+
+def run_mypy_check() -> tuple[bool, list[str]]:
+    """Run mypy type check."""
 
 def main() -> ExitCode:
     """Run all code quality checks."""
-    ...
-
-# Backward-compatible wrapper functions
-def run_black_check() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Run Black format check."""
-    ...
-
-def run_ruff_check() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Run Ruff linting check."""
-    ...
-
-def run_mypy_check() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Run mypy type check."""
-    ...
 
 __all__: list[str]

@@ -40,7 +40,6 @@ from .file_utils import (
     DEFAULT_JSON_INDENT,
     FileSize,
     JSONDict,
-    JSONValue,
     StrPath,
     ensure_dir,
     file_exists,
@@ -56,7 +55,6 @@ from .file_utils import (
 from .logging_utils import (
     CRITICAL,
     DEBUG,
-    DEFAULT_FORMAT,
     ERROR,
     INFO,
     WARNING,
@@ -92,7 +90,6 @@ __all__: list[str] = [
     "separator",
     # File utils - types and constants
     "StrPath",
-    "JSONValue",
     "JSONDict",
     "FileSize",
     "DEFAULT_ENCODING",
@@ -116,7 +113,6 @@ __all__: list[str] = [
     "WARNING",
     "ERROR",
     "CRITICAL",
-    "DEFAULT_FORMAT",
     # Logging utils - classes and functions
     "FormatterProtocol",
     "ColoredFormatter",

@@ -30,9 +30,11 @@ class Package:
     latest_version: Version | None
 
     @property
-    def is_outdated(self) -> bool: ...
+    def is_outdated(self) -> bool:
+        """Check if package is outdated."""
     @property
-    def version_info(self) -> str: ...
+    def version_info(self) -> str:
+        """Get version information string."""
 
 @dataclass(frozen=True, slots=True)
 class DependencyCheckResult:
@@ -46,9 +48,11 @@ class DependencyCheckResult:
     warnings: tuple[str, ...]
 
     @property
-    def has_issues(self) -> bool: ...
+    def has_issues(self) -> bool:
+        """Check if any issues exist."""
     @property
-    def outdated_packages(self) -> tuple[Package, ...]: ...
+    def outdated_packages(self) -> tuple[Package, ...]:
+        """Get outdated packages."""
 
 @dataclass(frozen=True, slots=True)
 class DependencyReport:
@@ -57,58 +61,76 @@ class DependencyReport:
     results: tuple[DependencyCheckResult, ...]
 
     @property
-    def passed(self) -> bool: ...
+    def passed(self) -> bool:
+        """Check if all checks passed."""
     @property
-    def has_issues(self) -> bool: ...
+    def has_issues(self) -> bool:
+        """Check if any issues exist."""
     @property
-    def all_errors(self) -> tuple[ErrorMessage, ...]: ...
+    def all_errors(self) -> tuple[ErrorMessage, ...]:
+        """All error messages combined."""
     @property
-    def all_warnings(self) -> tuple[str, ...]: ...
+    def all_warnings(self) -> tuple[str, ...]:
+        """All warnings combined."""
     @property
-    def all_outdated_packages(self) -> tuple[Package, ...]: ...
+    def all_outdated_packages(self) -> tuple[Package, ...]:
+        """All outdated packages combined."""
     @property
-    def all_missing_packages(self) -> tuple[PackageName, ...]: ...
+    def all_missing_packages(self) -> tuple[PackageName, ...]:
+        """All missing packages combined."""
 
 class DependencyCheckerProtocol(Protocol):
     """Protocol for dependency checkers."""
 
     @property
-    def check_name(self) -> str: ...
-    def run(self) -> DependencyCheckResult: ...
+    def check_name(self) -> str:
+        """Name of the check."""
+    def run(self) -> DependencyCheckResult:
+        """Run the dependency check."""
 
 class BaseDependencyChecker(ABC):
     """Abstract base class for dependency checkers."""
 
     verbose: bool
 
-    def __init__(self, *, verbose: bool = True) -> None: ...
     @property
-    def check_name(self) -> str: ...
-    def run(self) -> DependencyCheckResult: ...
-    def _run_pip_command(self, args: CommandArgs) -> subprocess.CompletedProcess[str]: ...
+    def check_name(self) -> str:
+        """Name of the check."""
+    def run(self) -> DependencyCheckResult:
+        """Run the dependency check."""
+    def _run_pip_command(self, _args: CommandArgs, /) -> subprocess.CompletedProcess[str]:
+        """Run pip command with arguments."""
 
 class OutdatedPackagesChecker(BaseDependencyChecker):
     """Checks for outdated Python packages."""
 
     @property
-    def check_name(self) -> str: ...
-    def run(self) -> DependencyCheckResult: ...
-    def _parse_outdated_output(self, output: str) -> tuple[Package, ...]: ...
+    def check_name(self) -> str:
+        """Name of the check."""
+    def run(self) -> DependencyCheckResult:
+        """Run the outdated packages check."""
+    def _parse_outdated_output(self, _output: str, /) -> tuple[Package, ...]:
+        """Parse outdated packages output."""
 
 class InstalledPackagesChecker(BaseDependencyChecker):
     """Lists all installed packages."""
 
     @property
-    def check_name(self) -> str: ...
-    def run(self) -> DependencyCheckResult: ...
-    def _parse_installed_output(self, output: str) -> tuple[Package, ...]: ...
+    def check_name(self) -> str:
+        """Name of the check."""
+    def run(self) -> DependencyCheckResult:
+        """Run the installed packages check."""
+    def _parse_installed_output(self, _output: str, /) -> tuple[Package, ...]:
+        """Parse installed packages output."""
 
 class PyprojectDependenciesChecker(BaseDependencyChecker):
     """Checks pyproject.toml dependencies."""
 
     @property
-    def check_name(self) -> str: ...
-    def run(self) -> DependencyCheckResult: ...
+    def check_name(self) -> str:
+        """Name of the check."""
+    def run(self) -> DependencyCheckResult:
+        """Run the pyproject.toml dependencies check."""
 
 class DependencyAuditor:
     """Orchestrates dependency checks."""
@@ -116,25 +138,21 @@ class DependencyAuditor:
     verbose: bool
     checkers: tuple[BaseDependencyChecker, ...]
 
-    def __init__(self, *, verbose: bool = True) -> None: ...
-    def run_all_checks(self) -> DependencyReport: ...
-    def print_summary(self, report: DependencyReport) -> None: ...
+    def run_all_checks(self) -> DependencyReport:
+        """Run all configured dependency checks."""
+    def print_summary(self, _report: DependencyReport, /) -> None:
+        """Print summary of check results."""
+
+def check_outdated_packages() -> tuple[bool, list[str]]:
+    """Check for outdated packages."""
+
+def list_installed_packages() -> tuple[bool, list[str]]:
+    """List installed packages."""
+
+def check_pyproject_dependencies() -> tuple[bool, list[str]]:
+    """Check pyproject.toml dependencies."""
 
 def main() -> ExitCode:
     """Run all dependency checks."""
-    ...
-
-# Backward-compatible wrapper functions
-def check_outdated_packages() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Check for outdated packages."""
-    ...
-
-def list_installed_packages() -> tuple[bool, list[str]]:
-    """Legacy wrapper: List all installed packages."""
-    ...
-
-def check_pyproject_dependencies() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Check pyproject.toml dependencies."""
-    ...
 
 __all__: list[str]

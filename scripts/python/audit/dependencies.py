@@ -423,9 +423,57 @@ class DependencyAuditor:
                     print(f"  - {err}")
 
             if report.all_warnings:
-                print("\nWarnings:")
+                print("\\nWarnings:")
                 for warn in report.all_warnings:
                     print(f"  - {warn}")
+
+
+def check_outdated_packages() -> tuple[bool, list[str]]:
+    """Check for outdated packages (simplified interface).
+    
+    Returns:
+        Tuple of (passed, errors)
+    """
+    checker = OutdatedPackagesChecker()
+    result = checker.run()
+    return result.passed, list(result.errors)
+
+
+def list_installed_packages() -> tuple[bool, list[str]]:
+    """List installed packages (simplified interface).
+    
+    Returns:
+        Tuple of (passed, errors)
+    """
+    checker = InstalledPackagesChecker()
+    result = checker.run()
+    return result.passed, list(result.errors)
+
+
+def check_pyproject_dependencies() -> tuple[bool, list[str]]:
+    """Check pyproject.toml dependencies (simplified interface).
+    
+    Returns:
+        Tuple of (passed, errors)
+    """
+    checker = PyprojectDependenciesChecker()
+    result = checker.run()
+    return result.passed, list(result.errors)
+
+
+__all__ = [
+    "Package",
+    "DependencyCheckResult",
+    "DependencyReport",
+    "BaseDependencyChecker",
+    "OutdatedPackagesChecker",
+    "InstalledPackagesChecker",
+    "PyprojectDependenciesChecker",
+    "DependencyAuditor",
+    "check_outdated_packages",
+    "list_installed_packages",
+    "check_pyproject_dependencies",
+]
 
 
 def main() -> ExitCode:
@@ -439,46 +487,6 @@ def main() -> ExitCode:
     auditor.print_summary(report)
 
     return 0 if report.passed else 1
-
-
-# Backward-compatible wrapper functions for legacy test code
-def check_outdated_packages() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Check for outdated packages.
-
-    Returns:
-        Tuple of (passed, errors) for backward compatibility
-    """
-    checker = OutdatedPackagesChecker(verbose=False)
-    result = checker.run()
-    errors = list(result.errors) if result.errors else []
-    if result.warnings and not errors:
-        errors = list(result.warnings)
-    return result.passed, errors
-
-
-def list_installed_packages() -> tuple[bool, list[str]]:
-    """Legacy wrapper: List all installed packages.
-
-    Returns:
-        Tuple of (passed, errors) for backward compatibility
-    """
-    checker = InstalledPackagesChecker(verbose=False)
-    result = checker.run()
-    return result.passed, list(result.errors)
-
-
-def check_pyproject_dependencies() -> tuple[bool, list[str]]:
-    """Legacy wrapper: Check pyproject.toml dependencies.
-
-    Returns:
-        Tuple of (passed, errors) for backward compatibility
-    """
-    checker = PyprojectDependenciesChecker(verbose=False)
-    result = checker.run()
-    errors = list(result.errors) if result.errors else []
-    if result.missing_packages and not errors:
-        errors = [f"Missing packages: {', '.join(result.missing_packages)}"]
-    return result.passed, errors
 
 
 if __name__ == "__main__":

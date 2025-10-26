@@ -202,11 +202,16 @@ class YamlValidator(BaseConfigValidator):
             return ValidationResult(passed=True, config_type=self.config_type)
 
         try:
+            # Construct yamllint config string
+            config = (
+                f"{{extends: default, rules: {{line-length: {{max: {YAML_LINE_LENGTH}}}, "
+                "document-start: disable}}}}"
+            )
             result = subprocess.run(
                 [
                     "yamllint",
                     "-d",
-                    f"{{extends: default, rules: {{line-length: {{max: {YAML_LINE_LENGTH}}}, document-start: disable}}}}",
+                    config,
                     ".",
                 ],
                 capture_output=True,
@@ -347,13 +352,7 @@ class NginxValidator(BaseConfigValidator):
 
             except FileNotFoundError:
                 error_msg = "Docker not found. Cannot validate nginx configs without Docker"
-                if self.verbose:
-                    print(error(error_msg))
-                return ValidationResult(
-                    passed=False,
-                    config_type=self.config_type,
-                    errors=(error_msg,),
-                )
+                return self._create_error_result(error_msg)
 
         if errors:
             if self.verbose:
@@ -554,9 +553,77 @@ class ConfigurationAuditor:
         print(separator())
 
         if not report.is_valid and report.all_errors:
-            print("\nErrors:")
+            print("\\nErrors:")
             for err in report.all_errors:
                 print(f"  - {err}")
+
+
+def validate_yaml_files() -> ValidationResult:
+    """Validate YAML configuration files (simplified interface).
+    
+    Returns:
+        Validation result
+    """
+    validator = YamlValidator()
+    return validator.validate()
+
+
+def validate_json_files() -> ValidationResult:
+    """Validate JSON configuration files (simplified interface).
+    
+    Returns:
+        Validation result
+    """
+    validator = JsonValidator()
+    return validator.validate()
+
+
+def validate_nginx_configs() -> ValidationResult:
+    """Validate nginx configuration files (simplified interface).
+    
+    Returns:
+        Validation result
+    """
+    validator = NginxValidator()
+    return validator.validate()
+
+
+def validate_postgresql_config() -> ValidationResult:
+    """Validate PostgreSQL configuration file (simplified interface).
+    
+    Returns:
+        Validation result
+    """
+    validator = PostgresqlValidator()
+    return validator.validate()
+
+
+def validate_mariadb_config() -> ValidationResult:
+    """Validate MariaDB configuration file (simplified interface).
+    
+    Returns:
+        Validation result
+    """
+    validator = MariadbValidator()
+    return validator.validate()
+
+
+__all__ = [
+    "ValidationResult",
+    "ValidationReport",
+    "BaseConfigValidator",
+    "YamlValidator",
+    "JsonValidator",
+    "NginxValidator",
+    "PostgresqlValidator",
+    "MariadbValidator",
+    "ConfigurationAuditor",
+    "validate_yaml_files",
+    "validate_json_files",
+    "validate_nginx_configs",
+    "validate_postgresql_config",
+    "validate_mariadb_config",
+]
 
 
 def main() -> ExitCode:

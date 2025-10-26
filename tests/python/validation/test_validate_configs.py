@@ -4,8 +4,6 @@ import json
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-import pytest
-
 from scripts.python.validation.validate_configs import (
     main,
     validate_json_files,
@@ -51,7 +49,7 @@ class TestValidateYamlFiles:
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     @patch("pathlib.Path.rglob")
-    def test_validate_yaml_no_yamllint(self, mock_rglob: Mock, mock_run: Mock) -> None:
+    def test_validate_yaml_no_yamllint(self, mock_rglob: Mock, _mock_run: Mock) -> None:
         """Test YAML validation when yamllint is not installed."""
         mock_rglob.return_value = [Path("test.yml")]
 
@@ -106,9 +104,9 @@ class TestValidateJsonFiles:
         assert result.passed is True
         assert result.error_count == 0
 
-    def test_validate_json_excludes_vscode(self, temp_project_dir: Path) -> None:
+    def test_validate_json_excludes_vscode(self, _temp_project_dir: Path) -> None:
         """Test JSON validation excludes .vscode directory."""
-        vscode_json = temp_project_dir / ".vscode" / "settings.json"
+        vscode_json = _temp_project_dir / ".vscode" / "settings.json"
         vscode_json.parent.mkdir()
         vscode_json.write_text('{"key": "value"}', encoding="utf-8")
 
@@ -155,7 +153,7 @@ class TestValidateNginxConfigs:
         assert result.error_count == 0
 
     @patch("subprocess.run")
-    def test_validate_nginx_failure(self, mock_run: Mock, temp_project_dir: Path) -> None:
+    def test_validate_nginx_failure(self, mock_run: Mock, _temp_project_dir: Path) -> None:
         """Test nginx validation failure."""
         mock_run.return_value = Mock(returncode=1, stdout="", stderr="nginx: configuration error")
 
@@ -166,7 +164,7 @@ class TestValidateNginxConfigs:
         assert result.error_count > 0
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
-    def test_validate_nginx_no_docker(self, mock_run: Mock) -> None:
+    def test_validate_nginx_no_docker(self, _mock_run: Mock) -> None:
         """Test nginx validation when Docker is not available."""
         with patch("pathlib.Path.exists", return_value=True):
             result = validate_nginx_configs()
@@ -206,9 +204,10 @@ class TestValidatePostgresqlConfig:
         assert result.passed is True
         assert result.error_count == 0
 
-    def test_validate_postgresql_invalid_syntax(self, temp_project_dir: Path) -> None:
+    def test_validate_postgresql_invalid_syntax(self, _temp_project_dir: Path) -> None:
         """Test PostgreSQL config with invalid syntax."""
-        pg_config = temp_project_dir / ".config" / "database" / "postgresql.conf"
+        assert _temp_project_dir is not None  # Validate fixture executed
+        pg_config = _temp_project_dir / ".config" / "database" / "postgresql.conf"
         pg_config.parent.mkdir(parents=True, exist_ok=True)
         pg_config.write_text("invalid_line_without_equals\n", encoding="utf-8")
 

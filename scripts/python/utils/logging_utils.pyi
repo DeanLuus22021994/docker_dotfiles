@@ -27,17 +27,22 @@ DEFAULT_FORMAT: Final[FormatString]
 class FormatterProtocol(Protocol):
     """Protocol for log formatters."""
 
-    def format(self, record: logging.LogRecord) -> str: ...
+    def format(self, _record: logging.LogRecord, /) -> str:
+        """Format a log record into a string."""
+        ...
 
 class ColoredFormatter(logging.Formatter):
     """Custom formatter with ANSI color support."""
 
     LEVEL_COLORS: Final[dict[LogLevel, ColorCode]]
 
-    def format(self, record: logging.LogRecord) -> str: ...
+    def format(self, record: logging.LogRecord) -> str:
+        """Format log record with ANSI colors."""
+        ...
 
 def setup_logger(
-    name: LoggerName,
+    _name: LoggerName,
+    /,
     *,
     level: LogLevel = ...,
     format_string: FormatString | None = None,
@@ -46,7 +51,7 @@ def setup_logger(
     """Setup and configure logger with color support."""
     ...
 
-def get_logger(name: LoggerName) -> logging.Logger:
+def get_logger(_name: LoggerName, /) -> logging.Logger:
     """Get existing logger instance."""
     ...
 

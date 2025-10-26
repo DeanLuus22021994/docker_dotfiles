@@ -27,8 +27,6 @@ class Colors:
     CYAN: Final[ColorCode]
     WHITE: Final[ColorCode]
 
-    def __init__(self) -> None: ...
-
 @dataclass(frozen=True, slots=True)
 class ColorScheme:
     """Immutable color scheme for consistent styling."""
@@ -39,40 +37,31 @@ class ColorScheme:
     info: ColorCode
     highlight: ColorCode
 
-    def __init__(
-        self,
-        success: ColorCode = ...,
-        warning: ColorCode = ...,
-        error: ColorCode = ...,
-        info: ColorCode = ...,
-        highlight: ColorCode = ...,
-    ) -> None: ...
-
-def colorize(text: str, color: ColorCode) -> FormattedText:
+def colorize(_text: str, _color: ColorCode, /) -> FormattedText:
     """Apply color to text."""
     ...
 
-def success(text: str) -> FormattedText:
+def success(_text: str, /) -> FormattedText:
     """Format text as success (green with checkmark)."""
     ...
 
-def warning(text: str) -> FormattedText:
+def warning(_text: str, /) -> FormattedText:
     """Format text as warning (yellow with warning symbol)."""
     ...
 
-def error(text: str) -> FormattedText:
+def error(_text: str, /) -> FormattedText:
     """Format text as error (red with X symbol)."""
     ...
 
-def info(text: str) -> FormattedText:
+def info(_text: str, /) -> FormattedText:
     """Format text as info (blue with info symbol)."""
     ...
 
-def bold(text: str) -> FormattedText:
+def bold(_text: str, /) -> FormattedText:
     """Apply bold formatting to text."""
     ...
 
-def header(text: str) -> FormattedText:
+def header(_text: str, /) -> FormattedText:
     """Format text as header (bold blue)."""
     ...
 

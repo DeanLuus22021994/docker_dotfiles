@@ -3,13 +3,7 @@
 import sys
 from unittest.mock import Mock, patch
 
-import pytest
-
 from scripts.python.audit.dependencies import (
-    DependencyAuditor,
-    InstalledPackagesChecker,
-    OutdatedPackagesChecker,
-    PyprojectDependenciesChecker,
     check_outdated_packages,
     check_pyproject_dependencies,
     list_installed_packages,
@@ -46,7 +40,7 @@ class TestCheckOutdatedPackages:
         assert "Outdated packages" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
-    def test_pip_not_found(self, mock_run: Mock) -> None:
+    def test_pip_not_found(self, _mock_run: Mock) -> None:
         """Test when pip is not available."""
         passed, errors = check_outdated_packages()
 
@@ -62,6 +56,7 @@ class TestCheckOutdatedPackages:
         check_outdated_packages()
 
         args, kwargs = mock_run.call_args
+        assert kwargs is not None  # Validate call_args structure
         assert sys.executable in args[0]
         assert "-m" in args[0]
         assert "pip" in args[0]
@@ -85,7 +80,7 @@ class TestListInstalledPackages:
         assert len(errors) == 0
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
-    def test_list_packages_pip_not_found(self, mock_run: Mock) -> None:
+    def test_list_packages_pip_not_found(self, _mock_run: Mock) -> None:
         """Test package listing when pip is not available."""
         passed, errors = list_installed_packages()
 
@@ -101,6 +96,7 @@ class TestListInstalledPackages:
         list_installed_packages()
 
         args, kwargs = mock_run.call_args
+        assert kwargs is not None  # Validate call_args structure
         assert sys.executable in args[0]
         assert "pip" in args[0]
         assert "list" in args[0]
@@ -157,7 +153,7 @@ class TestCheckPyprojectDependencies:
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     @patch("pathlib.Path.exists")
-    def test_pip_not_found(self, mock_exists: Mock, mock_run: Mock) -> None:
+    def test_pip_not_found(self, mock_exists: Mock, _mock_run: Mock) -> None:
         """Test when pip is not available."""
         mock_exists.return_value = True
 
@@ -279,6 +275,7 @@ class TestIntegration:
         check_outdated_packages()
 
         args, kwargs = mock_run.call_args
+        assert kwargs is not None  # Validate call_args structure
         assert sys.executable in args[0]
         assert "pip" in args[0]
         assert "list" in args[0]

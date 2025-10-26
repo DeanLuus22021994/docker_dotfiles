@@ -35,10 +35,6 @@ from .code_quality import (
     MypyChecker,
     RuffChecker,
     main as code_quality_main,
-    # Legacy function wrappers for backward compatibility
-    run_black_check,
-    run_mypy_check,
-    run_ruff_check,
 )
 from .dependencies import (
     BaseDependencyChecker,
@@ -52,10 +48,6 @@ from .dependencies import (
     PYPROJECT_PATH,
     REQUIRED_PACKAGES,
     main as dependencies_main,
-    # Legacy function wrappers for backward compatibility
-    check_outdated_packages,
-    check_pyproject_dependencies,
-    list_installed_packages,
 )
 
 __all__: list[str] = [
@@ -73,10 +65,6 @@ __all__: list[str] = [
     "DEFAULT_PYTHON_DIRS",
     "BLACK_LINE_LENGTH",
     "code_quality_main",
-    # Legacy code quality functions (backward compatibility)
-    "run_black_check",
-    "run_ruff_check",
-    "run_mypy_check",
     # Dependency classes and constants
     "DependencyAuditor",
     "BaseDependencyChecker",
@@ -89,8 +77,4 @@ __all__: list[str] = [
     "REQUIRED_PACKAGES",
     "PYPROJECT_PATH",
     "dependencies_main",
-    # Legacy dependency functions (backward compatibility)
-    "check_outdated_packages",
-    "list_installed_packages",
-    "check_pyproject_dependencies",
 ]

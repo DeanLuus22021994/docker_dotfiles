@@ -182,9 +182,8 @@ class EnvValidator:
             else:
                 missing_list.append(var_config)
                 if self.verbose:
-                    print(
-                        f"  {message_func(f'{var_config.name}: NOT SET - {var_config.description}')}"
-                    )
+                    msg = f"{var_config.name}: NOT SET - {var_config.description}"
+                    print(f"  {message_func(msg)}")
 
     def validate(self) -> ValidationResult:
         """Validate all environment variables.
@@ -275,6 +274,52 @@ class ValidationReporter:
             print("  4. Run this script again to verify")
 
         print(f"{separator()}\n")
+
+
+def validate_env_vars() -> tuple[bool, list[str], list[str]]:
+    """Validate environment variables (simplified interface).
+
+    Returns:
+        Tuple of (all_valid, missing_required_names, missing_optional_names)
+    """
+    validator = EnvValidator()
+    result = validator.validate()
+
+    missing_req = [var.name for var in result.missing_required]
+    missing_opt = [var.name for var in result.missing_optional]
+
+    return result.is_valid, missing_req, missing_opt
+
+
+def print_summary(
+    missing_required: list[str],
+    missing_optional: list[str],
+) -> None:
+    """Print validation summary (simplified interface).
+
+    Args:
+        missing_required: List of missing required variable names
+        missing_optional: List of missing optional variable names
+    """
+    # Reconstruct configs for display using module-level constants
+    missing_req_configs = [
+        var for var in REQUIRED_ENV_VARS if var.name in missing_required
+    ]
+    missing_opt_configs = [
+        var for var in OPTIONAL_ENV_VARS if var.name in missing_optional
+    ]
+    present_configs = [
+        var for var in (*REQUIRED_ENV_VARS, *OPTIONAL_ENV_VARS)
+        if var.name not in missing_required and var.name not in missing_optional
+    ]
+
+    result = ValidationResult(
+        missing_required=tuple(missing_req_configs),
+        missing_optional=tuple(missing_opt_configs),
+        present_vars=tuple(present_configs),
+    )
+
+    ValidationReporter.print_summary(result)
 
 
 def main() -> ExitCode:

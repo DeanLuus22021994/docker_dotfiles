@@ -2,13 +2,7 @@
 
 from unittest.mock import Mock, patch
 
-import pytest
-
 from scripts.python.audit.code_quality import (
-    BlackChecker,
-    CodeQualityAuditor,
-    MypyChecker,
-    RuffChecker,
     main,
     run_black_check,
     run_mypy_check,
@@ -20,16 +14,16 @@ class TestRunBlackCheck:
     """Test run_black_check function."""
 
     @patch("subprocess.run")
-    def test_black_check_success(self, mock_run: Mock) -> None:
+    def test_black_check_success(self, _mock_run: Mock) -> None:
         """Test successful Black format check."""
-        mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
+        _mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
 
         passed, errors = run_black_check()
 
         assert passed is True
         assert len(errors) == 0
-        mock_run.assert_called_once()
-        assert "black" in str(mock_run.call_args)
+        _mock_run.assert_called_once()
+        assert "black" in str(_mock_run.call_args)
 
     @patch("subprocess.run")
     def test_black_check_failure(self, mock_run: Mock) -> None:
@@ -47,7 +41,7 @@ class TestRunBlackCheck:
         assert "Black formatting issues" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
-    def test_black_check_not_installed(self, mock_run: Mock) -> None:
+    def test_black_check_not_installed(self, _mock_run: Mock) -> None:
         """Test Black check when Black is not installed."""
         passed, errors = run_black_check()
 
@@ -60,15 +54,15 @@ class TestRunRuffCheck:
     """Test run_ruff_check function."""
 
     @patch("subprocess.run")
-    def test_ruff_check_success(self, mock_run: Mock) -> None:
+    def test_ruff_check_success(self, _mock_run: Mock) -> None:
         """Test successful Ruff linting check."""
-        mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
+        _mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
 
         passed, errors = run_ruff_check()
 
         assert passed is True
         assert len(errors) == 0
-        mock_run.assert_called_once()
+        _mock_run.assert_called_once()
 
     @patch("subprocess.run")
     def test_ruff_check_failure(self, mock_run: Mock) -> None:
@@ -86,7 +80,7 @@ class TestRunRuffCheck:
         assert "Ruff found linting issues" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
-    def test_ruff_check_not_installed(self, mock_run: Mock) -> None:
+    def test_ruff_check_not_installed(self, _mock_run: Mock) -> None:
         """Test Ruff check when Ruff is not installed."""
         passed, errors = run_ruff_check()
 
@@ -125,7 +119,7 @@ class TestRunMypyCheck:
         assert "mypy found type errors" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
-    def test_mypy_check_not_installed(self, mock_run: Mock) -> None:
+    def test_mypy_check_not_installed(self, _mock_run: Mock) -> None:
         """Test mypy check when mypy is not installed."""
         passed, errors = run_mypy_check()
 
@@ -227,6 +221,7 @@ class TestIntegration:
         run_black_check()
 
         args, kwargs = mock_run.call_args
+        assert kwargs is not None  # Validate call_args structure
         assert "black" in args[0]
         assert "--check" in args[0]
         assert "--line-length=100" in args[0]
@@ -239,6 +234,7 @@ class TestIntegration:
         run_ruff_check()
 
         args, kwargs = mock_run.call_args
+        assert kwargs is not None  # Validate call_args structure
         assert "ruff" in args[0]
         assert "check" in args[0]
 
@@ -250,5 +246,6 @@ class TestIntegration:
         run_mypy_check()
 
         args, kwargs = mock_run.call_args
+        assert kwargs is not None  # Validate call_args structure
         assert "mypy" in args[0]
         assert "--strict" in args[0]
