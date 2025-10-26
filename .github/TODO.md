@@ -468,7 +468,7 @@ app.use(cors(corsOptions));
 - `-WhatIf` to preview deletions
 - Color-coded output (red: deletable, green: kept)
 
-**Reference:** `.github/archive/CLEANUP-REPORT-v3.1-20251025.md` recommendations  
+**Reference:** `docs/reports/cleanup/2025-10-25-overview.md` recommendations  
 **Dependencies:** None  
 **Estimated Time:** 2 hours  
 **Actual Time:** 2 hours  
@@ -744,16 +744,16 @@ docs/
 - [x] Review ENHANCEMENTS-COMPLETE.md for unique content
 - [x] Review ENVIRONMENT-INTEGRATION-COMPLETE.md for unique content
 - [x] Review CLUSTER.md vs README.md (consolidate or archive)
-- [x] Move archived docs to `.github/archive/`
+- [x] Decomposed reports to `docs/reports/` (dated entries ≤150w)
 - [x] Add archive date to filename
 - [x] Update references in other docs
 - [x] Document archival in CHANGELOG.md
 
 **Archive Candidates:**
 
-- `ENHANCEMENTS-COMPLETE.md` → `.github/archive/ENHANCEMENTS-v2.0-20251025.md`
-- `ENVIRONMENT-INTEGRATION-COMPLETE.md` → `.github/archive/ENVIRONMENT-v2.0-20251025.md`
-- `CLUSTER.md` → Consolidate into README or `.github/archive/CLUSTER-v3.0-20251025.md`
+- ENHANCEMENTS-COMPLETE.md → Deleted (obsolete v2.0 work)
+- ENVIRONMENT-INTEGRATION-COMPLETE.md → Deleted (obsolete v2.0 work)
+- CLUSTER.md → Consolidated into README.md
 
 **Dependencies:** 4.4.1 (update index after archival)  
 **Estimated Time:** 2 hours
@@ -768,8 +768,8 @@ docs/
 - [x] Keep: ARCHITECTURE.md (technical deep dive)
 - [x] Keep: INSTALL.md (installation guide)
 - [x] Merge: QUICKSTART.md + README.md → README.md (overview + quick start)
-- [x] Archive: IMPLEMENTATION.md (completed work, archive to .github/archive/)
-- [x] Archive: REFACTOR-SUMMARY.md (completed work, archive to .github/archive/)
+- [x] Deleted: IMPLEMENTATION.md (obsolete v2.0 implementation doc)
+- [x] Deleted: REFACTOR-SUMMARY.md (obsolete v2.0 refactor doc)
 - [x] Update all cross-references
 - [x] Test all links work
 
@@ -1308,7 +1308,7 @@ Monitoring (grafana, prometheus)
 - ✅ Git commit: fed8689 (17 files, 2337 insertions, 209 deletions)
 - ✅ Archived TODO-v3.1-20251025.md
 
-**Details:** See `.github/archive/TODO-v3.1-20251025.md` for full v3.1.0 completion
+**Details:** v3.1.0 complete - decomposed into docs/reports/ structure
 
 ### v3.0 - Scripts Reorganization (2025-10-25)
 
@@ -1320,7 +1320,7 @@ Monitoring (grafana, prometheus)
 - ✅ Created comprehensive READMEs for each script category
 - ✅ Maintained backward compatibility with root scripts
 
-**Details:** See `.github/archive/TODO-v3.0-20251025.md` (if exists)
+**Details:** v3.0 complete - see current TODO.md for v4.0
 
 ### v2.0 - Web Dashboard Refactor (2025-10-24)
 
@@ -1332,7 +1332,7 @@ Monitoring (grafana, prometheus)
 - ✅ Aligned dashboard with docker-compose.yml cluster structure
 - ✅ Zero breaking changes (internal refactor)
 
-**Details:** See `.github/archive/TODO-v2.0-20251025.md`
+**Details:** v2.0 complete - migrated to v4.0 structure
 
 ---
 

@@ -125,7 +125,7 @@
         {
           "title": "[Phase 4.4.2] Archive Obsolete Documentation",
           "estimate": "2h",
-          "body": "## Objective\nReview and archive completed documentation.\n\n## Candidates\n- ENHANCEMENTS-COMPLETE.md\n- ENVIRONMENT-INTEGRATION-COMPLETE.md\n- CLUSTER.md (consolidate or archive)\n\n## Acceptance Criteria\n- [ ] Review for unique content\n- [ ] Archive to .github/archive/\n- [ ] Update references\n- [ ] Document in CHANGELOG.md"
+          "body": "## Objective\nDecompose large documentation files into focused dated entries.\n\n## Process\n- Extract sections into separate files (≤150w each)\n- Add YAML front matter (date, tags, description)\n- Organize in docs/reports/ structure\n- Use dated format: YYYY-MM-DD-topic.md\n\n## Acceptance Criteria\n- [ ] All files ≤150 words\n- [ ] YAML front matter present\n- [ ] Central docs/ structure\n- [ ] Cross-references updated"
         },
         {
           "title": "[Phase 4.4.3] Consolidate Web-Content Docs",

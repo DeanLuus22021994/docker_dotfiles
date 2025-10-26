@@ -24,14 +24,12 @@ git status --short
 - M .github/copilot-instructions.md
 - M AGENT.md
 - M web-content/ARCHITECTURE.md
-- A .github/CLEANUP-SUMMARY.md
-- A .github/DEVELOPMENT_DEBT.md
-- A .github/archive/CLEANUP-REPORT-v3.1-20251025.md
-- A .github/archive/IMPLEMENTATION-v2.0-20251025.md
-- A .github/archive/REFACTOR-SUMMARY-v2.0-20251025.md
-- D CLEANUP-REPORT.md
-- D web-content/IMPLEMENTATION.md
-- D web-content/REFACTOR-SUMMARY.md
+- D CLEANUP-REPORT.md (decomposed to docs/reports/cleanup/)
+- D web-content/IMPLEMENTATION.md (obsolete)
+- D web-content/REFACTOR-SUMMARY.md (obsolete)
+- D .github/CLEANUP-SUMMARY.md (decomposed to docs/reports/cleanup/)
+- D .github/DEVELOPMENT_DEBT.md (decomposed to docs/reports/debt/)
+- D .github/PROJECT-SETUP-COMPLETE.md (decomposed to docs/reports/setup/)
 
 ## Quality Assurance Checks
 
@@ -68,9 +66,9 @@ Get-ChildItem scripts\ -File | Where-Object {
 # Result: 0 files
 ```
 
-**Archive Verified:**
+**Reports Structure Verified:**
 ```powershell
-Test-Path .github/archive/CLEANUP-REPORT-v3.1-20251025.md
+Test-Path docs/reports/cleanup/2025-10-25-overview.md
 # Result: True
 ```
 
