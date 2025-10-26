@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["api", "security", "documentation"]
+description: "Documentation for security in api"
+---
 # API Security Documentation
 
 **Version:** 2.0  

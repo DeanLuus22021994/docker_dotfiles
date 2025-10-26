@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["scripts", "migration", "documentation"]
+description: "Documentation for migration in scripts"
+---
 # Scripts Migration Guide
 
 **Version:** 3.0.0  

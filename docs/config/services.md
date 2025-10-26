@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["config", "services", "documentation"]
+description: "Documentation for services in config"
+---
 # Services Configuration
 
 This directory contains configuration files for various service integrations.

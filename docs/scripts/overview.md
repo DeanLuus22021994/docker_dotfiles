@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["scripts", "overview", "documentation"]
+description: "Documentation for overview in scripts"
+---
 # Scripts Directory
 
 Automation scripts for the Docker infrastructure, organized by language and task (SRP/DRY principles).

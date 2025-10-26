@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["config", "database", "documentation"]
+description: "Documentation for database in config"
+---
 # Database Configuration
 
 This directory contains database server configurations for PostgreSQL and MariaDB.

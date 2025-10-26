@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["web-content", "installation", "documentation"]
+description: "Documentation for installation in web-content"
+---
 # Cluster Dashboard - Installation & Usage Guide
 
 ## Quick Start

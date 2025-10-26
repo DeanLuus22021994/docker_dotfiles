@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["config", "github", "documentation"]
+description: "Documentation for github in config"
+---
 # GitHub Configuration
 
 This directory contains GitHub-specific configuration files for repository automation, CI/CD, security, and development workflows.

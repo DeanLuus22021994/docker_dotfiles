@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["api", "overview", "documentation"]
+description: "Documentation for overview in api"
+---
 # Docker API Proxy
 
 Secure HTTP API for accessing Docker Engine metrics and container health information.

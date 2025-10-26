@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["setup", "overview", "documentation"]
+description: "Documentation for overview in setup"
+---
 # Setup Guide - Docker Compose Stack
 
 This guide will help you configure the environment and GitHub secrets for the docker_dotfiles project.

@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["config", "nginx", "documentation"]
+description: "Documentation for nginx in config"
+---
 # Nginx Configuration
 
 This directory contains nginx configurations organized by purpose.

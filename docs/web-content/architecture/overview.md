@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["architecture", "overview", "documentation"]
+description: "Documentation for overview in architecture"
+---
 # Cluster Dashboard - Architecture Overview
 
 ## 🏗️ Project Organization

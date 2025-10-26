@@ -1,3 +1,9 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["config", "overview", "documentation"]
+description: "Documentation for overview in config"
+---
 # .config - Single Source of Truth
 
 All configuration files for the Docker cluster stack, strictly organized according to Docker and GitHub standards.
