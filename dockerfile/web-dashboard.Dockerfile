@@ -2,14 +2,14 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files from web-content
+COPY web-content/package*.json ./
 
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy source
-COPY . .
+# Copy web-content source
+COPY web-content/ .
 
 # Build
 RUN npm run build
@@ -18,7 +18,7 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copy custom nginx config from central .config location
-COPY ../.config/web/nginx.conf /etc/nginx/conf.d/default.conf
+COPY .config/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html

@@ -19,7 +19,7 @@ Update repository references from Python 3.14.0 to 3.13.1.
 - `.docker-compose/cluster.config.yml` (1 reference)
 
 **Containerization:**
-- `.devcontainer/devcontainer.dockerfile` (6 references)
+- `dockerfile/devcontainer.Dockerfile` (6 references)
 
 **Documentation:**
 - `README.md` (7 references)

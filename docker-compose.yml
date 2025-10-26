@@ -186,8 +186,8 @@ services:
   cluster-dashboard:
     container_name: cluster-dashboard
     build:
-      context: ./web-content
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: dockerfile/web-dashboard.Dockerfile
     ports:
       - "3000:80"
     networks:
