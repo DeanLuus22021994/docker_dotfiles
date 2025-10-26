@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://squidfunk.github.io/mkdocs-material/schema.json",
+  "title": "MkDocs Configuration with Material Theme",
+  "description": "Schema for mkdocs.yml configuration files with Material theme extensions",
+  "type": "object",
+  "properties": {
+    "site_name": { "type": "string" },
+    "site_description": { "type": "string" },
+    "site_author": { "type": "string" },
+    "site_url": { "type": "string", "format": "uri" },
+    "repo_name": { "type": "string" },
+    "repo_url": { "type": "string", "format": "uri" },
+    "edit_uri": { "type": "string" },
+    "copyright": { "type": "string" },
+    "theme": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "enum": ["material", "readthedocs", "mkdocs"] },
+        "language": { "type": "string" },
+        "palette": {
+          "oneOf": [
+            { "$ref": "#/definitions/palette" },
+            { "type": "array", "items": { "$ref": "#/definitions/palette" } }
+          ]
+        },
+        "font": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "code": { "type": "string" }
+          }
+        },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "icon": {
+          "type": "object",
+          "properties": {
+            "repo": { "type": "string" },
+            "logo": { "type": "string" }
+          }
+        }
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "patternProperties": {
+              ".*": {
+                "type": "object"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "markdown_extensions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "patternProperties": {
+              ".*": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        ]
+      }
+    },
+    "extra_css": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "extra_javascript": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "extra": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "nav": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "type": "string" },
+          {
+            "type": "object",
+            "additionalProperties": true
+          }
+        ]
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "omitted_files": { "type": "string", "enum": ["warn", "ignore", "error"] },
+        "absolute_links": { "type": "string", "enum": ["warn", "ignore", "error"] },
+        "unrecognized_links": { "type": "string", "enum": ["warn", "ignore", "error"] }
+      }
+    }
+  },
+  "definitions": {
+    "palette": {
+      "type": "object",
+      "properties": {
+        "media": { "type": "string" },
+        "scheme": { "type": "string", "enum": ["default", "slate"] },
+        "primary": { "type": "string" },
+        "accent": { "type": "string" },
+        "toggle": {
+          "type": "object",
+          "properties": {
+            "icon": { "type": "string" },
+            "name": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

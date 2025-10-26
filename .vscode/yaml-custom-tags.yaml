@@ -1,0 +1,17 @@
+# Custom YAML tags configuration for RedHat YAML extension
+# This file defines custom YAML tags used in the project
+
+# MkDocs Material Python function references
+# These are valid Python YAML constructor tags used by MkDocs
+custom_tags:
+  - "!!python/name:material.extensions.emoji.twemoji"
+  - "!!python/name:material.extensions.emoji.to_svg"
+  - "!!python/name:pymdownx.superfences.fence_code_format"
+
+# Additional custom tags
+  - "!encrypted/pkcs1-oaep"
+  - "!vault"
+
+# Note: These tags are processed by PyYAML's SafeLoader with custom constructors
+# They are NOT arbitrary code execution - MkDocs validates these against
+# its plugin/extension registry before instantiation.
