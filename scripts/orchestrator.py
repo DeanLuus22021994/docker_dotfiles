@@ -15,24 +15,24 @@ Examples:
     python orchestrator.py mcp validate
 """
 
-import subprocess
 import sys
 from pathlib import Path
-from typing import Final, NoReturn, TypeAlias
+
+# Add scripts directory to path BEFORE other imports
+SCRIPT_DIR: Path = Path(__file__).parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+import subprocess
+from typing import NoReturn, TypeAlias
+
+from python.utils.colors import error, header, info
 
 # Type aliases
 TaskName: TypeAlias = str
 ActionName: TypeAlias = str
 ScriptPath: TypeAlias = Path
 ExitCode: TypeAlias = int
-
-# Constants
-SCRIPT_DIR: Final[Path] = Path(__file__).parent
-if str(SCRIPT_DIR) not in sys.path:
-    sys.path.insert(0, str(SCRIPT_DIR))
-
-# Import local modules
-from python.utils.colors import error, header, info, success
 
 
 def show_help() -> None:

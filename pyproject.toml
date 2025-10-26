@@ -46,11 +46,10 @@ line-length = 100
 target-version = "py313"  # py314 not yet supported by Ruff
 
 [tool.ruff.lint]
-# E402: Module level import not at top of file - Required for sys.path modification
-# F401: Unused import - pytest/mock imports used by decorators (@pytest.fixture, @patch)
-# F811: Redefinition of unused variable - Pytest fixtures intentionally shadow
-# ARG002: Unused function argument - Pytest fixtures are used by framework
-ignore = ["E402", "F401", "F811", "ARG002"]
+# Only ignore architecturally necessary issues
+ignore = [
+    "E402",  # Module level import not at top - required for sys.path setup
+]
 
 [tool.mypy]
 python_version = "3.14"
@@ -109,17 +108,8 @@ init-hook = "import sys; sys.path.append('scripts')"
 max-line-length = 100
 
 [tool.pylint.messages_control]
-disable = [
-    "C0413", # wrong-import-position - Required for sys.path modification
-    "E0401", # import-error - False positive for local modules after sys.path modification
-    "W0611", # unused-import - pytest imports needed for test discovery
-    "W0613", # unused-argument - pytest fixtures used by framework via dependency injection
-    "W0621", # redefined-outer-name - pytest fixtures intentionally shadow fixture names
-    "W0612", # unused-variable - intentionally unused variables in test unpacking
-    "C0301", # line-too-long - handled by Black formatter (100 chars)
-    "W2301", # unnecessary-ellipsis - False positive for Protocol methods and stub files (PEP 544, PEP 561)
-    "C0116", # missing-function-docstring - Stub files don't need docstrings (type hints only)
-]
+# No suppressions - all code must be clean
+disable = []
 
 [tool.docker-cluster]
 description = "Modern Data Platform - 14-service cluster with GPU, databases, monitoring, AI"

@@ -17,17 +17,17 @@ Examples:
     >>> print(report.is_valid)  # True if all required vars set
 """
 
-import os
 import sys
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final, TypeAlias
 
-# Add parent directory to path for imports
-# Add scripts dir to path for imports
+# Add scripts directory to path BEFORE other imports
 scripts_dir = Path(__file__).parent.parent.parent
 if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
+
+import os
+from dataclasses import dataclass, field
+from typing import Final, TypeAlias
 
 from python.utils.colors import (
     Colors,

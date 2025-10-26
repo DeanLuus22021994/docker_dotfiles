@@ -18,19 +18,19 @@ Examples:
     >>> print(report.has_issues)  # True if issues found
 """
 
-import subprocess
 import sys
-from abc import ABC, abstractmethod
-from collections.abc import Sequence
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final, Protocol, TypeAlias
 
-# Add parent directory to path for imports
-# Add scripts dir to path for imports
+# Add scripts directory to path BEFORE other imports
 scripts_dir = Path(__file__).parent.parent.parent
 if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
+
+import subprocess
+from abc import ABC, abstractmethod
+from collections.abc import Sequence
+from dataclasses import dataclass, field
+from typing import Final, Protocol, TypeAlias
 
 from python.utils.colors import error, header, info, separator, success, warning
 

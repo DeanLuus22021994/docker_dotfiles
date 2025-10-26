@@ -18,20 +18,19 @@ Examples:
     >>> print(report.is_valid)  # True if all configs valid
 """
 
-import json
-import subprocess
 import sys
-from abc import ABC, abstractmethod
-from collections.abc import Sequence
-from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final, Literal, Protocol, TypeAlias
 
-# Add parent directory to path for imports
-# Add scripts dir to path for imports
+# Add scripts directory to path BEFORE other imports
 scripts_dir = Path(__file__).parent.parent.parent
 if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
+
+import json
+import subprocess
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import Final, Literal, Protocol, TypeAlias
 
 from python.utils.colors import error, header, separator, success
 from python.utils.file_utils import StrPath

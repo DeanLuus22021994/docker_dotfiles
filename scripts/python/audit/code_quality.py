@@ -27,8 +27,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final, Protocol, TypeAlias
 
-# Add parent directory to path for imports
-# Add scripts dir to path for imports
+# Add scripts dir to sys.path for imports
 scripts_dir = Path(__file__).parent.parent.parent
 if str(scripts_dir) not in sys.path:
     sys.path.insert(0, str(scripts_dir))
