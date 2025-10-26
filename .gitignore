@@ -29,7 +29,7 @@
 
 # Environment
 .env
-.env.local
+.env.*
 !.env.example
 
 # Secrets - NO SECRETS FOLDER (using environment variables)

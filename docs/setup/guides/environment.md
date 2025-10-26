@@ -6,8 +6,36 @@ description: "Environment configuration and .env file setup"
 ---
 # Environment Configuration
 
-## Create .env File
+## Configuration Approach
 
+**Local Development**: Single `.env` file (created from template)  
+**CI/CD Pipeline**: GitHub repository secrets (already configured)  
+**Naming Convention**: All service passwords use `DOCKER_` prefix
+
+## Verify GitHub Secrets (CI/CD)
+
+Check configured secrets for CI/CD pipelines:
+```bash
+gh secret list --repo DeanLuus22021994/docker_dotfiles
+```
+
+Current secrets configured:
+- ✓ `DOCKER_POSTGRES_PASSWORD`
+- ✓ `DOCKER_MARIADB_ROOT_PASSWORD`
+- ✓ `DOCKER_MARIADB_PASSWORD`
+- ✓ `DOCKER_REDIS_PASSWORD`
+- ✓ `DOCKER_MINIO_ROOT_USER`
+- ✓ `DOCKER_MINIO_ROOT_PASSWORD`
+- ✓ `DOCKER_GRAFANA_ADMIN_PASSWORD`
+- ✓ `DOCKER_JUPYTER_TOKEN`
+- ✓ `DOCKER_PGADMIN_PASSWORD`
+- ✓ `GH_PAT`
+- ✓ `DOCKER_ACCESS_TOKEN`
+- ✓ `CODECOV_TOKEN`
+
+## Create Local .env File
+
+For local development, copy the template:
 ```bash
 cp .env.example .env
 nano .env  # Or use your preferred editor
@@ -54,7 +82,26 @@ python scripts/python/validation/validate_env.py
 
 ## Security Notes
 
-- Never commit .env to version control
-- Use strong passwords in production
-- Generate secure JWT secrets: `openssl rand -hex 32`
-- Rotate credentials regularly
+- **Never commit** `.env` to version control (gitignored by `.env.*` pattern)
+- **Single source**: Use `.env.example` as the only template (no separate dev/prod files)
+- **CI/CD secrets**: Managed via GitHub repository secrets (use `gh secret` commands)
+- **Strong passwords**: Use minimum 16 characters in production
+- **Generate JWT secrets**: `openssl rand -hex 32` or `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+- **Rotate regularly**: Change credentials periodically, especially after team changes
+
+## Environment Variable Management
+
+**Add new secret to GitHub**:
+```bash
+gh secret set SECRET_NAME --repo DeanLuus22021994/docker_dotfiles
+```
+
+**Update existing secret**:
+```bash
+gh secret set SECRET_NAME --repo DeanLuus22021994/docker_dotfiles
+```
+
+**Remove secret**:
+```bash
+gh secret remove SECRET_NAME --repo DeanLuus22021994/docker_dotfiles
+```
