@@ -33,7 +33,7 @@ export const useClusterHealth = () => {
   }, [])
 
   useEffect(() => {
-    const layerTimers = new Map<string, NodeJS.Timeout>()
+    const layerTimers = new Map<string, number>()
     
     const checkLayerServices = async (layerId: string) => {
       try {
