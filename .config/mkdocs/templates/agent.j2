@@ -1,0 +1,75 @@
+{% extends "base.j2" %}
+
+{% block content %}
+## Overview
+
+This guide covers {{ title.lower() }} for AI agent development in the modern data platform.
+
+## Agent Architecture
+
+```mermaid
+graph TB
+    A[Agent Input] --> B[Processing Layer]
+    B --> C[Tool Integration]
+    C --> D[Response Generation]
+    D --> E[Agent Output]
+```
+
+## Prerequisites
+
+- Python 3.14+ with dataclasses and Protocol support
+- Understanding of async/await patterns
+- MCP (Model Context Protocol) knowledge
+- Docker container development experience
+
+## Implementation
+
+### Agent Setup
+
+```python
+from dataclasses import dataclass
+from typing import Protocol
+
+@dataclass(frozen=True, slots=True)
+class AgentConfig:
+    name: str
+    model: str
+    tools: list[str]
+
+class Agent(Protocol):
+    async def process(self, input_data: str) -> str:
+        ...
+```
+
+### Tool Integration
+
+[Add tool integration examples]
+
+## Testing
+
+```bash
+# Run agent tests
+python -m pytest tests/agents/
+
+# Test with mock data
+make test-agents
+```
+
+## Deployment
+
+[Add deployment instructions for agents]
+
+## Best Practices
+
+- Use dataclasses for configuration
+- Implement proper error handling
+- Follow Python 3.14 typing patterns
+- Test with representative data
+
+## Related Documentation
+
+- [MCP Integration](../api/mcp.md)
+- [Testing Framework](../testing/agents.md)
+- [Production Deployment](../production/agents.md)
+
+{% endblock %}

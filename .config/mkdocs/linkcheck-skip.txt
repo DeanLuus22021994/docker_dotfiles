@@ -1,33 +1,71 @@
 # ==============================================================================
-# Link Check Skip List - URLs to Exclude from Validation
+# Link Check Whitelist - Legitimate External Links
 # ==============================================================================
-# Add URLs or patterns that should be skipped during link checking.
-# Useful for:
-# - Rate-limited APIs
-# - Authentication-required resources
-# - Local development URLs
-# - Placeholder/example URLs
-#
-# Format: One URL or pattern per line
-# Comments start with #
+# Format: One URL pattern per line (supports wildcards)
+# Purpose: Skip validation for known-good external resources
 # ==============================================================================
 
-# Local development URLs
-http://localhost
-http://127.0.0.1
+# Official Documentation Sites
+https://docs.docker.com/*
+https://docs.python.org/*
+https://mkdocs.org/*
+https://squidfunk.github.io/mkdocs-material/*
+https://pydantic-docs.helpmanual.io/*
+https://docs.pydantic.dev/*
 
-# Authentication-required resources
-https://api.github.com/user/*
+# GitHub Repositories
+https://github.com/*/*
+https://raw.githubusercontent.com/*/*
 
-# Rate-limited services
-https://hub.docker.com/api/*
+# CDN Resources
+https://cdn.jsdelivr.net/*
+https://unpkg.com/*
+https://cdnjs.cloudflare.com/*
 
-# Placeholder URLs
-http://example.com
-https://example.com
-http://your-domain.com
-https://your-domain.com
+# API Documentation
+https://developer.mozilla.org/*
+https://nodejs.org/api/*
+https://www.postgresql.org/docs/*
+https://redis.io/docs/*
+https://dev.mysql.com/doc/*
 
-# CI/CD internal URLs
-http://jenkins.local
-http://gitlab.local
+# Package Registries
+https://pypi.org/project/*
+https://www.npmjs.com/package/*
+https://hub.docker.com/_/*
+https://hub.docker.com/r/*/*
+
+# Cloud Providers
+https://aws.amazon.com/documentation/*
+https://cloud.google.com/docs/*
+https://learn.microsoft.com/azure/*
+
+# Standards and Specifications
+https://www.w3.org/*
+https://schema.org/*
+https://json-ld.org/*
+https://tools.ietf.org/html/*
+
+# Development Tools
+https://code.visualstudio.com/docs/*
+https://git-scm.com/docs/*
+https://stackoverflow.com/questions/*
+
+# Monitoring and Observability
+https://grafana.com/docs/*
+https://prometheus.io/docs/*
+https://www.elastic.co/guide/*
+
+# Localhost Development
+http://localhost:*
+http://127.0.0.1:*
+http://*.localhost:*
+
+# Social Media (for social cards)
+https://twitter.com/*
+https://linkedin.com/*
+
+# CI/CD Platforms
+https://docs.github.com/actions/*
+https://circleci.com/docs/*
+https://docs.gitlab.com/ee/ci/*

@@ -1,0 +1,54 @@
+# ============================================================================
+# MkDocs Material - Modern Documentation Platform
+# ============================================================================
+# Version: 2.0.0
+# Last Updated: 2025-10-26
+# Architecture: Modular configuration with extended Material Design theme
+# ============================================================================
+
+INHERIT: 
+  - base.yml
+  - theme.yml
+  - plugins.yml
+  - markdown.yml
+  # - navigation.yml  # DEPRECATED: Now using awesome-pages auto-discovery
+  - hooks.yml
+
+# ============================================================================
+# Site Metadata
+# ============================================================================
+site_name: Docker Modern Data Platform
+site_description: |
+  Production-grade Docker orchestration platform with comprehensive monitoring,
+  multi-database support, and real-time observability dashboard.
+site_author: Dean Luus
+site_url: http://localhost:8000
+
+# ============================================================================
+# Repository Integration
+# ============================================================================
+repo_name: DeanLuus22021994/docker_dotfiles
+repo_url: https://github.com/DeanLuus22021994/docker_dotfiles
+edit_uri: edit/feat/remaining-todos/docs/
+
+# ============================================================================
+# Copyright & Legal
+# ============================================================================
+copyright: |
+  Copyright &copy; 2025 Dean Luus
+
+# ============================================================================
+# Build Configuration
+# ============================================================================
+strict: true  # ✅ Enabled after frontmatter validation (Phase 2 complete)
+use_directory_urls: true
+docs_dir: docs
+site_dir: site
+
+# ============================================================================
+# Development Server
+# ============================================================================
+dev_addr: '0.0.0.0:8000'
+watch:
+  - .config/mkdocs/
+  - docs/

@@ -1,0 +1,353 @@
+/**
+ * Custom Admonitions for Docker Modern Data Platform
+ * ==================================================
+ * 
+ * Specialized admonition types for:
+ * - Docker services and containers
+ * - Python development and best practices
+ * - API design and usage
+ * - DevOps and production considerations
+ */
+
+/* ============================================================================
+   Docker-Specific Admonitions
+   ============================================================================ */
+
+/* Docker Service Information */
+.md-typeset .admonition.docker-service,
+.md-typeset details.docker-service {
+  border-color: #2496ED;
+}
+
+.md-typeset .docker-service > .admonition-title,
+.md-typeset .docker-service > summary {
+  background-color: rgba(36, 150, 237, 0.1);
+  border-color: #2496ED;
+}
+
+.md-typeset .docker-service > .admonition-title::before,
+.md-typeset .docker-service > summary::before {
+  background-color: #2496ED;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13.5 1c-.5 0-1 .5-1 1v5H8V2c0-.5-.5-1-1-1s-1 .5-1 1v5H2c-.5 0-1 .5-1 1s.5 1 1 1h4.5v4H2c-.5 0-1 .5-1 1s.5 1 1 1h4.5v5c0 .5.5 1 1 1s1-.5 1-1v-5H13v5c0 .5.5 1 1 1s1-.5 1-1v-5h4.5c.5 0 1-.5 1-1s-.5-1-1-1H15V8h4.5c.5 0 1-.5 1-1s-.5-1-1-1H15V2c0-.5-.5-1-1-1s-1 .5-1 1v5h-4.5V2c0-.5-.5-1-1-1z'/%3E%3C/svg%3E");
+}
+
+/* Docker Compose Configuration */
+.md-typeset .admonition.docker-compose,
+.md-typeset details.docker-compose {
+  border-color: #326CE5;
+}
+
+.md-typeset .docker-compose > .admonition-title,
+.md-typeset .docker-compose > summary {
+  background-color: rgba(50, 108, 229, 0.1);
+  border-color: #326CE5;
+}
+
+.md-typeset .docker-compose > .admonition-title::before,
+.md-typeset .docker-compose > summary::before {
+  background-color: #326CE5;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+}
+
+/* Docker Security Alert */
+.md-typeset .admonition.docker-security,
+.md-typeset details.docker-security {
+  border-color: #FF6B6B;
+}
+
+.md-typeset .docker-security > .admonition-title,
+.md-typeset .docker-security > summary {
+  background-color: rgba(255, 107, 107, 0.1);
+  border-color: #FF6B6B;
+}
+
+.md-typeset .docker-security > .admonition-title::before,
+.md-typeset .docker-security > summary::before {
+  background-color: #FF6B6B;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   Python-Specific Admonitions
+   ============================================================================ */
+
+/* Python Best Practice */
+.md-typeset .admonition.python-best,
+.md-typeset details.python-best {
+  border-color: #3776AB;
+}
+
+.md-typeset .python-best > .admonition-title,
+.md-typeset .python-best > summary {
+  background-color: rgba(55, 118, 171, 0.1);
+  border-color: #3776AB;
+}
+
+.md-typeset .python-best > .admonition-title::before,
+.md-typeset .python-best > summary::before {
+  background-color: #3776AB;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z'/%3E%3C/svg%3E");
+}
+
+/* Python Performance Tip */
+.md-typeset .admonition.python-perf,
+.md-typeset details.python-perf {
+  border-color: #FFD43B;
+}
+
+.md-typeset .python-perf > .admonition-title,
+.md-typeset .python-perf > summary {
+  background-color: rgba(255, 212, 59, 0.1);
+  border-color: #FFD43B;
+  color: #B8860B;
+}
+
+.md-typeset .python-perf > .admonition-title::before,
+.md-typeset .python-perf > summary::before {
+  background-color: #FFD43B;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M13 2.05v2.02c3.95.49 7 3.85 7 7.93 0 4.08-3.05 7.44-7 7.93v2.02c5.03-.49 9-4.76 9-9.95s-3.97-9.46-9-9.95zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z'/%3E%3C/svg%3E");
+}
+
+/* Python Version Compatibility */
+.md-typeset .admonition.python-version,
+.md-typeset details.python-version {
+  border-color: #306998;
+}
+
+.md-typeset .python-version > .admonition-title,
+.md-typeset .python-version > summary {
+  background-color: rgba(48, 105, 152, 0.1);
+  border-color: #306998;
+}
+
+.md-typeset .python-version > .admonition-title::before,
+.md-typeset .python-version > summary::before {
+  background-color: #306998;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   API-Specific Admonitions
+   ============================================================================ */
+
+/* API Endpoint Documentation */
+.md-typeset .admonition.api-endpoint,
+.md-typeset details.api-endpoint {
+  border-color: #0F7B0F;
+}
+
+.md-typeset .api-endpoint > .admonition-title,
+.md-typeset .api-endpoint > summary {
+  background-color: rgba(15, 123, 15, 0.1);
+  border-color: #0F7B0F;
+}
+
+.md-typeset .api-endpoint > .admonition-title::before,
+.md-typeset .api-endpoint > summary::before {
+  background-color: #0F7B0F;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E");
+}
+
+/* API Authentication */
+.md-typeset .admonition.api-auth,
+.md-typeset details.api-auth {
+  border-color: #FF7043;
+}
+
+.md-typeset .api-auth > .admonition-title,
+.md-typeset .api-auth > summary {
+  background-color: rgba(255, 112, 67, 0.1);
+  border-color: #FF7043;
+}
+
+.md-typeset .api-auth > .admonition-title::before,
+.md-typeset .api-auth > summary::before {
+  background-color: #FF7043;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM15.1 8H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+}
+
+/* API Rate Limiting */
+.md-typeset .admonition.api-rate,
+.md-typeset details.api-rate {
+  border-color: #FF9800;
+}
+
+.md-typeset .api-rate > .admonition-title,
+.md-typeset .api-rate > summary {
+  background-color: rgba(255, 152, 0, 0.1);
+  border-color: #FF9800;
+}
+
+.md-typeset .api-rate > .admonition-title::before,
+.md-typeset .api-rate > summary::before {
+  background-color: #FF9800;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3Cpath d='M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   DevOps and Production Admonitions
+   ============================================================================ */
+
+/* Production Warning */
+.md-typeset .admonition.prod-warning,
+.md-typeset details.prod-warning {
+  border-color: #E91E63;
+}
+
+.md-typeset .prod-warning > .admonition-title,
+.md-typeset .prod-warning > summary {
+  background-color: rgba(233, 30, 99, 0.1);
+  border-color: #E91E63;
+}
+
+.md-typeset .prod-warning > .admonition-title::before,
+.md-typeset .prod-warning > summary::before {
+  background-color: #E91E63;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'/%3E%3C/svg%3E");
+}
+
+/* Monitoring Alert */
+.md-typeset .admonition.monitoring,
+.md-typeset details.monitoring {
+  border-color: #9C27B0;
+}
+
+.md-typeset .monitoring > .admonition-title,
+.md-typeset .monitoring > summary {
+  background-color: rgba(156, 39, 176, 0.1);
+  border-color: #9C27B0;
+}
+
+.md-typeset .monitoring > .admonition-title::before,
+.md-typeset .monitoring > summary::before {
+  background-color: #9C27B0;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0 4h2v-2H3v2zm4-8h14v-2H7v2zm0 4h14v-2H7v2zm0 4h14v-2H7v2zM3 3v2h2V3H3zm4 0v2h14V3H7z'/%3E%3C/svg%3E");
+}
+
+/* Performance Metrics */
+.md-typeset .admonition.performance,
+.md-typeset details.performance {
+  border-color: #4CAF50;
+}
+
+.md-typeset .performance > .admonition-title,
+.md-typeset .performance > summary {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-color: #4CAF50;
+}
+
+.md-typeset .performance > .admonition-title::before,
+.md-typeset .performance > summary::before {
+  background-color: #4CAF50;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   Database-Specific Admonitions
+   ============================================================================ */
+
+/* Database Query Optimization */
+.md-typeset .admonition.db-query,
+.md-typeset details.db-query {
+  border-color: #336791;
+}
+
+.md-typeset .db-query > .admonition-title,
+.md-typeset .db-query > summary {
+  background-color: rgba(51, 103, 145, 0.1);
+  border-color: #336791;
+}
+
+.md-typeset .db-query > .admonition-title::before,
+.md-typeset .db-query > summary::before {
+  background-color: #336791;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3C7.58 3 4 4.79 4 7s3.58 4 8 4 8-1.79 8-4-3.58-4-8-4z'/%3E%3Cpath d='M4 9v3c0 2.21 3.58 4 8 4s8-1.79 8-4V9c0 2.21-3.58 4-8 4s-8-1.79-8-4z'/%3E%3Cpath d='M4 14v3c0 2.21 3.58 4 8 4s8-1.79 8-4v-3c0 2.21-3.58 4-8 4s-8-1.79-8-4z'/%3E%3C/svg%3E");
+}
+
+/* Redis Cache Strategy */
+.md-typeset .admonition.redis-cache,
+.md-typeset details.redis-cache {
+  border-color: #DC382D;
+}
+
+.md-typeset .redis-cache > .admonition-title,
+.md-typeset .redis-cache > summary {
+  background-color: rgba(220, 56, 45, 0.1);
+  border-color: #DC382D;
+}
+
+.md-typeset .redis-cache > .admonition-title::before,
+.md-typeset .redis-cache > summary::before {
+  background-color: #DC382D;
+  mask-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14.73 13.31c-.84.56-2.13.95-3.73.95s-2.89-.39-3.73-.95c-.16.65-.16 1.14 0 1.49C7.73 14.96 9.04 15.95 11 15.95s3.27-.99 3.73-2.15c.16-.35.16-.84 0-1.49z'/%3E%3Cpath d='M12 2C7.58 2 4 4.79 4 8s3.58 6 8 6 8-2.69 8-6-3.58-6-8-6z'/%3E%3Cpath d='M4 10v2c0 3.31 3.58 6 8 6s8-2.69 8-6v-2c0 3.31-3.58 6-8 6s-8-2.69-8-6z'/%3E%3C/svg%3E");
+}
+
+/* ============================================================================
+   Enhanced Interactive Features
+   ============================================================================ */
+
+/* Hover animations for all custom admonitions */
+.md-typeset .admonition.docker-service:hover,
+.md-typeset .admonition.docker-compose:hover,
+.md-typeset .admonition.docker-security:hover,
+.md-typeset .admonition.python-best:hover,
+.md-typeset .admonition.python-perf:hover,
+.md-typeset .admonition.python-version:hover,
+.md-typeset .admonition.api-endpoint:hover,
+.md-typeset .admonition.api-auth:hover,
+.md-typeset .admonition.api-rate:hover,
+.md-typeset .admonition.prod-warning:hover,
+.md-typeset .admonition.monitoring:hover,
+.md-typeset .admonition.performance:hover,
+.md-typeset .admonition.db-query:hover,
+.md-typeset .admonition.redis-cache:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Code blocks within custom admonitions */
+.md-typeset .admonition.docker-service .highlight,
+.md-typeset .admonition.docker-compose .highlight,
+.md-typeset .admonition.python-best .highlight,
+.md-typeset .admonition.api-endpoint .highlight {
+  border-left: 4px solid var(--md-admonition-bg-color);
+  margin: 1em 0;
+}
+
+/* Enhanced typography for technical content */
+.md-typeset .admonition .highlight code {
+  font-family: 'Fira Code', 'JetBrains Mono', 'Source Code Pro', monospace;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+/* Dark mode optimizations */
+[data-md-color-scheme="slate"] .md-typeset .python-perf > .admonition-title,
+[data-md-color-scheme="slate"] .md-typeset .python-perf > summary {
+  color: #FFD43B;
+}
+
+/* Responsive design for mobile */
+@media screen and (max-width: 768px) {
+  .md-typeset .admonition {
+    margin: 1em 0.5em;
+  }
+  
+  .md-typeset .admonition-title::before {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .md-typeset .admonition {
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+  
+  .md-typeset .admonition-title::before {
+    content: "";
+  }
+}

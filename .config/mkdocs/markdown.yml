@@ -76,10 +76,13 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
         - name: vega
           class: vega
+          format: !!python/name:pymdownx.superfences.fence_code_format
         - name: vega-lite
           class: vega-lite
+          format: !!python/name:pymdownx.superfences.fence_code_format
   
   # Tabs
   - pymdownx.tabbed:

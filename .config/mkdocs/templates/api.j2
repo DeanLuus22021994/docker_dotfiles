@@ -1,0 +1,111 @@
+{% extends "base.j2" %}
+
+{% block content %}
+## Overview
+
+{{ title }} provides RESTful API endpoints for interacting with the modern data platform.
+
+## Base URL
+
+```
+https://api.example.com/v1
+```
+
+## Authentication
+
+All API requests require authentication via Bearer token:
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+     https://api.example.com/v1/endpoint
+```
+
+## Endpoints
+
+### GET /health
+
+Health check endpoint for monitoring.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2025-10-26T20:18:00Z",
+  "version": "2.0.0"
+}
+```
+
+### [Add more endpoints here]
+
+## Request/Response Format
+
+### Request Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | `application/json` |
+| `Authorization` | Yes | `Bearer <token>` |
+
+### Response Format
+
+All responses follow this structure:
+
+```json
+{
+  "data": {},
+  "meta": {
+    "timestamp": "ISO 8601 datetime",
+    "request_id": "unique identifier"
+  },
+  "errors": []
+}
+```
+
+## Error Handling
+
+| Status Code | Description |
+|-------------|-------------|
+| `200` | Success |
+| `400` | Bad Request |
+| `401` | Unauthorized |
+| `404` | Not Found |
+| `500` | Internal Server Error |
+
+## Rate Limiting
+
+- 1000 requests per hour per API key
+- Rate limit headers included in responses
+
+## Examples
+
+### Python
+
+```python
+import requests
+
+response = requests.get(
+    "https://api.example.com/v1/endpoint",
+    headers={"Authorization": "Bearer YOUR_TOKEN"}
+)
+data = response.json()
+```
+
+### cURL
+
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" \
+     https://api.example.com/v1/endpoint
+```
+
+## SDKs
+
+- [Python SDK](../sdk/python.md)
+- [JavaScript SDK](../sdk/javascript.md)
+
+## Related Documentation
+
+- [Authentication Guide](../security/auth.md)
+- [Rate Limiting](../api/rate-limits.md)
+- [Error Codes](../api/errors.md)
+
+{% endblock %}

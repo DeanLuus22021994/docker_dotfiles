@@ -1,0 +1,22 @@
+# ==============================================================================
+# MkDocs Requirements - Production Dependencies
+# ==============================================================================
+# For GitHub Actions and Docker builds
+# ==============================================================================
+
+# Core MkDocs
+mkdocs>=1.6.0
+mkdocs-material>=9.5.39
+
+# Validation and schemas
+pydantic>=2.9
+pyyaml>=6.0
+
+# Build metrics
+psutil
+
+# Link validation
+requests
+
+# CLI formatting
+rich>=13.9

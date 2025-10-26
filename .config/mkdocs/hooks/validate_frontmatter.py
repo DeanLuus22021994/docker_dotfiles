@@ -1,27 +1,9 @@
 """
-Frontmatter Validation Hook for MkDocs
-======================================
+Enhanced Frontmatter Validation Hook for MkDocs
+===============================================
 
-Validates that all markdown files in docs/ have required frontmatter fields.
-Fails the build if validation errors are found.
-
-Python 3.14 compliant - uses PEP 585 type hints, structural pattern matching,
-and modern Python features.
-
-Required Fields:
-- title: Document title
-- description: Brief summary
-
-Optional Fields:
-- tags: List of content tags
-- date: Creation/update date (YYYY-MM-DD)
-- status: draft, review, published, deprecated
-- author: Primary author name
-- category: High-level category
-- priority: high, medium, low
-- related: List of related doc paths
-- version: Document version
-- template: Template type used
+Validates that all markdown files in docs/ have required frontmatter fields
+using Pydantic models for comprehensive validation with modern Python 3.14 features.
 
 Usage:
     Add to hooks.yml:
@@ -39,8 +21,21 @@ import re
 import sys
 from pathlib import Path
 from typing import Any, Protocol
+from datetime import datetime
 
 import yaml
+
+# Add parent directory for imports
+sys.path.append(str(Path(__file__).parent.parent))
+
+try:
+    from schemas.frontmatter import DocFrontmatter, ALLOWED_TAGS
+
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    PYDANTIC_AVAILABLE = False
+    DocFrontmatter = None
+    ALLOWED_TAGS = set()
 
 
 # ============================================================================
@@ -250,7 +245,7 @@ def validate_field_value(key: str, value: Any) -> list[str]:
 
 def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
     """
-    Validate frontmatter fields against schema.
+    Validate frontmatter fields against DocFrontmatter schema.
 
     Args:
         frontmatter: Parsed frontmatter dictionary
@@ -260,23 +255,182 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
     """
     errors: list[str] = []
 
-    # Check required fields
-    missing = REQUIRED_FIELDS - frozenset(frontmatter.keys())
-    if missing:
-        errors.append(f"Missing required fields: {', '.join(sorted(missing))}")
+    if PYDANTIC_AVAILABLE and DocFrontmatter:
+        # Use Pydantic validation
+        from pydantic import ValidationError
+        try:
+            # Convert ISO strings back to datetime objects for validation
+            if "date_created" in frontmatter and isinstance(frontmatter["date_created"], str):
+                try:
+                    frontmatter["date_created"] = datetime.fromisoformat(
+                        frontmatter["date_created"].replace("Z", "+00:00")
+                    )
+                except ValueError:
+                    errors.append(f"Invalid date_created format: {frontmatter['date_created']}")
 
-    # Validate field values
-    for key, value in frontmatter.items():
-        # Unknown fields
-        if key not in ALL_FIELDS:
-            errors.append(f"Unknown field '{key}' (allowed: {', '.join(sorted(ALL_FIELDS))})")
-            continue
+            if "last_updated" in frontmatter and isinstance(frontmatter["last_updated"], str):
+                try:
+                    frontmatter["last_updated"] = datetime.fromisoformat(
+                        frontmatter["last_updated"].replace("Z", "+00:00")
+                    )
+                except ValueError:
+                    errors.append(f"Invalid last_updated format: {frontmatter['last_updated']}")
 
-        # Validate using pattern matching helper
-        field_errors = validate_field_value(key, value)
-        errors.extend(field_errors)
+            # Validate with Pydantic
+            DocFrontmatter(**frontmatter)
+
+        except ValidationError as e:
+            # Parse Pydantic validation errors
+            for error in e.errors():
+                field = error.get("loc", ["unknown"])[0]
+                msg = error.get("msg", str(error))
+                errors.append(f"Field '{field}': {msg}")
+    else:
+        # Fallback validation without Pydantic
+        required_fields = {"date_created", "last_updated", "tags", "description"}
+        missing = required_fields - frozenset(frontmatter.keys())
+        if missing:
+            errors.append(f"Missing required fields: {', '.join(sorted(missing))}")
+
+        # Basic validation
+        for key, value in frontmatter.items():
+            field_errors = validate_field_value(key, value)
+            errors.extend(field_errors)
 
     return errors
+
+
+def validate_cross_references(frontmatter: dict[str, Any], docs_dir: Path) -> list[str]:
+    """
+    Validate cross-references in frontmatter (e.g., related files exist).
+
+    Args:
+        frontmatter: Parsed frontmatter dictionary
+        file_path: Path to current file
+        docs_dir: Root documentation directory
+
+    Returns:
+        List of validation error messages
+    """
+    errors: list[str] = []
+
+    # Validate related files exist
+    if "related" in frontmatter and isinstance(frontmatter["related"], list):
+        for related_path in frontmatter["related"]:
+            if not isinstance(related_path, str):
+                continue
+
+            # Convert relative path to absolute
+            full_path = docs_dir / related_path
+            if not full_path.exists():
+                errors.append(f"Related file does not exist: {related_path}")
+            elif not full_path.is_file():
+                errors.append(f"Related path is not a file: {related_path}")
+
+    # Validate tags are in allowed list (if Pydantic is available)
+    if PYDANTIC_AVAILABLE and ALLOWED_TAGS and "tags" in frontmatter:
+        if isinstance(frontmatter["tags"], list):
+            invalid_tags = set(frontmatter["tags"]) - ALLOWED_TAGS
+            if invalid_tags:
+                errors.append(
+                    f"Invalid tags (not in allowed list): {', '.join(sorted(invalid_tags))}"
+                )
+
+    return errors
+
+
+def validate_content_consistency(frontmatter: dict[str, Any], content: str) -> list[str]:
+    """
+    Validate consistency between frontmatter and document content.
+
+    Args:
+        frontmatter: Parsed frontmatter dictionary
+        content: Full document content
+
+    Returns:
+        List of validation error messages
+    """
+    errors: list[str] = []
+
+    # Check if title in frontmatter matches first H1 in content
+    if "title" in frontmatter:
+        title = frontmatter["title"]
+        # Find first H1 heading
+        h1_match = re.search(r"^# (.+)$", content, re.MULTILINE)
+        if h1_match:
+            content_title = h1_match.group(1).strip()
+            if title != content_title:
+                errors.append(f"Title mismatch: frontmatter='{title}' vs content='{content_title}'")
+
+        # Check if description is reflected in content (first paragraph)
+    if "description" in frontmatter:
+        description = frontmatter["description"].lower()
+        # Extract first paragraph after frontmatter
+        lines = content.split("\n")
+        in_frontmatter = True
+        first_paragraph: list[str] = []
+
+        for line in lines:
+            if in_frontmatter:
+                if line.strip() == "---" and not first_paragraph:
+                    continue
+                elif line.strip() == "---":
+                    in_frontmatter = False
+                continue
+
+            if line.strip():
+                # Skip headings
+                if not line.startswith("#"):
+                    first_paragraph.append(line.strip())
+            elif first_paragraph:
+                break
+
+        if first_paragraph:
+            content_start = " ".join(first_paragraph).lower()
+            # Check if key words from description appear in first paragraph
+            desc_words = set(re.findall(r"\b\w+\b", description))
+            content_words = set(re.findall(r"\b\w+\b", content_start))
+
+            # Require at least 30% word overlap for consistency
+            if desc_words and len(desc_words & content_words) / len(desc_words) < 0.3:
+                errors.append("Description doesn't seem to match document content")
+
+    return errors
+
+
+# ============================================================================
+# Standalone Validation Function
+# ============================================================================
+
+
+def validate_file_frontmatter(file_path: Path) -> tuple[bool, list[str]]:
+    """
+    Validate frontmatter in a single file (for use by other tools).
+
+    Args:
+        file_path: Path to markdown file
+
+    Returns:
+        Tuple of (is_valid, error_messages)
+    """
+    try:
+        content = file_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError) as e:
+        return False, [f"Error reading file: {e}"]
+
+    # Extract and validate frontmatter
+    frontmatter, extract_errors = extract_frontmatter(content)
+
+    if extract_errors:
+        return False, extract_errors
+
+    if frontmatter is None:
+        return False, ["No frontmatter found"]
+
+    # Validate fields
+    field_errors = validate_frontmatter(frontmatter)
+
+    return len(field_errors) == 0, field_errors
 
 
 # ============================================================================
@@ -336,8 +490,14 @@ def on_files(files: FilesProtocol, config: dict[str, Any]) -> FilesProtocol:
 
         # Validate fields
         field_errors = validate_frontmatter(frontmatter)
-        if field_errors:
-            validation_errors[file.src_path] = field_errors
+
+        # Enhanced validation: cross-references and content consistency
+        cross_ref_errors = validate_cross_references(frontmatter, docs_dir)
+        consistency_errors = validate_content_consistency(frontmatter, content)
+
+        all_errors = field_errors + cross_ref_errors + consistency_errors
+        if all_errors:
+            validation_errors[file.src_path] = all_errors
 
     # Report results
     if validation_errors:

@@ -1,0 +1,111 @@
+{% extends "base.j2" %}
+
+{% block content %}
+## Welcome to {{ title }}
+
+{{ description }}
+
+## Quick Navigation
+
+<div class="grid cards" markdown>
+
+-   :material-rocket-launch: **Getting Started**
+
+    ---
+
+    New to the platform? Start here for setup and basic usage.
+
+    [:octicons-arrow-right-24: Setup Guide](readme/setup.md)
+
+-   :material-api: **API Reference**
+
+    ---
+
+    Complete API documentation and integration examples.
+
+    [:octicons-arrow-right-24: API Docs](api/overview.md)
+
+-   :material-robot: **Agent Development**
+
+    ---
+
+    Build and deploy AI agents with our comprehensive guides.
+
+    [:octicons-arrow-right-24: Agent Guide](agent/overview.md)
+
+-   :material-cog: **Configuration**
+
+    ---
+
+    Advanced configuration and customization options.
+
+    [:octicons-arrow-right-24: Config Guide](config/overview.md)
+
+</div>
+
+## Platform Architecture
+
+```mermaid
+graph TB
+    subgraph "Load Balancer"
+        LB[Traefik]
+    end
+    
+    subgraph "Web Tier"
+        W1[Web Service 1]
+        W2[Web Service 2]
+        W3[Web Service 3]
+    end
+    
+    subgraph "Data Tier"
+        PG[PostgreSQL]
+        MDB[MariaDB]
+        RDS[Redis]
+        MIN[MinIO]
+    end
+    
+    subgraph "Compute Tier"
+        JUP[Jupyter GPU]
+        MCP[GitHub MCP]
+    end
+    
+    subgraph "Monitoring"
+        GRAF[Grafana]
+        PROM[Prometheus]
+    end
+    
+    LB --> W1
+    LB --> W2
+    LB --> W3
+    W1 --> PG
+    W2 --> MDB
+    W3 --> RDS
+    JUP --> MIN
+    GRAF --> PROM
+```
+
+## Key Features
+
+- **Multi-Database Support**: PostgreSQL, MariaDB, and Redis
+- **GPU Computing**: NVIDIA GPU support with Jupyter
+- **AI Integration**: MCP agents and tool integration
+- **Monitoring Stack**: Grafana and Prometheus
+- **Load Balancing**: Traefik with automatic HTTPS
+- **Object Storage**: MinIO S3-compatible storage
+
+## Recent Updates
+
+- Added bleeding-edge MkDocs features
+- Enhanced validation and health checks
+- Improved Docker build optimization
+- Updated Python 3.14 support
+
+## Support
+
+Need help? Check our resources:
+
+- [Troubleshooting Guide](readme/troubleshooting.md)
+- [FAQ](readme/faq.md)
+- [GitHub Issues](https://github.com/DeanLuus22021994/docker_dotfiles/issues)
+
+{% endblock %}

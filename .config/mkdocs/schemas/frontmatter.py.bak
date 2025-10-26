@@ -1,0 +1,130 @@
+"""Pydantic models for MkDocs frontmatter validation.
+
+This module provides comprehensive validation for document frontmatter
+following Python 3.14 patterns with strict typing and dataclasses.
+"""
+
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from typing import Protocol, Any
+
+try:
+    from pydantic import BaseModel, Field, field_validator
+
+    PYDANTIC_AVAILABLE = True
+except ImportError:
+    # Fallback for environments without pydantic
+    PYDANTIC_AVAILABLE = False
+
+    class BaseModel:
+        def __init__(self, **kwargs: Any) -> None:
+            for key, value in kwargs.items():
+                setattr(self, key, value)
+
+    def Field(**_kwargs: Any) -> Any:
+        return None
+
+    def field_validator(*_args: Any) -> Any:
+        def decorator(func: Any) -> Any:
+            return func
+
+        return decorator
+
+
+@dataclass(frozen=True, slots=True)
+class FrontmatterConfig:
+    """Configuration for frontmatter validation rules."""
+
+    required_fields: list[str]
+    allowed_tags: list[str]
+    description_min: int = 20
+    description_max: int = 160
+
+
+class DocFrontmatter(BaseModel):
+    """Validated frontmatter schema for documentation files.
+
+    Enforces required fields, data types, and business rules
+    for consistent documentation metadata.
+    """
+
+    date_created: datetime = Field(..., description="ISO 8601 creation date with timezone")
+    last_updated: datetime = Field(..., description="ISO 8601 last modification date with timezone")
+    tags: list[str] = Field(
+        ..., min_length=1, max_length=10, description="Document tags from allowed vocabulary"
+    )
+    description: str = Field(
+        ...,
+        min_length=20,
+        max_length=160,
+        description="Brief document description for SEO and navigation",
+    )
+
+    @field_validator("date_created", "last_updated")
+    @classmethod
+    def validate_dates(cls, v: datetime) -> datetime:
+        """Ensure all dates have timezone information."""
+        if v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
+
+    @field_validator("tags")
+    @classmethod
+    def validate_tags(cls, v: list[str]) -> list[str]:
+        """Validate tags against allowed vocabulary."""
+        allowed = {
+            # Core categories
+            "docker",
+            "platform",
+            "index",
+            "documentation",
+            "readme",
+            "agent",
+            "api",
+            "setup",
+            "guide",
+            # Technical areas
+            "configuration",
+            "deployment",
+            "development",
+            "testing",
+            "monitoring",
+            "security",
+            "networking",
+            "storage",
+            # Languages/Tools
+            "python",
+            "javascript",
+            "typescript",
+            "golang",
+            "terraform",
+            "ansible",
+            "kubernetes",
+            "compose",
+            # Patterns
+            "tutorial",
+            "reference",
+            "howto",
+            "explanation",
+            "troubleshooting",
+            "best-practices",
+            "architecture",
+        }
+
+        invalid = set(v) - allowed
+        if invalid:
+            raise ValueError(f"Invalid tags: {invalid}. Allowed: {sorted(allowed)}")
+
+        return v
+
+
+class FrontmatterProtocol(Protocol):
+    """Protocol for frontmatter validation implementations."""
+
+    def validate(self, content: str) -> DocFrontmatter:
+        """Validate frontmatter content and return parsed model."""
+        raise NotImplementedError
+
+    def generate_template(self, **kwargs: Any) -> str:
+        """Generate valid frontmatter template."""
+        raise NotImplementedError

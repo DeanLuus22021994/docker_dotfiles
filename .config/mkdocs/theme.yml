@@ -135,6 +135,7 @@ extra_css:
 
 extra_javascript:
   - ../.config/mkdocs/assets/javascripts/custom.js
+  - ../.config/mkdocs/assets/javascripts/mermaid-advanced.js
   - ../.config/mkdocs/assets/javascripts/analytics.js
   - ../.config/mkdocs/assets/javascripts/shortcuts.js
   - https://polyfill.io/v3/polyfill.min.js?features=es6
