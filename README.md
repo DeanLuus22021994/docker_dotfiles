@@ -5,49 +5,33 @@ tags: ["docker", "platform", "index", "documentation"]
 description: "Main documentation index for the Modern Data Platform Docker cluster"
 ---
 
-# Modern Data Platform - Docker Cluster
+# Modern Data Platform
 
 [![Docker](https://img.shields.io/badge/Docker-24.0%2B-blue)](https://www.docker.com/)
-[![Docker Compose](https://img.shields.io/badge/Docker%20Compose-V2-blue)](https://docs.docker.com/compose/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![GPU](https://img.shields.io/badge/CUDA-12.2-green)](https://developer.nvidia.com/cuda-toolkit)
 
-A turn-key modern data platform with GPU acceleration, dual databases, monitoring, and complete development stack.
+Turn-key data platform: GPU-accelerated ML, dual databases, S3 storage, production monitoring, complete dev stack.
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 make build && make up
 curl http://localhost:8080/
 ```
 
-See [installation guide](readme/installation.md) for detailed setup.
+## Documentation
 
-## 📚 Documentation Index
+**Getting Started:** [Overview](docs/readme/overview.md) | [Prerequisites](docs/readme/prerequisites.md) | [Installation](docs/readme/installation.md) | [Setup](docs/readme/environment-setup.md)
 
-### Getting Started
-- [Overview](readme/overview.md) - Platform introduction and quick start
-- [Prerequisites](readme/prerequisites.md) - System requirements
-- [Python Setup](readme/python-setup.md) - Python 3.14 installation guide
-- [Environment Setup](readme/environment-setup.md) - Configuration and secrets
-- [Installation](readme/installation.md) - Production and development deployment
+**Architecture:** [Design](docs/readme/architecture.md) | [Features](docs/readme/features.md) | [Structure](docs/readme/project-structure.md)
 
-### System Design
-- [Architecture](readme/architecture.md) - Component overview and design
-- [Features](readme/features.md) - Complete feature set
-- [Project Structure](readme/project-structure.md) - Directory organization
+**Operations:** [Usage](docs/readme/usage.md) | [Services](docs/readme/service-access.md) | [Config](docs/readme/configuration.md) | [Troubleshooting](docs/readme/troubleshooting.md)
 
-### Operations
-- [Usage](readme/usage.md) - Common commands and workflows
-- [Service Access](readme/service-access.md) - Endpoints and credentials
-- [Configuration](readme/configuration.md) - Config management and validation
-- [Pre-commit Hooks](readme/pre-commit.md) - Automated quality checks
+**Development:** [Contributing](docs/readme/contributing.md) | [Agent Guide](AGENT.md) | [Testing](tests/README.md)
 
-### Support
-- [Troubleshooting](readme/troubleshooting.md) - Common issues and solutions
-- [Maintenance](readme/maintenance.md) - Backup, restore, and updates
-- [Contributing](readme/contributing.md) - Development guidelines
+See [complete index](docs/INDEX.md) for all documentation.
 
 ---
 
-**Made with ❤️ for production-ready Docker deployments**
+**Production-ready Docker deployments** | MIT License
