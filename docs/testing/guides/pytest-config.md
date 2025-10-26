@@ -1,23 +1,25 @@
 ---
 date_created: "2025-10-26T18:32:25.968101+00:00"
 last_updated: "2025-10-26T18:32:25.968101+00:00"
-tags: ['documentation', 'testing', 'pytest']
+tags: ["documentation", "testing", "pytest"]
 description: "Documentation for pytest config"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - testing
 - pytest
 - configuration
 - setup
-description: Pytest framework configuration and setup details
----\n# Pytest Configuration
+  description: Pytest framework configuration and setup details
+  ---\n# Pytest Configuration
 
 ## pyproject.toml Setup
 
 **Dependencies:**
+
 ```toml
 [project.optional-dependencies]
 dev = [
@@ -29,6 +31,7 @@ dev = [
 ```
 
 **Pytest Configuration:**
+
 ```toml
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -39,6 +42,7 @@ addopts = "--strict-markers --cov-fail-under=80"
 ```
 
 **Coverage Configuration:**
+
 ```toml
 [tool.coverage.run]
 source = ["scripts/python"]

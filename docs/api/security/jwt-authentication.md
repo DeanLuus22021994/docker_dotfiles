@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:26.001149+00:00"
 last_updated: "2025-10-26T18:32:26.001149+00:00"
-tags: ['documentation', 'api', 'reference']
+tags: ["documentation", "api", "reference"]
 description: "Documentation for jwt authentication"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - api
 - security
 - jwt
 - authentication
-description: JWT authentication implementation and configuration
----\n# JWT Authentication
+  description: JWT authentication implementation and configuration
+  ---\n# JWT Authentication
 
 ## Configuration
 
@@ -41,7 +42,7 @@ JWT_REFRESH_EXPIRES_IN=7d  # Refresh token expiration
 **Login** - `POST /api/auth/login`
 
 ```json
-{"username": "admin", "password": "password"}
+{ "username": "admin", "password": "password" }
 ```
 
 Returns: `{"accessToken": "...", "refreshToken": "..."}`
@@ -49,7 +50,7 @@ Returns: `{"accessToken": "...", "refreshToken": "..."}`
 **Refresh** - `POST /api/auth/refresh`
 
 ```json
-{"refreshToken": "..."}
+{ "refreshToken": "..." }
 ```
 
 ## Protected Routes

@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.js'
+applyTo: "**/*.js"
 ---
 
 **JavaScript Patterns:** [../.vscode/snippets/javascript.code-snippets](../../.vscode/snippets/javascript.code-snippets)

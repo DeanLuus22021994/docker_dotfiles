@@ -77,24 +77,24 @@ const MCP = {
 module.exports = {
   Utils,
   MCP,
-  
+
   // Direct exports for convenience
   ConfigLoader: ConfigLoader.ConfigLoader,
   loadConfig: ConfigLoader.loadConfig,
-  
+
   PathResolver: PathResolver.PathResolver,
   resolveWorkspaceFolder: PathResolver.resolveWorkspaceFolder,
   resolveEnvVars: PathResolver.resolveEnvVars,
-  
+
   Logger: Logger.Logger,
   createLogger: Logger.createLogger,
   Colors: Logger.Colors,
   LogLevel: Logger.LogLevel,
-  
+
   ManagedProcess: ProcessManager.ManagedProcess,
   execute: ProcessManager.execute,
   executeJsonRpc: ProcessManager.executeJsonRpc,
-  
+
   MCPClient: MCPClient.MCPClient,
   createClient: MCPClient.createClient
 };

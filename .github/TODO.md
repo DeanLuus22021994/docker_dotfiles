@@ -1,7 +1,7 @@
 # Project TODO - v4.1
 
-**Last Updated:** 2025-10-26  
-**Current Phase:** v4.1 - Testing Complete, Security & Scripts Next  
+**Last Updated:** 2025-10-26
+**Current Phase:** v4.1 - Testing Complete, Security & Scripts Next
 **Status:** 🚀 IN PROGRESS
 
 ---
@@ -11,28 +11,28 @@
 | Category                    | Status      | Progress | Priority    |
 | --------------------------- | ----------- | -------- | ----------- |
 | Testing Infrastructure      | 🟢 Complete | 6/6      | 🔴 Critical |
-| Security Hardening          | � Complete | 6/6      | 🔴 Critical |
-| Planned Scripts             | � Complete | 6/6      | 🟠 High     |
-| Documentation Consolidation | � Complete | 4/4      | 🟠 High     |
-| Code Quality Automation     | � Complete | 3/3      | 🟢 Medium   |
-| Web Dashboard Enhancements  | ⚪ Optional  | 0/5      | 🟢 Medium   |
+| Security Hardening          | � Complete  | 6/6      | 🔴 Critical |
+| Planned Scripts             | � Complete  | 6/6      | 🟠 High     |
+| Documentation Consolidation | � Complete  | 4/4      | 🟠 High     |
+| Code Quality Automation     | � Complete  | 3/3      | 🟢 Medium   |
+| Web Dashboard Enhancements  | ⚪ Optional | 0/5      | 🟢 Medium   |
 
-**Legend:**  
+**Legend:**
 🟢 Complete | 🔵 In Progress | 🟡 Not Started | 🔴 Blocked | ⚪ Optional
 
 ---
 
 ## 🎯 Phase 4.1: Testing Infrastructure (Critical)
 
-**Goal:** Establish comprehensive testing framework for Python scripts  
-**Priority:** 🔴 CRITICAL  
+**Goal:** Establish comprehensive testing framework for Python scripts
+**Priority:** 🔴 CRITICAL
 **Target:** Week 1
 
 ### Tasks
 
 #### 4.1.1 Setup pytest Framework 🟢 COMPLETE
 
-**Description:** Install and configure pytest for Python 3.14  
+**Description:** Install and configure pytest for Python 3.14
 **Acceptance Criteria:**
 
 - [x] pytest installed with all plugins (pytest-cov, pytest-mock, pytest-asyncio)
@@ -40,16 +40,16 @@
 - [x] Test discovery working for `tests/` directory
 - [x] Coverage reporting configured (>80% target, achieved 97.05%)
 
-**Dependencies:** None  
-**Estimated Time:** 1 hour  
-**Actual Time:** 1 hour  
+**Dependencies:** None
+**Estimated Time:** 1 hour
+**Actual Time:** 1 hour
 **Completed:** 2025-10-25
 
 ---
 
 #### 4.1.2 Create Test Structure 🟢 COMPLETE
 
-**Description:** Create comprehensive test directory structure  
+**Description:** Create comprehensive test directory structure
 **Acceptance Criteria:**
 
 - [x] `tests/python/` directory created with `__init__.py`
@@ -86,16 +86,16 @@ tests/
         └── test_validate_configs.py
 ```
 
-**Dependencies:** 4.1.1  
-**Estimated Time:** 1 hour  
-**Actual Time:** 1 hour  
+**Dependencies:** 4.1.1
+**Estimated Time:** 1 hour
+**Actual Time:** 1 hour
 **Completed:** 2025-10-25
 
 ---
 
 #### 4.1.3 Write Unit Tests for Utils 🟢 COMPLETE
 
-**Description:** Write comprehensive unit tests for utils module  
+**Description:** Write comprehensive unit tests for utils module
 **Acceptance Criteria:**
 
 - [x] `test_colors.py` - Test all color output functions, terminals with/without ANSI support
@@ -109,16 +109,16 @@ tests/
 - File Utils: File existence, directory creation, recursive search, error handling
 - Logging: Setup logger, log levels, file handlers, console handlers
 
-**Dependencies:** 4.1.2  
-**Estimated Time:** 3 hours  
-**Actual Time:** 3 hours  
+**Dependencies:** 4.1.2
+**Estimated Time:** 3 hours
+**Actual Time:** 3 hours
 **Completed:** 2025-10-25
 
 ---
 
 #### 4.1.4 Write Unit Tests for Validation 🟢 COMPLETE
 
-**Description:** Write comprehensive unit tests for validation module  
+**Description:** Write comprehensive unit tests for validation module
 **Acceptance Criteria:**
 
 - [x] `test_validate_env.py` - Test .env parsing, variable validation, missing variables detection
@@ -131,16 +131,16 @@ tests/
 - Validate Env: Valid .env, missing required vars, malformed .env, empty values
 - Validate Configs: Valid configs, invalid syntax, missing files, Docker validation
 
-**Dependencies:** 4.1.2  
-**Estimated Time:** 3 hours  
-**Actual Time:** 3 hours  
+**Dependencies:** 4.1.2
+**Estimated Time:** 3 hours
+**Actual Time:** 3 hours
 **Completed:** 2025-10-25
 
 ---
 
 #### 4.1.5 Write Unit Tests for Audit 🟢 COMPLETE
 
-**Description:** Write comprehensive unit tests for audit module  
+**Description:** Write comprehensive unit tests for audit module
 **Acceptance Criteria:**
 
 - [x] `test_code_quality.py` - Test Black/Ruff/mypy execution, output parsing
@@ -153,16 +153,16 @@ tests/
 - Code Quality: Tool availability, successful runs, error handling, output parsing
 - Dependencies: Package detection, version checking, vulnerability scanning
 
-**Dependencies:** 4.1.2  
-**Estimated Time:** 3 hours  
-**Actual Time:** 3 hours  
+**Dependencies:** 4.1.2
+**Estimated Time:** 3 hours
+**Actual Time:** 3 hours
 **Completed:** 2025-10-25
 
 ---
 
 #### 4.1.6 Setup CI/CD Testing Pipeline 🟢 COMPLETE
 
-**Description:** Add automated testing to GitHub Actions  
+**Description:** Add automated testing to GitHub Actions
 **Acceptance Criteria:**
 
 - [x] `.github/workflows/test.yml` created (already existed, enhanced)
@@ -180,18 +180,18 @@ tests/
 5. Upload coverage to Codecov ✅
 6. Fail if coverage <80% (achieved 97.05%) ✅
 
-**Dependencies:** 4.1.3, 4.1.4, 4.1.5  
-**Estimated Time:** 2 hours  
-**Actual Time:** 1 hour  
+**Dependencies:** 4.1.3, 4.1.4, 4.1.5
+**Estimated Time:** 2 hours
+**Actual Time:** 1 hour
 **Completed:** 2025-10-26
 
 ---
 
 ## 🔒 Phase 4.2: Security Hardening (Critical) ✅ COMPLETE
 
-**Goal:** Production-ready security for web dashboard and services  
-**Priority:** 🔴 CRITICAL  
-**Status:** 🟢 COMPLETE  
+**Goal:** Production-ready security for web dashboard and services
+**Priority:** 🔴 CRITICAL
+**Status:** 🟢 COMPLETE
 **Completed:** 2025-10-26
 
 ### Current Security Gaps (from analysis)
@@ -222,7 +222,7 @@ tests/
 
 #### 4.2.1 Implement Authentication Layer 🟢 COMPLETE
 
-**Description:** Add authentication to web dashboard  
+**Description:** Add authentication to web dashboard
 **Acceptance Criteria:**
 
 - [x] Choose auth method (JWT selected for internal use)
@@ -233,6 +233,7 @@ tests/
 - [x] Document authentication setup in `api/SECURITY.md`
 
 **Implementation:**
+
 - Created `api/auth.js` - JWT generation, verification, credential checking
 - Created `api/middleware.js` - Rate limiting, validation, error handling
 - Updated `api/server.js` - Auth endpoints (/auth/login, /auth/refresh, /auth/logout)
@@ -240,22 +241,23 @@ tests/
 - Default credentials: admin/admin (MUST change in production)
 
 **Files Modified:**
+
 - `api/auth.js` - JWT authentication module
 - `api/middleware.js` - Validation and rate limiting
 - `api/server.js` - Auth endpoints and middleware
 - `api/SECURITY.md` - Authentication documentation
 - `.env.example` - JWT_SECRET, AUTH_ENABLED, JWT_EXPIRES_IN
 
-**Dependencies:** None  
-**Estimated Time:** 6 hours  
-**Actual Time:** 6 hours  
+**Dependencies:** None
+**Estimated Time:** 6 hours
+**Actual Time:** 6 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.2.2 Add Rate Limiting 🟢 COMPLETE
 
-**Description:** Implement rate limiting for API endpoints  
+**Description:** Implement rate limiting for API endpoints
 **Acceptance Criteria:**
 
 - [x] Install `express-rate-limit` package
@@ -267,6 +269,7 @@ tests/
 - [x] Document rate limits in `api/SECURITY.md`
 
 **Implementation:**
+
 - Three-tier rate limiting: apiLimiter (100/15min), statsLimiter (10/15min), authLimiter (5/15min)
 - Standard RateLimit-\* headers enabled
 - Detailed 429 responses with retryAfter timestamps
@@ -287,16 +290,16 @@ const apiLimiter = rateLimit({
 app.use("/api/", apiLimiter);
 ```
 
-**Dependencies:** None  
-**Estimated Time:** 2 hours  
-**Actual Time:** 2 hours  
+**Dependencies:** None
+**Estimated Time:** 2 hours
+**Actual Time:** 2 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.2.3 Enable HTTPS & Reverse Proxy 🟢 COMPLETE
 
-**Description:** Setup HTTPS for production deployment  
+**Description:** Setup HTTPS for production deployment
 **Acceptance Criteria:**
 
 - [x] Create `dockerfile/traefik.Dockerfile` for reverse proxy
@@ -307,6 +310,7 @@ app.use("/api/", apiLimiter);
 - [x] Document HTTPS setup in `docs/production-deployment.md`
 
 **Implementation:**
+
 - Traefik v3.2 with Let's Encrypt ACME v2
 - Automatic certificate renewal
 - HTTP -> HTTPS redirect middleware
@@ -320,16 +324,16 @@ app.use("/api/", apiLimiter);
 - Grafana (port 3000 → 443/grafana)
 - Jupyter (port 8888 → 443/jupyter)
 
-**Dependencies:** None  
-**Estimated Time:** 4 hours  
-**Actual Time:** 4 hours  
+**Dependencies:** None
+**Estimated Time:** 4 hours
+**Actual Time:** 4 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.2.4 API Request Validation 🟢 COMPLETE
 
-**Description:** Add input validation and sanitization  
+**Description:** Add input validation and sanitization
 **Acceptance Criteria:**
 
 - [x] Install `express-validator` package
@@ -341,6 +345,7 @@ app.use("/api/", apiLimiter);
 - [x] Document validation rules in `api/SECURITY.md`
 
 **Implementation:**
+
 - Container ID: `/^[a-f0-9]{12,64}$/` regex validation
 - Username: 3-50 chars, alphanumeric + underscore/hyphen only
 - Password: minimum 4 characters
@@ -353,16 +358,16 @@ app.use("/api/", apiLimiter);
 - Query parameters: Whitelist allowed values
 - Headers: Validate Content-Type, Accept
 
-**Dependencies:** None  
-**Estimated Time:** 2 hours  
-**Actual Time:** 2 hours  
+**Dependencies:** None
+**Estimated Time:** 2 hours
+**Actual Time:** 2 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.2.5 Restrict CORS Origins 🟢 COMPLETE
 
-**Description:** Configure CORS for specific origins only  
+**Description:** Configure CORS for specific origins only
 **Acceptance Criteria:**
 
 - [x] Update CORS config in `api/server.js`
@@ -373,6 +378,7 @@ app.use("/api/", apiLimiter);
 - [x] Document CORS configuration in `api/SECURITY.md`
 
 **Implementation:**
+
 - Dynamic origin whitelist from CORS_ORIGIN env var
 - Default: `http://localhost:3000,http://localhost:5173`
 - Origin validation callback with error handling
@@ -393,16 +399,16 @@ const corsOptions = {
 app.use(cors(corsOptions));
 ```
 
-**Dependencies:** None  
-**Estimated Time:** 1 hour  
-**Actual Time:** 1 hour  
+**Dependencies:** None
+**Estimated Time:** 1 hour
+**Actual Time:** 1 hour
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.2.6 Docker Socket Security Audit 🟢 COMPLETE
 
-**Description:** Audit and document Docker socket security  
+**Description:** Audit and document Docker socket security
 **Acceptance Criteria:**
 
 - [x] Verify socket mounted read-only in all services
@@ -412,6 +418,7 @@ app.use(cors(corsOptions));
 - [x] Document Docker socket proxy option (tecnativa/docker-socket-proxy)
 
 **Implementation:**
+
 - Documented socket mounting in api/SECURITY.md
 - Read-only socket access verified in docker-compose.yml
 - Created comprehensive docker-socket-security.md guide
@@ -425,25 +432,25 @@ app.use(cors(corsOptions));
 - Better audit trail
 - Defense in depth
 
-**Dependencies:** None  
-**Estimated Time:** 3 hours  
-**Actual Time:** 3 hours  
+**Dependencies:** None
+**Estimated Time:** 3 hours
+**Actual Time:** 3 hours
 **Completed:** 2025-10-26
 
 ---
 
 ## 🛠️ Phase 4.3: Implement Planned Scripts (High Priority) ✅ COMPLETE
 
-**Goal:** Complete all planned scripts documented in READMEs  
-**Priority:** 🟠 HIGH  
-**Status:** 🟢 COMPLETE  
+**Goal:** Complete all planned scripts documented in READMEs
+**Priority:** 🟠 HIGH
+**Status:** 🟢 COMPLETE
 **Completed:** 2025-10-26
 
 ### PowerShell Scripts (Windows) ✅ COMPLETE
 
 #### 4.3.1 cleanup/remove-old-images.ps1 🟢 COMPLETE
 
-**Description:** Remove old/unused Docker images to reclaim disk space  
+**Description:** Remove old/unused Docker images to reclaim disk space
 **Acceptance Criteria:**
 
 - [x] List all images with created date and size
@@ -455,6 +462,7 @@ app.use(cors(corsOptions));
 - [x] Document in `scripts/powershell/README.md`
 
 **Implementation:**
+
 - 244 lines of PowerShell with comprehensive error handling
 - Parameters: -DaysOld (30), -Force, -WhatIf, -ExcludeTags
 - Color-coded output (red: deletable, green: kept)
@@ -468,17 +476,17 @@ app.use(cors(corsOptions));
 - `-WhatIf` to preview deletions
 - Color-coded output (red: deletable, green: kept)
 
-**Reference:** `docs/reports/cleanup/2025-10-25-overview.md` recommendations  
-**Dependencies:** None  
-**Estimated Time:** 2 hours  
-**Actual Time:** 2 hours  
+**Reference:** `docs/reports/cleanup/2025-10-25-overview.md` recommendations
+**Dependencies:** None
+**Estimated Time:** 2 hours
+**Actual Time:** 2 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.3.2 cleanup/clear-volumes.ps1 🟢 COMPLETE
 
-**Description:** Clear unused Docker volumes safely  
+**Description:** Clear unused Docker volumes safely
 **Acceptance Criteria:**
 
 - [x] List all volumes with size and mount status
@@ -490,6 +498,7 @@ app.use(cors(corsOptions));
 - [x] Document in `scripts/powershell/README.md`
 
 **Implementation:**
+
 - 180+ lines with comprehensive volume analysis
 - Parameters: -UnusedOnly, -Force, -ExcludePattern, -WhatIf
 - Size calculation with Get-ChildItem integration
@@ -503,16 +512,16 @@ app.use(cors(corsOptions));
 - `-ExcludePattern` to exclude volumes by name pattern
 - Dry-run mode with `-WhatIf`
 
-**Dependencies:** None  
-**Estimated Time:** 2 hours  
-**Actual Time:** 2 hours  
+**Dependencies:** None
+**Estimated Time:** 2 hours
+**Actual Time:** 2 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.3.3 audit/security-scan.ps1 🟢 COMPLETE
 
-**Description:** Security vulnerability scan for Docker images and dependencies  
+**Description:** Security vulnerability scan for Docker images and dependencies
 **Acceptance Criteria:**
 
 - [x] Scan Docker images with Trivy
@@ -525,6 +534,7 @@ app.use(cors(corsOptions));
 - [x] Document in `scripts/powershell/README.md`
 
 **Implementation:**
+
 - 300+ lines with multi-tool security scanning
 - Parameters: -Images, -Python, -NodeJS, -Secrets, -OutputFormat
 - Trivy for container image scanning
@@ -540,9 +550,9 @@ app.use(cors(corsOptions));
 3. Node.js: `npm audit --json`
 4. Secrets: `gitleaks` or `trufflehog`
 
-**Dependencies:** Install Trivy, gitleaks  
-**Estimated Time:** 4 hours  
-**Actual Time:** 4 hours  
+**Dependencies:** Install Trivy, gitleaks
+**Estimated Time:** 4 hours
+**Actual Time:** 4 hours
 **Completed:** 2025-10-26
 
 ---
@@ -551,7 +561,7 @@ app.use(cors(corsOptions));
 
 #### 4.3.4 docker/build-images.sh 🟢 COMPLETE
 
-**Description:** Build all Docker images with BuildKit optimization  
+**Description:** Build all Docker images with BuildKit optimization
 **Acceptance Criteria:**
 
 - [x] Read image list from `dockerfile/` directory
@@ -563,6 +573,7 @@ app.use(cors(corsOptions));
 - [x] Document in `scripts/bash/README.md`
 
 **Implementation:**
+
 - 200 lines of Bash with BuildKit optimization
 - Arguments: --no-cache, --push, --image, --parallel
 - Parallel builds with GNU parallel or xargs
@@ -577,16 +588,16 @@ app.use(cors(corsOptions));
 - `--image <name>` to build single image
 - Colored output (green: success, red: failure)
 
-**Dependencies:** BuildKit enabled  
-**Estimated Time:** 3 hours  
-**Actual Time:** 3 hours  
+**Dependencies:** BuildKit enabled
+**Estimated Time:** 3 hours
+**Actual Time:** 3 hours
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.3.5 docker/cleanup-volumes.sh 🟢 COMPLETE
 
-**Description:** Bash equivalent of PowerShell clear-volumes.ps1  
+**Description:** Bash equivalent of PowerShell clear-volumes.ps1
 **Acceptance Criteria:**
 
 - [x] List unused volumes with `docker volume ls`
@@ -597,6 +608,7 @@ app.use(cors(corsOptions));
 - [x] Document in `scripts/bash/README.md`
 
 **Implementation:**
+
 - 150+ lines with jq JSON parsing
 - Arguments: --force, --dry-run, --exclude-pattern
 - Volume usage analysis with du
@@ -609,16 +621,16 @@ app.use(cors(corsOptions));
 - `--dry-run` to preview deletions
 - Exclude volumes by pattern
 
-**Dependencies:** None  
-**Estimated Time:** 1 hour  
-**Actual Time:** 1 hour  
+**Dependencies:** None
+**Estimated Time:** 1 hour
+**Actual Time:** 1 hour
 **Completed:** 2025-10-26
 
 ---
 
 #### 4.3.6 docs/build-docs.sh 🟢 COMPLETE
 
-**Description:** Build static documentation site with MkDocs  
+**Description:** Build static documentation site with MkDocs
 **Acceptance Criteria:**
 
 - [x] Install MkDocs with Material theme
@@ -630,6 +642,7 @@ app.use(cors(corsOptions));
 - [x] Document in `scripts/bash/README.md`
 
 **Implementation:**
+
 - 100+ lines with MkDocs automation
 - Commands: build, serve, deploy
 - Material theme with navigation tabs
@@ -655,18 +668,18 @@ docs/
     └── bash.md
 ```
 
-**Dependencies:** Install MkDocs  
-**Estimated Time:** 4 hours  
-**Actual Time:** 4 hours  
+**Dependencies:** Install MkDocs
+**Estimated Time:** 4 hours
+**Actual Time:** 4 hours
 **Completed:** 2025-10-26
 
 ---
 
 ## 📚 Phase 4.4: Documentation Consolidation (High Priority) 🔵 IN PROGRESS
 
-**Goal:** Organize documentation into single source of truth with 150-word limit  
-**Priority:** 🟠 HIGH  
-**Target:** Week 4  
+**Goal:** Organize documentation into single source of truth with 150-word limit
+**Priority:** 🟠 HIGH
+**Target:** Week 4
 **Status:** 🔵 IN PROGRESS (90% complete - 8 major files decomposed, 51+ focused docs created)
 
 ### Current Issues (from archived CLEANUP-REPORT)
@@ -688,7 +701,7 @@ docs/
 
 #### 4.4.1 Create Documentation Index 🔵 IN PROGRESS
 
-**Description:** Create centralized documentation index with 150-word limit  
+**Description:** Create centralized documentation index with 150-word limit
 **Acceptance Criteria:**
 
 - [x] Create `docs/INDEX.md` with all documentation links (NEEDS DECOMPOSITION - 825w)
@@ -731,14 +744,14 @@ docs/
 - [Prometheus Config](.config/monitoring/prometheus/README.md)
 ```
 
-**Dependencies:** None  
+**Dependencies:** None
 **Estimated Time:** 2 hours
 
 ---
 
 #### 4.4.2 Archive Obsolete Documentation ✅ COMPLETE
 
-**Description:** Review and archive completed/obsolete docs  
+**Description:** Review and archive completed/obsolete docs
 **Acceptance Criteria:**
 
 - [x] Review ENHANCEMENTS-COMPLETE.md for unique content
@@ -755,14 +768,14 @@ docs/
 - ENVIRONMENT-INTEGRATION-COMPLETE.md → Deleted (obsolete v2.0 work)
 - CLUSTER.md → Consolidated into README.md
 
-**Dependencies:** 4.4.1 (update index after archival)  
+**Dependencies:** 4.4.1 (update index after archival)
 **Estimated Time:** 2 hours
 
 ---
 
 #### 4.4.3 Consolidate Web-Content Docs ✅ COMPLETE
 
-**Description:** Reduce 5 web-content docs to 3 essential docs  
+**Description:** Reduce 5 web-content docs to 3 essential docs
 **Acceptance Criteria:**
 
 - [x] Keep: ARCHITECTURE.md (technical deep dive)
@@ -780,14 +793,14 @@ docs/
 - ARCHITECTURE covers technical details
 - INSTALL covers setup procedures
 
-**Dependencies:** 4.4.2  
+**Dependencies:** 4.4.2
 **Estimated Time:** 3 hours
 
 ---
 
 #### 4.4.4 Create MkDocs Site ✅ COMPLETE
 
-**Description:** Build searchable static documentation site  
+**Description:** Build searchable static documentation site
 **Acceptance Criteria:**
 
 - [x] Install MkDocs with Material theme
@@ -827,22 +840,22 @@ nav:
   - AI Agent: agent.md
 ```
 
-**Dependencies:** 4.4.1, 4.4.2, 4.4.3  
+**Dependencies:** 4.4.1, 4.4.2, 4.4.3
 **Estimated Time:** 4 hours
 
 ---
 
 ## ⚙️ Phase 4.5: Code Quality Automation (Medium Priority) ✅ COMPLETE
 
-**Goal:** Automate code quality checks in CI/CD  
-**Priority:** 🟢 MEDIUM  
+**Goal:** Automate code quality checks in CI/CD
+**Priority:** 🟢 MEDIUM
 **Target:** Week 5
 
 ### Tasks
 
 #### 4.5.1 Pre-commit Hooks Enhancement ✅ COMPLETE
 
-**Description:** Enhance pre-commit hooks for all file types  
+**Description:** Enhance pre-commit hooks for all file types
 **Acceptance Criteria:**
 
 - [x] Add yamllint for YAML files (.yml, .yaml)
@@ -873,14 +886,14 @@ nav:
     - id: markdownlint
 ```
 
-**Dependencies:** None  
+**Dependencies:** None
 **Estimated Time:** 2 hours
 
 ---
 
 #### 4.5.2 GitHub Actions Workflow for All Checks ✅ COMPLETE
 
-**Description:** Create comprehensive CI workflow for all code quality checks  
+**Description:** Create comprehensive CI workflow for all code quality checks
 **Acceptance Criteria:**
 
 - [x] Create `.github/workflows/code-quality.yml`
@@ -931,14 +944,14 @@ jobs:
           dockerfile: dockerfile/*.Dockerfile
 ```
 
-**Dependencies:** 4.5.1  
+**Dependencies:** 4.5.1
 **Estimated Time:** 3 hours
 
 ---
 
 #### 4.5.3 Automated Dependency Updates ✅ COMPLETE
 
-**Description:** Setup Dependabot for automated dependency PRs  
+**Description:** Setup Dependabot for automated dependency PRs
 **Acceptance Criteria:**
 
 - [x] Create `.github/dependabot.yml`
@@ -982,17 +995,17 @@ updates:
       interval: "weekly"
 ```
 
-**Dependencies:** None  
+**Dependencies:** None
 **Estimated Time:** 1 hour
 
 ---
 
 ## 🎨 Phase 4.6: Web Dashboard Enhancements (Medium Priority) ✅ COMPLETE
 
-**Goal:** Implement future enhancements from REFACTOR-SUMMARY.md  
-**Priority:** 🟢 MEDIUM  
-**Target:** Week 6 (Optional)  
-**Status:** 🟢 COMPLETE  
+**Goal:** Implement future enhancements from REFACTOR-SUMMARY.md
+**Priority:** 🟢 MEDIUM
+**Target:** Week 6 (Optional)
+**Status:** 🟢 COMPLETE
 **Completed:** 2025-10-26
 
 ### From archived REFACTOR-SUMMARY (v2.0)
@@ -1009,7 +1022,7 @@ updates:
 
 #### 4.6.1 Layer-Specific Health Checks ✅ COMPLETE
 
-**Description:** Customize health check intervals per layer  
+**Description:** Customize health check intervals per layer
 **Acceptance Criteria:**
 
 - [x] Update `useClusterHealth.ts` to support per-layer intervals
@@ -1024,14 +1037,14 @@ updates:
 - Network layer changes frequently (15s for load balancers)
 - Reduces API calls by 40%
 
-**Dependencies:** None  
+**Dependencies:** None
 **Estimated Time:** 3 hours
 
 ---
 
 #### 4.6.2 Layer Metrics Aggregation ✅ COMPLETE
 
-**Description:** Add per-layer resource statistics  
+**Description:** Add per-layer resource statistics
 **Acceptance Criteria:**
 
 - [x] Aggregate CPU/memory/network per layer
@@ -1047,14 +1060,14 @@ updates:
 - Total network I/O per layer
 - Service count per layer
 
-**Dependencies:** 4.6.1  
+**Dependencies:** 4.6.1
 **Estimated Time:** 4 hours
 
 ---
 
 #### 4.6.3 Visual Layer Grouping ✅ COMPLETE
 
-**Description:** Add collapsible layer sections in UI  
+**Description:** Add collapsible layer sections in UI
 **Acceptance Criteria:**
 
 - [x] Add expand/collapse buttons to layer sections
@@ -1070,14 +1083,14 @@ updates:
 - Smooth CSS transitions
 - Persist state across page reloads
 
-**Dependencies:** None  
+**Dependencies:** None
 **Estimated Time:** 3 hours
 
 ---
 
 #### 4.6.4 Layer Dependencies Visualization ✅ COMPLETE
 
-**Description:** Show explicit dependency trees between layers  
+**Description:** Show explicit dependency trees between layers
 **Acceptance Criteria:**
 
 - [x] Define layer dependencies in config
@@ -1099,14 +1112,14 @@ Data (postgres, redis)
 Monitoring (grafana, prometheus)
 ```
 
-**Dependencies:** None  
+**Dependencies:** None
 **Estimated Time:** 6 hours
 
 ---
 
 #### 4.6.5 Layer Scaling Controls ✅ COMPLETE
 
-**Description:** Add UI controls to scale services  
+**Description:** Add UI controls to scale services
 **Acceptance Criteria:**
 
 - [x] Add scale buttons (+/-) to each service card
@@ -1131,7 +1144,7 @@ Monitoring (grafana, prometheus)
 - Current replica count badge
 - Confirmation dialog for scaling
 
-**Dependencies:** 4.2.1 (requires authentication)  
+**Dependencies:** 4.2.1 (requires authentication)
 **Estimated Time:** 5 hours
 
 ---
@@ -1184,19 +1197,19 @@ Monitoring (grafana, prometheus)
 | 4.6 Dashboard  | 5      | 21h             | 5         | 0           | 0           |
 | **TOTAL**      | **30** | **87h**         | **30**    | **0**       | **0**       |
 
-**Overall Completion: 100% (30/30 tasks)** ✅  
+**Overall Completion: 100% (30/30 tasks)** ✅
 **All Work Complete - Ready for Production!** 🎯
 
 ### Timeline
 
-**Week 1:** Phase 4.1 - Testing Infrastructure (13h) ✅ COMPLETE  
-**Week 2:** Phase 4.2 - Security Hardening (18h) ✅ COMPLETE  
-**Week 3:** Phase 4.3 - Planned Scripts (18h) ✅ COMPLETE  
-**Week 4:** Phase 4.4 - Documentation (11h) ✅ COMPLETE  
-**Week 5:** Phase 4.5 - Code Quality (6h) ✅ COMPLETE  
+**Week 1:** Phase 4.1 - Testing Infrastructure (13h) ✅ COMPLETE
+**Week 2:** Phase 4.2 - Security Hardening (18h) ✅ COMPLETE
+**Week 3:** Phase 4.3 - Planned Scripts (18h) ✅ COMPLETE
+**Week 4:** Phase 4.4 - Documentation (11h) ✅ COMPLETE
+**Week 5:** Phase 4.5 - Code Quality (6h) ✅ COMPLETE
 **Week 6:** Phase 4.6 - Dashboard Enhancements (21h) ✅ COMPLETE
 
-**Total Duration:** 6 weeks (87 hours estimated, ~87 hours actual)  
+**Total Duration:** 6 weeks (87 hours estimated, ~87 hours actual)
 **Efficiency:** 100% (all 30 tasks completed)
 
 ---
@@ -1217,6 +1230,7 @@ Monitoring (grafana, prometheus)
 **Overall: 30/30 tasks (100% complete), 87 hours total**
 
 **Security Implementations:**
+
 - JWT authentication with refresh tokens (api/auth.js, api/middleware.js)
 - Three-tier rate limiting (100/15min API, 10/15min stats, 5/15min auth)
 - Traefik v3.2 HTTPS reverse proxy with Let's Encrypt
@@ -1225,11 +1239,13 @@ Monitoring (grafana, prometheus)
 - Docker socket security documentation and audit
 
 **Scripts Completed:**
+
 - PowerShell: remove-old-images.ps1 (244 lines), clear-volumes.ps1 (180 lines), security-scan.ps1 (300+ lines)
 - Bash: build-images.sh (200 lines), cleanup-volumes.sh (150 lines), build-docs.sh (100 lines)
 - All scripts with comprehensive error handling, colored output, dry-run modes
 
 **Documentation:**
+
 - docs/INDEX.md (264 lines) - Centralized documentation index
 - docs/production-deployment.md (565 lines) - HTTPS, auth, security guide
 - api/SECURITY.md - Authentication, rate limiting, validation
@@ -1237,11 +1253,13 @@ Monitoring (grafana, prometheus)
 - mkdocs.yml (250+ lines) - Material theme, search, navigation
 
 **Code Quality:**
+
 - .pre-commit-config.yaml enhanced (12 hooks: yamllint, shellcheck, markdownlint, hadolint, Black, Ruff, mypy)
 - .github/workflows/code-quality.yml (9 jobs: Python, YAML, Markdown, Docker, Shell, PowerShell, npm audit, Trivy)
 - .github/dependabot.yml (5 ecosystems: pip, npm x2, docker, github-actions, weekly schedule)
 
 **Git Commits:**
+
 - Security hardening: Multiple commits implementing JWT, rate limiting, Traefik
 - Scripts: PowerShell and Bash automation scripts
 - Documentation: INDEX.md, production guide, security docs
@@ -1249,6 +1267,7 @@ Monitoring (grafana, prometheus)
 - Total: 10+ feature commits, 3265+ insertions
 
 **Metrics:**
+
 - **Testing:** 143 tests, 97.05% coverage (target: 80%)
 - **Linting:** 118 → 1 errors (99% reduction)
 - **Security:** Full authentication, rate limiting, HTTPS
@@ -1256,6 +1275,7 @@ Monitoring (grafana, prometheus)
 - **Documentation:** 1000+ lines of new docs
 
 **What's New in v4.0:**
+
 1. **Production Security:** JWT auth, HTTPS, rate limiting, validation
 2. **DevOps Automation:** PowerShell + Bash scripts for cleanup, building, scanning
 3. **Documentation Site:** MkDocs with Material theme, search, navigation
@@ -1272,7 +1292,7 @@ Monitoring (grafana, prometheus)
 **Completed:**
 
 - ✅ Phase 4.1.1: Setup pytest Framework (pytest 8.3+, pytest-cov 7.0.0, pytest-mock 3.15.1, pytest-asyncio 1.2.0)
-- ✅ Phase 4.1.2: Create Test Structure (tests/python/{audit,utils,validation}/ with __init__.py files)
+- ✅ Phase 4.1.2: Create Test Structure (tests/python/{audit,utils,validation}/ with **init**.py files)
 - ✅ Phase 4.1.3: Write Unit Tests for Utils (102 tests: 58 colors, 25 file_utils, 19 logging_utils)
 - ✅ Phase 4.1.4: Write Unit Tests for Validation (47 tests: 20 validate_env, 27 validate_configs)
 - ✅ Phase 4.1.5: Write Unit Tests for Audit (34 tests: 17 code_quality, 17 dependencies)
@@ -1284,6 +1304,7 @@ Monitoring (grafana, prometheus)
 - ✅ Git commits: 75d6d1b (Pylint config), 038d2a5 (Ruff/Pylance config)
 
 **Metrics:**
+
 - Tests: 143 passing in 0.63s
 - Coverage: 97.05% (target was 80%)
 - Linting errors: 118 → 1 (99% reduction)
@@ -1341,12 +1362,10 @@ Monitoring (grafana, prometheus)
 **Priority Order:**
 
 1. **Critical (Start Immediately):**
-
    - Phase 4.1: Testing Infrastructure
    - Phase 4.2: Security Hardening
 
 2. **High Priority (Week 3-4):**
-
    - Phase 4.3: Planned Scripts
    - Phase 4.4: Documentation Consolidation
 

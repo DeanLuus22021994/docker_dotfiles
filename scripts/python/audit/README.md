@@ -277,6 +277,6 @@ Run with appropriate privileges or check file permissions.
 
 ---
 
-**Last Updated:** 2025-10-25  
-**Python Version:** 3.14.0+  
+**Last Updated:** 2025-10-25
+**Python Version:** 3.14.0+
 **Module Version:** 1.0.0

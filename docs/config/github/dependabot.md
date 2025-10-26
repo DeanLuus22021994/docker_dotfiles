@@ -1,16 +1,17 @@
 ---
 date_created: "2025-10-26T18:32:25.996641+00:00"
 last_updated: "2025-10-26T18:32:25.996641+00:00"
-tags: ['documentation', 'configuration', 'setup']
+tags: ["documentation", "configuration", "setup"]
 description: "Documentation for dependabot"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - automation
-description: Dependabot configuration for automated dependency updates
----\n# Dependabot Configuration
+  description: Dependabot configuration for automated dependency updates
+  ---\n# Dependabot Configuration
 
 Automated dependency updates for Docker images, Python packages, Node.js modules, and GitHub Actions.
 
@@ -18,10 +19,10 @@ Automated dependency updates for Docker images, Python packages, Node.js modules
 
 ```yaml
 Updates:
-- Docker images: Weekly Monday 9:00 AM
-- Python (pip): Weekly Monday 9:00 AM  
-- Node.js (npm): Weekly Monday 9:00 AM
-- GitHub Actions: Monthly
+  - Docker images: Weekly Monday 9:00 AM
+  - Python (pip): Weekly Monday 9:00 AM
+  - Node.js (npm): Weekly Monday 9:00 AM
+  - GitHub Actions: Monthly
 ```
 
 ## Features

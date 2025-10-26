@@ -8,10 +8,9 @@ custom_tags:
   - "!!python/name:material.extensions.emoji.to_svg"
   - "!!python/name:pymdownx.superfences.fence_code_format"
 
-# Additional custom tags
+  # Additional custom tags
   - "!encrypted/pkcs1-oaep"
   - "!vault"
-
 # Note: These tags are processed by PyYAML's SafeLoader with custom constructors
 # They are NOT arbitrary code execution - MkDocs validates these against
 # its plugin/extension registry before instantiation.

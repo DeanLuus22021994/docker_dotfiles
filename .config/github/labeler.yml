@@ -4,84 +4,84 @@
 # Documentation changes
 documentation:
   - changed-files:
-    - any-glob-to-any-file: 
-      - 'documentation/**'
-      - 'docs/**'
-      - '**/*.md'
-      - '.config/jekyll/jekyll.config.yml'
-      - '.config/jekyll/Gemfile'
+      - any-glob-to-any-file:
+          - "documentation/**"
+          - "docs/**"
+          - "**/*.md"
+          - ".config/jekyll/jekyll.config.yml"
+          - ".config/jekyll/Gemfile"
 
 # Configuration changes
 config:
   - changed-files:
-    - any-glob-to-any-file:
-      - '.config/**'
-      - 'docker-compose.yml'
-      - 'docker-compose.*.yml'
-      - '.env*'
-      - '**/*.config.yml'
+      - any-glob-to-any-file:
+          - ".config/**"
+          - "docker-compose.yml"
+          - "docker-compose.*.yml"
+          - ".env*"
+          - "**/*.config.yml"
 
 # Docker/Infrastructure
 docker:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'dockerfile/**'
-      - 'Dockerfile*'
-      - 'docker-compose*.yml'
-      - '.dockerignore'
+      - any-glob-to-any-file:
+          - "dockerfile/**"
+          - "Dockerfile*"
+          - "docker-compose*.yml"
+          - ".dockerignore"
 
 # Monitoring
 monitoring:
   - changed-files:
-    - any-glob-to-any-file:
-      - '.config/monitoring/**'
-      - 'monitoring/**'
+      - any-glob-to-any-file:
+          - ".config/monitoring/**"
+          - "monitoring/**"
 
 # CI/CD
 ci-cd:
   - changed-files:
-    - any-glob-to-any-file:
-      - '.github/workflows/**'
-      - '.github/actions/**'
-      - 'Makefile'
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".github/actions/**"
+          - "Makefile"
 
 # Python
 python:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/*.py'
-      - 'pyproject.toml'
-      - 'requirements*.txt'
-      - 'setup.py'
+      - any-glob-to-any-file:
+          - "**/*.py"
+          - "pyproject.toml"
+          - "requirements*.txt"
+          - "setup.py"
 
 # Node.js
 nodejs:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'api/**'
-      - '**/package.json'
-      - '**/package-lock.json'
+      - any-glob-to-any-file:
+          - "api/**"
+          - "**/package.json"
+          - "**/package-lock.json"
 
 # Scripts
 scripts:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'scripts/**'
-      - '**/*.sh'
-      - '**/*.ps1'
+      - any-glob-to-any-file:
+          - "scripts/**"
+          - "**/*.sh"
+          - "**/*.ps1"
 
 # Tests
 tests:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'tests/**'
-      - '**/*.test.*'
-      - '**/*.spec.*'
+      - any-glob-to-any-file:
+          - "tests/**"
+          - "**/*.test.*"
+          - "**/*.spec.*"
 
 # Security
 security:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'secrets/**'
-      - '.env*'
-      - '**/password*'
+      - any-glob-to-any-file:
+          - "secrets/**"
+          - ".env*"
+          - "**/password*"

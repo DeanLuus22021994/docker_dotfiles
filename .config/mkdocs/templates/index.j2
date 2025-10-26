@@ -50,30 +50,30 @@ graph TB
     subgraph "Load Balancer"
         LB[Traefik]
     end
-    
+
     subgraph "Web Tier"
         W1[Web Service 1]
         W2[Web Service 2]
         W3[Web Service 3]
     end
-    
+
     subgraph "Data Tier"
         PG[PostgreSQL]
         MDB[MariaDB]
         RDS[Redis]
         MIN[MinIO]
     end
-    
+
     subgraph "Compute Tier"
         JUP[Jupyter GPU]
         MCP[GitHub MCP]
     end
-    
+
     subgraph "Monitoring"
         GRAF[Grafana]
         PROM[Prometheus]
     end
-    
+
     LB --> W1
     LB --> W2
     LB --> W3

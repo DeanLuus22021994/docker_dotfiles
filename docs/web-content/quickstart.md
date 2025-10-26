@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.960163+00:00"
 last_updated: "2025-10-26T18:32:25.960163+00:00"
-tags: ['documentation', 'web-content', 'architecture']
+tags: ["documentation", "web-content", "architecture"]
 description: "Documentation for quickstart"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - web-content
 - quickstart
 - documentation
-description: Documentation for quickstart in web-content
----\n# Cluster Dashboard - Quick Start
+  description: Documentation for quickstart in web-content
+  ---\n# Cluster Dashboard - Quick Start
 
 ## Development Mode (Hot Reload)
 
@@ -65,6 +66,7 @@ Dashboard will be available at: http://localhost:3000
 ## Monitored Services
 
 All 20 cluster services are pre-configured:
+
 - Load Balancer + 3 Web Servers
 - PostgreSQL, MariaDB, Redis
 - MinIO, Jupyter Lab
@@ -76,6 +78,7 @@ All 20 cluster services are pre-configured:
 ## Service Integration
 
 The dashboard is connected to the cluster network and can:
+
 - Check health endpoints of all services
 - Display real-time metrics
 - Show Docker infrastructure stats
@@ -84,6 +87,7 @@ The dashboard is connected to the cluster network and can:
 ## Configuration
 
 Service definitions are in:
+
 - `src/services/clusterService.ts` - Service configuration
 - `src/hooks/useClusterHealth.ts` - Health check polling (30s)
 - `src/hooks/useClusterMetrics.ts` - Metrics updates (15s)
@@ -101,6 +105,7 @@ Service definitions are in:
 ## Build Output
 
 Production build includes:
+
 - Minified JS/CSS bundles
 - Code splitting (react-vendor, charts, icons)
 - Optimized images and assets

@@ -130,9 +130,9 @@ class ManagedProcess extends EventEmitter {
     this.process.on('close', (code) => {
       this.exitCode = code;
       this._clearTimeout();
-      
+
       const duration = Date.now() - this.startTime;
-      
+
       this.emit('exit', {
         exitCode: code,
         duration,
@@ -286,13 +286,13 @@ async function executeJsonRpc(options, request, responseTimeout = 5000) {
 
     proc.on('stdout', (data) => {
       const lines = data.split('\n');
-      
+
       for (const line of lines) {
         if (!line.trim()) continue;
-        
+
         try {
           const response = JSON.parse(line);
-          
+
           if (response.id === request.id) {
             responseReceived = true;
             clearTimeout(responseTimer);

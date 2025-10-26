@@ -1,25 +1,26 @@
 ---
 date_created: "2025-10-26T18:32:26.001818+00:00"
 last_updated: "2025-10-26T18:32:26.001818+00:00"
-tags: ['documentation', 'api', 'reference']
+tags: ["documentation", "api", "reference"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - api
 - security
 - overview
-description: API security overview and threat mitigation
----\n# API Security Overview
+  description: API security overview and threat mitigation
+  ---\n# API Security Overview
 
 Express.js API with JWT authentication, rate limiting, and Docker socket access controls.
 
 ## Security Features
 
 - **JWT Authentication** - Token-based auth (optional, \AUTH_ENABLED\)
-- **Rate Limiting** - 100 req/15min general, 10 req/15min stats  
+- **Rate Limiting** - 100 req/15min general, 10 req/15min stats
 - **CORS** - Configurable allowed origins
 - **Input Validation** - Container ID format validation
 - **Error Sanitization** - No sensitive data in error messages

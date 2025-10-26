@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:25.963815+00:00"
 last_updated: "2025-10-26T18:32:25.963815+00:00"
-tags: ['documentation', 'testing', 'pytest']
+tags: ["documentation", "testing", "pytest"]
 description: "Documentation for fixtures mocking"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - testing
 - pytest
 - mocking
 - fixtures
-description: Using pytest fixtures and mocking strategies
----\n# Fixtures and Mocking
+  description: Using pytest fixtures and mocking strategies
+  ---\n# Fixtures and Mocking
 
 Pytest fixtures and unittest.mock best practices.
 
@@ -71,6 +72,7 @@ def test_file_operations() -> None:
 ## Shared Fixtures
 
 Defined in `conftest.py`:
+
 - `tmp_path`: Temporary directory
 - `monkeypatch`: Modify environment
 - `capsys`: Capture stdout/stderr

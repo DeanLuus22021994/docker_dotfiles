@@ -16,7 +16,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         /* Docker-themed background pattern */
         body::before {
             content: "";
@@ -25,17 +25,17 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 20% 20%, rgba(0,123,255,0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(40,167,69,0.1) 0%, transparent 50%);
             z-index: 0;
         }
-        
+
         .card {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(20px);
             border-radius: 24px;
-            box-shadow: 
+            box-shadow:
                 0 25px 50px rgba(0,0,0,0.15),
                 0 0 0 1px rgba(255,255,255,0.5);
             padding: 60px 80px;
@@ -45,11 +45,11 @@
             z-index: 1;
             border: 2px solid rgba(255,255,255,0.3);
         }
-        
+
         .header {
             margin-bottom: 30px;
         }
-        
+
         .category {
             display: inline-block;
             background: linear-gradient(135deg, #007bff, #0056b3);
@@ -62,7 +62,7 @@
             letter-spacing: 1px;
             margin-bottom: 20px;
         }
-        
+
         .title {
             font-size: 52px;
             font-weight: 800;
@@ -74,7 +74,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .description {
             font-size: 24px;
             color: #555;
@@ -84,7 +84,7 @@
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .footer {
             display: flex;
             justify-content: space-between;
@@ -93,13 +93,13 @@
             padding-top: 30px;
             border-top: 2px solid rgba(0,0,0,0.1);
         }
-        
+
         .brand {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        
+
         .docker-icon {
             width: 40px;
             height: 40px;
@@ -112,20 +112,20 @@
             font-weight: bold;
             font-size: 20px;
         }
-        
+
         .brand-text {
             font-size: 22px;
             color: #2c3e50;
             font-weight: 700;
         }
-        
+
         .tags {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             justify-content: flex-end;
         }
-        
+
         .tag {
             background: rgba(52, 152, 219, 0.1);
             color: #2980b9;
@@ -135,24 +135,24 @@
             font-weight: 600;
             border: 1px solid rgba(52, 152, 219, 0.2);
         }
-        
+
         /* Category-specific styling */
         .card[data-category="docker"] .category {
             background: linear-gradient(135deg, #2496ed, #0db7ed);
         }
-        
+
         .card[data-category="api"] .category {
             background: linear-gradient(135deg, #28a745, #20c997);
         }
-        
+
         .card[data-category="monitoring"] .category {
             background: linear-gradient(135deg, #fd7e14, #e83e8c);
         }
-        
+
         .card[data-category="security"] .category {
             background: linear-gradient(135deg, #dc3545, #c82333);
         }
-        
+
         .card[data-category="database"] .category {
             background: linear-gradient(135deg, #6f42c1, #5a30a0);
         }
@@ -169,13 +169,13 @@
             <p class="description">{{ page.meta.description }}</p>
             {% endif %}
         </div>
-        
+
         <div class="footer">
             <div class="brand">
                 <div class="docker-icon">🐋</div>
                 <div class="brand-text">Docker Dev Environment</div>
             </div>
-            
+
             {% if page.meta.tags %}
             <div class="tags">
                 {% for tag in page.meta.tags[:3] %}

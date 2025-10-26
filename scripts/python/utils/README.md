@@ -394,6 +394,6 @@ with open(file_path, 'r', encoding='utf-8') as f:
 
 ---
 
-**Last Updated:** 2025-10-25  
-**Python Version:** 3.14.0+  
+**Last Updated:** 2025-10-25
+**Python Version:** 3.14.0+
 **Module Version:** 1.0.0

@@ -1,7 +1,7 @@
 // Service Type Definitions
 export type ServiceStatus = 'healthy' | 'degraded' | 'unhealthy' | 'unknown'
 
-export type ServiceCategory = 
+export type ServiceCategory =
   | 'load-balancer'
   | 'web'
   | 'database'
@@ -79,4 +79,3 @@ export interface LayerDependency {
   to: string
   type: 'requires' | 'uses' | 'monitors'
 }
-

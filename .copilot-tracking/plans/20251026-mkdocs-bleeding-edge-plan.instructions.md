@@ -1,5 +1,5 @@
 ---
-applyTo: '.copilot-tracking/changes/20251026-mkdocs-bleeding-edge-changes.md'
+applyTo: ".copilot-tracking/changes/20251026-mkdocs-bleeding-edge-changes.md"
 ---
 
 <!-- markdownlint-disable-file -->
@@ -165,4 +165,3 @@ Complete the MkDocs Material implementation with modern Python 3.14 patterns, st
 - Build metrics available in JSON for dashboard integration
 - 97+ Lighthouse score on production site
 - <100ms live reload in development mode
-

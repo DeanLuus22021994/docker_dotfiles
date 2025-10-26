@@ -1,30 +1,33 @@
 ---
 date_created: "2025-10-26T18:32:25.949813+00:00"
 last_updated: "2025-10-26T18:32:25.949813+00:00"
-tags: ['documentation', 'production', 'deployment']
+tags: ["documentation", "production", "deployment"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - production
 - deployment
 - overview
 - guide
-description: Production deployment guide overview for Modern Data Platform
----\n# Production Deployment Overview
+  description: Production deployment guide overview for Modern Data Platform
+  ---\n# Production Deployment Overview
 
 Complete guide for deploying Modern Data Platform to production with HTTPS, authentication, and security hardening.
 
 ## Prerequisites
 
 **Domain & DNS:**
+
 - Domain name registered
 - A/AAAA DNS records pointing to server IP
 - Optional wildcard for subdomains
 
 **Server Requirements:**
+
 - Ubuntu 22.04+ (or compatible Linux)
 - 8GB RAM minimum, 16GB recommended
 - 50GB storage minimum, 100GB+ recommended

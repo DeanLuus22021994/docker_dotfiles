@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.988592+00:00"
 last_updated: "2025-10-26T18:32:25.988592+00:00"
-tags: ['documentation', 'scripts', 'automation']
+tags: ["documentation", "scripts", "automation"]
 description: "Documentation for troubleshooting"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - scripts
 - migration
 - troubleshooting
-description: Common migration issues and solutions
----\n# Migration Troubleshooting
+  description: Common migration issues and solutions
+  ---\n# Migration Troubleshooting
 
 ## Issue: "Module not found" errors
 

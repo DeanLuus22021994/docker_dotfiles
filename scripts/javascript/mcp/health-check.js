@@ -32,7 +32,7 @@ class MCPHealthCheck {
       const startTime = Date.now();
       const command = serverConfig.command;
       const args = serverConfig.args || [];
-      
+
       // Resolve environment variables
       const resolvedArgs = args.map(arg => {
         if (typeof arg === 'string') {
@@ -76,7 +76,7 @@ class MCPHealthCheck {
       process_spawn.stdout.on('data', (data) => {
         stdout += data.toString();
         const lines = stdout.split('\n');
-        
+
         lines.forEach(line => {
           if (!line.trim()) return;
           try {
@@ -147,13 +147,13 @@ class MCPHealthCheck {
     );
 
     const results = await Promise.all(checks);
-    
+
     results.forEach(result => {
       this.results[result.server] = result;
       const icon = result.status === 'healthy' ? '✓' : '✗';
       const color = result.status === 'healthy' ? '\x1b[32m' : '\x1b[31m';
       const reset = '\x1b[0m';
-      
+
       console.log(`${color}${icon}${reset} ${result.server.padEnd(20)} ${result.status.padEnd(10)} (${result.duration}ms)`);
       if (result.error) {
         console.log(`  └─ ${result.error}`);
@@ -162,7 +162,7 @@ class MCPHealthCheck {
 
     const healthy = results.filter(r => r.status === 'healthy').length;
     const total = results.length;
-    
+
     console.log('\n' + '='.repeat(70));
     console.log(`Health: ${healthy}/${total} servers responding`);
     console.log('='.repeat(70) + '\n');
@@ -178,7 +178,7 @@ class MCPHealthCheck {
 async function main() {
   const args = process.argv.slice(2);
   const jsonOutput = args.includes('--json');
-  
+
   const workspaceRoot = path.join(__dirname, '..', '..', '..');
   const mcpConfig = path.join(workspaceRoot, '.vscode', 'mcp.json');
 

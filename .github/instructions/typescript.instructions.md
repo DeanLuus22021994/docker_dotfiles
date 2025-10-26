@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.ts,**/*.tsx'
+applyTo: "**/*.ts,**/*.tsx"
 ---
 
 **TypeScript Patterns:** [../.vscode/snippets/typescript.code-snippets](../../.vscode/snippets/typescript.code-snippets)

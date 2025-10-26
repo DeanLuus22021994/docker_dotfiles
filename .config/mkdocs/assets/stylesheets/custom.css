@@ -10,7 +10,7 @@
   --md-primary-fg-color--light: #06b6d4;
   --md-primary-fg-color--dark: #0e7490;
   --md-accent-fg-color: #f97316;
-  
+
   /* Custom Variables */
   --custom-code-background: #1e293b;
   --custom-border-radius: 0.5rem;
@@ -154,7 +154,7 @@
   .md-footer {
     display: none;
   }
-  
+
   .md-content {
     max-width: 100%;
   }

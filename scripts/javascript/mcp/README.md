@@ -19,6 +19,7 @@ npm run discover
 **Output:** `../../mcp_tools_report.json` (3500+ lines with complete tool schemas)
 
 **Discovered Tools:**
+
 - 107 total tools across 9 servers
 - No name overlaps detected
 - Full JSON schemas with input parameters
@@ -37,6 +38,7 @@ npm run health:json
 ```
 
 **Example Output:**
+
 ```
 ======================================================================
 MCP SERVER HEALTH CHECK
@@ -54,6 +56,7 @@ Health: 3/4 servers responding
 ```
 
 **Exit Codes:**
+
 - `0` - All servers healthy
 - `1` - One or more servers failed/timeout
 
@@ -112,6 +115,7 @@ Both scripts use the MCP JSON-RPC protocol over stdio:
 ### Environment Resolution
 
 Automatically resolves:
+
 - `${workspaceFolder}` → Current working directory
 - `${env:VAR_NAME}` → Environment variable value
 
@@ -124,6 +128,7 @@ Automatically resolves:
 ## Integration
 
 These tools are called by:
+
 - `scripts/powershell/mcp/Test-Servers.ps1` - Health check wrapper
 - `scripts/python/mcp/health_check.py` - Python wrapper
 - `scripts/orchestrator.ps1` - MCP management commands

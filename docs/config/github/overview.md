@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.997571+00:00"
 last_updated: "2025-10-26T18:32:25.997571+00:00"
-tags: ['documentation', 'configuration', 'setup']
+tags: ["documentation", "configuration", "setup"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - overview
 - automation
-description: GitHub configuration overview for repository automation and CI/CD
----\n# GitHub Configuration Overview
+  description: GitHub configuration overview for repository automation and CI/CD
+  ---\n# GitHub Configuration Overview
 
 Configuration files for GitHub-specific repository automation, CI/CD, security, and development workflows. All features are **FREE** for public repositories.
 
@@ -30,14 +31,14 @@ Configuration files for GitHub-specific repository automation, CI/CD, security, 
 
 **Total: $0/month** - All features free for public repos with self-hosted runners
 
-| Feature | Cost |
-|---------|------|
-| Actions Minutes | FREE (self-hosted) |
-| Artifact Storage | FREE (90-day retention) |
-| Secrets Storage | FREE (unlimited) |
-| Advanced Security | FREE (public repos) |
-| CodeQL/Secret Scanning | FREE |
-| Dependabot | FREE |
+| Feature                | Cost                    |
+| ---------------------- | ----------------------- |
+| Actions Minutes        | FREE (self-hosted)      |
+| Artifact Storage       | FREE (90-day retention) |
+| Secrets Storage        | FREE (unlimited)        |
+| Advanced Security      | FREE (public repos)     |
+| CodeQL/Secret Scanning | FREE                    |
+| Dependabot             | FREE                    |
 
 ## Quick Start
 

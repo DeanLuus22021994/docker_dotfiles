@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.979678+00:00"
 last_updated: "2025-10-26T18:32:25.979678+00:00"
-tags: ['documentation', 'security', 'docker']
+tags: ["documentation", "security", "docker"]
 description: "Documentation for threat model"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker
 - security
-description: Docker socket threat model and attack vector analysis
----\n# Docker Socket Threat Model
+  description: Docker socket threat model and attack vector analysis
+  ---\n# Docker Socket Threat Model
 
 ## Attack Vectors
 
@@ -20,6 +21,7 @@ description: Docker socket threat model and attack vector analysis
 **Scenario:** Attacker gains code execution in API container
 
 **Capabilities:**
+
 - Read all container configurations and secrets
 - Stop/start any container
 - Create new privileged containers
@@ -35,6 +37,7 @@ description: Docker socket threat model and attack vector analysis
 **Scenario:** Attacker exploits vulnerability in Express.js or dependencies
 
 **Capabilities:**
+
 - Bypass authentication/rate limiting
 - Direct Docker API access
 - Container manipulation
@@ -48,6 +51,7 @@ description: Docker socket threat model and attack vector analysis
 **Scenario:** Malicious developer with API access
 
 **Capabilities:**
+
 - Same as compromised container
 - Can modify codebase to create backdoors
 

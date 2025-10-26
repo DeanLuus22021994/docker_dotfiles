@@ -6,7 +6,7 @@ theme:
   name: material
   language: en
   custom_dir: .config/mkdocs/overrides
-  
+
   # ============================================================================
   # Color Palette - Adaptive Dark/Light Mode
   # ============================================================================
@@ -16,7 +16,7 @@ theme:
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
-    
+
     # Light Mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
@@ -25,7 +25,7 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    
+
     # Dark Mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -34,14 +34,14 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
-  
+
   # ============================================================================
   # Typography - Professional Sans-Serif
   # ============================================================================
   font:
     text: Inter
     code: Fira Code
-  
+
   # ============================================================================
   # Iconography
   # ============================================================================
@@ -50,12 +50,12 @@ theme:
     logo: material/docker
     edit: material/pencil
     view: material/eye
-    
+
     # Navigation Icons
     previous: material/arrow-left
     next: material/arrow-right
     top: material/arrow-up
-    
+
     # Admonition Icons (Enhanced)
     admonition:
       note: octicons/tag-16
@@ -70,14 +70,14 @@ theme:
       bug: octicons/bug-16
       example: octicons/beaker-16
       quote: octicons/quote-16
-  
+
   # ============================================================================
   # Features - Maximum Functionality
   # ============================================================================
   features:
     # Announcements
     - announce.dismiss
-    
+
     # Content Features
     - content.action.edit
     - content.action.view
@@ -87,10 +87,10 @@ theme:
     - content.footnote.tooltips
     - content.tabs.link
     - content.tooltips
-    
+
     # Header Features
     - header.autohide
-    
+
     # Navigation Features (Enhanced)
     - navigation.expand
     - navigation.footer
@@ -106,16 +106,16 @@ theme:
     - navigation.tabs.sticky
     - navigation.top
     - navigation.tracking
-    
+
     # Search Features (Advanced)
     - search.highlight
     - search.share
     - search.suggest
-    
+
     # Table of Contents
     - toc.follow
     - toc.integrate
-  
+
   # ============================================================================
   # Favicon & Logo
   # ============================================================================

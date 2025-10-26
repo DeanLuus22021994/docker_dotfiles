@@ -2,14 +2,14 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
   external_labels:
-    cluster: 'docker-cluster'
-    environment: 'development'
+    cluster: "docker-cluster"
+    environment: "development"
 
 # Alertmanager configuration
 alerting:
   alertmanagers:
     - static_configs:
-        - targets: ['cluster-alertmanager:9093']
+        - targets: ["cluster-alertmanager:9093"]
       timeout: 10s
 
 # Load rules once and periodically evaluate them
@@ -19,21 +19,21 @@ rule_files:
 # Scrape configurations
 scrape_configs:
   # Prometheus self-monitoring
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
         labels:
-          service: 'monitoring'
-          tier: 'infrastructure'
-  
+          service: "monitoring"
+          tier: "infrastructure"
+
   # Grafana monitoring
-  - job_name: 'grafana'
+  - job_name: "grafana"
     static_configs:
-      - targets: ['cluster-grafana:3000']
+      - targets: ["cluster-grafana:3000"]
         labels:
-          service: 'monitoring'
-          tier: 'infrastructure'
-  
+          service: "monitoring"
+          tier: "infrastructure"
+
   # MinIO S3 storage (disabled - requires authentication)
   # - job_name: 'minio'
   #   metrics_path: '/minio/v2/metrics/cluster'
@@ -44,43 +44,42 @@ scrape_configs:
   #         tier: 'data'
 
   # Docker containers via cAdvisor
-  - job_name: 'cadvisor'
+  - job_name: "cadvisor"
     scrape_interval: 10s
     static_configs:
-      - targets: ['cluster-cadvisor:8080']
+      - targets: ["cluster-cadvisor:8080"]
         labels:
-          service: 'container-metrics'
-          tier: 'monitoring'
+          service: "container-metrics"
+          tier: "monitoring"
 
   # PostgreSQL database metrics
-  - job_name: 'postgres'
+  - job_name: "postgres"
     scrape_interval: 30s
     static_configs:
-      - targets: ['cluster-postgres-exporter:9187']
+      - targets: ["cluster-postgres-exporter:9187"]
         labels:
-          service: 'database'
-          tier: 'data'
-          database: 'postgresql'
+          service: "database"
+          tier: "data"
+          database: "postgresql"
 
   # Redis cache metrics
-  - job_name: 'redis'
+  - job_name: "redis"
     scrape_interval: 15s
     static_configs:
-      - targets: ['cluster-redis-exporter:9121']
+      - targets: ["cluster-redis-exporter:9121"]
         labels:
-          service: 'cache'
-          tier: 'data'
-          database: 'redis'
+          service: "cache"
+          tier: "data"
+          database: "redis"
 
   # Node exporter - Host system metrics
-  - job_name: 'node'
+  - job_name: "node"
     scrape_interval: 30s
     static_configs:
-      - targets: ['cluster-node-exporter:9100']
+      - targets: ["cluster-node-exporter:9100"]
         labels:
-          service: 'host-metrics'
-          tier: 'infrastructure'
+          service: "host-metrics"
+          tier: "infrastructure"
 
   # Note: Docker API Proxy does not expose Prometheus metrics
   # It's a REST API for dashboard integration, not a metrics exporter
-

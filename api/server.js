@@ -1,9 +1,9 @@
 /**
  * Docker API Proxy Server
- * 
+ *
  * Provides a secure HTTP API for accessing Docker Engine metrics
  * and container health information for the dashboard.
- * 
+ *
  * Security Features:
  * - JWT authentication (optional, controlled by AUTH_ENABLED env var)
  * - Rate limiting (100 req/15min general, 10 req/15min stats, 5 req/15min auth)
@@ -193,11 +193,11 @@ app.use('/api', apiLimiter);
 app.get('/api/containers', async (req, res) => {
   try {
     const containers = await docker.listContainers({ all: true });
-    
+
     const containerDetails = await Promise.all(
       containers.map(async (container) => {
         const inspect = await docker.getContainer(container.Id).inspect();
-        
+
         return {
           id: container.Id,
           name: container.Names[0].replace(/^\//, ''),
@@ -214,7 +214,7 @@ app.get('/api/containers', async (req, res) => {
         };
       })
     );
-    
+
     res.json({ containers: containerDetails, timestamp: new Date().toISOString() });
   } catch (error) {
     console.error('Error fetching containers:', error);
@@ -232,24 +232,24 @@ app.get(
     try {
       const container = docker.getContainer(req.params.id);
       const stats = await container.stats({ stream: false });
-    
+
     // Calculate CPU percentage
-    const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
+    const cpuDelta = stats.cpu_stats.cpu_usage.total_usage -
                      stats.precpu_stats.cpu_usage.total_usage;
-    const systemDelta = stats.cpu_stats.system_cpu_usage - 
+    const systemDelta = stats.cpu_stats.system_cpu_usage -
                         stats.precpu_stats.system_cpu_usage;
     const cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
-    
+
     // Calculate memory usage
     const memoryUsage = stats.memory_stats.usage;
     const memoryLimit = stats.memory_stats.limit;
     const memoryPercent = (memoryUsage / memoryLimit) * 100;
-    
+
     // Calculate network I/O
     const networks = stats.networks || {};
     const networkRx = Object.values(networks).reduce((acc, net) => acc + net.rx_bytes, 0);
     const networkTx = Object.values(networks).reduce((acc, net) => acc + net.tx_bytes, 0);
-    
+
     res.json({
       container: req.params.id,
       timestamp: new Date().toISOString(),
@@ -315,19 +315,19 @@ app.get('/api/system/version', async (req, res) => {
 app.get('/api/stats/aggregate', async (req, res) => {
   try {
     const containers = await docker.listContainers();
-    
+
     const allStats = await Promise.all(
       containers.map(async (container) => {
         try {
           const containerObj = docker.getContainer(container.Id);
           const stats = await containerObj.stats({ stream: false });
-          
-          const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
+
+          const cpuDelta = stats.cpu_stats.cpu_usage.total_usage -
                            stats.precpu_stats.cpu_usage.total_usage;
-          const systemDelta = stats.cpu_stats.system_cpu_usage - 
+          const systemDelta = stats.cpu_stats.system_cpu_usage -
                               stats.precpu_stats.system_cpu_usage;
           const cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
-          
+
           return {
             id: container.Id,
             name: container.Names[0].replace(/^\//, ''),
@@ -340,11 +340,11 @@ app.get('/api/stats/aggregate', async (req, res) => {
         }
       })
     );
-    
+
     const validStats = allStats.filter(s => s !== null);
     const totalCpu = validStats.reduce((acc, s) => acc + s.cpu_percent, 0);
     const totalMemory = validStats.reduce((acc, s) => acc + s.memory_usage, 0);
-    
+
     res.json({
       timestamp: new Date().toISOString(),
       total_containers: validStats.length,
@@ -376,17 +376,17 @@ app.get('/api/layers/:layerId/metrics', async (req, res) => {
   try {
     const { layerId } = req.params;
     const layerServices = LAYER_CONFIG[layerId];
-    
+
     if (!layerServices) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: 'Layer not found',
         availableLayers: Object.keys(LAYER_CONFIG)
       });
     }
 
     const containers = await docker.listContainers();
-    const layerContainers = containers.filter(c => 
-      layerServices.some(service => 
+    const layerContainers = containers.filter(c =>
+      layerServices.some(service =>
         c.Names[0].toLowerCase().includes(service.toLowerCase())
       )
     );
@@ -397,21 +397,21 @@ app.get('/api/layers/:layerId/metrics', async (req, res) => {
           const containerObj = docker.getContainer(container.Id);
           const stats = await containerObj.stats({ stream: false });
           const inspect = await containerObj.inspect();
-          
-          const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
+
+          const cpuDelta = stats.cpu_stats.cpu_usage.total_usage -
                            stats.precpu_stats.cpu_usage.total_usage;
-          const systemDelta = stats.cpu_stats.system_cpu_usage - 
+          const systemDelta = stats.cpu_stats.system_cpu_usage -
                               stats.precpu_stats.system_cpu_usage;
           const cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
-          
+
           const memoryPercent = (stats.memory_stats.usage / stats.memory_stats.limit) * 100;
-          
+
           const networks = stats.networks || {};
           const networkIO = Object.values(networks).reduce(
-            (acc, net) => acc + net.rx_bytes + net.tx_bytes, 
+            (acc, net) => acc + net.rx_bytes + net.tx_bytes,
             0
           );
-          
+
           return {
             name: container.Names[0].replace(/^\//, ''),
             status: inspect.State.Status === 'running' ? 'healthy' : 'unhealthy',
@@ -427,7 +427,7 @@ app.get('/api/layers/:layerId/metrics', async (req, res) => {
     );
 
     const validStats = layerStats.filter(s => s !== null);
-    
+
     const metrics = {
       layer: layerId,
       totalCpu: validStats.reduce((acc, s) => acc + s.cpu, 0),
@@ -456,8 +456,8 @@ app.get('/api/layers/metrics', async (req, res) => {
     for (const layerId of layerIds) {
       const layerServices = LAYER_CONFIG[layerId];
       const containers = await docker.listContainers();
-      const layerContainers = containers.filter(c => 
-        layerServices.some(service => 
+      const layerContainers = containers.filter(c =>
+        layerServices.some(service =>
           c.Names[0].toLowerCase().includes(service.toLowerCase())
         )
       );
@@ -468,21 +468,21 @@ app.get('/api/layers/metrics', async (req, res) => {
             const containerObj = docker.getContainer(container.Id);
             const stats = await containerObj.stats({ stream: false });
             const inspect = await containerObj.inspect();
-            
-            const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
+
+            const cpuDelta = stats.cpu_stats.cpu_usage.total_usage -
                              stats.precpu_stats.cpu_usage.total_usage;
-            const systemDelta = stats.cpu_stats.system_cpu_usage - 
+            const systemDelta = stats.cpu_stats.system_cpu_usage -
                                 stats.precpu_stats.system_cpu_usage;
             const cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
-            
+
             const memoryPercent = (stats.memory_stats.usage / stats.memory_stats.limit) * 100;
-            
+
             const networks = stats.networks || {};
             const networkIO = Object.values(networks).reduce(
-              (acc, net) => acc + net.rx_bytes + net.tx_bytes, 
+              (acc, net) => acc + net.rx_bytes + net.tx_bytes,
               0
             );
-            
+
             return {
               name: container.Names[0].replace(/^\//, ''),
               status: inspect.State.Status === 'running' ? 'healthy' : 'unhealthy',
@@ -497,7 +497,7 @@ app.get('/api/layers/metrics', async (req, res) => {
       );
 
       const validStats = layerStats.filter(s => s !== null);
-      
+
       allMetrics[layerId] = {
         layer: layerId,
         totalCpu: validStats.reduce((acc, s) => acc + s.cpu, 0),
@@ -542,21 +542,21 @@ app.post(
 
       // Validate service exists
       const containers = await docker.listContainers({ all: true });
-      const serviceContainer = containers.find(c => 
+      const serviceContainer = containers.find(c =>
         c.Names[0].toLowerCase().includes(serviceId.toLowerCase())
       );
 
       if (!serviceContainer) {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'Service not found',
-          serviceId 
+          serviceId
         });
       }
 
       // For Docker Compose services, use docker-compose scale
       try {
         await execPromise(`docker-compose scale ${serviceId}=${replicas}`);
-        
+
         res.json({
           success: true,
           service: serviceId,
@@ -584,9 +584,9 @@ app.get('/api/services/:serviceId/replicas', async (req, res) => {
   try {
     const { serviceId } = req.params;
     const containers = await docker.listContainers({ all: true });
-    
+
     // Count containers matching the service name
-    const replicas = containers.filter(c => 
+    const replicas = containers.filter(c =>
       c.Names[0].toLowerCase().includes(serviceId.toLowerCase())
     );
 

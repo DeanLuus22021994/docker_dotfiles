@@ -14,7 +14,7 @@ Implement comprehensive Pydantic v2 models for all documentation frontmatter fie
 
 - **Files**:
   - .config/mkdocs/schemas/frontmatter.py - Pydantic models (NEW)
-  - .config/mkdocs/schemas/__init__.py - Package init (NEW)
+  - .config/mkdocs/schemas/**init**.py - Package init (NEW)
 - **Success**:
   - All frontmatter fields have Pydantic models with validators
   - Date fields use ISO 8601 format with timezone awareness
@@ -26,6 +26,7 @@ Implement comprehensive Pydantic v2 models for all documentation frontmatter fie
 - **Dependencies**: None
 
 **Implementation Pattern**:
+
 ```python
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -45,14 +46,14 @@ class DocFrontmatter(BaseModel):
     last_updated: datetime = Field(..., description=\"ISO 8601 update date\")
     tags: list[str] = Field(..., min_length=1, max_length=10)
     description: str = Field(..., min_length=20, max_length=160)
-    
+
     @field_validator('date_created', 'last_updated')
     @classmethod
     def validate_dates(cls, v: datetime) -> datetime:
         if v.tzinfo is None:
             return v.replace(tzinfo=timezone.utc)
         return v
-    
+
     @field_validator('tags')
     @classmethod
     def validate_tags(cls, v: list[str]) -> list[str]:
@@ -82,6 +83,7 @@ Create user-friendly CLI tool for generating documentation files with interactiv
 - **Dependencies**: Task 1.1 (Pydantic models)
 
 **Implementation Pattern**:
+
 ```python
 #!/usr/bin/env python3
 \"\"\"Document template generator with interactive CLI.
@@ -118,18 +120,18 @@ CATEGORIES: list[DocCategory] = [
 def interactive_prompt() -> DocFrontmatter:
     \"\"\"Run interactive CLI prompts for doc creation.\"\"\"
     console = Console()
-    
+
     questions = [
-        inquirer.List('category', message=\"Select documentation category\", 
+        inquirer.List('category', message=\"Select documentation category\",
                      choices=[(c.description, c.name) for c in CATEGORIES]),
         inquirer.Text('title', message=\"Document title\"),
         inquirer.Text('description', message=\"Brief description (20-160 chars)\"),
-        inquirer.Checkbox('tags', message=\"Select tags\", 
+        inquirer.Checkbox('tags', message=\"Select tags\",
                          choices=[\"docker\", \"platform\", \"setup\", \"guide\"]),
     ]
-    
+
     answers = inquirer.prompt(questions)
-    
+
     # Create frontmatter with validation
     now = datetime.now(timezone.utc)
     frontmatter = DocFrontmatter(
@@ -138,7 +140,7 @@ def interactive_prompt() -> DocFrontmatter:
         tags=answers['tags'],
         description=answers['description']
     )
-    
+
     return answers['category'], answers['title'], frontmatter
 ```
 
@@ -162,6 +164,7 @@ Create Jinja2 templates for each documentation category with proper structure.
 - **Dependencies**: Task 1.2 (CLI implementation)
 
 **Template Pattern (base.j2)**:
+
 ```jinja2
 ---
 date_created: \"{{ date_created.isoformat() }}\"
@@ -205,7 +208,7 @@ Auto-update .pages files when creating new docs for seamless navigation.
 
 - **Files**:
   - .config/mkdocs/scripts/new_doc.py - Update with .pages logic
-  - docs/**/.pages - Auto-generated nav files
+  - docs/\*\*/.pages - Auto-generated nav files
 - **Success**:
   - New doc automatically added to .pages in correct order
   - Title from frontmatter used for nav display
@@ -218,20 +221,21 @@ Auto-update .pages files when creating new docs for seamless navigation.
 - **Dependencies**: Task 1.3 (Template rendering)
 
 **Implementation Pattern**:
+
 ```python
 def update_pages_file(category_path: Path, filename: str, title: str) -> None:
     \"\"\"Update .pages file with new document entry.\"\"\"
     pages_file = category_path / \".pages\"
-    
+
     if pages_file.exists():
         with open(pages_file, 'r') as f:
             pages = yaml.safe_load(f) or {}
     else:
         pages = {\"nav\": []}
-    
+
     # Add new entry with title from frontmatter
     pages[\"nav\"].append({title: filename})
-    
+
     # Write back with natural sorting
     with open(pages_file, 'w') as f:
         yaml.dump(pages, f, default_flow_style=False, sort_keys=False)
@@ -243,7 +247,7 @@ Create VS Code snippet for quick doc generation and comprehensive test suite.
 
 - **Files**:
   - .vscode/snippets/markdown.code-snippets - Markdown doc snippets (UPDATE)
-  - 	ests/config/mkdocs/test_new_doc.py - Unit tests (NEW)
+  -     ests/config/mkdocs/test_new_doc.py - Unit tests (NEW)
 - **Success**:
   - VS Code snippet triggers with mkdocs-new prefix
   - Snippet runs new_doc.py script
@@ -263,7 +267,7 @@ Scan all markdown files in docs/ for missing or invalid frontmatter.
 
 - **Files**:
   - .config/mkdocs/scripts/audit_docs.py - Audit script (NEW)
-  - docs/**/*.md - All documentation files
+  - docs/\*_/_.md - All documentation files
 - **Success**:
   - Report generated listing all non-compliant docs
   - Categories: missing frontmatter, invalid dates, invalid tags, short descriptions
@@ -275,6 +279,7 @@ Scan all markdown files in docs/ for missing or invalid frontmatter.
 - **Dependencies**: None
 
 **Implementation Pattern**:
+
 ```python
 from pathlib import Path
 from typing import TypeAlias
@@ -292,21 +297,21 @@ def audit_frontmatter(docs_dir: Path) -> AuditResult:
         \"invalid_tags\": [],
         \"short_description\": []
     }
-    
+
     for md_file in docs_dir.rglob(\"*.md\"):
         post = frontmatter.load(md_file)
-        
+
         if not post.metadata:
             results[\"missing\"].append(str(md_file))
             continue
-        
+
         # Validate each field with Pydantic
         try:
             DocFrontmatter(**post.metadata)
         except ValueError as e:
             # Categorize error
             pass
-    
+
     return results
 ```
 
@@ -316,7 +321,7 @@ Update all non-compliant docs with valid frontmatter using automated fixes.
 
 - **Files**:
   - .config/mkdocs/scripts/fix_frontmatter.py - Auto-fix script (NEW)
-  - docs/**/*.md - Updated documentation files
+  - docs/\*_/_.md - Updated documentation files
 - **Success**:
   - All docs have valid frontmatter after fixes
   - Missing frontmatter added with sensible defaults
@@ -400,8 +405,9 @@ Replace basic validation with comprehensive Pydantic-based checks.
 - **Dependencies**: Phase 1 Task 1.1 (Pydantic models)
 
 **Hook Pattern**:
+
 ```python
-def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig, 
+def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig,
                      files: Files) -> str | None:
     \"\"\"Validate frontmatter before markdown processing.\"\"\"
     try:
@@ -411,7 +417,7 @@ def on_page_markdown(markdown: str, page: Page, config: MkDocsConfig,
             raise PluginError(f\"Invalid frontmatter in {page.file.src_path}: {e}\")
         else:
             log.warning(f\"Frontmatter warning in {page.file.src_path}: {e}\")
-    
+
     return markdown
 ```
 
@@ -466,6 +472,7 @@ Add Git pre-commit hook to validate frontmatter before commits.
 - **Dependencies**: Task 3.3 (Hook integration)
 
 **Pre-commit Config**:
+
 ```yaml
 - repo: local
   hooks:
@@ -515,6 +522,7 @@ Track detailed metrics during MkDocs build process.
 - **Dependencies**: None
 
 **Metrics Structure**:
+
 ```python
 @dataclass(frozen=True, slots=True)
 class BuildMetrics:

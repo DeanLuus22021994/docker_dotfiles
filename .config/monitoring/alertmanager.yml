@@ -1,38 +1,38 @@
 global:
   resolve_timeout: 5m
   # SMTP configuration for email notifications
-  smtp_smarthost: 'cluster-mailhog:1025'
-  smtp_from: 'alertmanager@docker-cluster.local'
+  smtp_smarthost: "cluster-mailhog:1025"
+  smtp_from: "alertmanager@docker-cluster.local"
   smtp_require_tls: false
 
 # Route configuration
 route:
-  group_by: ['alertname', 'cluster', 'service']
+  group_by: ["alertname", "cluster", "service"]
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 12h
-  receiver: 'default'
-  
+  receiver: "default"
+
   routes:
     # Critical alerts - immediate notification
     - match:
         severity: critical
-      receiver: 'critical-alerts'
+      receiver: "critical-alerts"
       repeat_interval: 5m
-    
+
     # Warning alerts - grouped notification
     - match:
         severity: warning
-      receiver: 'warning-alerts'
+      receiver: "warning-alerts"
       repeat_interval: 1h
 
 # Receivers configuration
 receivers:
-  - name: 'default'
+  - name: "default"
     email_configs:
-      - to: 'team@docker-cluster.local'
+      - to: "team@docker-cluster.local"
         headers:
-          Subject: '{{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}'
+          Subject: "{{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}"
         html: |
           <h2>Alert: {{ .GroupLabels.alertname }}</h2>
           <p><strong>Cluster:</strong> {{ .GroupLabels.cluster }}</p>
@@ -42,11 +42,11 @@ receivers:
           <hr>
           <p><small>Firing alerts: {{ .Alerts.Firing | len }}</small></p>
 
-  - name: 'critical-alerts'
+  - name: "critical-alerts"
     email_configs:
-      - to: 'oncall@docker-cluster.local'
+      - to: "oncall@docker-cluster.local"
         headers:
-          Subject: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
+          Subject: "🚨 CRITICAL: {{ .GroupLabels.alertname }}"
         html: |
           <h1 style="color: red;">🚨 CRITICAL ALERT</h1>
           <h2>{{ .GroupLabels.alertname }}</h2>
@@ -56,18 +56,18 @@ receivers:
           <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
           <hr>
           <p>⚠️ Immediate action required!</p>
-    
+
     # Webhook for external integrations (Slack/Teams/PagerDuty)
     # Configure with actual endpoint when integrating with external services
     # webhook_configs:
     #   - url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
     #     send_resolved: true
 
-  - name: 'warning-alerts'
+  - name: "warning-alerts"
     email_configs:
-      - to: 'team@docker-cluster.local'
+      - to: "team@docker-cluster.local"
         headers:
-          Subject: '⚠️ WARNING: {{ .GroupLabels.alertname }}'
+          Subject: "⚠️ WARNING: {{ .GroupLabels.alertname }}"
         html: |
           <h2 style="color: orange;">⚠️ WARNING ALERT</h2>
           <h3>{{ .GroupLabels.alertname }}</h3>
@@ -80,15 +80,14 @@ receivers:
 inhibit_rules:
   # Inhibit warning if critical is firing for same alert
   - source_match:
-      severity: 'critical'
+      severity: "critical"
     target_match:
-      severity: 'warning'
-    equal: ['alertname', 'cluster', 'service']
-  
+      severity: "warning"
+    equal: ["alertname", "cluster", "service"]
+
   # Inhibit container alerts if host is down
   - source_match:
-      alertname: 'HostDown'
+      alertname: "HostDown"
     target_match_re:
-      alertname: 'Container.*'
-    equal: ['instance']
-
+      alertname: "Container.*"
+    equal: ["instance"]

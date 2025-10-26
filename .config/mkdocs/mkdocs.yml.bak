@@ -6,7 +6,7 @@
 # Architecture: Modular configuration with extended Material Design theme
 # ============================================================================
 
-INHERIT: 
+INHERIT:
   - base.yml
   - theme.yml
   - plugins.yml

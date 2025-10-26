@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.937688+00:00"
 last_updated: "2025-10-26T18:32:25.937688+00:00"
-tags: ['documentation', 'agent', 'development', 'docker']
+tags: ["documentation", "agent", "development", "docker"]
 description: "Documentation for docker stack"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker
 - docker-compose
 - compose
-description: Docker stack services and management commands
----\n# Docker Stack
+  description: Docker stack services and management commands
+  ---\n# Docker Stack
 
 ## Services (25+)
 

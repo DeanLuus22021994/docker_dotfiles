@@ -17,12 +17,12 @@ services:
     port: 8080
     replicas: 1
     health_check_interval: "15s"
-    
+
   web_servers:
     enabled: true
     replicas: 3
     health_check_interval: "30s"
-    
+
   postgresql:
     enabled: true
     port: 5432
@@ -30,7 +30,7 @@ services:
     user: "cluster_user"
     max_connections: 100
     health_check_interval: "10s"
-    
+
   mariadb:
     enabled: true
     port: 3306
@@ -38,47 +38,47 @@ services:
     user: "cluster_user"
     max_connections: 100
     health_check_interval: "30s"
-    
+
   redis:
     enabled: true
     port: 6379
     persistence: true
     health_check_interval: "30s"
-  
+
   redis_exporter:
     enabled: true
     port: 9121
-    custom_build: true  # Uses custom Dockerfile with curl for health checks
+    custom_build: true # Uses custom Dockerfile with curl for health checks
     health_check_interval: "30s"
-    
+
   minio:
     enabled: true
     api_port: 9000
     console_port: 9001
     health_check_interval: "30s"
-    
+
   jupyter:
     enabled: true
     port: 8888
     gpu_enabled: true
     cuda_version: "12.2"
     health_check_interval: "60s"
-    
+
   github_mcp:
     enabled: true
     mode: "stdio"
     health_check_interval: "30s"
-    
+
   k9s:
     enabled: true
     health_check_interval: "30s"
-    
+
   grafana:
     enabled: true
     port: 3002
     admin_user: "admin"
     health_check_interval: "30s"
-    
+
   prometheus:
     enabled: true
     port: 9090

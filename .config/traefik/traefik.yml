@@ -13,8 +13,8 @@ global:
 # API & DASHBOARD
 # =============================================================================
 api:
-  dashboard: true  # Enable dashboard (disable in production or secure it)
-  insecure: false  # Don't expose on insecure port 8080 in production
+  dashboard: true # Enable dashboard (disable in production or secure it)
+  insecure: false # Don't expose on insecure port 8080 in production
 
 # =============================================================================
 # ENTRY POINTS
@@ -60,11 +60,11 @@ certificatesResolvers:
       # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
       # Production server (default)
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
-      
+
       # HTTP-01 challenge (simpler, works for single servers)
       httpChallenge:
         entryPoint: web
-      
+
       # DNS-01 challenge (required for wildcard certs, needs DNS provider)
       # dnsChallenge:
       #   provider: cloudflare
@@ -80,7 +80,7 @@ providers:
   # Docker provider (automatic service discovery)
   docker:
     endpoint: "unix:///var/run/docker.sock"
-    exposedByDefault: false  # Only expose services with traefik.enable=true
+    exposedByDefault: false # Only expose services with traefik.enable=true
     network: "traefik-public"
     watch: true
 
@@ -93,7 +93,7 @@ providers:
 # LOGGING
 # =============================================================================
 log:
-  level: INFO  # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+  level: INFO # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
   format: json
   filePath: "/var/log/traefik/traefik.log"
 
@@ -103,8 +103,8 @@ accessLog:
   bufferingSize: 100
   filters:
     statusCodes:
-      - "400-499"  # Log client errors
-      - "500-599"  # Log server errors
+      - "400-499" # Log client errors
+      - "500-599" # Log server errors
 
 # =============================================================================
 # METRICS (Optional - Prometheus integration)

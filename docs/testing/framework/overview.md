@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.964335+00:00"
 last_updated: "2025-10-26T18:32:25.964335+00:00"
-tags: ['documentation', 'testing', 'pytest']
+tags: ["documentation", "testing", "pytest"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - testing
 - pytest
 - overview
-description: Test suite structure and organization
----\n# Test Suite Overview
+  description: Test suite structure and organization
+  ---\n# Test Suite Overview
 
 Comprehensive pytest-based test suite for Python modules.
 
@@ -38,16 +39,19 @@ tests/
 ## Test Categories
 
 **Unit Tests** (`@pytest.mark.unit`):
+
 - Individual function/method isolation
 - Mocked dependencies
 - Fast execution (<1s)
 
 **Integration Tests** (`@pytest.mark.integration`):
+
 - Component interaction testing
 - Real file system/subprocess
 - Longer execution allowed
 
 **Slow Tests** (`@pytest.mark.slow`):
+
 - Tests taking >5 seconds
 - Skip in development: `pytest -m "not slow"`
 

@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.974340+00:00"
 last_updated: "2025-10-26T18:32:25.974340+00:00"
-tags: ['documentation', 'setup', 'installation', 'python']
+tags: ["documentation", "setup", "installation", "python"]
 description: "Documentation for alternatives"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - python
 - installation
 - reference
-description: Alternative Python installation methods
----\n# Installation Alternatives
+  description: Alternative Python installation methods
+  ---\n# Installation Alternatives
 
 Four alternative solutions to Python 3.14.0 installation issues.
 
@@ -39,7 +40,7 @@ conda activate docker_project
 pip install uv black ruff mypy yamllint pytest
 ```
 
-**Pros:** Isolated, already installed  
+**Pros:** Isolated, already installed
 **Cons:** Conda overhead
 
 ## Option 3: Portable Python ⭐⭐⭐
@@ -59,7 +60,7 @@ Invoke-WebRequest -Uri "https://bootstrap.pypa.io/get-pip.py" -OutFile "C:\Pytho
 & "C:\Python314-Portable\python.exe" "C:\Python314-Portable\get-pip.py"
 ```
 
-**Pros:** No installer issues  
+**Pros:** No installer issues
 **Cons:** Manual pip setup
 
 ## Option 4: Full Repair ⭐⭐ (LAST RESORT)

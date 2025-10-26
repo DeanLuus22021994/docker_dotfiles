@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.954818+00:00"
 last_updated: "2025-10-26T18:32:25.954818+00:00"
-tags: ['documentation', 'readme', 'guide']
+tags: ["documentation", "readme", "guide"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - overview
 - architecture
-description: Overview of the Modern Data Platform Docker cluster
----\n# Modern Data Platform - Overview
+  description: Overview of the Modern Data Platform Docker cluster
+  ---\n# Modern Data Platform - Overview
 
 [![Docker](https://img.shields.io/badge/Docker-24.0%2B-blue)](https://www.docker.com/)
 [![Docker Compose](https://img.shields.io/badge/Docker%20Compose-V2-blue)](https://docs.docker.com/compose/)

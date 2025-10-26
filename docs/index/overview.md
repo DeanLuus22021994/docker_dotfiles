@@ -1,21 +1,22 @@
 ---
 date_created: "2025-10-26T18:32:25.946208+00:00"
 last_updated: "2025-10-26T18:32:25.946208+00:00"
-tags: ['documentation']
+tags: ["documentation"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - documentation
 - index
 - overview
-description: Central documentation index overview and navigation guide
----\n# Documentation Overview
+  description: Central documentation index overview and navigation guide
+  ---\n# Documentation Overview
 
-**Modern Data Platform - Comprehensive Documentation**  
-**Version:** 4.0  
+**Modern Data Platform - Comprehensive Documentation**
+**Version:** 4.0
 **Last Updated:** 2025-10-26
 
 ## Purpose

@@ -1,23 +1,26 @@
 ---
 date_created: "2025-10-26T18:32:25.982879+00:00"
 last_updated: "2025-10-26T18:32:25.982879+00:00"
-tags: ['documentation', 'scripts', 'automation']
+tags: ["documentation", "scripts", "automation"]
 description: "Documentation for bash"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - scripts
-description: Bash scripts organization and usage for Linux/macOS
----\n# Bash Scripts
+  description: Bash scripts organization and usage for Linux/macOS
+  ---\n# Bash Scripts
 
 ## Categories
 
 **`bash/docker/`** - Docker operations
+
 - `start-devcontainer.sh` - Start development container (Linux/macOS)
 
 **`bash/docs/`** - Documentation tools
+
 - `serve-docs.sh` - Serve MkDocs documentation locally
 
 ## Usage

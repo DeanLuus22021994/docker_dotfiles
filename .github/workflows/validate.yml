@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14.0'
+          python-version: "3.14.0"
 
       - name: Check required environment variables
         run: |
@@ -46,7 +46,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14.0'
+          python-version: "3.14.0"
 
       - name: Install validation tools
         run: |
@@ -77,7 +77,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14.0'
+          python-version: "3.14.0"
 
       - name: Install pre-commit
         run: |
@@ -87,4 +87,4 @@ jobs:
         run: |
           pre-commit run --all-files
         env:
-          SKIP: docker-compose-check  # Skip docker-compose check in CI (requires env vars)
+          SKIP: docker-compose-check # Skip docker-compose check in CI (requires env vars)

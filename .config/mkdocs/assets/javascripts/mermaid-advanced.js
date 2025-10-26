@@ -1,7 +1,7 @@
 /**
  * Mermaid v10+ Configuration with Interactive Bleeding-Edge Features
  * ==================================================================
- * 
+ *
  * Features:
  * - Interactive click/hover events
  * - Advanced theming with Material Design integration
@@ -38,15 +38,15 @@ function initializeMermaid(mermaidModule) {
         startOnLoad: true,
         theme: getTheme(),
         themeCSS: generateCustomTheme(),
-        
+
         // Security settings
         secure: ['localhost', '127.0.0.1', 'github.com', 'githubusercontent.com'],
         securityLevel: 'strict',
-        
+
         // Performance settings
         maxTextSize: 90000,
         maxEdges: 500,
-        
+
         // Flowchart customization
         flowchart: {
             useMaxWidth: true,
@@ -58,7 +58,7 @@ function initializeMermaid(mermaidModule) {
             diagramPadding: 8,
             wrappingWidth: 200
         },
-        
+
         // Sequence diagram settings
         sequence: {
             useMaxWidth: true,
@@ -82,7 +82,7 @@ function initializeMermaid(mermaidModule) {
             messageFontSize: 12,
             messageFontFamily: 'Inter, sans-serif'
         },
-        
+
         // Gantt chart settings
         gantt: {
             useMaxWidth: true,
@@ -93,18 +93,18 @@ function initializeMermaid(mermaidModule) {
             sectionFontSize: 24,
             numberSectionStyles: 4
         },
-        
+
         // Class diagram settings
         class: {
             useMaxWidth: true,
             htmlLabels: true
         },
-        
+
         // State diagram settings
         state: {
             useMaxWidth: true
         },
-        
+
         // Git graph settings
         gitGraph: {
             useMaxWidth: true,
@@ -118,7 +118,7 @@ function initializeMermaid(mermaidModule) {
                 tertiaryColor: '#fff'
             }
         },
-        
+
         // Journey diagram settings
         journey: {
             useMaxWidth: true,
@@ -141,7 +141,7 @@ function initializeMermaid(mermaidModule) {
             textPlacement: 'fo',
             actorColours: ['#8FBC8F', '#FFB347', '#87CEEB', '#DDA0DD']
         },
-        
+
         // Timeline settings
         timeline: {
             useMaxWidth: true,
@@ -155,16 +155,16 @@ function initializeMermaid(mermaidModule) {
 
     // Initialize Mermaid with advanced config
     mermaidModule.initialize(config);
-    
+
     // Add interactive features
     addInteractiveFeatures(mermaidModule);
-    
+
     // Handle theme changes
     observeThemeChanges(mermaidModule);
-    
+
     // Add click handlers for Docker-specific diagrams
     addDockerDiagramHandlers();
-    
+
     console.log('✅ Mermaid v10+ initialized with bleeding-edge features');
 }
 
@@ -175,46 +175,46 @@ function generateCustomTheme() {
             fill: #2496ED !important;
             color: white !important;
         }
-        
+
         .node[id*="postgres"] .label {
             fill: #336791 !important;
             color: white !important;
         }
-        
+
         .node[id*="redis"] .label {
             fill: #DC382D !important;
             color: white !important;
         }
-        
+
         .node[id*="nginx"] .label {
             fill: #269539 !important;
             color: white !important;
         }
-        
+
         .node[id*="grafana"] .label {
             fill: #F46800 !important;
             color: white !important;
         }
-        
+
         /* Enhanced hover effects */
         .node:hover {
             filter: brightness(1.1);
             transform: scale(1.02);
             transition: all 0.2s ease;
         }
-        
+
         /* Interactive elements */
         .clickable {
             cursor: pointer;
         }
-        
+
         /* Animations */
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.7; }
             100% { opacity: 1; }
         }
-        
+
         .animated-node {
             animation: pulse 2s infinite;
         }
@@ -224,39 +224,39 @@ function generateCustomTheme() {
 function addInteractiveFeatures(mermaidModule) {
     // Find all Mermaid diagrams
     const diagrams = document.querySelectorAll('.mermaid');
-    
+
     diagrams.forEach((diagram, index) => {
         // Add click event listeners
         diagram.addEventListener('click', function(event) {
             const target = event.target;
-            
+
             // Handle node clicks
             if (target.closest('.node')) {
                 const nodeId = target.closest('.node').id;
                 handleNodeClick(nodeId, event);
             }
-            
+
             // Handle edge clicks
             if (target.closest('.edgePath')) {
                 const edgeId = target.closest('.edgePath').id;
                 handleEdgeClick(edgeId, event);
             }
         });
-        
+
         // Add hover effects
         diagram.addEventListener('mouseover', function(event) {
             const target = event.target;
-            
+
             if (target.closest('.node')) {
                 const node = target.closest('.node');
                 node.classList.add('hover-active');
                 showNodeTooltip(node, event);
             }
         });
-        
+
         diagram.addEventListener('mouseout', function(event) {
             const target = event.target;
-            
+
             if (target.closest('.node')) {
                 const node = target.closest('.node');
                 node.classList.remove('hover-active');
@@ -268,7 +268,7 @@ function addInteractiveFeatures(mermaidModule) {
 
 function handleNodeClick(nodeId, event) {
     console.log('Node clicked:', nodeId);
-    
+
     // Docker service specific actions
     if (nodeId.includes('docker')) {
         showDockerServiceInfo(nodeId);
@@ -277,7 +277,7 @@ function handleNodeClick(nodeId, event) {
     } else if (nodeId.includes('api')) {
         showAPIEndpoints(nodeId);
     }
-    
+
     // Generic action
     highlightConnectedNodes(nodeId);
 }
@@ -304,27 +304,27 @@ function showNodeTooltip(node, event) {
         transition: opacity 0.2s ease;
         max-width: 200px;
     `;
-    
+
     // Get node information
     const nodeText = node.querySelector('.label')?.textContent || 'Unknown';
     const nodeType = getNodeType(node.id);
-    
+
     tooltip.innerHTML = `
         <strong>${nodeText}</strong><br>
         <small>Type: ${nodeType}</small><br>
         <small>Click for details</small>
     `;
-    
+
     document.body.appendChild(tooltip);
-    
+
     // Position tooltip
     const rect = event.target.getBoundingClientRect();
     tooltip.style.left = rect.left + 'px';
     tooltip.style.top = (rect.top - tooltip.offsetHeight - 5) + 'px';
-    
+
     // Fade in
     setTimeout(() => tooltip.style.opacity = '1', 10);
-    
+
     // Store reference for cleanup
     node._tooltip = tooltip;
 }
@@ -427,7 +427,7 @@ function createModal(title, content) {
         justify-content: center;
         z-index: 10000;
     `;
-    
+
     modal.innerHTML = `
         <div class="modal-content" style="
             background: var(--md-default-bg-color);
@@ -452,16 +452,16 @@ function createModal(title, content) {
             ${content}
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // Close on background click
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             modal.remove();
         }
     });
-    
+
     return modal;
 }
 
@@ -481,7 +481,7 @@ function observeThemeChanges(mermaidModule) {
             }
         });
     });
-    
+
     observer.observe(document.body, {
         attributes: true,
         attributeFilter: ['data-md-color-scheme']

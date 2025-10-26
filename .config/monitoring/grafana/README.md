@@ -41,6 +41,7 @@ volumes:
 ## Datasource
 
 Prometheus auto-configured:
+
 - **URL**: http://cluster-prometheus:9090
 - **Access**: Proxy
 - **Default**: Yes
@@ -49,6 +50,7 @@ Prometheus auto-configured:
 ## Dashboards
 
 Four dashboards auto-provisioned:
+
 - **Containers**: CPU, memory, network per container
 - **Host**: System-level metrics
 - **PostgreSQL**: Database performance
@@ -57,6 +59,7 @@ Four dashboards auto-provisioned:
 ## Customization
 
 Edit provisioning configs, restart Grafana:
+
 ```bash
 docker-compose restart cluster-grafana
 ```

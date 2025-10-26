@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.966297+00:00"
 last_updated: "2025-10-26T18:32:25.966297+00:00"
-tags: ['documentation', 'testing', 'pytest']
+tags: ["documentation", "testing", "pytest"]
 description: "Documentation for writing tests"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - testing
 - pytest
 - best-practices
-description: Guidelines for writing effective pytest tests
----\n# Writing Tests
+  description: Guidelines for writing effective pytest tests
+  ---\n# Writing Tests
 
 Best practices and conventions for pytest tests.
 

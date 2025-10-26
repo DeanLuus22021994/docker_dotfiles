@@ -25,7 +25,7 @@ export const DATA_SERVICES: Omit<Service, 'status' | 'metrics'>[] = [
     description: 'MariaDB 11 MySQL-compatible database (cluster-mariadb)',
     icon: '🐬',
   },
-  
+
   // Cache
   {
     id: 'redis',
@@ -36,7 +36,7 @@ export const DATA_SERVICES: Omit<Service, 'status' | 'metrics'>[] = [
     description: 'Redis 7 in-memory cache with persistence (cluster-redis)',
     icon: '⚡',
   },
-  
+
   // Object Storage
   {
     id: 'minio',

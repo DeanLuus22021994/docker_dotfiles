@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:25.946717+00:00"
 last_updated: "2025-10-26T18:32:25.946717+00:00"
-tags: ['documentation', 'production', 'deployment']
+tags: ["documentation", "production", "deployment"]
 description: "Documentation for authentication"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - production
 - authentication
 - jwt
 - security
-description: Authentication setup and user management for production
----\n# Authentication Setup
+  description: Authentication setup and user management for production
+  ---\n# Authentication Setup
 
 ## Enable JWT Authentication
 

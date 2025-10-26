@@ -1,23 +1,25 @@
 ---
 date_created: "2025-10-26T18:32:25.973373+00:00"
 last_updated: "2025-10-26T18:32:25.973373+00:00"
-tags: ['documentation', 'setup', 'installation', 'python']
+tags: ["documentation", "setup", "installation", "python"]
 description: "Documentation for type hints"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - python
 - development
-description: Python 3.14 type hints and PEP 585 built-in generics
----\n# Python 3.14 Type Hints
+  description: Python 3.14 type hints and PEP 585 built-in generics
+  ---\n# Python 3.14 Type Hints
 
 Modern type hints using PEP 585 built-in generics.
 
 ## Old vs New Syntax
 
 **Old (Python 3.8, deprecated):**
+
 ```python
 from typing import List, Dict, Tuple, Optional
 
@@ -27,6 +29,7 @@ def process(items: List[str]) -> Dict[str, int]:
 ```
 
 **New (Python 3.14, preferred):**
+
 ```python
 def process(items: list[str]) -> dict[str, int]:
     result: dict[str, int] = {}
@@ -67,11 +70,13 @@ name: str | None = None
 ## Migration
 
 Run automated conversion:
+
 ```bash
 pyupgrade --py314-plus **/*.py
 ```
 
 Update imports:
+
 ```python
 # Remove deprecated imports
 # from typing import List, Dict, Tuple, Optional

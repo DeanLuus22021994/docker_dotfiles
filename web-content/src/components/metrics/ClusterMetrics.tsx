@@ -40,7 +40,7 @@ export const ClusterMetrics = ({ metrics, isLoading }: ClusterMetricsProps) => {
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
         Cluster Metrics
       </h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Services */}
         <div className="card">
@@ -124,18 +124,18 @@ export const ClusterMetrics = ({ metrics, isLoading }: ClusterMetricsProps) => {
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis dataKey="time" stroke="#9CA3AF" />
               <YAxis stroke="#9CA3AF" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: '#1F2937', 
-                  border: 'none', 
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1F2937',
+                  border: 'none',
                   borderRadius: '0.5rem',
                   color: '#F9FAFB'
-                }} 
+                }}
               />
-              <Line 
-                type="monotone" 
-                dataKey="value" 
-                stroke="#3B82F6" 
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#3B82F6"
                 strokeWidth={2}
                 dot={false}
               />

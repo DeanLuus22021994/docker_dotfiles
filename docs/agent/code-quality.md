@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.936236+00:00"
 last_updated: "2025-10-26T18:32:25.936236+00:00"
-tags: ['documentation', 'agent', 'development']
+tags: ["documentation", "agent", "development"]
 description: "Documentation for code quality"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - validation
 - testing
-description: Code quality standards and validation procedures
----\n# Code Quality
+  description: Code quality standards and validation procedures
+  ---\n# Code Quality
 
 ## Pre-commit Hooks (Automated)
 

@@ -1,34 +1,39 @@
 ---
 date_created: "2025-10-26T18:32:25.975515+00:00"
 last_updated: "2025-10-26T18:32:25.975515+00:00"
-tags: ['documentation', 'setup', 'installation', 'python']
+tags: ["documentation", "setup", "installation", "python"]
 description: "Documentation for repository migration"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - python
 - migration
-description: Updating repository from Python 3.14 to 3.13
----\n# Repository Migration (3.14 → 3.13)
+  description: Updating repository from Python 3.14 to 3.13
+  ---\n# Repository Migration (3.14 → 3.13)
 
 Update repository references from Python 3.14.0 to 3.13.1.
 
 ## Files to Update (37 references)
 
 **CI/CD:**
+
 - `.github/workflows/validate.yml` (3 references)
 
 **Configuration:**
+
 - `pyproject.toml` (2 references)
 - `.pre-commit-config.yaml` (1 reference)
 - `.config/cluster/cluster.config.yml` (1 reference)
 
 **Containerization:**
+
 - `dockerfile/devcontainer.Dockerfile` (6 references)
 
 **Documentation:**
+
 - `README.md` (7 references)
 - `AGENT.md` (4 references)
 - `docs/python-setup-troubleshooting.md` (6 references)
@@ -45,6 +50,7 @@ rg "3\.14\.0|Python 3\.14|python-3\.14|py314|Python314" --type-add 'config:*.{ym
 ## Update Process
 
 1. **Search and Review**
+
 ```powershell
 rg "3\.14" -l  # List files
 rg "3\.14" -A 2 -B 2  # Show context
@@ -56,6 +62,7 @@ rg "3\.14" -A 2 -B 2  # Show context
    - Actions versions: `python-version: 3.14` → `python-version: 3.13`
 
 3. **Verify Changes**
+
 ```powershell
 # Check no 3.14 references remain
 rg "3\.14" --type-add 'config:*.{yml,yaml,toml,md}' -t config
@@ -65,6 +72,7 @@ python --version  # Should show 3.13.x
 ```
 
 4. **Test Repository**
+
 ```bash
 # Run validation
 python scripts/orchestrator.py validate env

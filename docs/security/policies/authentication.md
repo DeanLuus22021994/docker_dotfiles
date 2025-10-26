@@ -1,25 +1,27 @@
 ---
 date_created: "2025-10-26T18:32:25.980244+00:00"
 last_updated: "2025-10-26T18:32:25.980244+00:00"
-tags: ['documentation', 'security', 'docker']
+tags: ["documentation", "security", "docker"]
 description: "Documentation for authentication"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - security
 - authentication
 - api
-description: API authentication and authorization policies
----\n# Authentication & Authorization
+  description: API authentication and authorization policies
+  ---\n# Authentication & Authorization
 
 ## JWT Authentication
 
-**Production:** `AUTH_ENABLED=true` (required)  
+**Production:** `AUTH_ENABLED=true` (required)
 **Development:** `AUTH_ENABLED=false` (optional)
 
 **Token Configuration:**
+
 ```bash
 JWT_SECRET=$(openssl rand -hex 32)  # 64 characters
 JWT_EXPIRES_IN=8h

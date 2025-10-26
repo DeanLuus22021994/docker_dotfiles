@@ -38,7 +38,7 @@ class MCPToolDiscovery {
       const tools = [];
       const command = serverConfig.command;
       const args = serverConfig.args || [];
-      
+
       // Resolve environment variables in args
       const resolvedArgs = args.map(arg => {
         if (typeof arg === 'string') {
@@ -100,17 +100,17 @@ class MCPToolDiscovery {
 
       process_spawn.stdout.on('data', (data) => {
         stdout += data.toString();
-        
+
         // Try to parse each line as JSON-RPC response
         const lines = stdout.split('\n');
         stdout = lines.pop(); // Keep incomplete line in buffer
 
         lines.forEach(line => {
           if (!line.trim()) return;
-          
+
           try {
             const response = JSON.parse(line);
-            
+
             // Handle initialize response
             if (response.id === 1 && response.result) {
               responseCount++;
@@ -118,7 +118,7 @@ class MCPToolDiscovery {
               // Server initialized, now request tools
               process_spawn.stdin.write(JSON.stringify(toolsRequest) + '\n');
             }
-            
+
             // Handle tools/list response
             if (response.id === 2 && response.result) {
               responseCount++;
@@ -182,7 +182,7 @@ class MCPToolDiscovery {
     for (const [serverName, serverConfig] of Object.entries(this.servers)) {
       const tools = await this.queryServerTools(serverName, serverConfig);
       this.toolsByServer[serverName] = tools;
-      
+
       tools.forEach(tool => {
         this.allTools.push({
           ...tool,

@@ -12,4 +12,3 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
     CMD ps aux | grep nvidia-device-plugin || exit 1
 
 # Default command inherited from base image
-

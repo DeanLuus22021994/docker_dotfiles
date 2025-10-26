@@ -38,11 +38,10 @@ services:
   # Example: Override command for debugging
   # cluster-redis:
   #   command: redis-server --loglevel debug
-
 # Example: Add development-only services
-  # local-adminer:
-  #   image: adminer
-  #   ports:
-  #     - "8090:8080"
-  #   networks:
-  #     - cluster-network
+# local-adminer:
+#   image: adminer
+#   ports:
+#     - "8090:8080"
+#   networks:
+#     - cluster-network

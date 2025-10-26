@@ -29,7 +29,7 @@ export const checkServiceHealth = async (service: Omit<Service, 'status' | 'metr
       mode: 'no-cors',
       cache: 'no-cache',
     })
-    
+
     // In no-cors mode, we can't read the response, but we can detect network errors
     return 'healthy'
   } catch (error) {
@@ -93,4 +93,3 @@ export const getLayerMetrics = (services: Service[], layerId: string): LayerMetr
   const metrics = calculateLayerMetrics(layerServices)
   return metrics[layerId] || null
 }
-

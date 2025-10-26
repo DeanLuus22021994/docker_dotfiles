@@ -64,7 +64,7 @@ class DockerAPIService {
     this.baseURL = baseURL
     this.retryCount = retryCount
     this.retryDelay = retryDelay
-    
+
     // Load token from localStorage on initialization
     this.loadToken()
   }
@@ -173,11 +173,11 @@ class DockerAPIService {
       }
 
       const data: LoginResponse = await response.json()
-      
+
       // Save tokens
       this.saveToken(data.accessToken)
       localStorage.setItem('refresh_token', data.refreshToken)
-      
+
       return data
     } catch (error) {
       throw error
@@ -228,7 +228,7 @@ class DockerAPIService {
 
       const data = await response.json()
       this.saveToken(data.accessToken)
-      
+
       return data.accessToken
     } catch (error) {
       this.clearToken()

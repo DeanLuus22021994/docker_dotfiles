@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:26.002342+00:00"
 last_updated: "2025-10-26T18:32:26.002342+00:00"
-tags: ['documentation', 'api', 'reference']
+tags: ["documentation", "api", "reference"]
 description: "Documentation for rate limiting"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - api
 - security
-description: Rate limiting configuration and DoS protection
----\n# Rate Limiting
+  description: Rate limiting configuration and DoS protection
+  ---\n# Rate Limiting
 
 ## Configuration
 
@@ -19,9 +20,9 @@ description: Rate limiting configuration and DoS protection
 
 ```javascript
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 100,                   // Max requests per window
-  message: 'Too many requests, please try again later'
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Max requests per window
+  message: "Too many requests, please try again later",
 });
 ```
 
@@ -31,7 +32,7 @@ const limiter = rateLimit({
 const statsLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 10,
-  message: 'Too many stats requests, please try again later'
+  message: "Too many stats requests, please try again later",
 });
 ```
 
@@ -50,7 +51,7 @@ X-RateLimit-Reset: 1698765432
 ```json
 {
   "error": "Too many requests, please try again later",
-  "retryAfter": 900  // seconds
+  "retryAfter": 900 // seconds
 }
 ```
 

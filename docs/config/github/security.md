@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.998895+00:00"
 last_updated: "2025-10-26T18:32:25.998895+00:00"
-tags: ['documentation', 'configuration', 'setup']
+tags: ["documentation", "configuration", "setup"]
 description: "Documentation for security"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - security
 - secrets
-description: GitHub security features configuration and setup
----\n# GitHub Security Configuration
+  description: GitHub security features configuration and setup
+  ---\n# GitHub Security Configuration
 
 Code scanning, secret detection, and dependency review configuration.
 

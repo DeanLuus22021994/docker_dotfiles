@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.953769+00:00"
 last_updated: "2025-10-26T18:32:25.953769+00:00"
-tags: ['documentation', 'readme', 'guide']
+tags: ["documentation", "readme", "guide"]
 description: "Documentation for installation"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - installation
 - deployment
 - setup
-description: Installation and deployment guide for production and development
----\n# Installation
+  description: Installation and deployment guide for production and development
+  ---\n# Installation
 
 ## Production Deployment
 
@@ -33,6 +34,7 @@ curl http://localhost:8080/
 ## Development with VS Code
 
 1. **Open in VS Code**:
+
 ```bash
 code .
 ```

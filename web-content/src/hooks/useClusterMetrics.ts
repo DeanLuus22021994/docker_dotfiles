@@ -27,13 +27,13 @@ export const useClusterMetrics = () => {
             networkLatency: Math.random() * 10, // Calculated from network stats in future
             timestamp: Date.now(),
           })
-          
+
           setApiAvailable(true)
         } catch (apiError) {
           // Fallback to simulated data if API fails
           console.warn('Docker API unavailable, using simulated metrics:', apiError)
           setApiAvailable(false)
-          
+
           setMetrics({
             totalServices: 20,
             healthyServices: Math.floor(Math.random() * 20) + 15,

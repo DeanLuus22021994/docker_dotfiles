@@ -16,7 +16,10 @@
     "theme": {
       "type": "object",
       "properties": {
-        "name": { "type": "string", "enum": ["material", "readthedocs", "mkdocs"] },
+        "name": {
+          "type": "string",
+          "enum": ["material", "readthedocs", "mkdocs"]
+        },
         "language": { "type": "string" },
         "palette": {
           "oneOf": [
@@ -104,9 +107,18 @@
     "validation": {
       "type": "object",
       "properties": {
-        "omitted_files": { "type": "string", "enum": ["warn", "ignore", "error"] },
-        "absolute_links": { "type": "string", "enum": ["warn", "ignore", "error"] },
-        "unrecognized_links": { "type": "string", "enum": ["warn", "ignore", "error"] }
+        "omitted_files": {
+          "type": "string",
+          "enum": ["warn", "ignore", "error"]
+        },
+        "absolute_links": {
+          "type": "string",
+          "enum": ["warn", "ignore", "error"]
+        },
+        "unrecognized_links": {
+          "type": "string",
+          "enum": ["warn", "ignore", "error"]
+        }
       }
     }
   },

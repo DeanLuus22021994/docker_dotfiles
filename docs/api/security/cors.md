@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:26.000108+00:00"
 last_updated: "2025-10-26T18:32:26.000108+00:00"
-tags: ['documentation', 'api', 'reference']
+tags: ["documentation", "api", "reference"]
 description: "Documentation for cors"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - api
 - security
-description: CORS configuration for cross-origin requests
----\n# CORS Configuration
+  description: CORS configuration for cross-origin requests
+  ---\n# CORS Configuration
 
 ## Environment Variable
 
@@ -24,13 +25,13 @@ Supports comma-separated multiple origins.
 ## Implementation
 
 ```javascript
-const cors = require('cors');
+const cors = require("cors");
 
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN?.split(',') || '*',
-  credentials: true,  // Allow cookies/auth headers
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: process.env.CORS_ORIGIN?.split(",") || "*",
+  credentials: true, // Allow cookies/auth headers
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));

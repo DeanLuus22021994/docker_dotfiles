@@ -1,16 +1,17 @@
 ---
 date_created: "2025-10-26T18:32:25.938943+00:00"
 last_updated: "2025-10-26T18:32:25.938943+00:00"
-tags: ['documentation', 'agent', 'development']
+tags: ["documentation", "agent", "development"]
 description: "Documentation for file organization"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - architecture
-description: File organization patterns and volume mount strategies
----\n# File Organization
+  description: File organization patterns and volume mount strategies
+  ---\n# File Organization
 
 ## Volume Mounts
 
@@ -37,10 +38,12 @@ COPY --chown=nginx:nginx .config/nginx/main.conf /etc/nginx/nginx.conf
 ## VSCode Configuration
 
 **Team Settings (Tracked)**:
+
 - `.vscode/settings.json` - YAML schemas, Copilot enabled
 - Shared across team, committed to repo
 
 **Personal Settings (Gitignored)**:
+
 - `.vscode/settings.local.json` - AI model preferences
 - Local only, added to `.gitignore`
 

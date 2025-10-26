@@ -14,13 +14,13 @@ root = "/var/lib/buildkit"
   max-parallelism = 4
   gc = true
   gckeepstorage = 10737418240  # 10GB
-  
+
   # GC policy configuration
   [[worker.oci.gcpolicy]]
     keepBytes = 5368709120  # 5GB
     keepDuration = 172800    # 2 days in seconds
     filters = ["type==source.local,type==exec.cachemount,type==source.git.checkout"]
-    
+
   [[worker.oci.gcpolicy]]
     all = true
     keepBytes = 2147483648  # 2GB
@@ -32,14 +32,14 @@ root = "/var/lib/buildkit"
 # Registry configuration for mirrors and authentication
 [registry."docker.io"]
   mirrors = ["mirror.gcr.io"]
-  
+
 [registry."registry-1.docker.io"]
   http = false
 
 # gRPC server configuration
 [grpc]
   address = ["tcp://0.0.0.0:1234"]
-  
+
   [grpc.tls]
     cert = ""
     key = ""

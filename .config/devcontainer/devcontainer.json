@@ -94,22 +94,22 @@
     }
   },
   "forwardPorts": [
-    8080,  // Load Balancer
-    5432,  // PostgreSQL
-    3306,  // MariaDB
-    6379,  // Redis
-    3001,  // GitHub MCP Server
-    8888,  // Jupyter Lab
-    9000,  // MinIO API
-    9001,  // MinIO Console
-    3002,  // Grafana
-    9090,  // Prometheus
-    1234,  // BuildKit
-    4566,  // LocalStack
-    1025,  // MailHog SMTP
-    8025,  // MailHog UI
-    5050,  // pgAdmin
-    8082   // Redis Commander
+    8080, // Load Balancer
+    5432, // PostgreSQL
+    3306, // MariaDB
+    6379, // Redis
+    3001, // GitHub MCP Server
+    8888, // Jupyter Lab
+    9000, // MinIO API
+    9001, // MinIO Console
+    3002, // Grafana
+    9090, // Prometheus
+    1234, // BuildKit
+    4566, // LocalStack
+    1025, // MailHog SMTP
+    8025, // MailHog UI
+    5050, // pgAdmin
+    8082 // Redis Commander
   ],
   "portsAttributes": {
     "8080": {

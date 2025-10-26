@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.953168+00:00"
 last_updated: "2025-10-26T18:32:25.953168+00:00"
-tags: ['documentation', 'readme', 'guide']
+tags: ["documentation", "readme", "guide"]
 description: "Documentation for features"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker-compose
 - platform
-description: Complete feature set and capabilities of the data platform
----\n# Features
+  description: Complete feature set and capabilities of the data platform
+  ---\n# Features
 
 - ✅ **GPU-Accelerated ML**: Jupyter TensorFlow notebook with CUDA 12.2 support
 - ✅ **Dual Databases**: PostgreSQL (RDBMS) + MariaDB with optimized configs

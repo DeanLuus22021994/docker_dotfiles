@@ -1,6 +1,6 @@
 ---
 agent: ask
-description: 'Implementation prompt for MkDocs Bleeding-Edge feature enhancements'
+description: "Implementation prompt for MkDocs Bleeding-Edge feature enhancements"
 model: Claude Sonnet 4
 ---
 
@@ -27,7 +27,6 @@ You WILL follow ALL project standards and conventions from `.github/copilot-inst
 When ALL Phases are checked off ([x]) and completed you WILL do the following:
 
 1. You WILL provide a markdown style link and a summary of all changes from `.copilot-tracking/changes/20251026-mkdocs-bleeding-edge-changes.md` to the user:
-
    - You WILL keep the overall summary brief
    - You WILL add spacing around any lists
    - You MUST wrap any reference to a file in a markdown style link

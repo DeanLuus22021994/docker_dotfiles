@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.982176+00:00"
 last_updated: "2025-10-26T18:32:25.982176+00:00"
-tags: ['documentation', 'security', 'docker']
+tags: ["documentation", "security", "docker"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - security
 - overview
-description: Project security policy and vulnerability reporting
----\n# Security Policy Overview
+  description: Project security policy and vulnerability reporting
+  ---\n# Security Policy Overview
 
 Security policies and vulnerability reporting procedures for Modern Data Platform.
 
@@ -19,11 +20,11 @@ Security policies and vulnerability reporting procedures for Modern Data Platfor
 
 Currently supported versions for security updates:
 
-| Version | Supported |
-|---------|-----------|
-| 4.x | ✅ Yes |
-| 3.x | ⚠️ Critical fixes only |
-| < 3.0 | ❌ No |
+| Version | Supported              |
+| ------- | ---------------------- |
+| 4.x     | ✅ Yes                 |
+| 3.x     | ⚠️ Critical fixes only |
+| < 3.0   | ❌ No                  |
 
 ## Reporting Vulnerabilities
 
@@ -32,6 +33,7 @@ Currently supported versions for security updates:
 **Email:** security@your-domain.com (or repository maintainer)
 
 **Include:**
+
 - Description of vulnerability
 - Steps to reproduce
 - Potential impact

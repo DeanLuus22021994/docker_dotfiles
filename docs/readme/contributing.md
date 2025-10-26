@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.952065+00:00"
 last_updated: "2025-10-26T18:32:25.952065+00:00"
-tags: ['documentation', 'readme', 'guide']
+tags: ["documentation", "readme", "guide"]
 description: "Documentation for contributing"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - development
 - best-practices
-description: Contribution guidelines and development workflow
----\n# Contributing
+  description: Contribution guidelines and development workflow
+  ---\n# Contributing
 
 Contributions are welcome! Please follow these guidelines:
 
@@ -26,6 +27,7 @@ Contributions are welcome! Please follow these guidelines:
 **License**: This project is licensed under the MIT License - see the LICENSE file for details.
 
 **Support**:
+
 - Open an issue on GitHub
 - Check [troubleshooting documentation](troubleshooting.md)
 - Review [architecture documentation](architecture.md)

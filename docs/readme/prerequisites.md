@@ -1,16 +1,17 @@
 ---
 date_created: "2025-10-26T18:32:25.955953+00:00"
 last_updated: "2025-10-26T18:32:25.955953+00:00"
-tags: ['documentation', 'readme', 'guide']
+tags: ["documentation", "readme", "guide"]
 description: "Documentation for prerequisites"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - setup
-description: System requirements and prerequisites for running the Docker cluster
----\n# Prerequisites
+  description: System requirements and prerequisites for running the Docker cluster
+  ---\n# Prerequisites
 
 - **Python 3.14.0+** (see [Python setup guide](python-setup.md))
 - Docker Engine 24.0+ with BuildKit enabled
@@ -22,15 +23,15 @@ description: System requirements and prerequisites for running the Docker cluste
 
 ## Required Ports
 
-| Port | Service |
-|------|---------|
-| 8080 | Load Balancer |
-| 5432 | PostgreSQL |
-| 3306 | MariaDB |
-| 6379 | Redis |
-| 8888 | Jupyter Lab |
-| 9000/9001 | MinIO |
-| 3002 | Grafana |
-| 9090 | Prometheus |
+| Port      | Service       |
+| --------- | ------------- |
+| 8080      | Load Balancer |
+| 5432      | PostgreSQL    |
+| 3306      | MariaDB       |
+| 6379      | Redis         |
+| 8888      | Jupyter Lab   |
+| 9000/9001 | MinIO         |
+| 3002      | Grafana       |
+| 9090      | Prometheus    |
 
 See [environment setup](environment-setup.md) for configuration details.

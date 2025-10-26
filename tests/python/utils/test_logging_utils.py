@@ -189,4 +189,3 @@ class TestLoggerIntegration:
         output = stream.getvalue()
         assert Colors.BLUE not in output
         assert "test message" in output
-

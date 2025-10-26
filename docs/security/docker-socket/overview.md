@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.978535+00:00"
 last_updated: "2025-10-26T18:32:25.978535+00:00"
-tags: ['documentation', 'security', 'docker']
+tags: ["documentation", "security", "docker"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker
 - security
 - overview
-description: Docker socket security guide overview and risk assessment
----\n# Docker Socket Security Overview
+  description: Docker socket security guide overview and risk assessment
+  ---\n# Docker Socket Security Overview
 
 The Docker socket (`/var/run/docker.sock`) provides complete control over the Docker daemon. Mounting in containers grants powerful capabilities but introduces significant security risks.
 

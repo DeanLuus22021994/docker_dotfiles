@@ -1,9 +1,9 @@
 # MkDocs Bleeding-Edge Implementation Changes
 
-**Date:** October 26, 2025  
-**Task:** MkDocs Bleeding-Edge feature completion  
-**Plan:** [20251026-mkdocs-bleeding-edge-plan.instructions.md](../plans/20251026-mkdocs-bleeding-edge-plan.instructions.md)  
-**Details:** [20251026-mkdocs-bleeding-edge-details.md](../details/20251026-mkdocs-bleeding-edge-details.md)  
+**Date:** October 26, 2025
+**Task:** MkDocs Bleeding-Edge feature completion
+**Plan:** [20251026-mkdocs-bleeding-edge-plan.instructions.md](../plans/20251026-mkdocs-bleeding-edge-plan.instructions.md)
+**Details:** [20251026-mkdocs-bleeding-edge-details.md](../details/20251026-mkdocs-bleeding-edge-details.md)
 **Research:** [20251026-mkdocs-bleeding-edge-research.md](../research/20251026-mkdocs-bleeding-edge-research.md)
 
 ## Implementation Progress

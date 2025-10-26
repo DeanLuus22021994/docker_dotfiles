@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'python', 'javascript' ]
+        language: ["python", "javascript"]
         # CodeQL supports: cpp, csharp, go, java, javascript, python, ruby, swift
         # Learn more: https://aka.ms/codeql-docs/language-support
 

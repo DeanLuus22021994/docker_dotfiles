@@ -1,30 +1,33 @@
 ---
 date_created: "2025-10-26T18:32:25.952569+00:00"
 last_updated: "2025-10-26T18:32:25.952569+00:00"
-tags: ['documentation', 'readme', 'guide']
+tags: ["documentation", "readme", "guide"]
 description: "Documentation for environment setup"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - environment
 - configuration
 - secrets
 - authentication
-description: Environment variables and secrets configuration guide
----\n# Environment Setup
+  description: Environment variables and secrets configuration guide
+  ---\n# Environment Setup
 
 Required before starting the stack.
 
 ## Setup Steps
 
 1. **Copy environment template**:
+
 ```bash
 cp .env.example .env
 ```
 
 2. **Edit `.env` with credentials** (use strong passwords):
+
 ```bash
 GITHUB_OWNER=YourUsername
 GH_PAT=ghp_xxxxxxxxxxxxxxxxxxxx
@@ -44,6 +47,7 @@ DOCKER_PGADMIN_PASSWORD=your_pgadmin_password
 ```
 
 3. **Load environment variables** (PowerShell):
+
 ```powershell
 Get-Content .env | ForEach-Object {
   $var = $_.Split('=')
@@ -52,6 +56,7 @@ Get-Content .env | ForEach-Object {
 ```
 
 4. **Validate environment**:
+
 ```bash
 python scripts/validate_env.py
 make validate-env

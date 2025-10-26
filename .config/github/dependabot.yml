@@ -20,7 +20,7 @@ updates:
       include: "scope"
     reviewers:
       - "DeanLuus22021994"
-    
+
   # Python dependencies
   - package-ecosystem: "pip"
     directory: "/"
@@ -37,7 +37,7 @@ updates:
       include: "scope"
     reviewers:
       - "DeanLuus22021994"
-    
+
   # Node.js dependencies (API proxy)
   - package-ecosystem: "npm"
     directory: "/api"
@@ -55,7 +55,7 @@ updates:
     reviewers:
       - "DeanLuus22021994"
     versioning-strategy: increase
-    
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"

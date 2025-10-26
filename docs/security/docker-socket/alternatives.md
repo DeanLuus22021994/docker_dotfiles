@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.976176+00:00"
 last_updated: "2025-10-26T18:32:25.976176+00:00"
-tags: ['documentation', 'security', 'docker']
+tags: ["documentation", "security", "docker"]
 description: "Documentation for alternatives"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker
 - security
 - reference
-description: Alternative approaches to Docker socket security
----\n# Docker Socket Alternatives
+  description: Alternative approaches to Docker socket security
+  ---\n# Docker Socket Alternatives
 
 ## 1. Docker API over TCP with TLS
 

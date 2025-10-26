@@ -28,6 +28,7 @@ All fixtures are **automatically available** in all test modules via `conftest.p
 ### Temporary File System Fixtures
 
 #### `temp_dir`
+
 Creates temporary directory, automatically cleaned up after test.
 
 ```python
@@ -38,6 +39,7 @@ def test_file_creation(temp_dir: Path) -> None:
 ```
 
 #### `temp_project_dir`
+
 Creates temporary project with `.config/nginx/` and `.config/database/` structure.
 
 ```python
@@ -47,9 +49,11 @@ def test_config(temp_project_dir: Path) -> None:
 ```
 
 #### `sample_json_file`
+
 Pre-created JSON file with test data:
+
 ```json
-{"name": "test", "value": 42, "items": ["a", "b", "c"]}
+{ "name": "test", "value": 42, "items": ["a", "b", "c"] }
 ```
 
 ```python
@@ -59,6 +63,7 @@ def test_read_json(sample_json_file: Path) -> None:
 ```
 
 #### `sample_text_file`
+
 Pre-created text file with three lines: "line1", "line2", "line3"
 
 ```python
@@ -70,7 +75,9 @@ def test_read_lines(sample_text_file: Path) -> None:
 ### Environment Variable Fixtures
 
 #### `clean_env`
+
 Clears and restores all Docker/GitHub environment variables:
+
 - `GITHUB_OWNER`, `GH_PAT`
 - `DOCKER_POSTGRES_PASSWORD`, `DOCKER_MARIADB_ROOT_PASSWORD`, etc.
 - `DOCKER_ACCESS_TOKEN`, `CODECOV_TOKEN`
@@ -85,6 +92,7 @@ def test_env_validation(clean_env: None) -> None:
 ### Logger Cleanup Fixtures
 
 #### `cleanup_loggers`
+
 Clears all logger handlers and resets log levels after each test.
 
 ```python
@@ -97,6 +105,7 @@ def test_logging(cleanup_loggers: None) -> None:
 ## Usage Patterns
 
 ### Basic Test with Fixture
+
 ```python
 def test_something(temp_dir: Path) -> None:
     """No import needed - fixture auto-injected."""
@@ -106,6 +115,7 @@ def test_something(temp_dir: Path) -> None:
 ```
 
 ### Multiple Fixtures
+
 ```python
 def test_complex(temp_dir: Path, clean_env: None) -> None:
     """Use multiple fixtures together."""
@@ -115,6 +125,7 @@ def test_complex(temp_dir: Path, clean_env: None) -> None:
 ```
 
 ### Fixture Composition
+
 ```python
 # temp_project_dir depends on temp_dir
 def test_project_structure(temp_project_dir: Path) -> None:
@@ -125,6 +136,7 @@ def test_project_structure(temp_project_dir: Path) -> None:
 ## Separation of Concerns
 
 ### Before (Duplicated Fixtures)
+
 ```python
 # test_file_utils.py
 @pytest.fixture
@@ -140,6 +152,7 @@ def temp_dir() -> Generator[Path, None, None]:
 ```
 
 ### After (Centralized)
+
 ```python
 # tests/fixtures/common.py
 @pytest.fixture
@@ -156,11 +169,11 @@ def test_something(temp_dir: Path) -> None:
 
 ## Benefits
 
-✅ **Zero Duplication** - Single fixture definition used across all tests  
-✅ **Standardization** - Consistent test infrastructure everywhere  
-✅ **Automatic Cleanup** - All fixtures handle resource cleanup  
-✅ **Type Safety** - Full type hints for IDE support  
-✅ **Documentation** - Comprehensive docstrings with examples  
+✅ **Zero Duplication** - Single fixture definition used across all tests
+✅ **Standardization** - Consistent test infrastructure everywhere
+✅ **Automatic Cleanup** - All fixtures handle resource cleanup
+✅ **Type Safety** - Full type hints for IDE support
+✅ **Documentation** - Comprehensive docstrings with examples
 ✅ **Separation of Concerns** - Test logic separated from test infrastructure
 
 ## Adding New Fixtures

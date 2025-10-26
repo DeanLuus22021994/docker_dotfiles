@@ -1,41 +1,49 @@
 ---
 date_created: "2025-10-26T18:32:25.962899+00:00"
 last_updated: "2025-10-26T18:32:25.962899+00:00"
-tags: ['documentation', 'web-content', 'architecture']
+tags: ["documentation", "web-content", "architecture"]
 description: "Documentation for structure"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - web-content
 - architecture
 - javascript
-description: React component structure and organization
----\n# Component Structure
+  description: React component structure and organization
+  ---\n# Component Structure
 
 ## Component Categories
 
 **Layout Components** (`components/layout/`)
+
 - `Header.tsx` - App header with navigation and branding
 
 **Docker Components** (`components/docker/`)
+
 - `DockerStats.tsx` - Real-time container statistics display
 
 **Health Components** (`components/health/`)
+
 - `SystemHealth.tsx` - System health monitoring dashboard
 
 **Metrics Components** (`components/metrics/`)
+
 - `ClusterMetrics.tsx` - Cluster-wide metrics visualization
 
 **Network Components** (`components/network/`)
+
 - `NetworkTopology.tsx` - Network topology visualization
 
 **Services Components** (`components/services/`)
+
 - `ServiceCard.tsx` - Individual service card display
 - `ServiceGrid.tsx` - Grid layout for service cards
 
 **Storage Components** (`components/storage/`)
+
 - `VolumeStatus.tsx` - Volume status and usage display
 
 ## Component Design Principles

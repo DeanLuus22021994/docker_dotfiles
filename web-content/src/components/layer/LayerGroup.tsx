@@ -52,7 +52,7 @@ export const LayerGroup: React.FC<LayerGroupProps> = ({
   const totalCount = services.length
   const healthPercentage = totalCount > 0 ? (healthyCount / totalCount) * 100 : 0
 
-  const healthColor = 
+  const healthColor =
     healthPercentage === 100 ? 'text-green-600 dark:text-green-400' :
     healthPercentage >= 70 ? 'text-yellow-600 dark:text-yellow-400' :
     'text-red-600 dark:text-red-400'

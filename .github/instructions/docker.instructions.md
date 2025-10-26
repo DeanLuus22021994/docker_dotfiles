@@ -1,5 +1,5 @@
 ---
-applyTo: '**/docker-compose.yml,**/Dockerfile'
+applyTo: "**/docker-compose.yml,**/Dockerfile"
 ---
 
 **Docker Patterns:** [../.vscode/snippets/docker.code-snippets](../../.vscode/snippets/docker.code-snippets)

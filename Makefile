@@ -202,4 +202,3 @@ docs-clean:
 	@rm -rf .config/mkdocs/site/
 	@rm -f frontmatter-audit.json health-report.json build-metrics.json
 	@echo "✅ Documentation artifacts cleaned"
-

@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:25.950320+00:00"
 last_updated: "2025-10-26T18:32:25.950320+00:00"
-tags: ['documentation', 'production', 'deployment']
+tags: ["documentation", "production", "deployment"]
 description: "Documentation for troubleshooting"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - production
 - troubleshooting
 - debugging
 - support
-description: Common production issues and troubleshooting steps
----\n# Production Troubleshooting
+  description: Common production issues and troubleshooting steps
+  ---\n# Production Troubleshooting
 
 ## Certificate Issues
 

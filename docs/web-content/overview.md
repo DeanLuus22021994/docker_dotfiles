@@ -1,18 +1,19 @@
 ---
 date_created: "2025-10-26T18:32:25.959682+00:00"
 last_updated: "2025-10-26T18:32:25.959682+00:00"
-tags: ['documentation', 'web-content', 'architecture']
+tags: ["documentation", "web-content", "architecture"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - web-content
 - overview
 - documentation
-description: Documentation for overview in web-content
----\n# Cluster Dashboard
+  description: Documentation for overview in web-content
+  ---\n# Cluster Dashboard
 
 A comprehensive React-based monitoring dashboard for the Modern Data Platform v2.0, providing real-time cluster status, service health monitoring, and system metrics visualization.
 
@@ -38,6 +39,7 @@ A comprehensive React-based monitoring dashboard for the Modern Data Platform v2
 ## 📦 Installation
 
 ### Development Mode (Recommended)
+
 ```bash
 cd web-content
 npm install
@@ -45,7 +47,9 @@ npm run dev
 ```
 
 ### Production Mode (Docker)
+
 The dashboard is integrated into the main cluster docker-compose.yml:
+
 ```bash
 docker-compose up -d cluster-dashboard
 ```
@@ -65,27 +69,33 @@ npm run lint
 ## 🌐 Services Monitored
 
 ### Infrastructure (4)
+
 - Load Balancer (Nginx)
 - Web Server 1-3 (Nginx)
 
 ### Databases (2)
+
 - PostgreSQL 13
 - MariaDB 11
 
 ### Cache & Storage (2)
+
 - Redis 7
 - MinIO (S3-compatible)
 
 ### Compute (3)
+
 - Jupyter Lab (GPU-accelerated)
 - GitHub MCP
 - k9s
 
 ### Monitoring (2)
+
 - Grafana
 - Prometheus
 
 ### Development Tools (7)
+
 - BuildKit
 - LocalStack
 - MailHog
@@ -96,17 +106,20 @@ npm run lint
 ## 📊 Dashboard Sections
 
 ### System Health
+
 - Overall cluster health status
 - Health score percentage
 - Healthy/degraded/unhealthy service counts
 
 ### Cluster Metrics
+
 - Total services count
 - Healthy services count
 - Volume statistics
 - Real-time network latency graph
 
 ### Service Grid
+
 - Individual service cards with:
   - Status indicators
   - CPU and memory metrics
@@ -114,11 +127,13 @@ npm run lint
   - Port information
 
 ### Volume Status
+
 - Docker volume usage tracking
 - Storage allocation per service
 - Visual progress bars
 
 ### Network Topology
+
 - Service connection mapping
 - Port information
 - Connection status indicators
@@ -134,6 +149,7 @@ The dashboard is highly customizable through:
 ### Adding New Services
 
 Services are organized into architectural layers matching docker-compose.yml:
+
 1. Choose layer: `infrastructure`, `data`, `compute`, `monitoring`, or `development`
 2. Edit corresponding file in `src/services/layers/`
 3. Add service configuration with container name
@@ -144,6 +160,7 @@ See `src/services/layers/README.md` for detailed architecture documentation.
 ## 🚦 Health Check Endpoints
 
 The dashboard performs health checks on services with exposed endpoints:
+
 - Load Balancer: `http://localhost:8080`
 - PostgreSQL: Port 5432
 - MariaDB: Port 3306
@@ -155,9 +172,11 @@ The dashboard performs health checks on services with exposed endpoints:
 ## 📝 Configuration
 
 ### Environment Variables
+
 No environment variables required - all configuration is in code for simplicity.
 
 ### Service Polling
+
 - Health checks: Every 30 seconds
 - Metrics updates: Every 15 seconds
 
@@ -189,6 +208,7 @@ Part of the Modern Data Platform v2.0 project.
 ## 🙏 Acknowledgments
 
 Built with modern React patterns and best practices, leveraging:
+
 - Vite for blazing-fast development
 - TypeScript for type safety
 - Tailwind CSS for rapid UI development

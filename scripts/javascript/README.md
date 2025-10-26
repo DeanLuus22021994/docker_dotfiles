@@ -27,21 +27,22 @@ scripts/javascript/
 Loads and validates MCP configuration files with caching.
 
 ```javascript
-const { ConfigLoader, loadConfig } = require('./utils/config-loader');
+const { ConfigLoader, loadConfig } = require("./utils/config-loader");
 
 // Quick load
-const config = await loadConfig('.vscode/mcp.json');
+const config = await loadConfig(".vscode/mcp.json");
 console.log(config.servers);
 
 // With caching and validation
-const loader = new ConfigLoader('.vscode/mcp.json');
+const loader = new ConfigLoader(".vscode/mcp.json");
 await loader.load();
 
-const githubConfig = loader.getServer('github');
+const githubConfig = loader.getServer("github");
 const serverNames = loader.getServerNames();
 ```
 
 **Features:**
+
 - ✅ JSON validation with descriptive errors
 - ✅ Server configuration validation
 - ✅ Configuration caching
@@ -53,26 +54,24 @@ const serverNames = loader.getServerNames();
 Resolves environment variables and workspace paths.
 
 ```javascript
-const { PathResolver } = require('./utils/path-resolver');
+const { PathResolver } = require("./utils/path-resolver");
 
-const resolver = new PathResolver('/workspace');
+const resolver = new PathResolver("/workspace");
 
 // Resolve workspace folder
-const path = resolver.resolve('${workspaceFolder}/config.json');
+const path = resolver.resolve("${workspaceFolder}/config.json");
 // Returns: '/workspace/config.json'
 
 // Resolve environment variables
-const envPath = resolver.resolve('${env:HOME}/.config');
+const envPath = resolver.resolve("${env:HOME}/.config");
 // Returns: '/home/user/.config'
 
 // Resolve arrays
-const args = resolver.resolveArgs([
-  '--config',
-  '${workspaceFolder}/app.json'
-]);
+const args = resolver.resolveArgs(["--config", "${workspaceFolder}/app.json"]);
 ```
 
 **Features:**
+
 - ✅ `${workspaceFolder}` placeholder resolution
 - ✅ `${env:VAR_NAME}` environment variable substitution
 - ✅ Array argument resolution
@@ -84,21 +83,22 @@ const args = resolver.resolveArgs([
 Console logging with colors, levels, and formatting.
 
 ```javascript
-const { createLogger, LogLevel, Colors } = require('./utils/logger');
+const { createLogger, LogLevel, Colors } = require("./utils/logger");
 
-const logger = createLogger('MyApp', LogLevel.DEBUG);
+const logger = createLogger("MyApp", LogLevel.DEBUG);
 
-logger.info('Application started');
-logger.success('Configuration loaded');
-logger.warn('Using default port');
-logger.error('Failed to connect', new Error('ECONNREFUSED'));
+logger.info("Application started");
+logger.success("Configuration loaded");
+logger.warn("Using default port");
+logger.error("Failed to connect", new Error("ECONNREFUSED"));
 
-logger.header('Test Results');
-logger.separator(80, '-');
+logger.header("Test Results");
+logger.separator(80, "-");
 logger.json({ passed: 10, failed: 2 });
 ```
 
 **Features:**
+
 - ✅ Log levels: DEBUG, INFO, WARN, ERROR, SILENT
 - ✅ Color-coded output with ANSI codes
 - ✅ Timestamp formatting
@@ -111,40 +111,45 @@ logger.json({ passed: 10, failed: 2 });
 Managed process spawning with timeout and event handling.
 
 ```javascript
-const { ManagedProcess, execute, executeJsonRpc } = require('./utils/process-manager');
+const {
+  ManagedProcess,
+  execute,
+  executeJsonRpc,
+} = require("./utils/process-manager");
 
 // Simple execution
 const result = await execute({
-  command: 'node',
-  args: ['--version'],
-  timeout: 5000
+  command: "node",
+  args: ["--version"],
+  timeout: 5000,
 });
 console.log(result.stdout);
 
 // JSON-RPC communication
 const response = await executeJsonRpc(
-  { command: 'npx', args: ['mcp-server'] },
-  { jsonrpc: '2.0', id: 1, method: 'initialize', params: {} },
-  5000
+  { command: "npx", args: ["mcp-server"] },
+  { jsonrpc: "2.0", id: 1, method: "initialize", params: {} },
+  5000,
 );
 
 // Advanced usage with events
 const proc = new ManagedProcess({
-  command: 'node',
-  args: ['script.js'],
-  timeout: 15000
+  command: "node",
+  args: ["script.js"],
+  timeout: 15000,
 });
 
-proc.on('stdout', (data) => console.log(data));
-proc.on('stderr', (data) => console.error(data));
-proc.on('exit', (result) => console.log(`Exit code: ${result.exitCode}`));
-proc.on('timeout', () => console.log('Process timed out'));
+proc.on("stdout", (data) => console.log(data));
+proc.on("stderr", (data) => console.error(data));
+proc.on("exit", (result) => console.log(`Exit code: ${result.exitCode}`));
+proc.on("timeout", () => console.log("Process timed out"));
 
 proc.start();
-proc.write('input data\n');
+proc.write("input data\n");
 ```
 
 **Features:**
+
 - ✅ Timeout management with automatic cleanup
 - ✅ Event-driven architecture (extends EventEmitter)
 - ✅ JSON-RPC request/response handling
@@ -157,13 +162,17 @@ proc.write('input data\n');
 Enterprise-grade MCP client for Model Context Protocol communication.
 
 ```javascript
-const { MCPClient, createClient } = require('./mcp/client');
+const { MCPClient, createClient } = require("./mcp/client");
 
 // Create client
-const client = new MCPClient('github', {
-  command: 'npx',
-  args: ['-y', '@modelcontextprotocol/server-github']
-}, '/workspace');
+const client = new MCPClient(
+  "github",
+  {
+    command: "npx",
+    args: ["-y", "@modelcontextprotocol/server-github"],
+  },
+  "/workspace",
+);
 
 // Initialize connection
 const initResult = await client.initialize();
@@ -183,6 +192,7 @@ console.log(JSON.stringify(discovery, null, 2));
 ```
 
 **Features:**
+
 - ✅ Initialize protocol connection
 - ✅ List server tools
 - ✅ Health check with timing
@@ -214,6 +224,7 @@ npm run lint:fix
 ```
 
 **Rules:**
+
 - ES2021+ features enabled
 - Semicolons required
 - Single quotes preferred
@@ -225,16 +236,16 @@ npm run lint:fix
 
 ```javascript
 // Import utilities
-const { loadConfig } = require('../utils/config-loader');
-const { PathResolver } = require('../utils/path-resolver');
-const { createLogger } = require('../utils/logger');
-const { MCPClient } = require('../mcp/client');
+const { loadConfig } = require("../utils/config-loader");
+const { PathResolver } = require("../utils/path-resolver");
+const { createLogger } = require("../utils/logger");
+const { MCPClient } = require("../mcp/client");
 
 // Use in your scripts
-const config = await loadConfig('.vscode/mcp.json');
+const config = await loadConfig(".vscode/mcp.json");
 const resolver = new PathResolver(process.cwd());
-const logger = createLogger('MyScript');
-const client = new MCPClient('github', config.servers.github, process.cwd());
+const logger = createLogger("MyScript");
+const client = new MCPClient("github", config.servers.github, process.cwd());
 ```
 
 ## Testing
@@ -253,7 +264,7 @@ Existing scripts (`health-check.js`, `discover-tools.js`) can now be refactored 
 
 ---
 
-**Version:** 1.0.0  
-**Node.js:** >= 18.0.0  
-**License:** MIT  
+**Version:** 1.0.0
+**Node.js:** >= 18.0.0
+**License:** MIT
 **Last Updated:** 2025-10-26

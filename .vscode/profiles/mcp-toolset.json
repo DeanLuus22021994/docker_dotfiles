@@ -202,7 +202,12 @@
         {
           "name": "git_log",
           "description": "Show commit logs with optional date filtering",
-          "inputs": ["repo_path", "max_count?", "start_timestamp?", "end_timestamp?"]
+          "inputs": [
+            "repo_path",
+            "max_count?",
+            "start_timestamp?",
+            "end_timestamp?"
+          ]
         },
         {
           "name": "git_create_branch",

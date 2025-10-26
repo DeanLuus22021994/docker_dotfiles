@@ -1,31 +1,35 @@
 ---
 date_created: "2025-10-26T18:32:25.942834+00:00"
 last_updated: "2025-10-26T18:32:25.942834+00:00"
-tags: ['documentation', 'configuration', 'setup', 'docker']
+tags: ["documentation", "configuration", "setup", "docker"]
 description: "Documentation for docker"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker
 - documentation
-description: Documentation for docker in config
----\n# Docker Configuration
+  description: Documentation for docker in config
+  ---\n# Docker Configuration
 
 This directory contains Docker-specific configuration files for local development and production deployments.
 
 ## Files
 
 ### `daemon.json`
+
 Docker daemon configuration - **for reference only**.
 
 **Location to apply:**
+
 - **Linux**: `/etc/docker/daemon.json`
 - **Windows (WSL2)**: `%USERPROFILE%\.docker\daemon.json` or WSL: `/etc/docker/daemon.json`
 - **macOS**: `~/.docker/daemon.json`
 
 **Key settings:**
+
 - BuildKit enabled by default
 - JSON file logging with 30MB rotation (3×10MB)
 - Overlay2 storage driver
@@ -33,6 +37,7 @@ Docker daemon configuration - **for reference only**.
 - 20GB build cache
 
 **Apply changes:**
+
 ```bash
 # Linux/macOS
 sudo systemctl restart docker
@@ -42,11 +47,13 @@ sudo systemctl restart docker
 ```
 
 ### `buildkitd.toml`
+
 BuildKit daemon configuration for the `cluster-buildkit` service.
 
 **Usage:** Mounted into the BuildKit container via docker-compose.yml
 
 **Key Features:**
+
 - **10GB cache** with 3-day retention
 - **Multi-platform support**: amd64, arm64
 - **OCI workers** with rootless execution
@@ -54,10 +61,11 @@ BuildKit daemon configuration for the `cluster-buildkit` service.
 - **Build history**: 7-day retention with max 50 records
 
 **Cache Settings:**
+
 ```toml
 [worker.oci]
   max-parallelism = 4
-  
+
 [[worker.oci.gcpolicy]]
   keepBytes = 10737418240  # 10GB
   keepDuration = 259200    # 3 days
@@ -65,11 +73,13 @@ BuildKit daemon configuration for the `cluster-buildkit` service.
 ```
 
 **Platform Support:**
+
 ```toml
 platforms = ["linux/amd64", "linux/arm64"]
 ```
 
 **Validation:**
+
 ```bash
 # Check if mounted correctly
 docker exec cluster-buildkit cat /etc/buildkit/buildkitd.toml
@@ -79,9 +89,11 @@ docker exec cluster-buildkit buildctl debug workers
 ```
 
 ### `compose.override.example.yml`
+
 Template for local docker-compose overrides.
 
 **Setup:**
+
 ```bash
 # Copy to root (file is gitignored)
 cp .config/docker/compose.override.example.yml docker-compose.override.yml
@@ -91,6 +103,7 @@ cp .config/docker/compose.override.example.yml docker-compose.override.yml
 ```
 
 **Usage:**
+
 - Automatically loaded by `docker-compose` commands
 - Overrides/extends main `docker-compose.yml`
 - Never committed (in `.gitignore`)
@@ -98,6 +111,7 @@ cp .config/docker/compose.override.example.yml docker-compose.override.yml
 ## Quick Start for New Developers
 
 ### 1. Configure Docker Daemon (Optional)
+
 ```bash
 # Linux
 sudo cp .config/docker/daemon.json /etc/docker/daemon.json
@@ -108,6 +122,7 @@ sudo systemctl restart docker
 ```
 
 ### 2. Set Up BuildKit (Optional)
+
 ```bash
 # BuildKit is pre-configured in the cluster-buildkit service
 # No manual setup required - just use docker-compose
@@ -117,6 +132,7 @@ docker-compose ps cluster-buildkit
 ```
 
 ### 3. Create Local Overrides
+
 ```bash
 # Copy template
 cp .config/docker/compose.override.example.yml docker-compose.override.yml
@@ -126,6 +142,7 @@ cp .config/docker/compose.override.example.yml docker-compose.override.yml
 ```
 
 ### 4. Verify Configuration
+
 ```bash
 # Check Docker daemon config
 docker info | grep -i buildkit
@@ -140,6 +157,7 @@ docker-compose build cluster-docker-api
 ## Best Practices
 
 ### For Local Development
+
 1. **Use overrides file** - Keep local changes in `docker-compose.override.yml`
 2. **Port conflicts** - Override ports in your local file
 3. **Hot reload** - Mount local code directories
@@ -147,6 +165,7 @@ docker-compose build cluster-docker-api
 5. **Resource limits** - Adjust based on your machine
 
 ### For Production
+
 1. **Apply daemon.json** - Consistent logging and limits
 2. **Enable BuildKit** - Faster builds and better caching
 3. **No overrides** - Use only main `docker-compose.yml`
@@ -156,6 +175,7 @@ docker-compose build cluster-docker-api
 ## Troubleshooting
 
 ### BuildKit not enabled
+
 ```bash
 # Check if BuildKit is active
 docker buildx version
@@ -165,6 +185,7 @@ export DOCKER_BUILDKIT=1
 ```
 
 ### Port conflicts
+
 ```bash
 # Check what's using ports
 netstat -ano | findstr ":5432"  # Windows
@@ -174,6 +195,7 @@ lsof -i :5432                    # Linux/macOS
 ```
 
 ### Disk space issues
+
 ```bash
 # Clean up Docker
 docker system prune -a --volumes
@@ -183,6 +205,7 @@ docker system df
 ```
 
 ### Permission errors (Linux)
+
 ```bash
 # Add user to docker group
 sudo usermod -aG docker $USER

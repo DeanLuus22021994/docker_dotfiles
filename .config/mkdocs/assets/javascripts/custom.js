@@ -3,7 +3,7 @@
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-  
+
   // ============================================================================
   // Keyboard Shortcuts
   // ============================================================================
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchInput.select();
       }
     }
-    
+
     // Escape: Close search
     if (e.key === 'Escape') {
       const searchInput = document.querySelector('.md-search__input');
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   });
-  
+
   // ============================================================================
   // Smooth Scroll for Anchor Links
   // ============================================================================
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-  
+
   // ============================================================================
   // External Link Handling
   // ============================================================================
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!link.hostname.includes(window.location.hostname)) {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
-      
+
       // Add external link icon
       if (!link.querySelector('.external-icon')) {
         const icon = document.createElement('span');
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
   });
-  
+
   // ============================================================================
   // Code Block Enhancements
   // ============================================================================
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
       block.parentElement.insertBefore(label, block);
     }
   });
-  
+
   // ============================================================================
   // Progress Indicator
   // ============================================================================
@@ -90,13 +90,13 @@ document.addEventListener('DOMContentLoaded', function() {
     transition: width 0.1s ease;
   `;
   document.body.appendChild(progressBar);
-  
+
   window.addEventListener('scroll', function() {
     const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const scrolled = (window.scrollY / windowHeight) * 100;
     progressBar.style.width = scrolled + '%';
   });
-  
+
   // ============================================================================
   // Table of Contents Highlight
   // ============================================================================
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     entries.forEach(entry => {
       const id = entry.target.getAttribute('id');
       const tocLink = document.querySelector(`.md-nav__link[href="#${id}"]`);
-      
+
       if (entry.intersectionRatio > 0) {
         document.querySelectorAll('.md-nav__link').forEach(link => {
           link.classList.remove('md-nav__link--active');
@@ -117,10 +117,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }, {
     rootMargin: '-20% 0% -35% 0%'
   });
-  
+
   document.querySelectorAll('h2[id], h3[id]').forEach(heading => {
     observer.observe(heading);
   });
-  
+
   console.log('🚀 MkDocs Material Enhanced - Loaded');
 });

@@ -36,7 +36,7 @@ class ConfigLoader {
     if (typeof configPath !== 'string') {
       throw new TypeError('configPath must be a string');
     }
-    
+
     this.configPath = configPath;
     this.config = null;
     this.loadTime = null;
@@ -56,9 +56,9 @@ class ConfigLoader {
       const data = await fs.readFile(this.configPath, 'utf-8');
       this.config = JSON.parse(data);
       this.loadTime = new Date();
-      
+
       this._validate();
-      
+
       return this.config;
     } catch (error) {
       if (error.code === 'ENOENT') {

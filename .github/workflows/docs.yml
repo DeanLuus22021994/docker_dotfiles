@@ -12,16 +12,16 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docs/**'
-      - '.config/mkdocs/**'
-      - 'mkdocs.yml'
-      - '.github/workflows/docs.yml'
+      - "docs/**"
+      - ".config/mkdocs/**"
+      - "mkdocs.yml"
+      - ".github/workflows/docs.yml"
   pull_request:
     branches: [main]
     paths:
-      - 'docs/**'
-      - '.config/mkdocs/**'
-      - 'mkdocs.yml'
+      - "docs/**"
+      - ".config/mkdocs/**"
+      - "mkdocs.yml"
   workflow_dispatch:
 
 permissions:
@@ -48,8 +48,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
-          cache: 'pip'
+          python-version: "3.14"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -61,7 +61,7 @@ jobs:
           python .config/mkdocs/scripts/audit_frontmatter.py \
             --docs-dir docs \
             --output frontmatter-audit.json
-          
+
       - name: Validate frontmatter compliance
         run: |
           python -c "
@@ -94,8 +94,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
-          cache: 'pip'
+          python-version: "3.14"
+          cache: "pip"
 
       - name: Install dependencies
         run: |

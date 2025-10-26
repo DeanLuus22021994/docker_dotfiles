@@ -102,7 +102,6 @@ except ImportError:
 
     DocFrontmatter = FallbackDocFrontmatter  # type: ignore[assignment]
 
-
 @dataclass(frozen=True, slots=True)
 class DocCategory:
     """Document category configuration."""

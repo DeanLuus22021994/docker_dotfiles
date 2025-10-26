@@ -20,6 +20,7 @@ success, errors, warnings = validator.validate()
 ```
 
 **CLI Usage:**
+
 ```bash
 # Validate default location
 python scripts/python/mcp/validate_config.py
@@ -32,6 +33,7 @@ python scripts/python/mcp/validate_config.py --strict
 ```
 
 **Validates:**
+
 - JSON syntax
 - Required fields (servers, command, args)
 - Valid commands (npx, uvx, node, python)
@@ -61,6 +63,7 @@ comparison = analyzer.compare_profiles(Path(".vscode/profiles/core.json"))
 ```
 
 **CLI Usage:**
+
 ```bash
 # Analyze default config
 python scripts/python/mcp/analyze_tokens.py
@@ -76,6 +79,7 @@ python scripts/python/mcp/analyze_tokens.py --json
 ```
 
 **Calculates:**
+
 - Tool count estimates (from known server tool counts)
 - Token usage per tool (~180 tokens average)
 - Server overhead (~50 tokens per server)
@@ -95,6 +99,7 @@ Where:
 ```
 
 **Known Tool Counts:**
+
 - playwright: 32 tools
 - github: 26 tools
 - filesystem: 14 tools

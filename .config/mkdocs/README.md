@@ -28,18 +28,21 @@ This implementation represents a **state-of-the-art documentation system** with:
 ## 🐳 Multi-Stage Dockerfile
 
 ### Stage 1: Builder (Python 3.14-slim)
+
 - Installs MkDocs Material + 15 plugins
 - Builds static site with full optimizations
 - Compresses assets (gzip level 9)
 - **Output**: Production-ready HTML/CSS/JS
 
 ### Stage 2: Production (nginx:1.27-alpine)
+
 - **15MB base image** (vs 150MB Python)
 - Serves pre-built static files
 - Nginx optimizations: gzip, brotli, caching
 - Non-root user for security
 
 ### Stage 3: Development (Python 3.14-slim)
+
 - Live reload server
 - Watches `.config/mkdocs/` and `docs/`
 - Hot module replacement
@@ -48,6 +51,7 @@ This implementation represents a **state-of-the-art documentation system** with:
 ## 🎨 Theme Features
 
 ### Material Design Extended
+
 - **Auto dark/light/system** modes with instant toggle
 - **40+ navigation features**: instant loading, tabs, sections, path, progress
 - **Advanced search**: highlighting, suggestions, sharing
@@ -56,6 +60,7 @@ This implementation represents a **state-of-the-art documentation system** with:
 - **Icons**: FontAwesome + Material + Octicons (100k+ icons)
 
 ### Custom Enhancements
+
 - Animated admonitions with hover effects
 - Gradient borders and shadows
 - Enhanced code blocks with language labels
@@ -67,12 +72,14 @@ This implementation represents a **state-of-the-art documentation system** with:
 ## 📦 Plugins Ecosystem
 
 ### Essential
+
 - **search**: Full-text with stemming, stop-word filtering
 - **minify**: HTML/CSS/JS optimization (production builds)
 - **git-revision-date**: Auto-generate "Last Updated" timestamps
 - **git-authors**: Show contributors with line counts
 
 ### Content Enhancement
+
 - **awesome-pages**: Auto-generate navigation from `.pages` files
 - **redirects**: URL management for moved/renamed pages
 - **macros**: Dynamic content with variables and includes
@@ -80,6 +87,7 @@ This implementation represents a **state-of-the-art documentation system** with:
 - **glightbox**: Image lightbox with zoom/pan/fullscreen
 
 ### Advanced
+
 - **social cards**: Auto-generate Open Graph images for social sharing
 - **privacy**: External link protection + local CDN caching
 - **offline**: Progressive Web App support (service worker)
@@ -88,6 +96,7 @@ This implementation represents a **state-of-the-art documentation system** with:
 ## 🔧 Usage
 
 ### Development Mode (Live Reload)
+
 ```bash
 # Build development image
 docker-compose build cluster-docs
@@ -100,6 +109,7 @@ docker-compose --profile docs up cluster-docs
 ```
 
 ### Production Mode (Static nginx)
+
 ```bash
 # Build production image (nginx:alpine)
 docker-compose build --build-arg target=production cluster-docs
@@ -112,6 +122,7 @@ docker-compose --profile docs up -d cluster-docs
 ```
 
 ### Build Standalone
+
 ```bash
 # Development server
 docker build -f dockerfile/mkdocs.Dockerfile --target development -t mkdocs:dev .
@@ -125,35 +136,39 @@ docker run -p 8000:8000 mkdocs:prod
 
 ## ⚡ Performance Metrics
 
-| Metric | Development | Production |
-|--------|-------------|------------|
-| **Image Size** | 180MB | 20MB |
-| **Memory Usage** | 128-256MB | 32-64MB |
-| **Build Time** | 30-40s | 35-45s |
-| **Page Load** | 100-200ms | 10-30ms |
-| **Live Reload** | <100ms | N/A |
+| Metric           | Development | Production |
+| ---------------- | ----------- | ---------- |
+| **Image Size**   | 180MB       | 20MB       |
+| **Memory Usage** | 128-256MB   | 32-64MB    |
+| **Build Time**   | 30-40s      | 35-45s     |
+| **Page Load**    | 100-200ms   | 10-30ms    |
+| **Live Reload**  | <100ms      | N/A        |
 
 ## 🎯 Key Features
 
 ### Zero Pollution
+
 - Build artifacts → Named volumes (`cluster_mkdocs_site`, `cluster_mkdocs_cache`)
 - No `site/` directory in repository
 - No `node_modules/` or `vendor/` folders
 - Clean git status always
 
 ### Security
+
 - Non-root nginx user (production)
 - Security headers (X-Frame-Options, CSP, etc.)
 - GDPR-compliant cookie consent
 - External link protection
 
 ### SEO & Social
+
 - Auto-generated Open Graph images
 - Structured data (JSON-LD)
 - Sitemap.xml generation
 - RSS feed support
 
 ### Developer Experience
+
 - Modular config (change 1 file, not 500 lines)
 - TypeScript-style YAML intellisense
 - Hot reload with source maps
@@ -162,16 +177,20 @@ docker run -p 8000:8000 mkdocs:prod
 ## 📝 Customization
 
 ### Colors
+
 Edit `.config/mkdocs/theme.yml`:
+
 ```yaml
 theme:
   palette:
-    primary: cyan      # Change to: indigo, teal, purple, etc.
+    primary: cyan # Change to: indigo, teal, purple, etc.
     accent: deep orange # Change to: pink, amber, lime, etc.
 ```
 
 ### Fonts
+
 Edit `docs/assets/stylesheets/custom.css`:
+
 ```css
 :root {
   --md-text-font: "Inter";
@@ -180,14 +199,17 @@ Edit `docs/assets/stylesheets/custom.css`:
 ```
 
 ### Navigation
+
 Edit `.config/mkdocs/navigation.yml` - clean, hierarchical structure
 
 ### Plugins
+
 Edit `.config/mkdocs/plugins.yml` - enable/disable features
 
 ## 🚦 VS Code Integration
 
 `.vscode/settings.json` configured with:
+
 - YAML schema validation for all 7 config files
 - Custom tag support (`!ENV`, `!!python/name`, etc.)
 - Pylance integration

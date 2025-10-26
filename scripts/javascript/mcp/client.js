@@ -63,7 +63,7 @@ class MCPClient {
     this.workspaceRoot = workspaceRoot;
     this.pathResolver = new PathResolver(workspaceRoot);
     this.logger = createLogger(`MCP:${serverName}`);
-    
+
     this.requestId = 0;
     this.initializeResult = null;
   }
@@ -111,7 +111,7 @@ class MCPClient {
    */
   _prepareProcessOptions(timeout = 15000) {
     const resolvedArgs = this.pathResolver.resolveArgs(this.config.args);
-    const resolvedEnv = this.config.env 
+    const resolvedEnv = this.config.env
       ? this.pathResolver.resolveEnv(this.config.env)
       : {};
 
@@ -226,9 +226,9 @@ class MCPClient {
 
     try {
       await this.initialize(timeout);
-      
+
       const duration = Date.now() - startTime;
-      
+
       return {
         healthy: true,
         duration,
@@ -237,7 +237,7 @@ class MCPClient {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       return {
         healthy: false,
         duration,
@@ -266,10 +266,10 @@ class MCPClient {
     try {
       // Initialize connection
       const initResult = await this.initialize(timeout);
-      
+
       // List tools
       const tools = await this.listTools(timeout);
-      
+
       const duration = Date.now() - startTime;
 
       return {
@@ -282,7 +282,7 @@ class MCPClient {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       throw new Error(`Discovery failed for ${this.serverName}: ${error.message} (${duration}ms)`);
     }
   }

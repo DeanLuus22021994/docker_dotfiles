@@ -14,7 +14,7 @@ plugins:
         - stemmer
         - stopWordFilter
         - trimmer
-      
+
   # ============================================================================
   # Minification - Production Optimization
   # ============================================================================
@@ -33,7 +33,7 @@ plugins:
       css_files:
         - assets/stylesheets/custom.css
         - assets/stylesheets/animations.css
-  
+
   # ============================================================================
   # Git Integration - Contributors & Timestamps
   # ============================================================================
@@ -43,7 +43,7 @@ plugins:
       timezone: UTC
       locale: en
       fallback_to_build_date: true
-      
+
   - git-authors:
       show_contribution: true
       show_line_count: true
@@ -51,7 +51,7 @@ plugins:
       count_empty_lines: false
       sort_authors_by: contribution
       authorship_threshold_percent: 5
-  
+
   # ============================================================================
   # Tags - Content Organization
   # ============================================================================
@@ -61,7 +61,7 @@ plugins:
         production: production/tags.md
         development: development/tags.md
         security: security/tags.md
-  
+
   # ============================================================================
   # Social Cards - Open Graph Images
   # ============================================================================
@@ -70,17 +70,17 @@ plugins:
       cache_dir: .cache/plugin/social
       cards: true
       cards_layout_options:
-        background_color: "#0891b2"  # Cyan 600
+        background_color: "#0891b2" # Cyan 600
         color: "#ffffff"
-  
+
   # ============================================================================
   # Redirects - URL Management
   # ============================================================================
   - redirects:
       redirect_maps:
-        'old-docs/setup.md': 'readme/installation.md'
-        'quickstart.md': 'index/getting-started.md'
-  
+        "old-docs/setup.md": "readme/installation.md"
+        "quickstart.md": "index/getting-started.md"
+
   # ============================================================================
   # Macros - Dynamic Content
   # ============================================================================
@@ -89,7 +89,7 @@ plugins:
       include_dir: .config/mkdocs/includes
       include_yaml:
         - .config/mkdocs/variables.yml
-      
+
   # ============================================================================
   # Awesome Pages - Auto-Navigation from File Structure
   # ============================================================================
@@ -100,7 +100,7 @@ plugins:
       order: asc
       sort_type: natural
       order_by: title
-  
+
   # ============================================================================
   # Link Validation - Broken Link Detection
   # ============================================================================
@@ -123,7 +123,7 @@ plugins:
       allow_redirects: true
       # Check anchors on external sites
       check_anchors: true
-  
+
   # ============================================================================
   # Privacy - External Link Protection
   # ============================================================================
@@ -134,13 +134,13 @@ plugins:
       links_attr_map:
         target: _blank
         rel: noopener
-      
+
   # ============================================================================
   # Offline - Progressive Web App
   # ============================================================================
   - offline:
       enabled: !ENV [OFFLINE_ENABLED, false]
-  
+
   # ============================================================================
   # Include Markdown - Content Reuse
   # ============================================================================
@@ -152,7 +152,7 @@ plugins:
       dedent: false
       trailing_newlines: true
       comments: true
-  
+
   # ============================================================================
   # Glightbox - Image Lightbox
   # ============================================================================

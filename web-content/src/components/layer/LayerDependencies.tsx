@@ -76,14 +76,14 @@ export const LayerDependencies: React.FC<LayerDependenciesProps> = ({
         {dependencies.map((dep, index) => {
           const from = layerPositions[dep.from]
           const to = layerPositions[dep.to]
-          
+
           if (!from || !to) return null
 
-          const isHighlighted = 
-            highlightedPath === dep.from || 
+          const isHighlighted =
+            highlightedPath === dep.from ||
             highlightedPath === dep.to
 
-          const arrowColor = 
+          const arrowColor =
             dep.type === 'requires' ? '#3b82f6' :
             dep.type === 'uses' ? '#10b981' :
             '#ef4444'
@@ -163,7 +163,7 @@ export const LayerDependencies: React.FC<LayerDependenciesProps> = ({
                 stroke="#fff"
                 strokeWidth={2}
               />
-              
+
               {/* Label */}
               <text
                 x={pos.x}

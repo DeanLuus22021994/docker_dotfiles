@@ -22,7 +22,7 @@ class PathResolver {
     if (typeof workspaceRoot !== 'string') {
       throw new TypeError('workspaceRoot must be a string');
     }
-    
+
     this.workspaceRoot = workspaceRoot;
   }
 
@@ -122,7 +122,7 @@ class PathResolver {
     }
 
     const resolved = {};
-    
+
     for (const [key, value] of Object.entries(env)) {
       if (typeof value === 'string') {
         // Handle ${env:VAR} pattern

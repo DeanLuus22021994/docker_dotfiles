@@ -1,7 +1,7 @@
 /**
  * Custom Admonitions for Docker Modern Data Platform
  * ==================================================
- * 
+ *
  * Specialized admonition types for:
  * - Docker services and containers
  * - Python development and best practices
@@ -333,7 +333,7 @@
   .md-typeset .admonition {
     margin: 1em 0.5em;
   }
-  
+
   .md-typeset .admonition-title::before {
     width: 1.5rem;
     height: 1.5rem;
@@ -346,7 +346,7 @@
     border: 1px solid #ddd;
     page-break-inside: avoid;
   }
-  
+
   .md-typeset .admonition-title::before {
     content: "";
   }

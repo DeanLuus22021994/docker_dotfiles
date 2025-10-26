@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:25.966835+00:00"
 last_updated: "2025-10-26T18:32:25.966835+00:00"
-tags: ['documentation', 'testing', 'pytest']
+tags: ["documentation", "testing", "pytest"]
 description: "Documentation for ci cd"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - testing
 - ci-cd
 - github-actions
 - automation
-description: CI/CD pipeline configuration for automated testing
----\n# CI/CD Pipeline
+  description: CI/CD pipeline configuration for automated testing
+  ---\n# CI/CD Pipeline
 
 ## GitHub Actions Workflow
 
@@ -21,10 +22,11 @@ description: CI/CD pipeline configuration for automated testing
 
 ## Test Job (Matrix Strategy)
 
-**Platforms:** Ubuntu, Windows, macOS  
+**Platforms:** Ubuntu, Windows, macOS
 **Python:** 3.14
 
 **Steps:**
+
 1. Checkout code
 2. Setup Python with pip cache
 3. Install UV package manager

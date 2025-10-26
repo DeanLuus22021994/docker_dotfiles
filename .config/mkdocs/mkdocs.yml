@@ -6,37 +6,37 @@ repo_name: DeanLuus22021994/docker_dotfiles
 repo_url: https://github.com/DeanLuus22021994/docker_dotfiles
 edit_uri: edit/feat/remaining-todos/docs/
 copyright: "Copyright \xA9 2025 Dean Luus"
-strict: false  # TODO: Fix 33 broken links in existing docs before enabling
+strict: false # TODO: Fix 33 broken links in existing docs before enabling
 use_directory_urls: true
 docs_dir: ../../docs
 site_dir: site
 dev_addr: 0.0.0.0:8000
 watch:
-- .
-- ../../docs
+  - .
+  - ../../docs
 theme:
   name: material
   language: en
   custom_dir: overrides
   palette:
-  - media: (prefers-color-scheme)
-    toggle:
-      icon: material/brightness-auto
-      name: Switch to light mode
-  - media: '(prefers-color-scheme: light)'
-    scheme: default
-    primary: cyan
-    accent: deep orange
-    toggle:
-      icon: material/brightness-7
-      name: Switch to dark mode
-  - media: '(prefers-color-scheme: dark)'
-    scheme: slate
-    primary: cyan
-    accent: deep orange
-    toggle:
-      icon: material/brightness-4
-      name: Switch to system preference
+    - media: (prefers-color-scheme)
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
   font:
     text: Inter
     code: Fira Code
@@ -62,69 +62,69 @@ theme:
       example: octicons/beaker-16
       quote: octicons/quote-16
   features:
-  - announce.dismiss
-  - content.action.edit
-  - content.action.view
-  - content.code.annotate
-  - content.code.copy
-  - content.code.select
-  - content.footnote.tooltips
-  - content.tabs.link
-  - content.tooltips
-  - header.autohide
-  - navigation.expand
-  - navigation.footer
-  - navigation.indexes
-  - navigation.instant
-  - navigation.instant.prefetch
-  - navigation.instant.preview
-  - navigation.instant.progress
-  - navigation.path
-  - navigation.prune
-  - navigation.sections
-  - navigation.tabs
-  - navigation.tabs.sticky
-  - navigation.top
-  - navigation.tracking
-  - search.highlight
-  - search.share
-  - search.suggest
-  - toc.follow
-  - toc.integrate
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.footnote.tooltips
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.preview
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
   # favicon: assets/images/favicon.png  # TODO: Add custom favicon
   # logo: assets/images/logo.svg  # Using material/docker icon instead
 extra_css:
-- assets/stylesheets/custom.css
-- assets/stylesheets/animations.css
-- assets/stylesheets/code-blocks.css
-- assets/stylesheets/admonitions.css
-- https://cdn.jsdelivr.net/npm/inter-ui@3.19.3/inter.min.css
-- https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css
+  - assets/stylesheets/custom.css
+  - assets/stylesheets/animations.css
+  - assets/stylesheets/code-blocks.css
+  - assets/stylesheets/admonitions.css
+  - https://cdn.jsdelivr.net/npm/inter-ui@3.19.3/inter.min.css
+  - https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css
 extra_javascript:
-- assets/javascripts/custom.js
-- assets/javascripts/mermaid-advanced.js
-- assets/javascripts/analytics.js
-- assets/javascripts/shortcuts.js
-- https://polyfill.io/v3/polyfill.min.js?features=es6
-- https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-- https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
+  - assets/javascripts/custom.js
+  - assets/javascripts/mermaid-advanced.js
+  - assets/javascripts/analytics.js
+  - assets/javascripts/shortcuts.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs
 extra:
   version:
     provider: mike
     default: latest
   social:
-  - icon: fontawesome/brands/github
-    link: https://github.com/DeanLuus22021994/docker_dotfiles
-    name: GitHub Repository
-  - icon: fontawesome/brands/docker
-    link: https://hub.docker.com/u/deanluus22021994
-    name: Docker Hub
-  - icon: fontawesome/brands/linkedin
-    link: https://linkedin.com/in/deanluus
-    name: LinkedIn Profile
-  - icon: fontawesome/solid/envelope
-    link: mailto:dean.luus@example.com
-    name: Email Contact
+    - icon: fontawesome/brands/github
+      link: https://github.com/DeanLuus22021994/docker_dotfiles
+      name: GitHub Repository
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/u/deanluus22021994
+      name: Docker Hub
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/deanluus
+      name: LinkedIn Profile
+    - icon: fontawesome/solid/envelope
+      link: mailto:dean.luus@example.com
+      name: Email Contact
   status:
     production: Production Ready
     beta: Beta Testing
@@ -136,11 +136,11 @@ extra:
     feedback: true
   announcement:
     enabled:
-    - ANNOUNCEMENT_ENABLED
-    - false
+      - ANNOUNCEMENT_ENABLED
+      - false
     message:
-    - ANNOUNCEMENT_MESSAGE
-    - ''
+      - ANNOUNCEMENT_MESSAGE
+      - ""
 validation:
   nav:
     omitted_files: info
@@ -151,167 +151,167 @@ validation:
     absolute_links: ignore
     unrecognized_links: ignore
 plugins:
-- search:
-    lang:
-    - en
-    separator: '[\s\-,:!=\[\]()"/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
-    pipeline:
-    - stemmer
-    - stopWordFilter
-    - trimmer
-- minify:
-    minify_html: true
-    minify_js: false  # Disabled: Extra JS files not in docs/
-    minify_css: false  # Disabled: Extra CSS files not in docs/
-    htmlmin_opts:
-      remove_comments: true
-      remove_empty_space: true
-      reduce_boolean_attributes: true
-    cache_safe: true
-- git-revision-date-localized:
-    enable_creation_date: true
-    type: timeago
-    timezone: UTC
-    locale: en
-    fallback_to_build_date: true
-- git-authors:
-    show_contribution: true
-    show_line_count: true
-    show_email_address: false
-    count_empty_lines: false
-    sort_authors_by: contribution
-    authorship_threshold_percent: 5
-- tags: {}  # Using defaults, tags_file not needed in latest version
-# - social:  # Disabled: Requires Cairo library (Linux/Docker only)
-#     enabled: true
-#     cache_dir: .cache/plugin/social
-#     cards: true
-#     cards_layout_options:
-#       background_color: '#0891b2'
-#       color: '#ffffff'
-- redirects:
-    redirect_maps:
-      old-docs/setup.md: readme/installation.md
-      quickstart.md: index/getting-started.md
-# - macros:  # Disabled: Custom module not created yet
-#     module_name: macros
-#     include_dir: includes
-#     include_yaml:
-#     - variables.yml
-# - awesome-pages:  # Disabled: Requires .pages files in all directories
-#     filename: .pages
-#     collapse_single_pages: true
-#     strict: true
-#     order: asc
-#     sort_type: natural
-#     order_by: title
-# - linkcheck:  # Plugin not available
-#     error_on_broken: true
-#     recurse: true
-#     skip_file: .config/mkdocs/linkcheck-skip.txt
-#     cache_timeout: 86400
-#     user_agent: MkDocs LinkChecker/1.0
-#     timeout: 10
-#     retry_on_error: 3
-#     allow_redirects: true
-#     check_anchors: true
-# - privacy:  # Plugin not available
-#     enabled: true
-#     cache: true
-#     cache_dir: .cache/plugin/privacy
-#     links_attr_map:
-#       target: _blank
-#       rel: noopener
-# - offline:  # Plugin not available  
-#     enabled: false
-- include-markdown:
-    opening_tag: '{!'
-    closing_tag: '!}'
-    encoding: utf-8
-    preserve_includer_indent: true
-    dedent: false
-    trailing_newlines: true
-    comments: true
-- glightbox:
-    touchNavigation: true
-    loop: false
-    effect: zoom
-    slide_effect: slide
-    width: 100%
-    height: auto
-    zoomable: true
-    draggable: true
-    auto_caption: true
-    caption_position: bottom
+  - search:
+      lang:
+        - en
+      separator: '[\s\-,:!=\[\]()"/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+      pipeline:
+        - stemmer
+        - stopWordFilter
+        - trimmer
+  - minify:
+      minify_html: true
+      minify_js: false # Disabled: Extra JS files not in docs/
+      minify_css: false # Disabled: Extra CSS files not in docs/
+      htmlmin_opts:
+        remove_comments: true
+        remove_empty_space: true
+        reduce_boolean_attributes: true
+      cache_safe: true
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+      timezone: UTC
+      locale: en
+      fallback_to_build_date: true
+  - git-authors:
+      show_contribution: true
+      show_line_count: true
+      show_email_address: false
+      count_empty_lines: false
+      sort_authors_by: contribution
+      authorship_threshold_percent: 5
+  - tags: {} # Using defaults, tags_file not needed in latest version
+  # - social:  # Disabled: Requires Cairo library (Linux/Docker only)
+  #     enabled: true
+  #     cache_dir: .cache/plugin/social
+  #     cards: true
+  #     cards_layout_options:
+  #       background_color: '#0891b2'
+  #       color: '#ffffff'
+  - redirects:
+      redirect_maps:
+        old-docs/setup.md: readme/installation.md
+        quickstart.md: index/getting-started.md
+  # - macros:  # Disabled: Custom module not created yet
+  #     module_name: macros
+  #     include_dir: includes
+  #     include_yaml:
+  #     - variables.yml
+  # - awesome-pages:  # Disabled: Requires .pages files in all directories
+  #     filename: .pages
+  #     collapse_single_pages: true
+  #     strict: true
+  #     order: asc
+  #     sort_type: natural
+  #     order_by: title
+  # - linkcheck:  # Plugin not available
+  #     error_on_broken: true
+  #     recurse: true
+  #     skip_file: .config/mkdocs/linkcheck-skip.txt
+  #     cache_timeout: 86400
+  #     user_agent: MkDocs LinkChecker/1.0
+  #     timeout: 10
+  #     retry_on_error: 3
+  #     allow_redirects: true
+  #     check_anchors: true
+  # - privacy:  # Plugin not available
+  #     enabled: true
+  #     cache: true
+  #     cache_dir: .cache/plugin/privacy
+  #     links_attr_map:
+  #       target: _blank
+  #       rel: noopener
+  # - offline:  # Plugin not available
+  #     enabled: false
+  - include-markdown:
+      opening_tag: "{!"
+      closing_tag: "!}"
+      encoding: utf-8
+      preserve_includer_indent: true
+      dedent: false
+      trailing_newlines: true
+      comments: true
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      auto_caption: true
+      caption_position: bottom
 markdown_extensions:
-- abbr
-- admonition
-- attr_list
-- def_list
-- footnotes
-- md_in_html
-- meta
-- nl2br
-- sane_lists
-- smarty
-- tables
-- toc:
-    permalink: true
-    permalink_title: Link to this section
-    toc_depth: 3
-- pymdownx.arithmatex:
-    generic: true
-    block_tag: pre
-- pymdownx.betterem:
-    smart_enable: all
-- pymdownx.caret
-- pymdownx.mark
-- pymdownx.tilde
-- pymdownx.smartsymbols
-- pymdownx.critic:
-    mode: view
-- pymdownx.keys
-- pymdownx.details
-- pymdownx.snippets:
-    auto_append:
-    - includes/abbreviations.md
-    base_path:
-    - .
-    - ../../docs
-    check_paths: true
-- pymdownx.highlight:
-    use_pygments: true
-    pygments_lang_class: true
-    auto_title: true
-    linenums: true
-    linenums_style: pymdownx-inline
-    anchor_linenums: true
-    line_spans: __span
-- pymdownx.inlinehilite
-- pymdownx.superfences:
-    preserve_tabs: true
-    custom_fences:
-    - name: mermaid
-      class: mermaid
-      format: pymdownx.superfences.fence_code_format
-    - name: vega
-      class: vega
-      format: pymdownx.superfences.fence_code_format
-    - name: vega-lite
-      class: vega-lite
-      format: pymdownx.superfences.fence_code_format
-- pymdownx.tabbed:
-    alternate_style: true
-    combine_header_slug: true
-- pymdownx.tasklist:
-    custom_checkbox: true
-    clickable_checkbox: true
-- pymdownx.emoji:
-    options:
-      custom_icons:
-      - overrides/.icons
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - meta
+  - nl2br
+  - sane_lists
+  - smarty
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+      toc_depth: 3
+  - pymdownx.arithmatex:
+      generic: true
+      block_tag: pre
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.smartsymbols
+  - pymdownx.critic:
+      mode: view
+  - pymdownx.keys
+  - pymdownx.details
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+      base_path:
+        - .
+        - ../../docs
+      check_paths: true
+  - pymdownx.highlight:
+      use_pygments: true
+      pygments_lang_class: true
+      auto_title: true
+      linenums: true
+      linenums_style: pymdownx-inline
+      anchor_linenums: true
+      line_spans: __span
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      preserve_tabs: true
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: pymdownx.superfences.fence_code_format
+        - name: vega
+          class: vega
+          format: pymdownx.superfences.fence_code_format
+        - name: vega-lite
+          class: vega-lite
+          format: pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: true
+  - pymdownx.emoji:
+      options:
+        custom_icons:
+          - overrides/.icons
 hooks:
-- hooks/validate_frontmatter.py
+  - hooks/validate_frontmatter.py
 # - hooks/build_metrics.py  # Not yet created
 # - hooks/processing.py  # Not yet created
 # - hooks/badges.py  # Not yet created

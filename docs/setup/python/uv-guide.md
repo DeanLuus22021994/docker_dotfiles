@@ -1,33 +1,37 @@
 ---
 date_created: "2025-10-26T18:32:25.973830+00:00"
 last_updated: "2025-10-26T18:32:25.973830+00:00"
-tags: ['documentation', 'setup', 'installation', 'python']
+tags: ["documentation", "setup", "installation", "python"]
 description: "Documentation for uv guide"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - python
 - installation
-description: UV package manager installation and configuration
----\n# UV Package Manager
+  description: UV package manager installation and configuration
+  ---\n# UV Package Manager
 
 Modern Python package manager for fast, reliable dependency management.
 
 ## Installation
 
 **Linux/macOS:**
+
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 **Windows (PowerShell):**
+
 ```powershell
 irm https://astral.sh/uv/install.ps1 | iex
 ```
 
 **Via pip:**
+
 ```bash
 pip install uv
 ```
@@ -77,5 +81,6 @@ uv cache clean
 ## Troubleshooting
 
 **Issue:** `uv: command not found`
+
 - Add to PATH: `export PATH="$HOME/.cargo/bin:$PATH"`
 - Restart shell

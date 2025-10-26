@@ -372,4 +372,3 @@ class TestMain:
         exit_code = main()
 
         assert exit_code == 1
-

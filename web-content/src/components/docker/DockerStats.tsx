@@ -72,7 +72,7 @@ export const DockerStats = () => {
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
         Docker Infrastructure
       </h2>
-      
+
       {/* Container Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat) => {

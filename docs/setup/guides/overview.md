@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:25.971071+00:00"
 last_updated: "2025-10-26T18:32:25.971071+00:00"
-tags: ['documentation', 'setup', 'installation']
+tags: ["documentation", "setup", "installation"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - setup
 - installation
 - overview
 - quickstart
-description: Project setup and installation overview
----\n# Setup Overview
+  description: Project setup and installation overview
+  ---\n# Setup Overview
 
 Complete setup guide for Modern Data Platform local development environment.
 

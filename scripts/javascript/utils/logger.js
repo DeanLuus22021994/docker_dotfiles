@@ -15,7 +15,7 @@ const Colors = {
   RESET: '\x1b[0m',
   BOLD: '\x1b[1m',
   DIM: '\x1b[2m',
-  
+
   // Foreground colors
   BLACK: '\x1b[30m',
   RED: '\x1b[31m',
@@ -26,7 +26,7 @@ const Colors = {
   CYAN: '\x1b[36m',
   WHITE: '\x1b[37m',
   GRAY: '\x1b[90m',
-  
+
   // Background colors
   BG_RED: '\x1b[41m',
   BG_GREEN: '\x1b[42m',

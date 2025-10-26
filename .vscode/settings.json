@@ -42,14 +42,14 @@
   "github.copilot.chat.imageUpload.enabled": true,
   "github.copilot.chat.reviewSelection.enabled": true,
   "github.copilot.chat.summarizeAgentConversationHistory.enabled": true,
-  
+
   // ============================================================================
   // GitHub Copilot Context & Follow-ups (Stable)
   // ============================================================================
   "github.copilot.chat.followUps.enabled": true,
   "github.copilot.chat.contextSelection.enabled": true,
   "github.copilot.chat.verboseContext": false,
-  
+
   // ============================================================================
   // GitHub Copilot Advanced Settings (Experimental - Bleeding Edge)
   // ============================================================================
@@ -58,19 +58,19 @@
   "github.copilot.nextEditSuggestions.enabled": false,
   "github.copilot.nextEditSuggestions.allowWhitespaceOnlyChanges": true,
   "github.copilot.nextEditSuggestions.fixes": true,
-  
+
   // Experimental: Multi-file edits (Team enabled for collaborative workflows)
   "github.copilot.chat.edits.enableMultiFileEdits": true,
   "github.copilot.chat.edits.confirmations": "ask",
-  
+
   // Experimental: Workspace indexing (Improves context awareness)
   "github.copilot.chat.indexing.enabled": true,
   "github.copilot.chat.documentationSearch.enabled": true,
-  
+
   // Experimental: Model selection (Workspace default, override in settings.local.json)
   "github.copilot.chat.modelSelection.enabled": true,
   "github.copilot.chat.preferredModel": "claude-sonnet-4.5",
-  
+
   // ============================================================================
   // GitHub Copilot Editor Settings (Stable)
   // ============================================================================
@@ -80,7 +80,7 @@
   "github.copilot.renameSuggestions.triggerAutomatically": true,
   "github.copilot.inlineSuggest.enable": true,
   "github.copilot.editor.inlineSuggest.enabled": true,
-  
+
   // ============================================================================
   // GitHub Copilot - Language Model Tools & Chat Participants (October 2025)
   // ============================================================================
@@ -115,7 +115,7 @@
   "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
   "yaml.disableDefaultProperties": false,
   "yaml.maxItemsComputed": 5000,
-    
+
   // ============================================================================
   // Markdown Settings - Format & Validation
   // ============================================================================
@@ -132,13 +132,12 @@
     },
     "editor.suggest.showSnippets": true
   },
-  
+
   // Markdown snippets and suggestions
   "editor.snippetSuggestions": "top",
-  
+
   // Disable YAML validation for specific files that use custom schemas
   "[.config/monitoring/grafana/provisioning/datasources/prometheus.yml]": {
-
     "yaml.validate": false
   },
   "[.config/docker/compose.override.example.yml]": {
@@ -156,12 +155,12 @@
       "*.conf": "yaml"
     }
   },
-  
+
   // YAML formatting
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-  
+
   // File associations
   "files.associations": {
     "**/monitoring/grafana/provisioning/**/*.yml": "yaml",
@@ -170,7 +169,7 @@
     "docker-compose*.yml": "yaml",
     "*.Dockerfile": "dockerfile"
   },
-  
+
   // Files to exclude from validation and Copilot indexing
   "files.exclude": {
     "**/.pytest_cache": true,
@@ -180,7 +179,7 @@
     "**/.coverage": true,
     "**/.coverage.*": true
   },
-  
+
   // Search exclusions (improves performance)
   "search.exclude": {
     "**/.pytest_cache": true,
@@ -193,29 +192,29 @@
     "**/.venv": true,
     "**/volumes": true
   },
-  
+
   // Python settings
   "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe",
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",
   "python-envs.pythonProjects": [],
-  
+
   // Python analysis configured in pyrightconfig.json (takes precedence)
   // See pyrightconfig.json for pytest fixture suppression rules
-  
+
   // Terminal settings (2025 API)
   "terminal.integrated.defaultProfile.windows": "PowerShell",
   "terminal.integrated.defaultProfile.linux": "bash",
-  
+
   // Shell integration - enables command visibility from Copilot
   "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.shellIntegration.showWelcome": false,
   "terminal.integrated.shellIntegration.decorationsEnabled": "both",
-  
+
   // Terminal automation - show commands when executed by extensions
   "terminal.integrated.automationProfile.windows": null,
   "terminal.integrated.automationProfile.linux": null,
-  
+
   // Terminal profiles
   "terminal.integrated.profiles.windows": {
     "PowerShell": {
@@ -246,16 +245,12 @@
       "path": "fish"
     }
   },
-  "python.testing.pytestArgs": [
-    "tests"
-  ],
+  "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
 
   // Disable link validation in instruction files (AI semantic references, not user-facing links)
   "github.copilot.chat.promptsDiagnostics.enabled": false,
-  "pgsql.copilot.modelOptions": {
-
-  },
+  "pgsql.copilot.modelOptions": {},
   "python.analysis.aiHoverSummaries": true
 }

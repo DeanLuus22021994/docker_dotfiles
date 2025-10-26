@@ -1,16 +1,17 @@
 ---
 date_created: "2025-10-26T18:32:25.996132+00:00"
 last_updated: "2025-10-26T18:32:25.996132+00:00"
-tags: ['documentation', 'configuration', 'setup']
+tags: ["documentation", "configuration", "setup"]
 description: "Documentation for conventional commits"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - documentation
-description: Conventional commits standard for semantic commit messages
----\n# Conventional Commits
+  description: Conventional commits standard for semantic commit messages
+  ---\n# Conventional Commits
 
 Semantic commit message format for automatic changelog generation.
 
@@ -57,8 +58,8 @@ BREAKING CHANGE: API now returns JSON instead of XML"
 [optional footer]
 ```
 
-**Type:** feat, fix, docs, refactor, perf, test, ci, chore  
-**Scope:** Component affected (api, docker, monitoring, etc.)  
+**Type:** feat, fix, docs, refactor, perf, test, ci, chore
+**Scope:** Component affected (api, docker, monitoring, etc.)
 **Subject:** Short description (imperative, lowercase, no period)
 
 ## Benefits

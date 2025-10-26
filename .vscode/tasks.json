@@ -338,7 +338,13 @@
       "label": "MCP: Compare Profiles",
       "type": "shell",
       "command": ".\\scripts\\powershell\\mcp\\Compare-McpProfiles.ps1",
-      "args": ["-Profile1", "${input:mcpProfile1}", "-Profile2", "${input:mcpProfile2}", "-ShowServers"],
+      "args": [
+        "-Profile1",
+        "${input:mcpProfile1}",
+        "-Profile2",
+        "${input:mcpProfile2}",
+        "-ShowServers"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -375,37 +381,21 @@
       "id": "mcpProfile",
       "type": "pickString",
       "description": "Select MCP profile to switch to",
-      "options": [
-        "core",
-        "fullstack",
-        "testing",
-        "data",
-        "all"
-      ],
+      "options": ["core", "fullstack", "testing", "data", "all"],
       "default": "core"
     },
     {
       "id": "mcpProfile1",
       "type": "pickString",
       "description": "Select first MCP profile to compare",
-      "options": [
-        "core",
-        "fullstack",
-        "testing",
-        "data"
-      ],
+      "options": ["core", "fullstack", "testing", "data"],
       "default": "core"
     },
     {
       "id": "mcpProfile2",
       "type": "pickString",
       "description": "Select second MCP profile to compare",
-      "options": [
-        "core",
-        "fullstack",
-        "testing",
-        "data"
-      ],
+      "options": ["core", "fullstack", "testing", "data"],
       "default": "fullstack"
     }
   ]

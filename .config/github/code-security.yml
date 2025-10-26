@@ -10,13 +10,13 @@
 code_scanning:
   enabled: true
   default_setup: advanced
-  
+
   codeql:
     enabled: true
     languages: ["python", "javascript", "typescript"]
     queries: security-extended
     build_mode: none
-    
+
   third_party_tools:
     - name: Trivy
       enabled: true
@@ -31,13 +31,13 @@ code_scanning:
 secret_scanning:
   enabled: true
   push_protection: true
-  
+
   excluded_paths:
     - "**/.env.example"
     - "**/secrets/README.md"
     - "**/*.md"
     - "**/docs/**"
-    
+
   custom_patterns: []
 
 # ==============================================================================
@@ -47,7 +47,7 @@ secret_scanning:
 dependency_review:
   enabled: true
   fail_on_severity: high
-  
+
   license_check: true
   allowed_licenses:
     - MIT
@@ -66,7 +66,7 @@ dependency_review:
 dependabot_alerts:
   enabled: true
   severity_threshold: low
-  
+
   auto_dismiss:
     - scope: development
       severity: low
@@ -79,7 +79,7 @@ dependabot_alerts:
 dependabot_security_updates:
   enabled: true
   auto_merge: false
-  
+
   groups:
     docker:
       patterns: ["dockerfile/*"]
@@ -113,7 +113,6 @@ security_advisories:
   enabled: true
   allow_private_fork: true
   request_cve: true
-
 # ==============================================================================
 # COST IMPLICATIONS
 # ==============================================================================

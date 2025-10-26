@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.py'
+applyTo: "**/*.py"
 ---
 
 **Python 3.14 Patterns:** [../.vscode/snippets/python.code-snippets](../../.vscode/snippets/python.code-snippets)

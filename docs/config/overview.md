@@ -1,17 +1,18 @@
 ---
 date_created: "2025-10-26T18:32:25.943866+00:00"
 last_updated: "2025-10-26T18:32:25.943866+00:00"
-tags: ['documentation', 'configuration', 'setup']
+tags: ["documentation", "configuration", "setup"]
 description: "Documentation for overview"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - overview
 - documentation
-description: Documentation for overview in config
----\n# .config - Single Source of Truth
+  description: Documentation for overview in config
+  ---\n# .config - Single Source of Truth
 
 All configuration files for the Docker cluster stack, strictly organized according to Docker and GitHub standards.
 
@@ -82,22 +83,26 @@ E2E test definitions: infrastructure validation, service health checks, connecti
 ### `jekyll/`
 
 Jekyll static site configuration and Ruby dependencies:
+
 - **jekyll.config.yml**: Theme (Cayman), plugins, collections, navigation, build settings
 - **Gemfile/Gemfile.lock**: Ruby dependencies (github-pages, jekyll-seo-tag, jekyll-sitemap, jekyll-feed, webrick)
 
 ### `docker/` Directory
+
 - **daemon.json**: Docker Engine reference config (BuildKit, logging, storage)
 - **buildkit.toml**: Build optimization (cache, mirrors, platforms)
 - **compose.override.example.yml**: Local development overrides template
 - **README.md**: Complete Docker setup guide
 
 ### `github/` Directory
+
 - **dependabot.yml**: Weekly dependency updates (Docker, Python, npm, Actions)
 - **labeler.yml**: Auto-label PRs by file changes (10+ labels)
 - **workflows/labeler.yml**: GitHub Action for PR labeling
 - **README.md**: Complete GitHub automation guide
 
 ### `monitoring/` Directory
+
 - **prometheus.yml**: 8 scrape targets, 15s intervals
 - **alertmanager.yml**: Email routing, severity grouping, inhibition rules
 - **alerts/rules.yml**: 25 alert rules across 4 categories
@@ -129,6 +134,7 @@ yamllint .config/**/*.yml
 ## � New Developer Quick Start
 
 ### 1. Clone and Setup
+
 ```bash
 git clone https://github.com/DeanLuus22021994/docker_dotfiles.git
 cd docker_dotfiles
@@ -141,6 +147,7 @@ cp .config/docker/compose.override.example.yml docker-compose.override.yml
 ```
 
 ### 2. Configure Docker (Optional)
+
 ```bash
 # Linux: Copy daemon config
 sudo cp .config/docker/daemon.json /etc/docker/daemon.json
@@ -154,6 +161,7 @@ export BUILDKIT_CONFIG=$PWD/.config/docker/buildkit.toml
 ```
 
 ### 3. Start Stack
+
 ```bash
 # Generate secrets
 make secrets
@@ -166,6 +174,7 @@ docker-compose ps
 ```
 
 ### 4. Access Services
+
 - **Documentation**: http://localhost:4000 (Jekyll)
 - **Dashboard**: http://localhost:3000
 - **Grafana**: http://localhost:3002
@@ -181,13 +190,13 @@ docker-compose ps
 
 ## 🔒 Security
 
-**Never commit**: Secrets, passwords, API tokens, `.env` files  
+**Never commit**: Secrets, passwords, API tokens, `.env` files
 **Always commit**: Templates, defaults, documentation
 
 ## 📊 Standards Compliance
 
-**Docker**: `cluster-<service>`, `cluster_<volume>`, `cluster-network`  
-**GitHub**: YAML format, Dependabot, branch protection  
+**Docker**: `cluster-<service>`, `cluster_<volume>`, `cluster-network`
+**GitHub**: YAML format, Dependabot, branch protection
 **YAML**: 2-space indent, comments, anchors, sorted keys
 
 ---

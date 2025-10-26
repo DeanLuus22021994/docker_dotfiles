@@ -1,11 +1,6 @@
 {
   "include": ["scripts", "tests", ".config/mkdocs"],
-  "exclude": [
-    "**/__pycache__",
-    "**/node_modules",
-    "**/.venv",
-    "**/venv"
-  ],
+  "exclude": ["**/__pycache__", "**/node_modules", "**/.venv", "**/venv"],
   "ignore": [],
   "extraPaths": ["scripts", ".config/mkdocs"],
   "defineConstant": {

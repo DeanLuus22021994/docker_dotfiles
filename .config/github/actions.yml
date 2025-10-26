@@ -66,15 +66,15 @@ runner_requirements:
     memory: 4GB
     disk: 20GB
   required_tools:
-    - docker  # Docker Engine 24+
-    - docker-compose  # Docker Compose v2+
-    - python  # Python 3.14.0+
-    - node  # Node.js 22+
-    - git  # Git 2.40+
+    - docker # Docker Engine 24+
+    - docker-compose # Docker Compose v2+
+    - python # Python 3.14.0+
+    - node # Node.js 22+
+    - git # Git 2.40+
   optional_tools:
-    - gh  # GitHub CLI
-    - yamllint  # YAML validation
-    - pre-commit  # Git hooks framework
+    - gh # GitHub CLI
+    - yamllint # YAML validation
+    - pre-commit # Git hooks framework
 
 # ==============================================================================
 # COST IMPLICATIONS

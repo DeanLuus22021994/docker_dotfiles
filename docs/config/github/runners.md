@@ -1,16 +1,17 @@
 ---
 date_created: "2025-10-26T18:32:25.998127+00:00"
 last_updated: "2025-10-26T18:32:25.998127+00:00"
-tags: ['documentation', 'configuration', 'setup']
+tags: ["documentation", "configuration", "setup"]
 description: "Documentation for runners"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - documentation
-description: Self-hosted GitHub Actions runners configuration
----\n# Self-Hosted Runners Configuration
+  description: Self-hosted GitHub Actions runners configuration
+  ---\n# Self-Hosted Runners Configuration
 
 Self-hosted runners for unlimited free GitHub Actions minutes.
 
@@ -57,11 +58,13 @@ gh api repos/DeanLuus22021994/docker_dotfiles/actions/runners
 ## Troubleshooting
 
 **Runner not starting:**
+
 - Check GH_PAT token has `repo` scope
 - Verify REPO_URL format correct
 - Check Docker socket permissions
 
 **Workflows not using self-hosted:**
+
 - Ensure workflows specify `runs-on: self-hosted`
 - Verify runner is online in GitHub settings
 

@@ -1,19 +1,20 @@
 ---
 date_created: "2025-10-26T18:32:25.949272+00:00"
 last_updated: "2025-10-26T18:32:25.949272+00:00"
-tags: ['documentation', 'production', 'deployment', 'monitoring']
+tags: ["documentation", "production", "deployment", "monitoring"]
 description: "Documentation for monitoring"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - production
 - monitoring
 - health-checks
 - alerts
-description: Production monitoring and health check configuration
----\n# Monitoring & Health Checks
+  description: Production monitoring and health check configuration
+  ---\n# Monitoring & Health Checks
 
 ## Service Health Endpoints
 
@@ -40,9 +41,9 @@ curl https://grafana.your-domain.com/api/health
 
 ## Monitoring Stack
 
-**Prometheus** - Metrics collection  
-**Grafana** - Visualization and dashboards  
-**Node Exporter** - Host metrics  
+**Prometheus** - Metrics collection
+**Grafana** - Visualization and dashboards
+**Node Exporter** - Host metrics
 **cAdvisor** - Container metrics
 
 ## Key Metrics to Monitor

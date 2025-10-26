@@ -21,7 +21,5 @@
     "dbaeumer.vscode-eslint",
     "ms-vscode.makefile-tools"
   ],
-  "unwantedRecommendations": [
-    "ms-python.pylint"
-  ]
+  "unwantedRecommendations": ["ms-python.pylint"]
 }

@@ -31,9 +31,9 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    DocFrontmatter = None  # type: ignore[assignment]
+    DocFrontmatter = None  # type: ignore[misc]
     ALLOWED_TAGS = set()
-    ValidationError = None  # type: ignore[assignment]
+    ValidationError = None  # type: ignore[misc]
 
 
 # ============================================================================
@@ -253,7 +253,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
     """
     errors: list[str] = []
 
-    if PYDANTIC_AVAILABLE and DocFrontmatter:
+    if PYDANTIC_AVAILABLE:
         # Use Pydantic validation
         try:
             # Convert ISO strings back to datetime objects for validation
@@ -274,7 +274,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
                     errors.append(f"Invalid last_updated format: {frontmatter['last_updated']}")
 
             # Validate with Pydantic
-            DocFrontmatter(**frontmatter)
+            DocFrontmatter(**frontmatter)  # type: ignore[operator]
 
         except ValidationError as e:
             # Parse Pydantic validation errors

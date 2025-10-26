@@ -3,6 +3,7 @@
 ## Current State Analysis
 
 ### Infrastructure (✅ COMPLETE)
+
 - Multi-stage Dockerfile with 3 stages (builder, validation, production)
 - Modular YAML config: 7 files (mkdocs.yml, base.yml, theme.yml, plugins.yml, markdown.yml, navigation.yml, hooks.yml)
 - Material Design Extended theme with 40+ features
@@ -14,9 +15,11 @@
 ### Gap Analysis (❌ MISSING/INCOMPLETE)
 
 #### 1. Document Template Generator (Priority: CRITICAL)
+
 **File**: .config/mkdocs/scripts/new_doc.py
 **Status**: NOT IMPLEMENTED
 **Requirements**:
+
 - Python 3.14 dataclass-based template system
 - YAML frontmatter validation (date_created, last_updated, tags, description)
 - Interactive CLI with prompts
@@ -25,9 +28,11 @@
 - Validate against schema before writing
 
 #### 2. Strict Mode Validation (Priority: CRITICAL)
+
 **File**: .config/mkdocs/mkdocs.yml line 43
 **Current**: `strict: false  # TODO: Enable after validation implementation`
 **Requirements**:
+
 - Enable `strict: true` in mkdocs.yml
 - Configure validation rules: nav warnings → errors, broken links → fail build
 - Implement comprehensive frontmatter validation
@@ -35,10 +40,12 @@
 - Update linkcheck-skip.txt for legitimate external links
 
 #### 3. Frontmatter Validation Enhancement (Priority: HIGH)
-**Files**: 
+
+**Files**:
+
 - .config/mkdocs/hooks/validate_frontmatter.py (EXISTS but basic)
 - .config/mkdocs/scripts/validate_frontmatter_cli.py (EXISTS but basic)
-**Requirements**:
+  **Requirements**:
 - Extend schema validation (Pydantic models)
 - Add custom validators: date format, tag format, description length
 - Integrate with MkDocs build hooks
@@ -46,10 +53,12 @@
 - Error reporting with line numbers
 
 #### 4. Build Metrics & Health Validation (Priority: HIGH)
+
 **Files**:
+
 - .config/mkdocs/hooks/build_metrics.py (EXISTS, basic stub)
 - .config/mkdocs/scripts/validate_health.py (EXISTS, basic stub)
-**Requirements**:
+  **Requirements**:
 - Track build metrics: page count, plugin execution time, asset sizes
 - Post-build health checks: verify critical files, check link integrity
 - Generate metrics.json for dashboard integration
@@ -57,9 +66,11 @@
 - Performance budgets: warn if assets exceed thresholds
 
 #### 5. Advanced Markdown Extensions (Priority: MEDIUM)
+
 **File**: .config/mkdocs/markdown.yml
 **Current**: Basic PyMdown Extensions
 **Bleeding-Edge Additions**:
+
 - Custom containers with enhanced styling
 - Interactive diagrams (Mermaid v10+, PlantUML, Graphviz)
 - Math rendering (MathJax 3, KaTeX)
@@ -67,8 +78,10 @@
 - Custom admonition types for Docker/Python/API docs
 
 #### 6. Social Cards & SEO (Priority: MEDIUM)
+
 **Plugin**: social cards (CONFIGURED but needs templates)
 **Requirements**:
+
 - Custom card layouts per documentation category
 - Dynamic OG images with project branding
 - Twitter card metadata
@@ -76,8 +89,10 @@
 - RSS feed for updates
 
 #### 7. Offline PWA Enhancement (Priority: LOW)
+
 **Plugin**: offline (CONFIGURED but disabled)
 **Requirements**:
+
 - Service worker with intelligent caching strategies
 - Offline fallback pages
 - App manifest for installable docs
@@ -86,6 +101,7 @@
 ## Implementation Dependencies
 
 ### Python 3.14 Dependencies
+
 ```python
 # Required packages (add to pyproject.toml)
 [dependency-groups]
@@ -126,13 +142,14 @@ docs = [
 ## Modern DevOps Patterns
 
 ### 1. GitOps Workflow
+
 ```yaml
 # .github/workflows/docs-deploy.yml
 name: Deploy Documentation
 on:
   push:
     branches: [main]
-    paths: ['docs/**', '.config/mkdocs/**']
+    paths: ["docs/**", ".config/mkdocs/**"]
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -145,6 +162,7 @@ jobs:
 ```
 
 ### 2. Pre-Commit Integration
+
 ```yaml
 # Add to .pre-commit-config.yaml
 - repo: local
@@ -158,6 +176,7 @@ jobs:
 ```
 
 ### 3. Docker Compose Integration
+
 ```yaml
 # Add to docker-compose.yml
 services:
@@ -165,7 +184,7 @@ services:
     build:
       context: .
       dockerfile: dockerfile/mkdocs.Dockerfile
-      target: development  # or 'production' for static nginx
+      target: development # or 'production' for static nginx
     volumes:
       - ./docs:/docs/docs:ro
       - ./.config/mkdocs:/docs/.config/mkdocs:ro
@@ -184,24 +203,28 @@ services:
 ## Validation Strategy
 
 ### Phase 1: Template Generator (Week 1)
+
 - Implement new_doc.py with interactive CLI
 - Support all doc categories
 - Auto-generate valid frontmatter
 - Test with 5+ sample docs
 
 ### Phase 2: Strict Mode Enablement (Week 2)
+
 - Audit all existing docs for compliance
 - Fix validation errors
 - Enable strict: true
 - Update CI/CD to fail on warnings
 
 ### Phase 3: Enhanced Validation (Week 3)
+
 - Pydantic schema models
 - Custom validators
 - Build hooks integration
 - Pre-commit validation
 
 ### Phase 4: Health & Metrics (Week 4)
+
 - Build metrics tracking
 - Post-build health checks
 - Dashboard integration
@@ -210,22 +233,26 @@ services:
 ## Success Criteria
 
 ✅ **Template Generator**:
+
 - Can create new doc in <30 seconds
 - Valid frontmatter 100% of time
 - Integrated with VS Code snippets
 
 ✅ **Strict Mode**:
+
 - All docs pass validation
 - Build fails on broken links
 - Nav structure auto-generated
 
 ✅ **Build Process**:
+
 - <60s cold build time
 - <10s incremental rebuild
 - 20MB production image
 - 97+ Lighthouse score
 
 ✅ **Developer Experience**:
+
 - <100ms live reload
 - Interactive CLI tools
 - Comprehensive error messages

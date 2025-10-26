@@ -5,9 +5,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docs/**'
-      - '_config.yml'
-      - 'README.md'
+      - "docs/**"
+      - "_config.yml"
+      - "README.md"
   workflow_dispatch:
 
 permissions:

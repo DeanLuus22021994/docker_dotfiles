@@ -7,12 +7,12 @@ tests:
       command: "docker-compose config --quiet"
       expected_exit_code: 0
       timeout: 30
-      
+
     - name: "Network Exists"
       command: "docker network inspect cluster-network"
       expected_exit_code: 0
       timeout: 10
-      
+
   services:
     - name: "Load Balancer Health"
       type: "http"
@@ -20,102 +20,102 @@ tests:
       expected_status: 200
       timeout: 10
       retries: 3
-      
+
     - name: "PostgreSQL Connection"
       type: "exec"
       container: "cluster-postgres"
       command: "pg_isready -U cluster_user -d clusterdb"
       expected_exit_code: 0
       timeout: 10
-      
+
     - name: "MariaDB Connection"
       type: "exec"
       container: "cluster-mariadb"
       command: "mariadb-admin ping -h localhost"
       expected_exit_code: 0
       timeout: 10
-      
+
     - name: "Redis Ping"
       type: "exec"
       container: "cluster-redis"
       command: "redis-cli ping"
       expected_output: "PONG"
       timeout: 10
-      
+
     - name: "Jupyter Lab Health"
       type: "http"
       url: "http://localhost:8888/api"
       expected_status: 200
       timeout: 15
       retries: 5
-      
+
     - name: "MinIO Health"
       type: "http"
       url: "http://localhost:9000/minio/health/live"
       expected_status: 200
       timeout: 10
-      
+
     - name: "Grafana Health"
       type: "http"
       url: "http://localhost:3002/api/health"
       expected_status: 200
       timeout: 10
-      
+
     - name: "Prometheus Health"
       type: "http"
       url: "http://localhost:9090/-/healthy"
       expected_status: 200
       timeout: 10
-      
+
   connectivity:
     - name: "Web to PostgreSQL"
       container: "cluster-web1"
       target: "cluster-postgres:5432"
       type: "tcp"
-      
+
     - name: "Web to Redis"
       container: "cluster-web1"
       target: "cluster-redis:6379"
       type: "tcp"
-      
+
     - name: "Web to MariaDB"
       container: "cluster-web1"
       target: "cluster-mariadb:3306"
       type: "tcp"
-      
+
   devcontainer:
     - name: "DevContainer Running"
       command: "docker ps --filter name=cluster-devcontainer --format '{{.Status}}'"
       expected_contains: "Up"
       timeout: 10
-      
+
     - name: "DevContainer Network Access"
       type: "exec"
       container: "cluster-devcontainer"
       command: "curl -f http://cluster-loadbalancer"
       expected_exit_code: 0
       timeout: 10
-      
+
     - name: "DevContainer PostgreSQL Access"
       type: "exec"
       container: "cluster-devcontainer"
       command: "psql -h cluster-postgres -U cluster_user -d clusterdb -c 'SELECT 1;'"
       expected_exit_code: 0
       timeout: 10
-      
+
     - name: "DevContainer Redis Access"
       type: "exec"
       container: "cluster-devcontainer"
       command: "redis-cli -h cluster-redis ping"
       expected_output: "PONG"
       timeout: 10
-      
+
   performance:
     - name: "Load Balancer Response Time"
       type: "http"
       url: "http://localhost:8080"
       max_response_time_ms: 500
-      
+
     - name: "Database Query Performance"
       type: "exec"
       container: "cluster-postgres"

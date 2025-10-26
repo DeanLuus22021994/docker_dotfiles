@@ -32,18 +32,18 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
       <Header darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* System Health Overview */}
-        <SystemHealth 
-          services={services} 
-          isLoading={healthLoading} 
+        <SystemHealth
+          services={services}
+          isLoading={healthLoading}
           error={healthError}
         />
 
         {/* Cluster Metrics */}
-        <ClusterMetrics 
-          metrics={metrics} 
+        <ClusterMetrics
+          metrics={metrics}
           isLoading={metricsLoading}
         />
 
@@ -51,8 +51,8 @@ function App() {
         <DockerStats />
 
         {/* Service Grid */}
-        <ServiceGrid 
-          services={services} 
+        <ServiceGrid
+          services={services}
           isLoading={healthLoading}
         />
 

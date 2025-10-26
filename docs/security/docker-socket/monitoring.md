@@ -1,24 +1,25 @@
 ---
 date_created: "2025-10-26T18:32:25.977915+00:00"
 last_updated: "2025-10-26T18:32:25.977915+00:00"
-tags: ['documentation', 'security', 'docker', 'monitoring']
+tags: ["documentation", "security", "docker", "monitoring"]
 description: "Documentation for monitoring"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'
 tags:
+
 - docker
 - security
 - monitoring
-description: Docker socket security monitoring and incident response
----\n# Monitoring & Incident Response
+  description: Docker socket security monitoring and incident response
+  ---\n# Monitoring & Incident Response
 
 ## Monitoring Tools
 
-**1. Falco** - Runtime security monitoring for anomalous container behavior  
-**2. Sysdig** - Container security platform with network traffic analysis  
-**3. Docker Bench Security** - CIS Docker Benchmark checks  
+**1. Falco** - Runtime security monitoring for anomalous container behavior
+**2. Sysdig** - Container security platform with network traffic analysis
+**3. Docker Bench Security** - CIS Docker Benchmark checks
 **4. Prometheus + Grafana** - API metrics and custom alerts
 
 ## Key Indicators of Compromise

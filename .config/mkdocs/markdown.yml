@@ -6,57 +6,57 @@ markdown_extensions:
   # ============================================================================
   # Core Python Markdown Extensions
   # ============================================================================
-  - abbr                          # Abbreviation tooltips
-  - admonition                    # Call-out blocks
-  - attr_list                     # HTML attributes on elements
-  - def_list                      # Definition lists
-  - footnotes                     # Footnote references
-  - md_in_html                    # Markdown inside HTML
-  - meta                          # YAML frontmatter
-  - nl2br                         # New line to break
-  - sane_lists                    # Better list parsing
-  - smarty                        # Smart quotes and dashes
-  - tables                        # GitHub-flavored tables
-  
+  - abbr # Abbreviation tooltips
+  - admonition # Call-out blocks
+  - attr_list # HTML attributes on elements
+  - def_list # Definition lists
+  - footnotes # Footnote references
+  - md_in_html # Markdown inside HTML
+  - meta # YAML frontmatter
+  - nl2br # New line to break
+  - sane_lists # Better list parsing
+  - smarty # Smart quotes and dashes
+  - tables # GitHub-flavored tables
+
   # Table of Contents
   - toc:
       permalink: true
       permalink_title: Link to this section
       # Note: slugify config moved to runtime - see python-tags.conf
       toc_depth: 3
-  
+
   # ============================================================================
   # PyMdown Extensions - Advanced Features
   # ============================================================================
-  
+
   # Math & Chemistry
   - pymdownx.arithmatex:
       generic: true
-      block_tag: 'pre'
-      
+      block_tag: "pre"
+
   # Text Formatting
   - pymdownx.betterem:
       smart_enable: all
-  - pymdownx.caret              # Superscript ^text^
-  - pymdownx.mark               # Highlight ==text==
-  - pymdownx.tilde              # Subscript ~text~ and strikethrough ~~text~~
-  - pymdownx.smartsymbols       # Special characters
-  - pymdownx.critic:            # Track changes
+  - pymdownx.caret # Superscript ^text^
+  - pymdownx.mark # Highlight ==text==
+  - pymdownx.tilde # Subscript ~text~ and strikethrough ~~text~~
+  - pymdownx.smartsymbols # Special characters
+  - pymdownx.critic: # Track changes
       mode: view
-  
+
   # UI Elements
-  - pymdownx.keys               # Keyboard keys ++ctrl+alt+del++
-  
+  - pymdownx.keys # Keyboard keys ++ctrl+alt+del++
+
   # Content Organization
-  - pymdownx.details            # Collapsible blocks
-  - pymdownx.snippets:          # Include external files
+  - pymdownx.details # Collapsible blocks
+  - pymdownx.snippets: # Include external files
       auto_append:
         - .config/mkdocs/includes/abbreviations.md
       base_path:
         - .
         - docs
       check_paths: true
-      
+
   # Code Features
   - pymdownx.highlight:
       use_pygments: true
@@ -66,9 +66,9 @@ markdown_extensions:
       linenums_style: pymdownx-inline
       anchor_linenums: true
       line_spans: __span
-      
-  - pymdownx.inlinehilite       # Inline code highlighting
-  
+
+  - pymdownx.inlinehilite # Inline code highlighting
+
   - pymdownx.superfences:
       preserve_tabs: true
       # Note: custom_fences format functions defined at runtime
@@ -82,19 +82,19 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
         - name: vega-lite
           class: vega-lite
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  
-  # Tabs
+          format: !!python/name:pymdownx.superfences.fence_code_format # Tabs
+
+
   - pymdownx.tabbed:
       alternate_style: true
       combine_header_slug: true
       # Note: slugify config moved to runtime - see python-tags.conf
-  
+
   # Task Lists
   - pymdownx.tasklist:
       custom_checkbox: true
       clickable_checkbox: true
-  
+
   # Emoji & Icons
   - pymdownx.emoji:
       # Note: emoji_index and emoji_generator use Python callables
