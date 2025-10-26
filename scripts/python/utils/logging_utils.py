@@ -6,29 +6,85 @@ Provides centralized logging configuration with color-coded output support.
 Implements custom formatters for improved log readability and debugging
 across all Python scripts.
 
+This module uses Python 3.14 type system features including Protocol, Literal,
+Final, and TypeAlias for improved type safety and semantic clarity.
+
 Examples:
     >>> from python.utils.logging_utils import setup_logger
     >>> logger = setup_logger('my_script', use_colors=True)
     >>> logger.info("Processing started")
 """
 
+import logging
+import sys
+from typing import Final, Literal, Protocol, TypeAlias
+
+from .colors import ColorCode, Colors
+
+# Type aliases for semantic clarity
+LogLevel: TypeAlias = int
+LogLevelName: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+FormatString: TypeAlias = str
+LoggerName: TypeAlias = str
+
+# Log level constants
+DEBUG: Final[LogLevel] = logging.DEBUG
+INFO: Final[LogLevel] = logging.INFO
+WARNING: Final[LogLevel] = logging.WARNING
+ERROR: Final[LogLevel] = logging.ERROR
+CRITICAL: Final[LogLevel] = logging.CRITICAL
+
+# Default format
+DEFAULT_FORMAT: Final[FormatString] = "%(levelname)s: %(message)s"
+
 __all__: list[str] = [
     "ColoredFormatter",
     "setup_logger",
     "get_logger",
+    "LogLevel",
+    "LogLevelName",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
 ]
 
-import logging
-import sys
-from typing import Optional
 
-from .colors import Colors
+class FormatterProtocol(Protocol):
+    """Protocol defining the interface for log formatters.
+
+    Any class implementing this protocol can be used as a log formatter.
+    Provides type safety for formatter objects in logging configuration.
+    """
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format a log record into a string.
+
+        Args:
+            record: Log record to format
+
+        Returns:
+            Formatted log message string
+        """
+        ...
 
 
 class ColoredFormatter(logging.Formatter):
-    """Custom formatter with color support"""
+    """Custom formatter with ANSI color support.
 
-    LEVEL_COLORS = {
+    Automatically colorizes log level names based on severity.
+    Uses immutable mapping for consistent color assignment.
+
+    Attributes:
+        LEVEL_COLORS: Immutable mapping of log levels to color codes
+
+    Example:
+        >>> formatter = ColoredFormatter("%(levelname)s: %(message)s")
+        >>> handler.setFormatter(formatter)
+    """
+
+    LEVEL_COLORS: Final[dict[LogLevel, ColorCode]] = {
         logging.DEBUG: Colors.CYAN,
         logging.INFO: Colors.BLUE,
         logging.WARNING: Colors.YELLOW,
@@ -37,46 +93,71 @@ class ColoredFormatter(logging.Formatter):
     }
 
     def format(self, record: logging.LogRecord) -> str:
-        """Format log record with color"""
+        """Format log record with appropriate color.
+
+        Args:
+            record: Log record to format
+
+        Returns:
+            Formatted and colorized log message
+        """
         color = self.LEVEL_COLORS.get(record.levelno, Colors.RESET)
         record.levelname = f"{color}{record.levelname}{Colors.RESET}"
         return super().format(record)
 
 
 def setup_logger(
-    name: str,
-    level: int = logging.INFO,
-    format_string: Optional[str] = None,
+    name: LoggerName,
+    *,
+    level: LogLevel = INFO,
+    format_string: FormatString | None = None,
     use_colors: bool = True,
 ) -> logging.Logger:
-    """
-    Setup and configure logger
+    """Setup and configure logger with color support.
+
+    Creates a new logger or reconfigures existing one with the specified
+    settings. Automatically clears existing handlers to prevent duplication.
 
     Args:
-        name: Logger name
-        level: Logging level (default: INFO)
-        format_string: Custom format string (default: '%(levelname)s: %(message)s')
-        use_colors: Use colored output (default: True)
+        name: Logger name (typically __name__ or module name)
+        level: Logging level (default: INFO). Use module constants:
+               DEBUG, INFO, WARNING, ERROR, CRITICAL
+        format_string: Custom format string (default: DEFAULT_FORMAT)
+                      Supports standard logging format specifiers
+        use_colors: Enable ANSI color output (default: True)
+                   Automatically uses ColoredFormatter when True
 
     Returns:
-        Configured logger instance
+        Configured logger instance ready for use
+
+    Example:
+        >>> logger = setup_logger(__name__, level=DEBUG, use_colors=True)
+        >>> logger.debug("Debug message")  # Cyan colored
+        >>> logger.info("Info message")   # Blue colored
+        >>> logger.warning("Warning")      # Yellow colored
+        >>> logger.error("Error occurred") # Red colored
+
+    Note:
+        If logger already exists, all handlers are cleared and reconfigured.
+        This ensures consistent configuration across multiple setup calls.
     """
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
-    # Remove existing handlers
+    # Remove existing handlers to prevent duplication
     logger.handlers.clear()
 
-    # Create console handler
+    # Create console handler with same level
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(level)
 
-    # Create formatter
+    # Determine formatter based on color preference
     if format_string is None:
-        format_string = "%(levelname)s: %(message)s"
+        format_string = DEFAULT_FORMAT
 
+    formatter: FormatterProtocol
     if use_colors:
-        formatter: logging.Formatter = ColoredFormatter(format_string)
+        formatter = ColoredFormatter(format_string)
     else:
         formatter = logging.Formatter(format_string)
 
@@ -86,14 +167,25 @@ def setup_logger(
     return logger
 
 
-def get_logger(name: str) -> logging.Logger:
-    """
-    Get existing logger or create basic one
+def get_logger(name: LoggerName) -> logging.Logger:
+    """Get existing logger instance.
+
+    Retrieves logger by name without modifying configuration.
+    If logger doesn't exist, creates basic logger with default settings.
 
     Args:
-        name: Logger name
+        name: Logger name to retrieve
 
     Returns:
-        Logger instance
+        Logger instance (may be unconfigured if new)
+
+    Example:
+        >>> # After setup_logger(__name__) in module
+        >>> logger = get_logger(__name__)
+        >>> logger.info("Using existing logger")
+
+    Note:
+        Prefer using setup_logger() for initial configuration.
+        Use get_logger() only when logger is already configured.
     """
     return logging.getLogger(name)
