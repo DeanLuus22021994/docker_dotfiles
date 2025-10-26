@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Platform-agnostic pre-commit hook using Docker
+# Automatically runs code quality checks via cluster-pre-commit container
+# No local Python/virtualenv installation required
+
+set -e
+
+# Detect shell and prefer PowerShell on Windows
+if command -v pwsh >/dev/null 2>&1; then
+    exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$(dirname "$0")/pre-commit.ps1"
+fi
+
+# Bash implementation for Linux/Mac
+echo "Running pre-commit validation..."
+
+# Verify Docker is available
+if ! command -v docker >/dev/null 2>&1; then
+    echo "Error: Docker not found. Please install Docker." >&2
+    exit 1
+fi
+
+if ! docker info >/dev/null 2>&1; then
+    echo "Error: Docker daemon not running. Please start Docker." >&2
+    exit 1
+fi
+
+# Navigate to repository root
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT" || exit 1
+
+# Build container if needed
+if ! docker image inspect cluster-pre-commit:latest >/dev/null 2>&1; then
+    echo "Building pre-commit container..."
+    docker build -q -f dockerfile/pre-commit.Dockerfile -t cluster-pre-commit .
+fi
+
+# Get staged files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | tr '\n' ' ')
+
+if [ -z "$STAGED_FILES" ]; then
+    echo "No staged files to validate"
+    exit 0
+fi
+
+# Run validation in container
+echo "Validating: $STAGED_FILES"
+docker run --rm \
+    -v "$(pwd):/workspace:rw" \
+    --network none \
+    cluster-pre-commit \
+    bash -c "cd /workspace && git config --global --add safe.directory /workspace && pre-commit run --files $STAGED_FILES"
+
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "❌ Pre-commit validation failed"
+    echo "Fix issues or skip with: git commit --no-verify"
+    exit $EXIT_CODE
+fi
+
+echo "✓ All checks passed"
+exit 0
