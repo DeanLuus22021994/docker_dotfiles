@@ -910,7 +910,8 @@ services:
     container_name: cluster-postgres-exporter
     image: prometheuscommunity/postgres-exporter:v0.15.0
     environment:
-      DATA_SOURCE_NAME: "postgresql://cluster_user:${DOCKER_POSTGRES_PASSWORD}@cluster-postgres:5432/clusterdb?sslmode=disable"
+      DATA_SOURCE_NAME: >-
+        postgresql://cluster_user:${DOCKER_POSTGRES_PASSWORD}@cluster-postgres:5432/clusterdb?sslmode=disable
     ports:
       - "9187:9187"
     networks:
@@ -982,7 +983,7 @@ services:
         max-size: "10m"
         max-file: "3"
 
-    # Node Exporter - Host metrics for Prometheus
+  # Node Exporter - Host metrics for Prometheus
   cluster-node-exporter:
     container_name: cluster-node-exporter
     image: prom/node-exporter:latest
@@ -1036,7 +1037,8 @@ services:
       target: development # Use 'production' for static nginx serving
       args:
         MKDOCS_VERSION: "1.6.1"
-        MATERIAL_VERSION: "9.5.39"
+        MATERIAL_VERSION: "9.6.22"
+        AWESOME_PAGES_VERSION: "2.9.3"
     image: cluster-mkdocs:2.0-dev
     volumes:
       # Source files for hot reload (development mode only)

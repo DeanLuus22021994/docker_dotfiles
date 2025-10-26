@@ -31,26 +31,32 @@ JWT_REFRESH_EXPIRES_IN=7d  # Refresh token expiration
 
 **Register** - `POST /api/auth/register`
 
+<!-- pragma: allowlist secret -->
+
 ```json
 {
   "username": "admin",
-  "password": "secure_password",
+  "password": "<secure-password>",
   "email": "admin@example.com"
 }
 ```
 
 **Login** - `POST /api/auth/login`
 
+<!-- pragma: allowlist secret -->
+
 ```json
-{ "username": "admin", "password": "password" }
+{ "username": "admin", "password": "<password>" }
 ```
 
 Returns: `{"accessToken": "...", "refreshToken": "..."}`
 
 **Refresh** - `POST /api/auth/refresh`
 
+<!-- pragma: allowlist secret -->
+
 ```json
-{ "refreshToken": "..." }
+{ "refreshToken": "<refresh-token>" }
 ```
 
 ## Protected Routes
@@ -58,8 +64,9 @@ Returns: `{"accessToken": "...", "refreshToken": "..."}`
 Add `Authorization: Bearer <token>` header:
 
 ```bash
+# pragma: allowlist secret
 curl https://api.example.com/containers \
-  -H "Authorization: Bearer eyJhbGc..."
+  -H "Authorization: Bearer <jwt-token>"
 ```
 
 ## Token Structure

@@ -43,4 +43,4 @@ python scripts/validate_configs.py
 - **Actionable**: Provide fix command or example
 - **Unambiguous**: No vague errors, clear root cause
 
-See [Docker stack guide](agent-docker-stack.md) for service management.
+See [Docker stack guide](docker-stack.md) for service management.

@@ -41,10 +41,16 @@ class StructuredDataConfig:
     enable_software_application: bool = True
 
     # Docker-specific schema
-    docker_categories: List[str] = field(default_factory=lambda: [
-        "containerization", "orchestration", "monitoring",
-        "security", "networking", "storage"
-    ])
+    docker_categories: List[str] = field(
+        default_factory=lambda: [
+            "containerization",
+            "orchestration",
+            "monitoring",
+            "security",
+            "networking",
+            "storage",
+        ]
+    )
 
 
 class JSONLDGenerator:
@@ -56,10 +62,7 @@ class JSONLDGenerator:
     def generate_for_page(self, page: Page, config: Config) -> str:
         """Generate complete JSON-LD structured data for a page."""
 
-        structured_data = {
-            "context": "https://schema.org",
-            "graph": []
-        }
+        structured_data = {"context": "https://schema.org", "graph": []}
 
         # Base article/documentation schema
         article_schema = self._generate_article_schema(page, config)
@@ -97,7 +100,7 @@ class JSONLDGenerator:
         # Extract metadata
         meta = page.meta
         title = page.title or "Documentation"
-        description = meta.get('description', '')
+        description = meta.get("description", "")
 
         # Determine article type
         article_type = self._determine_article_type(page, meta)
@@ -117,13 +120,10 @@ class JSONLDGenerator:
                 "url": self.config.organization_url,
                 "logo": {
                     "@type": "ImageObject",
-                    "url": f"{self.config.site_url}{self.config.organization_logo}"
-                }
+                    "url": f"{self.config.site_url}{self.config.organization_logo}",
+                },
             },
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": f"{self.config.site_url}{page.url}"
-            }
+            "mainEntityOfPage": {"@type": "WebPage", "@id": f"{self.config.site_url}{page.url}"},
         }
 
         # Add description if available
@@ -152,20 +152,23 @@ class JSONLDGenerator:
     def _determine_article_type(self, page: Page, meta: Dict) -> str:
         """Determine the most appropriate schema.org article type."""
 
-        category = meta.get('category', '').lower()
+        category = meta.get("category", "").lower()
         title = page.title.lower()
-        content = getattr(page, 'content', '').lower()
+        content = getattr(page, "content", "").lower()
 
         # Check for specific patterns
-        if any(word in title or word in content for word in ['tutorial', 'guide', 'how to', 'walkthrough']):
+        if any(
+            word in title or word in content
+            for word in ["tutorial", "guide", "how to", "walkthrough"]
+        ):
             return "HowTo"
-        elif any(word in title or word in content for word in ['faq', 'question', 'answer']):
+        elif any(word in title or word in content for word in ["faq", "question", "answer"]):
             return "FAQPage"
-        elif category in ['api', 'reference']:
+        elif category in ["api", "reference"]:
             return "APIReference"
-        elif category in ['troubleshooting', 'debugging']:
+        elif category in ["troubleshooting", "debugging"]:
             return "TroubleshootingGuide"
-        elif any(word in title for word in ['news', 'update', 'release']):
+        elif any(word in title for word in ["news", "update", "release"]):
             return "NewsArticle"
         else:
             return "TechnicalArticle"
@@ -179,18 +182,15 @@ class JSONLDGenerator:
             "name": self.config.site_name,
             "description": self.config.site_description,
             "url": self.config.site_url,
-            "publisher": {
-                "@type": "Organization",
-                "name": self.config.organization_name
-            },
+            "publisher": {"@type": "Organization", "name": self.config.organization_name},
             "potentialAction": {
                 "@type": "SearchAction",
                 "target": {
                     "@type": "EntryPoint",
-                    "urlTemplate": f"{self.config.site_url}/search/?q={{search_term_string}}"
+                    "urlTemplate": f"{self.config.site_url}/search/?q={{search_term_string}}",
                 },
-                "query-input": "required name=search_term_string"
-            }
+                "query-input": "required name=search_term_string",
+            },
         }
 
     def _generate_organization_schema(self) -> Dict[str, Any]:
@@ -203,61 +203,67 @@ class JSONLDGenerator:
             "url": self.config.organization_url,
             "logo": {
                 "@type": "ImageObject",
-                "url": f"{self.config.site_url}{self.config.organization_logo}"
+                "url": f"{self.config.site_url}{self.config.organization_logo}",
             },
             "sameAs": [
                 f"{self.config.organization_url}",
-                f"https://github.com/{self.config.organization_name.lower().replace(' ', '-')}"
-            ]
+                f"https://github.com/{self.config.organization_name.lower().replace(' ', '-')}",
+            ],
         }
 
     def _generate_breadcrumb_schema(self, page: Page) -> Optional[Dict[str, Any]]:
         """Generate breadcrumb navigation schema."""
 
-        if not hasattr(page, 'ancestors') or not page.ancestors:
+        if not hasattr(page, "ancestors") or not page.ancestors:
             return None
 
         breadcrumb_items = []
         position = 1
 
         # Add home
-        breadcrumb_items.append({
-            "@type": "ListItem",
-            "position": position,
-            "name": "Home",
-            "item": self.config.site_url
-        })
+        breadcrumb_items.append(
+            {
+                "@type": "ListItem",
+                "position": position,
+                "name": "Home",
+                "item": self.config.site_url,
+            }
+        )
         position += 1
 
         # Add ancestors
         for ancestor in page.ancestors:
-            breadcrumb_items.append({
-                "@type": "ListItem",
-                "position": position,
-                "name": ancestor.title,
-                "item": f"{self.config.site_url}{ancestor.url}"
-            })
+            breadcrumb_items.append(
+                {
+                    "@type": "ListItem",
+                    "position": position,
+                    "name": ancestor.title,
+                    "item": f"{self.config.site_url}{ancestor.url}",
+                }
+            )
             position += 1
 
         # Add current page
-        breadcrumb_items.append({
-            "@type": "ListItem",
-            "position": position,
-            "name": page.title,
-            "item": f"{self.config.site_url}{page.url}"
-        })
+        breadcrumb_items.append(
+            {
+                "@type": "ListItem",
+                "position": position,
+                "name": page.title,
+                "item": f"{self.config.site_url}{page.url}",
+            }
+        )
 
         return {
             "@type": "BreadcrumbList",
             "@id": f"{self.config.site_url}{page.url}#breadcrumb",
-            "itemListElement": breadcrumb_items
+            "itemListElement": breadcrumb_items,
         }
 
     def _generate_content_specific_schemas(self, page: Page) -> List[Dict[str, Any]]:
         """Generate content-specific schemas based on page content."""
 
         schemas = []
-        content = getattr(page, 'content', '')
+        content = getattr(page, "content", "")
         meta = page.meta
 
         # FAQ schema
@@ -283,7 +289,7 @@ class JSONLDGenerator:
         """Extract FAQ schema from content."""
 
         # Look for FAQ patterns in markdown
-        faq_pattern = r'#{2,4}\s*(.+\?)\s*\n\n*(.+?)(?=\n#{2,4}|\n*$)'
+        faq_pattern = r"#{2,4}\s*(.+\?)\s*\n\n*(.+?)(?=\n#{2,4}|\n*$)"
         matches = re.findall(faq_pattern, content, re.MULTILINE | re.DOTALL)
 
         if not matches:
@@ -292,31 +298,26 @@ class JSONLDGenerator:
         faq_items = []
         for question, answer in matches:
             # Clean up the answer text
-            answer = re.sub(r'\n+', ' ', answer.strip())
-            answer = re.sub(r'\s+', ' ', answer)
+            answer = re.sub(r"\n+", " ", answer.strip())
+            answer = re.sub(r"\s+", " ", answer)
 
-            faq_items.append({
-                "@type": "Question",
-                "name": question.strip(),
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": answer
+            faq_items.append(
+                {
+                    "@type": "Question",
+                    "name": question.strip(),
+                    "acceptedAnswer": {"@type": "Answer", "text": answer},
                 }
-            })
+            )
 
-        return {
-            "@type": "FAQPage",
-            "@id": "#faq",
-            "mainEntity": faq_items
-        }
+        return {"@type": "FAQPage", "@id": "#faq", "mainEntity": faq_items}
 
     def _extract_howto_schema(self, content: str, meta: Dict) -> Optional[Dict[str, Any]]:
         """Extract HowTo schema from content."""
 
         # Look for numbered steps or step patterns
         step_patterns = [
-            r'(?:^|\n)#{2,4}\s*(?:Step\s*)?(\d+)[\.\)]\s*(.+?)(?=\n#{2,4}|\n*$)',
-            r'(?:^|\n)(\d+)\.\s*(.+?)(?=\n\d+\.|\n*$)'
+            r"(?:^|\n)#{2,4}\s*(?:Step\s*)?(\d+)[\.\)]\s*(.+?)(?=\n#{2,4}|\n*$)",
+            r"(?:^|\n)(\d+)\.\s*(.+?)(?=\n\d+\.|\n*$)",
         ]
 
         steps = []
@@ -324,15 +325,17 @@ class JSONLDGenerator:
             matches = re.findall(pattern, content, re.MULTILINE | re.DOTALL)
             if matches:
                 for step_num, step_text in matches:
-                    step_text = re.sub(r'\n+', ' ', step_text.strip())
-                    step_text = re.sub(r'\s+', ' ', step_text)
+                    step_text = re.sub(r"\n+", " ", step_text.strip())
+                    step_text = re.sub(r"\s+", " ", step_text)
 
-                    steps.append({
-                        "@type": "HowToStep",
-                        "position": int(step_num),
-                        "name": f"Step {step_num}",
-                        "text": step_text
-                    })
+                    steps.append(
+                        {
+                            "@type": "HowToStep",
+                            "position": int(step_num),
+                            "name": f"Step {step_num}",
+                            "text": step_text,
+                        }
+                    )
                 break
 
         if not steps:
@@ -341,8 +344,8 @@ class JSONLDGenerator:
         howto_schema = {
             "@type": "HowTo",
             "@id": "#howto",
-            "name": meta.get('title', 'How-to Guide'),
-            "step": sorted(steps, key=lambda x: x["position"])
+            "name": meta.get("title", "How-to Guide"),
+            "step": sorted(steps, key=lambda x: x["position"]),
         }
 
         # Add additional properties
@@ -361,7 +364,7 @@ class JSONLDGenerator:
         """Extract code example schema."""
 
         # Find code blocks
-        code_pattern = r'`(\w+)?\n(.*?)\n`'
+        code_pattern = r"`(\w+)?\n(.*?)\n`"
         matches = re.findall(code_pattern, content, re.DOTALL)
 
         if not matches:
@@ -374,7 +377,7 @@ class JSONLDGenerator:
                 "name": f"Code Example {i + 1}",
                 "text": code.strip(),
                 "programmingLanguage": language if language else "text",
-                "codeRepository": self.config.organization_url
+                "codeRepository": self.config.organization_url,
             }
             code_examples.append(example)
 
@@ -382,19 +385,22 @@ class JSONLDGenerator:
             "@type": "CreativeWork",
             "@id": "#code-examples",
             "name": f"{page.title} - Code Examples",
-            "hasPart": code_examples
+            "hasPart": code_examples,
         }
 
     def _generate_software_schema(self, page: Page) -> Optional[Dict[str, Any]]:
         """Generate software application schema for Docker-related content."""
 
         meta = page.meta
-        category = meta.get('category', '').lower()
-        tags = [tag.lower() for tag in meta.get('tags', [])]
+        category = meta.get("category", "").lower()
+        tags = [tag.lower() for tag in meta.get("tags", [])]
 
         # Check if this is Docker-related content
-        docker_keywords = ['docker', 'container', 'dockerfile', 'compose', 'swarm', 'kubernetes']
-        if not any(keyword in category or any(keyword in tag for tag in tags) for keyword in docker_keywords):
+        docker_keywords = ["docker", "container", "dockerfile", "compose", "swarm", "kubernetes"]
+        if not any(
+            keyword in category or any(keyword in tag for tag in tags)
+            for keyword in docker_keywords
+        ):
             return None
 
         return {
@@ -403,35 +409,32 @@ class JSONLDGenerator:
             "name": "Docker",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": ["Linux", "Windows", "macOS"],
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-            },
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
             "downloadUrl": "https://docker.com/get-started",
             "softwareVersion": "latest",
-            "description": "Platform for developing, shipping, and running applications in containers"
+            "description": "Platform for developing, shipping, and running applications in containers",
         }
 
     def _generate_author_schema(self, meta: Dict) -> Dict[str, Any]:
         """Generate author schema from metadata."""
 
-        author_name = meta.get('author', self.config.default_author)
+        author_name = meta.get("author", self.config.default_author)
 
         return {
             "@type": "Person",
             "name": author_name,
-            "url": meta.get('author_url', self.config.author_url)
+            "url": meta.get("author_url", self.config.author_url),
         }
 
     def _get_publish_date(self, meta: Dict) -> str:
         """Extract publish date from metadata."""
 
-        date_str = meta.get('date', meta.get('created', ''))
+        date_str = meta.get("date", meta.get("created", ""))
         if date_str:
             try:
                 # Try to parse various date formats
                 from dateutil.parser import parse
+
                 parsed_date = parse(date_str)
                 return parsed_date.isoformat()
             except (ImportError, ValueError):
@@ -443,17 +446,18 @@ class JSONLDGenerator:
     def _get_modified_date(self, meta: Dict, page: Page) -> str:
         """Extract modified date from metadata or file stats."""
 
-        modified_str = meta.get('modified', meta.get('updated', ''))
+        modified_str = meta.get("modified", meta.get("updated", ""))
         if modified_str:
             try:
                 from dateutil.parser import parse
+
                 parsed_date = parse(modified_str)
                 return parsed_date.isoformat()
             except (ImportError, ValueError):
                 pass
 
         # Try to get file modification time
-        if hasattr(page, 'file') and page.file:
+        if hasattr(page, "file") and page.file:
             try:
                 file_path = Path(page.file.abs_src_path)
                 if file_path.exists():
@@ -466,8 +470,9 @@ class JSONLDGenerator:
         return self._get_publish_date(meta)
 
 
-def generate_jsonld_for_page(page: Page, config: Config,
-                            structured_config: Optional[StructuredDataConfig] = None) -> str:
+def generate_jsonld_for_page(
+    page: Page, config: Config, structured_config: Optional[StructuredDataConfig] = None
+) -> str:
     """Main function to generate JSON-LD for a page."""
 
     if structured_config is None:
@@ -478,9 +483,9 @@ def generate_jsonld_for_page(page: Page, config: Config,
 
 
 # Template for embedding in HTML
-JSONLD_TEMPLATE = '''<script type="application/ld+json">
+JSONLD_TEMPLATE = """<script type="application/ld+json">
 {jsonld_data}
-</script>'''
+</script>"""
 
 
 def embed_jsonld_in_html(html_content: str, jsonld_data: str) -> str:
@@ -489,10 +494,10 @@ def embed_jsonld_in_html(html_content: str, jsonld_data: str) -> str:
     jsonld_script = JSONLD_TEMPLATE.format(jsonld_data=jsonld_data)
 
     # Insert before closing </head> tag
-    if '</head>' in html_content:
-        html_content = html_content.replace('</head>', f'    {jsonld_script}\n</head>')
+    if "</head>" in html_content:
+        html_content = html_content.replace("</head>", f"    {jsonld_script}\n</head>")
     else:
         # Fallback: insert at the beginning of <body>
-        html_content = html_content.replace('<body>', f'<body>\n    {jsonld_script}')
+        html_content = html_content.replace("<body>", f"<body>\n    {jsonld_script}")
 
     return html_content

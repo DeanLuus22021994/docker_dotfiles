@@ -11,12 +11,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'CHANGE_ME_IN_PRODUCTION';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '8h';
 const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
+const DEFAULT_ADMIN_PASSWORD_HASH = process.env.DEFAULT_ADMIN_PASSWORD_HASH || null;
+
 // Default admin credentials (MUST be changed in production)
 const DEFAULT_USERS = {
   admin: {
     username: 'admin',
-    // Default password: 'admin' (hash generated with bcrypt)
-    passwordHash: '$2a$10$eImiTXuWVxfM37uY4JANjQ==',
+    // Optional bcrypt hash loaded via DEFAULT_ADMIN_PASSWORD_HASH env var
+    passwordHash: DEFAULT_ADMIN_PASSWORD_HASH,
     role: 'admin',
   },
 };
@@ -38,13 +40,16 @@ async function verifyCredentials(username, password) {
     return { username: user.username, role: user.role };
   }
 
-  // In production, verify against hashed password
-  const isValid = await bcrypt.compare(password, user.passwordHash);
-  if (!isValid) {
-    return null;
+  // In production, verify against hashed password when provided
+  if (user.passwordHash) {
+    const isValid = await bcrypt.compare(password, user.passwordHash);
+    if (!isValid) {
+      return null;
+    }
+    return { username: user.username, role: user.role };
   }
 
-  return { username: user.username, role: user.role };
+  return null;
 }
 
 /**

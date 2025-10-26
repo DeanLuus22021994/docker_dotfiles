@@ -43,4 +43,4 @@ tags:
 | Docker     | `.config/docker/`     | buildkitd.toml, daemon.json                |
 | Monitoring | `.config/monitoring/` | prometheus.yml, grafana/                   |
 
-See [environment variables guide](agent-environment.md) for credentials.
+See [environment variables guide](environment.md) for credentials.

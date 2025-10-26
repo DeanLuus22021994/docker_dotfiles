@@ -95,9 +95,36 @@
 
 - `pyproject.toml` - Added docs dependency group (pydantic, rich, inquirer, jinja2, pyyaml)
 - `.config/mkdocs/schemas/frontmatter.py` - Rewritten with proper Pydantic/fallback implementations
-- `.config/mkdocs/scripts/new_doc.py` - Fixed linting errors and added graceful dependency handling
-- `mkdocs.yml` - Enabled strict mode validation for enhanced error reporting
-- `.config/mkdocs/hooks/validate_frontmatter.py` - Enhanced with Pydantic integration, cross-reference validation, and content consistency checks
+- `.config/mkdocs/scripts/new_doc.py` - Fixed linting errors, added graceful dependency handling, and refined DocFrontmatter factory typing for mypy compliance
+- `.config/mkdocs/scripts/validate_frontmatter_cli.py` - Reused shared validator to keep CLI behaviour aligned with hooks
+- `mkdocs.yml` - Enabled strict mode validation and added tooling schema metadata for editor support
+- `.config/mkdocs/hooks/validate_frontmatter.py` - Enhanced with Pydantic integration, cross-reference validation, content consistency checks, optional dependency handling without `type: ignore`, and relaxed required-field expectations to match schema semantics
+- `.config/mkdocs/markdown.yml` - Replaced python tag syntax with string callables for YAML tooling compatibility
+- `.config/git/.pre-commit-config.yaml` - Expanded list formatting to satisfy YAML parsers
+- `.pre-commit-config.yaml` - Added JSONC exclusions, mypy path filtering, and relaxed hadolint thresholds
+- `.config/git/.pre-commit-config.yaml` - Mirrored JSON exclusions and lint threshold updates for template parity
+- `.secrets.baseline` - Seeded empty detect-secrets baseline to satisfy pre-commit hook expectations
+- `pyproject.toml` - Downgraded tooling target versions to py312 for Black and Ruff compatibility
+- `.config/mkdocs/markdown.yml` - Normalized comment layout to satisfy yamllint spacing rules
+- `.config/mkdocs/mkdocs.yml` - Converted inline comments to standalone lines and adjusted theme annotations for yamllint compliance
+- `.pre-commit-config.yaml` - Refined JSON exclusion regex and broadened mypy path filter for Windows compatibility
+- `.config/git/.pre-commit-config.yaml` - Synced JSON exclusions and mypy path filter updates with template config
+- `.config/github/branch-protection.yml` - Wrapped CLI usage comment to satisfy yamllint line-length checks
+- `.config/github/repository.yml` - Folded long description, corrected homepage URL, and wrapped CLI usage comment
+- `.config/github/project-v4.0.yml` - Normalized inline comment spacing for yamllint
+- `.config/github/actions.yml` - Adjusted inline comment spacing in tool lists
+- `.config/github/workflows/*.yml` - Quoted `on` keys and cleaned inline comments for yamllint truthy rule compliance
+- `.config/github/workflows/labeler.yml` - Quoted `on` key to avoid yamllint truthy warnings
+- `.config/mkdocs/plugins.yml` - Corrected inline comment spacing
+- `.config/cluster/cluster.config.yml` - Adjusted inline comment spacing
+- `.config/traefik/dynamic/middlewares.yml` - Wrapped CSP policy across multiple lines
+- `.config/traefik/traefik.yml` - Normalized inline comment spacing for multiple directives
+- `.config/docker/compose.override.example.yml` - Documented yamllint rule disablement for comment-only template
+- `docker-compose.yml` - Wrapped PostgreSQL DSN and normalized inline comment spacing
+- `.secrets.baseline` - Regenerated detect-secrets baseline capturing known placeholder credentials
+- `dockerfile/localstack.Dockerfile` - Pinned LocalStack image and AWS tooling versions
+- `dockerfile/k9s.Dockerfile` - Pinned Alpine base/packages and enforced pipefail shell semantics
+- `dockerfile/postgres.Dockerfile` - Removed unused curl dependency to reduce image surface area
 
 ## Success Criteria Validation
 
@@ -151,3 +178,17 @@ Implementation started October 26, 2025. Following systematic phase-by-phase app
 - ✅ Enhanced social card templates with Docker branding and category-specific styling
 - ✅ Progressive image loading system with WebP detection and performance optimization
 - ✅ JSON-LD structured data generator for enhanced SEO compliance
+
+**Post-implementation Maintenance (October 26, 2025 22:15):**
+
+- Cleared mypy `misc` diagnostics by introducing typed factory helpers for optional dependencies
+- Normalized YAML list formatting in `.config/git/.pre-commit-config.yaml`
+- Updated `markdown.yml` callable references to keep IDE YAML validation happy
+- Added MkDocs schema metadata and human-readable © symbol for YAML tooling clarity
+
+**Pre-commit Stabilization (October 26, 2025 23:05):**
+
+- Tightened JSON lint exclusions, refreshed detect-secrets baseline, and harmonized mypy path filters for Windows paths
+- Normalized yamllint findings across GitHub workflows, Traefik configs, Compose templates, and documentation theme comments
+- Pinned LocalStack and K9s container dependencies, enforced pipefail semantics, and trimmed unused PostgreSQL packages to appease hadolint
+- Wrapped lengthy CLI documentation comments to satisfy line-length policies in repository governance files

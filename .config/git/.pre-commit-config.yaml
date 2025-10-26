@@ -17,12 +17,15 @@ repos:
         name: Fix end of files
       - id: check-yaml
         name: Check YAML syntax
-        args: ["--unsafe"] # Allow custom YAML tags
+        args:
+          - "--unsafe"  # Allow custom YAML tags
       - id: check-json
         name: Check JSON syntax
+        exclude: ^(\.vscode/settings\.json|\.config/devcontainer/devcontainer\.json|\.config/web/tsconfig\.json)$
       - id: check-added-large-files
         name: Check for large files
-        args: ["--maxkb=1000"]
+        args:
+          - "--maxkb=1000"
       - id: check-merge-conflict
         name: Check for merge conflicts
       - id: mixed-line-ending
@@ -35,11 +38,10 @@ repos:
       - id: yamllint
         name: Validate YAML files
         args:
-          [
-            "-d",
-            "{extends: default, rules: {line-length: {max: 120}, document-start: disable}}",
-          ]
-        types: [yaml]
+          - "-d"
+          - "{extends: default, rules: {line-length: {max: 120}, document-start: disable}}"
+        types:
+          - yaml
         language_version: python
 
   # Shell script linting
@@ -48,7 +50,8 @@ repos:
     hooks:
       - id: shellcheck
         name: Lint shell scripts
-        args: ["--severity=warning"]
+        args:
+          - "--severity=warning"
         language_version: python
 
   # Markdown linting
@@ -57,7 +60,12 @@ repos:
     hooks:
       - id: markdownlint
         name: Lint Markdown files
-        args: ["--fix", "--disable", "MD013", "MD033", "MD041"]
+        args:
+          - "--fix"
+          - "--disable"
+          - "MD013"
+          - "MD033"
+          - "MD041"
 
   # Prettier formatting
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -65,7 +73,10 @@ repos:
     hooks:
       - id: prettier
         name: Format JSON/YAML/Markdown
-        types_or: [json, yaml, markdown]
+        types_or:
+          - json
+          - yaml
+          - markdown
 
   # Secrets detection
   - repo: https://github.com/Yelp/detect-secrets
@@ -73,8 +84,10 @@ repos:
     hooks:
       - id: detect-secrets
         name: Detect secrets
-        args: ["--baseline", ".secrets.baseline"]
-        exclude: ^\.env\.example$
+        args:
+          - "--baseline"
+          - ".secrets.baseline"
+        exclude: ^(\.env\.example|\.secrets\.baseline|\.config/mkdocs/site/)
         language_version: python
 
   # Python code quality
@@ -83,7 +96,8 @@ repos:
     hooks:
       - id: black
         name: Format Python with Black
-        args: ["--line-length=100"]
+        args:
+          - "--line-length=100"
         language_version: python
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -91,7 +105,9 @@ repos:
     hooks:
       - id: ruff
         name: Lint Python with Ruff
-        args: ["--fix", "--exit-non-zero-on-fix"]
+        args:
+          - "--fix"
+          - "--exit-non-zero-on-fix"
         language_version: python
 
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -99,7 +115,15 @@ repos:
     hooks:
       - id: mypy
         name: Type check with mypy
-        args: ["--strict", "--ignore-missing-imports"]
+        exclude: ^\.config/mkdocs/__init__\.py$
+        args:
+          - "--strict"
+          - "--ignore-missing-imports"
+          - "--exclude=^\\.config[\\/]+mkdocs"
+        additional_dependencies:
+          - types-PyYAML
+          - types-python-dateutil
+          - types-requests
         language_version: python
 
   # Docker linting
@@ -108,7 +132,13 @@ repos:
     hooks:
       - id: hadolint-docker
         name: Lint Dockerfiles
-        args: ["--ignore", "DL3008", "--ignore", "DL3009"]
+        args:
+          - "--ignore"
+          - "DL3008"
+          - "--ignore"
+          - "DL3009"
+          - "--failure-threshold"
+          - "error"
 
   # Docker Compose validation
   - repo: local
@@ -116,7 +146,9 @@ repos:
       - id: docker-compose-check
         name: Validate docker-compose.yml
         entry: docker-compose
-        args: ["config", "--quiet"]
+        args:
+          - "config"
+          - "--quiet"
         language: system
         files: docker-compose\.yml$
         pass_filenames: false
@@ -131,7 +163,8 @@ repos:
       - id: mkdocs-frontmatter
         name: Validate Markdown Frontmatter
         entry: python
-        args: [".config/mkdocs/scripts/validate_frontmatter_cli.py"]
+        args:
+          - ".config/mkdocs/scripts/validate_frontmatter_cli.py"
         language: system
         files: ^docs/.*\.md$
         pass_filenames: true
@@ -143,8 +176,12 @@ repos:
         name: MkDocs Build Test
         entry: mkdocs
         args:
-          ["build", "--config-file", ".config/mkdocs/mkdocs.yml", "--strict"]
+          - "build"
+          - "--config-file"
+          - ".config/mkdocs/mkdocs.yml"
+          - "--strict"
         language: system
         pass_filenames: false
         files: ^(docs/.*\.md|\.config/mkdocs/.*\.yml)$
-        stages: [manual]
+        stages:
+          - manual

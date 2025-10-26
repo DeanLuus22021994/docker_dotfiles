@@ -11,11 +11,31 @@ interface ServiceGridProps {
 
 // Phase 4.6.3: Layer color coding and display names
 const LAYER_CONFIG: Record<string, { name: string; color: string; bgColor: string }> = {
-  network: { name: 'Network Layer', color: 'text-blue-600', bgColor: 'bg-blue-50 dark:bg-blue-900/20' },
-  services: { name: 'Services Layer', color: 'text-green-600', bgColor: 'bg-green-50 dark:bg-green-900/20' },
-  compute: { name: 'Compute Layer', color: 'text-purple-600', bgColor: 'bg-purple-50 dark:bg-purple-900/20' },
-  data: { name: 'Data Layer', color: 'text-orange-600', bgColor: 'bg-orange-50 dark:bg-orange-900/20' },
-  monitoring: { name: 'Monitoring Layer', color: 'text-red-600', bgColor: 'bg-red-50 dark:bg-red-900/20' },
+  infrastructure: {
+    name: 'Infrastructure Layer',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+  },
+  data: {
+    name: 'Data Layer',
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-50 dark:bg-orange-900/20',
+  },
+  compute: {
+    name: 'Compute Layer',
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+  },
+  monitoring: {
+    name: 'Monitoring Layer',
+    color: 'text-red-600',
+    bgColor: 'bg-red-50 dark:bg-red-900/20',
+  },
+  development: {
+    name: 'Development Layer',
+    color: 'text-green-600',
+    bgColor: 'bg-green-50 dark:bg-green-900/20',
+  },
 }
 
 export const ServiceGrid = ({ services, layerMetrics, isLoading }: ServiceGridProps) => {
@@ -48,11 +68,15 @@ export const ServiceGrid = ({ services, layerMetrics, isLoading }: ServiceGridPr
   }
 
   // Group services by layer
-  const servicesByLayer = services.reduce((acc, service) => {
-    if (!acc[service.layer]) acc[service.layer] = []
-    acc[service.layer].push(service)
+  const servicesByLayer = services.reduce<Record<string, Service[]>>((acc, service) => {
+    const layerKey = service.layer ?? 'unassigned'
+    const bucket = acc[layerKey] ?? []
+    if (!acc[layerKey]) {
+      acc[layerKey] = bucket
+    }
+    bucket.push(service)
     return acc
-  }, {} as Record<string, Service[]>)
+  }, {})
 
   return (
     <section className="space-y-6">
@@ -105,7 +129,7 @@ export const ServiceGrid = ({ services, layerMetrics, isLoading }: ServiceGridPr
                   <div className="flex gap-6 text-sm">
                     <div>
                       <span className="text-gray-500">CPU:</span>{' '}
-                      <span className="font-medium">{metrics.avgCPU.toFixed(1)}%</span>
+                      <span className="font-medium">{metrics.avgCpu.toFixed(1)}%</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Memory:</span>{' '}

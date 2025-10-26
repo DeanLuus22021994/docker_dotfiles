@@ -1,6 +1,6 @@
 name: Documentation Quality Assurance
 
-on:
+"on":
   push:
     branches: [main, develop]
     paths: ["docs/**/*.md"]

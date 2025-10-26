@@ -37,7 +37,7 @@ Complete the MkDocs Material implementation with modern Python 3.14 patterns, st
 
 ### Standards References
 
-- #file:../../copilot/python.md - Python 3.14 conventions (PEP 585, dataclasses)
+- #file:../../.github/copilot-instructions.md - Project coding standards and conventions
 - #file:../../.github/instructions/python.instructions.md - Project Python standards
 
 ## Implementation Checklist

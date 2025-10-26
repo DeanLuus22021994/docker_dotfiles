@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Docs Deploy
+
+'on':
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".config/mkdocs/**"
+      - "dockerfile/mkdocs.Dockerfile"
+      - ".github/workflows/docs-deploy.yml"
+      - "Makefile"
+  workflow_dispatch:
+
+concurrency:
+  group: docs-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+jobs:
+  build:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build MkDocs production image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: dockerfile/mkdocs.Dockerfile
+          target: production
+          load: true
+          push: false
+          platforms: linux/amd64
+          tags: docs-site:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract static site from image
+        run: |
+          container_id=$(docker create docs-site:latest)
+          mkdir -p site
+          docker cp "$container_id":/usr/share/nginx/html/. site/
+          docker rm "$container_id"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+

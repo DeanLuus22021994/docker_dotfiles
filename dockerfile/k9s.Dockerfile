@@ -1,17 +1,21 @@
 # k9s Dockerfile - Kubernetes CLI UI
 # Lightweight Alpine-based image
 
-FROM alpine:latest AS base
+FROM alpine:3.20.3 AS base
+
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 # Install runtime dependencies
 RUN apk add --no-cache \
-    ca-certificates \
-    curl \
-    bash \
-    git
+    ca-certificates=20250911-r0 \
+    curl=8.14.1-r2 \
+    bash=5.2.26-r0 \
+    git=2.45.4-r0
 
 # Install k9s
 FROM base AS production
+
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 ARG K9S_VERSION=v0.32.4
 ARG TARGETARCH=amd64

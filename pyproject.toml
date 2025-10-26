@@ -57,11 +57,11 @@ docs = [
 
 [tool.black]
 line-length = 100
-target-version = ['py313']  # py314 not yet supported by Black
+target-version = ['py312']  # py314 not yet supported by Black
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"  # py314 not yet supported by Ruff
+target-version = "py312"  # py314 not yet supported by Ruff
 
 [tool.ruff.lint]
 # Only ignore architecturally necessary issues
@@ -75,6 +75,7 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 mypy_path = "scripts,.config/mkdocs"
+explicit_package_bases = true
 
 [tool.pytest.ini_options]
 minversion = "8.3"

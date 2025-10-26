@@ -11,7 +11,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable, TYPE_CHECKING, cast
 
 # Handle optional dependencies gracefully
 try:
@@ -42,12 +42,14 @@ except ImportError:
     # Fallback implementations with unique names
     class FallbackConsole:
         """Fallback console implementation."""
+
         def print(self, *args: object, **_kwargs: object) -> None:
             """Print to console."""
             print(*args)
 
     class FallbackProgress:
         """Fallback progress implementation."""
+
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             """Initialize progress."""
 
@@ -63,6 +65,7 @@ except ImportError:
 
     class FallbackConfirm:
         """Fallback confirm implementation."""
+
         @staticmethod
         def ask(question: str) -> bool:
             """Ask for confirmation."""
@@ -71,6 +74,7 @@ except ImportError:
 
     class FallbackPrompt:
         """Fallback prompt implementation."""
+
         @staticmethod
         def ask(question: str, default: str = "") -> str:
             """Ask for input."""
@@ -87,20 +91,42 @@ except ImportError:
 # Add the parent directory to sys.path for imports
 # sys.path.append(str(Path(__file__).parent.parent))  # Not needed with relative import
 
+if TYPE_CHECKING:
+    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatterType
+else:
+
+    class _DocFrontmatterType:  # pragma: no cover - typing helper
+        """Minimal signature placeholder for DocFrontmatter."""
+
+        def __init__(self, **_: Any) -> None: ...
+
+
+_RuntimeDocFrontmatter: Any
 try:
-    from ..schemas.frontmatter import DocFrontmatter
+    from ..schemas.frontmatter import DocFrontmatter as _RuntimeDocFrontmatter
 except ImportError:
     # Fallback if schemas not available
     @dataclass
-    class FallbackDocFrontmatter:
+    class _FallbackDocFrontmatter:
         """Fallback frontmatter dataclass when Pydantic is not available."""
+
         title: str
         date_created: datetime
         last_updated: datetime
         tags: list[str]
         description: str
 
-    DocFrontmatter = FallbackDocFrontmatter  # type: ignore[assignment]
+    _RuntimeDocFrontmatter = _FallbackDocFrontmatter
+
+
+def _build_frontmatter(**kwargs: Any) -> _DocFrontmatterType:
+    """Create a frontmatter instance using the available implementation."""
+
+    return cast(_DocFrontmatterType, _RuntimeDocFrontmatter(**kwargs))
+
+
+DOC_FRONTMATTER_FACTORY: Callable[..., _DocFrontmatterType] = _build_frontmatter
+
 
 @dataclass(frozen=True, slots=True)
 class DocCategory:
@@ -236,10 +262,13 @@ def interactive_prompt(console: Any) -> tuple[str, str, Any]:
 
     # Create frontmatter with validation
     now = datetime.now(timezone.utc)
-    frontmatter = DocFrontmatter(
+    frontmatter = DOC_FRONTMATTER_FACTORY(
         title=title,
-        date_created=now, last_updated=now, tags=selected_tags, description=description
-    )  # type: ignore[call-arg]
+        date_created=now,
+        last_updated=now,
+        tags=selected_tags,
+        description=description,
+    )
 
     return selected_category.name, title, frontmatter
 
@@ -274,9 +303,7 @@ def update_pages_file(category_path: Path, filename: str, title: str) -> None:
             yaml.dump(pages, f, default_flow_style=False, sort_keys=False)
 
 
-def create_document(
-    category: str, title: str, frontmatter: Any, console: Any
-) -> Path:
+def create_document(category: str, title: str, frontmatter: Any, console: Any) -> Path:
     """Create new document with template and frontmatter."""
 
     # Find category config
@@ -342,13 +369,13 @@ def main() -> None:
         if args.non_interactive and all([args.category, args.title, args.description]):
             # Non-interactive mode
             now = datetime.now(timezone.utc)
-            frontmatter = DocFrontmatter(
+            frontmatter = DOC_FRONTMATTER_FACTORY(
                 title=args.title,
                 date_created=now,
                 last_updated=now,
                 tags=args.tags or [args.category, "documentation"],
                 description=args.description,
-            )  # type: ignore[call-arg]
+            )
 
             category = args.category
             title = args.title

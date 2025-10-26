@@ -58,24 +58,40 @@ export const calculateLayerMetrics = (services: Service[]): Record<string, Layer
     const existing = layerMap.get(layer)
 
     if (!existing) {
+      const initialCpu = service.metrics?.cpu || 0
+      const initialMemory = service.metrics?.memory || 0
+      const initialNetwork = service.metrics?.networkIO || 0
       layerMap.set(layer, {
         layer,
-        totalCpu: service.metrics?.cpu || 0,
-        totalMemory: service.metrics?.memory || 0,
-        totalNetworkIO: service.metrics?.networkIO || 0,
+        totalCpu: initialCpu,
+        totalMemory: initialMemory,
+        totalNetworkIO: initialNetwork,
         serviceCount: 1,
         healthyCount: service.status === 'healthy' ? 1 : 0,
         unhealthyCount: service.status === 'unhealthy' ? 1 : 0,
+        avgCpu: initialCpu,
+        avgMemory: initialMemory,
+        avgNetworkIO: initialNetwork,
       })
     } else {
+      const totalCpu = existing.totalCpu + (service.metrics?.cpu || 0)
+      const totalMemory = existing.totalMemory + (service.metrics?.memory || 0)
+      const totalNetworkIO = existing.totalNetworkIO + (service.metrics?.networkIO || 0)
+      const serviceCount = existing.serviceCount + 1
+      const healthyCount = existing.healthyCount + (service.status === 'healthy' ? 1 : 0)
+      const unhealthyCount = existing.unhealthyCount + (service.status === 'unhealthy' ? 1 : 0)
+
       layerMap.set(layer, {
         ...existing,
-        totalCpu: existing.totalCpu + (service.metrics?.cpu || 0),
-        totalMemory: existing.totalMemory + (service.metrics?.memory || 0),
-        totalNetworkIO: existing.totalNetworkIO + (service.metrics?.networkIO || 0),
-        serviceCount: existing.serviceCount + 1,
-        healthyCount: existing.healthyCount + (service.status === 'healthy' ? 1 : 0),
-        unhealthyCount: existing.unhealthyCount + (service.status === 'unhealthy' ? 1 : 0),
+        totalCpu,
+        totalMemory,
+        totalNetworkIO,
+        serviceCount,
+        healthyCount,
+        unhealthyCount,
+        avgCpu: serviceCount > 0 ? totalCpu / serviceCount : 0,
+        avgMemory: serviceCount > 0 ? totalMemory / serviceCount : 0,
+        avgNetworkIO: serviceCount > 0 ? totalNetworkIO / serviceCount : 0,
       })
     }
   })

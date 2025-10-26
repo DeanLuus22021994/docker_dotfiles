@@ -44,6 +44,9 @@ export interface LayerMetrics {
   serviceCount: number
   healthyCount: number
   unhealthyCount: number
+  avgCpu: number
+  avgMemory: number
+  avgNetworkIO: number
 }
 
 // Cluster Metrics

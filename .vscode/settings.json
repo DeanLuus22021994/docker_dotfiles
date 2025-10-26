@@ -167,7 +167,8 @@
     "**/.config/monitoring/grafana/provisioning/**/*.yml": "yaml",
     "**/.config/docker/compose.override*.yml": "yaml",
     "docker-compose*.yml": "yaml",
-    "*.Dockerfile": "dockerfile"
+    "*.Dockerfile": "dockerfile",
+    "**/web-content/src/index.css": "tailwindcss"
   },
 
   // Files to exclude from validation and Copilot indexing

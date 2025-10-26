@@ -540,7 +540,7 @@ app.use(cors(corsOptions));
 - Trivy for container image scanning
 - pip-audit for Python dependencies
 - npm audit for Node.js dependencies
-- gitleaks for secret detection
+- gitleaks for secret detection <!-- pragma: allowlist secret -->
 - Comprehensive reporting with severity filtering
 
 **Scan Tools:**
@@ -1362,10 +1362,12 @@ Monitoring (grafana, prometheus)
 **Priority Order:**
 
 1. **Critical (Start Immediately):**
+
    - Phase 4.1: Testing Infrastructure
    - Phase 4.2: Security Hardening
 
 2. **High Priority (Week 3-4):**
+
    - Phase 4.3: Planned Scripts
    - Phase 4.4: Documentation Consolidation
 

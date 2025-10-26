@@ -5,11 +5,11 @@ import { dockerAPI } from '../services/dockerAPI'
 
 // Layer-specific health check intervals (Phase 4.6.1)
 const LAYER_INTERVALS = {
-  data: 60000,       // Data layer: 60s (changes slowly)
-  services: 30000,   // Services layer: 30s (moderate changes)
-  monitoring: 45000, // Monitoring layer: 45s
-  compute: 30000,    // Compute layer: 30s
-  network: 15000,    // Network layer: 15s (changes frequently)
+  infrastructure: 20000, // Load balancer + web servers
+  data: 60000,           // Databases and storage (changes slowly)
+  compute: 30000,        // AI/ML workloads
+  monitoring: 45000,     // Observability stack
+  development: 45000,    // Developer tooling
 }
 
 export const useClusterHealth = () => {

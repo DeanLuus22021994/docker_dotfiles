@@ -23,6 +23,7 @@ help:
 	@echo "  make docs-build     - Build static documentation"
 	@echo "  make docs-validate  - Validate docs health"
 	@echo "  make docs-metrics   - Show build metrics"
+	@echo "  make docs-deploy    - Trigger GitHub Pages deployment"
 	@echo "  make docs-up        - Start docs services (dev + prod)"
 	@echo "  make docs-down      - Stop docs services"
 	@echo ""
@@ -183,6 +184,16 @@ docs-metrics:
 		--site-dir .config/mkdocs/site \
 		--output build-metrics.json
 	@echo "✅ Metrics saved to build-metrics.json"
+
+docs-deploy:
+	@echo "Triggering documentation deployment via GitHub Actions..."
+	@if command -v gh > /dev/null 2>&1; then \
+		gh workflow run docs-deploy.yml --ref $${GIT_REF:-$$(git rev-parse --abbrev-ref HEAD)} && \
+		echo "✅ Deployment workflow dispatched"; \
+	@else \
+		echo "WARNING: GitHub CLI not installed."; \
+		echo "Run 'mkdocs build --config-file .config/mkdocs/mkdocs.yml --strict' and push to main to deploy."; \
+	fi
 
 docs-up:
 	@echo "Starting documentation services..."

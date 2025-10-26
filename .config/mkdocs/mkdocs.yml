@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+
 site_name: Docker Modern Data Platform
 site_description: Production-grade Docker orchestration platform
 site_author: Dean Luus
@@ -5,8 +7,8 @@ site_url: http://localhost:8000
 repo_name: DeanLuus22021994/docker_dotfiles
 repo_url: https://github.com/DeanLuus22021994/docker_dotfiles
 edit_uri: edit/feat/remaining-todos/docs/
-copyright: "Copyright \xA9 2025 Dean Luus"
-strict: false # TODO: Fix 33 broken links in existing docs before enabling
+copyright: "Copyright © 2025 Dean Luus"
+strict: true
 use_directory_urls: true
 docs_dir: ../../docs
 site_dir: site
@@ -91,8 +93,10 @@ theme:
     - search.suggest
     - toc.follow
     - toc.integrate
-  # favicon: assets/images/favicon.png  # TODO: Add custom favicon
-  # logo: assets/images/logo.svg  # Using material/docker icon instead
+  # TODO: Add custom favicon
+  # favicon: assets/images/favicon.png
+  # Using material/docker icon instead
+  # logo: assets/images/logo.svg
 extra_css:
   - assets/stylesheets/custom.css
   - assets/stylesheets/animations.css
@@ -161,8 +165,10 @@ plugins:
         - trimmer
   - minify:
       minify_html: true
-      minify_js: false # Disabled: Extra JS files not in docs/
-      minify_css: false # Disabled: Extra CSS files not in docs/
+      # Disabled: Extra JS files not in docs/
+      minify_js: false
+      # Disabled: Extra CSS files not in docs/
+      minify_css: false
       htmlmin_opts:
         remove_comments: true
         remove_empty_space: true
@@ -175,13 +181,15 @@ plugins:
       locale: en
       fallback_to_build_date: true
   - git-authors:
+      enabled: false  # Enable when git metadata is available during builds
       show_contribution: true
       show_line_count: true
       show_email_address: false
       count_empty_lines: false
       sort_authors_by: contribution
       authorship_threshold_percent: 5
-  - tags: {} # Using defaults, tags_file not needed in latest version
+  # Using defaults, tags_file not needed in latest version
+  - tags: {}
   # - social:  # Disabled: Requires Cairo library (Linux/Docker only)
   #     enabled: true
   #     cache_dir: .cache/plugin/social
@@ -274,10 +282,11 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.snippets:
       auto_append:
-        - includes/abbreviations.md
+        - .config/mkdocs/includes/abbreviations.md
       base_path:
         - .
-        - ../../docs
+        - .config/mkdocs
+        - docs
       check_paths: true
   - pymdownx.highlight:
       use_pygments: true

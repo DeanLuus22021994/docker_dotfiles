@@ -1,10 +1,19 @@
 # GitHub Repository Settings Configuration
-# Apply using: gh api repos/DeanLuus22021994/docker_dotfiles --method PATCH --input .config/github/repository.yml
-# Or via apply-settings.ps1: .\scripts\apply-settings.ps1 -ApplyRepository
+# Apply using:
+#   gh api repos/DeanLuus22021994/docker_dotfiles \
+#     --method PATCH \
+#     --input .config/github/repository.yml
+# Or via PowerShell helper:
+#   .\scripts\apply-settings.ps1 -ApplyRepository
 
 name: docker_dotfiles
-description: "Modern Data Platform v4.0 - Production-ready GPU-accelerated ML stack with 25+ microservices, enterprise security, comprehensive testing, dual databases (PostgreSQL + MariaDB), S3 storage, monitoring (Grafana/Prometheus), and complete dev tooling. Docker Compose orchestration with TDD, SSoT config management."
-homepage: https://deanluu s22021994.github.io/docker_dotfiles
+description: >-
+  Modern Data Platform v4.0 - Production-ready GPU-accelerated ML stack with 25+
+  microservices, enterprise security, comprehensive testing, dual databases
+  (PostgreSQL + MariaDB), S3 storage, monitoring (Grafana/Prometheus), and
+  complete dev tooling. Docker Compose orchestration with TDD and single source
+  of truth configuration management.
+homepage: https://deanluus22021994.github.io/docker_dotfiles
 topics:
   - docker
   - docker-compose

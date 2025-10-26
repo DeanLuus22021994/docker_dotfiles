@@ -237,9 +237,7 @@ class TestEdgeCases:
         assert all_valid is False
         # Empty string should be falsy, so GH_PAT should be in missing
 
-    def test_short_value_masking(
-        self, clean_env: None, capsys: pytest.CaptureFixture[str]
-    ) -> None:
+    def test_short_value_masking(self, clean_env: None, capsys: pytest.CaptureFixture[str]) -> None:
         """Test masking of short values."""
         assert clean_env is None  # Validate fixture executed
         os.environ["GH_PAT"] = "short"

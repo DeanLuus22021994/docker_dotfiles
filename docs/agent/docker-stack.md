@@ -49,4 +49,4 @@ docker-compose restart [service]
 docker-compose down
 ```
 
-See [file organization guide](agent-file-organization.md) for config locations.
+See [file organization guide](file-organization.md) for config locations.

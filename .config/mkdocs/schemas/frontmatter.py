@@ -11,19 +11,35 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 ALLOWED_TAGS = {
-    "installation",
-    "configuration",
-    "user-guide",
+    "agent",
     "api",
-    "security",
-    "testing",
-    "production",
+    "architecture",
+    "automation",
+    "configuration",
+    "deployment",
     "development",
+    "docker",
+    "documentation",
+    "guide",
+    "installation",
+    "monitoring",
+    "production",
+    "pytest",
+    "python",
+    "readme",
     "reference",
+    "scripts",
+    "security",
+    "setup",
+    "testing",
+    "user-guide",
+    "web-content",
 }
+
 
 class DocFrontmatter(BaseModel):
     """Pydantic model for MkDocs document frontmatter validation."""
+
     title: Optional[str] = Field(None, description="Document title")
     description: str = Field(..., description="Document description")
     tags: List[str] = Field(default_factory=list, description="Document tags")

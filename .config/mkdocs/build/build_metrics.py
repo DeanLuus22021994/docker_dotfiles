@@ -230,7 +230,8 @@ class MetricsCollector:
                 ["git", "rev-parse", "--abbrev-ref", "HEAD"],
                 capture_output=True,
                 text=True,
-                timeout=5, check=False
+                timeout=5,
+                check=False,
             )
             git_branch = branch_result.stdout.strip() if branch_result.returncode == 0 else None
         except (subprocess.TimeoutExpired, FileNotFoundError):

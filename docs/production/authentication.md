@@ -30,12 +30,13 @@ JWT_REFRESH_EXPIRES_IN=7d
 ## Create Admin User
 
 ```bash
+# pragma: allowlist secret
 # Register first user (becomes admin)
 curl -X POST https://your-domain.com/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "username": "admin",
-    "password": "your_secure_password",
+    "password": "<your-secure-password>",
     "email": "admin@your-domain.com"
   }'
 ```
@@ -45,9 +46,10 @@ curl -X POST https://your-domain.com/api/auth/register \
 **1. Login:**
 
 ```bash
+# pragma: allowlist secret
 curl -X POST https://your-domain.com/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "your_password"}'
+  -d '{"username": "admin", "password": "<your-password>"}'
 
 # Returns: { "accessToken": "...", "refreshToken": "..." }
 ```
@@ -62,9 +64,10 @@ curl https://your-domain.com/api/containers \
 **3. Refresh Token (when expired):**
 
 ```bash
+# pragma: allowlist secret
 curl -X POST https://your-domain.com/api/auth/refresh \
   -H "Content-Type: application/json" \
-  -d '{"refreshToken": "YOUR_REFRESH_TOKEN"}'
+  -d '{"refreshToken": "<your-refresh-token>"}'
 ```
 
 ## User Management

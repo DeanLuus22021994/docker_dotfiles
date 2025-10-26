@@ -16,24 +16,65 @@ Environment Variables:
     MKDOCS_STRICT_FRONTMATTER: Set to "false" to only warn (default: true)
 """
 
+import importlib.util
 import os
 import re
 import sys
-from pathlib import Path
-from typing import Any, Protocol
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Protocol, TYPE_CHECKING, cast
 
 import yaml
 
+if TYPE_CHECKING:
+    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatterModel
+    from pydantic import ValidationError as _ValidationErrorModel
+else:
+
+    class _DocFrontmatterModel:  # pragma: no cover - typing helper
+        """Fallback DocFrontmatter signature for runtime without Pydantic."""
+
+        def __init__(self, **_: Any) -> None: ...
+
+    class _ValidationErrorModel(Exception):  # pragma: no cover - typing helper
+        """Fallback ValidationError type for typing when Pydantic missing."""
+
+
+DocFrontmatterCallable = Callable[..., _DocFrontmatterModel]
+ValidationErrorType = type[_ValidationErrorModel]
+
+doc_frontmatter_factory: DocFrontmatterCallable | None = None
+validation_error_type: ValidationErrorType | None = None
+
 try:
-    from ..schemas.frontmatter import DocFrontmatter, ALLOWED_TAGS
-    from pydantic import ValidationError
-    PYDANTIC_AVAILABLE = True
+    from pydantic import ValidationError as _ValidationError
 except ImportError:
+    _ValidationError = None
+
+try:
+    from ..schemas.frontmatter import ALLOWED_TAGS as SCHEMA_ALLOWED_TAGS
+    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatter
+except ImportError:
+    schema_path = Path(__file__).resolve().parent.parent / "schemas" / "frontmatter.py"
+    spec = importlib.util.spec_from_file_location("mkdocs_frontmatter_schema", schema_path)
+    if spec and spec.loader:
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        SCHEMA_ALLOWED_TAGS = cast(set[str], getattr(module, "ALLOWED_TAGS", set()))
+        _DocFrontmatter = cast(DocFrontmatterCallable | None, getattr(module, "DocFrontmatter", None))
+    else:
+        SCHEMA_ALLOWED_TAGS = set()
+        _DocFrontmatter = None
+
+ALLOWED_TAGS = set(SCHEMA_ALLOWED_TAGS) if "SCHEMA_ALLOWED_TAGS" in locals() else set()
+
+if _ValidationError is not None and _DocFrontmatter is not None:
+    PYDANTIC_AVAILABLE = True
+    doc_frontmatter_factory = cast(DocFrontmatterCallable, _DocFrontmatter)
+    validation_error_type = _ValidationError
+else:
     PYDANTIC_AVAILABLE = False
-    DocFrontmatter = None  # type: ignore[assignment]
-    ALLOWED_TAGS = set()
-    ValidationError = None  # type: ignore[assignment]
+    validation_error_type = _ValidationError
 # ============================================================================
 # Type Protocols (PEP 544) - No Runtime Dependencies
 # ============================================================================
@@ -56,7 +97,7 @@ class FilesProtocol(Protocol):
 # Configuration
 # ============================================================================
 
-REQUIRED_FIELDS: frozenset[str] = frozenset({"title", "description"})
+REQUIRED_FIELDS: frozenset[str] = frozenset({"description"})
 OPTIONAL_FIELDS: frozenset[str] = frozenset(
     {
         "tags",
@@ -251,7 +292,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
     """
     errors: list[str] = []
 
-    if PYDANTIC_AVAILABLE:
+    if PYDANTIC_AVAILABLE and doc_frontmatter_factory and validation_error_type:
         # Use Pydantic validation
         try:
             # Convert ISO strings back to datetime objects for validation
@@ -272,9 +313,9 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
                     errors.append(f"Invalid last_updated format: {frontmatter['last_updated']}")
 
             # Validate with Pydantic
-            DocFrontmatter(**frontmatter)  # type: ignore[operator]
+            doc_frontmatter_factory(**frontmatter)
 
-        except ValidationError as e:
+        except validation_error_type as e:
             # Parse Pydantic validation errors
             for error in e.errors():
                 field = error.get("loc", ["unknown"])[0]
@@ -282,7 +323,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
                 errors.append(f"Field '{field}': {msg}")
     else:
         # Fallback validation without Pydantic
-        required_fields = {"date_created", "last_updated", "tags", "description"}
+        required_fields = set(REQUIRED_FIELDS)
         missing = required_fields - frozenset(frontmatter.keys())
         if missing:
             errors.append(f"Missing required fields: {', '.join(sorted(missing))}")
@@ -296,40 +337,29 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
 
 
 def validate_cross_references(frontmatter: dict[str, Any], docs_dir: Path) -> list[str]:
-    """
-    Validate cross-references in frontmatter (e.g., related files exist).
+    """Validate related document references and tag taxonomy."""
 
-    Args:
-        frontmatter: Parsed frontmatter dictionary
-        file_path: Path to current file
-        docs_dir: Root documentation directory
-
-    Returns:
-        List of validation error messages
-    """
     errors: list[str] = []
 
-    # Validate related files exist
-    if "related" in frontmatter and isinstance(frontmatter["related"], list):
-        for related_path in frontmatter["related"]:
+    related = frontmatter.get("related")
+    if isinstance(related, list):
+        for related_path in related:
             if not isinstance(related_path, str):
                 continue
 
-            # Convert relative path to absolute
             full_path = docs_dir / related_path
             if not full_path.exists():
                 errors.append(f"Related file does not exist: {related_path}")
             elif not full_path.is_file():
                 errors.append(f"Related path is not a file: {related_path}")
 
-    # Validate tags are in allowed list (if Pydantic is available)
-    if PYDANTIC_AVAILABLE and ALLOWED_TAGS and "tags" in frontmatter:
-        if isinstance(frontmatter["tags"], list):
-            invalid_tags = set(frontmatter["tags"]) - ALLOWED_TAGS
-            if invalid_tags:
-                errors.append(
-                    f"Invalid tags (not in allowed list): {', '.join(sorted(invalid_tags))}"
-                )
+    tags = frontmatter.get("tags")
+    if isinstance(tags, list):
+        invalid_tags = set(tags) - ALLOWED_TAGS
+        if invalid_tags:
+            errors.append(
+                f"Invalid tags (not in allowed list): {', '.join(sorted(invalid_tags))}"
+            )
 
     return errors
 

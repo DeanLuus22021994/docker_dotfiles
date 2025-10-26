@@ -1,7 +1,7 @@
 # LocalStack Dockerfile - Local AWS cloud stack
 # Emulates AWS services for local development and testing
 
-FROM localstack/localstack:latest
+FROM localstack/localstack:3.5.0
 
 # Install additional AWS CLI tools
 USER root
@@ -17,10 +17,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install AWS SAM CLI
 RUN pip3 install --no-cache-dir \
-    aws-sam-cli \
-    awscli-local \
-    boto3 \
-    botocore
+    aws-sam-cli==1.116.0 \
+    awscli-local==0.21 \
+    boto3==1.34.37 \
+    botocore==1.34.37
 
 # Copy initialization scripts
 COPY .config/services/localstack-init.sh /etc/localstack/init/ready.d/init.sh

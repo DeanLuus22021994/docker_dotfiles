@@ -276,9 +276,9 @@ class JsonValidator(BaseConfigValidator):
                     # Strip comments for JSONC files (devcontainer.json, tsconfig.json, etc.)
                     if json_file.name in ("devcontainer.json", "tsconfig.json", "package.json"):
                         # Remove single-line comments
-                        content = re.sub(r'//.*?$', '', content, flags=re.MULTILINE)
+                        content = re.sub(r"//.*?$", "", content, flags=re.MULTILINE)
                         # Remove trailing commas before closing brackets/braces
-                        content = re.sub(r',\s*([}\]])', r'\1', content)
+                        content = re.sub(r",\s*([}\]])", r"\1", content)
                     json.loads(content)
                 valid_count += 1
             except json.JSONDecodeError as e:

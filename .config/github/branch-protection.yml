@@ -1,6 +1,10 @@
 # Branch Protection Rules for main branch
-# Apply using: gh api repos/DeanLuus22021994/docker_dotfiles/branches/main/protection --method PUT --input .config/github/branch-protection.yml
-# Or via apply-settings.ps1: .\scripts\apply-settings.ps1 -ApplyBranchProtection
+# Apply using:
+#   gh api repos/DeanLuus22021994/docker_dotfiles/branches/main/protection \
+#     --method PUT \
+#     --input .config/github/branch-protection.yml
+# Or via PowerShell helper:
+#   .\scripts\apply-settings.ps1 -ApplyBranchProtection
 
 required_status_checks:
   strict: true

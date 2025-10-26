@@ -6,17 +6,28 @@ markdown_extensions:
   # ============================================================================
   # Core Python Markdown Extensions
   # ============================================================================
-  - abbr # Abbreviation tooltips
-  - admonition # Call-out blocks
-  - attr_list # HTML attributes on elements
-  - def_list # Definition lists
-  - footnotes # Footnote references
-  - md_in_html # Markdown inside HTML
-  - meta # YAML frontmatter
-  - nl2br # New line to break
-  - sane_lists # Better list parsing
-  - smarty # Smart quotes and dashes
-  - tables # GitHub-flavored tables
+  # Abbreviation tooltips
+  - abbr
+  # Call-out blocks
+  - admonition
+  # HTML attributes on elements
+  - attr_list
+  # Definition lists
+  - def_list
+  # Footnote references
+  - footnotes
+  # Markdown inside HTML
+  - md_in_html
+  # YAML frontmatter
+  - meta
+  # New line to break
+  - nl2br
+  # Better list parsing
+  - sane_lists
+  # Smart quotes and dashes
+  - smarty
+  # GitHub-flavored tables
+  - tables
 
   # Table of Contents
   - toc:
@@ -37,19 +48,27 @@ markdown_extensions:
   # Text Formatting
   - pymdownx.betterem:
       smart_enable: all
-  - pymdownx.caret # Superscript ^text^
-  - pymdownx.mark # Highlight ==text==
-  - pymdownx.tilde # Subscript ~text~ and strikethrough ~~text~~
-  - pymdownx.smartsymbols # Special characters
-  - pymdownx.critic: # Track changes
+  # Superscript ^text^
+  - pymdownx.caret
+  # Highlight ==text==
+  - pymdownx.mark
+  # Subscript ~text~ and strikethrough ~~text~~
+  - pymdownx.tilde
+  # Special characters
+  - pymdownx.smartsymbols
+  # Track changes
+  - pymdownx.critic:
       mode: view
 
   # UI Elements
-  - pymdownx.keys # Keyboard keys ++ctrl+alt+del++
+  # Keyboard keys ++ctrl+alt+del++
+  - pymdownx.keys
 
   # Content Organization
-  - pymdownx.details # Collapsible blocks
-  - pymdownx.snippets: # Include external files
+  # Collapsible blocks
+  - pymdownx.details
+  # Include external files
+  - pymdownx.snippets:
       auto_append:
         - .config/mkdocs/includes/abbreviations.md
       base_path:
@@ -67,7 +86,8 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
 
-  - pymdownx.inlinehilite # Inline code highlighting
+  # Inline code highlighting
+  - pymdownx.inlinehilite
 
   - pymdownx.superfences:
       preserve_tabs: true
@@ -76,14 +96,14 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          format: pymdownx.superfences.fence_code_format
         - name: vega
           class: vega
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          format: pymdownx.superfences.fence_code_format
         - name: vega-lite
           class: vega-lite
-          format: !!python/name:pymdownx.superfences.fence_code_format # Tabs
-
+          # Tabs
+          format: pymdownx.superfences.fence_code_format
 
   - pymdownx.tabbed:
       alternate_style: true

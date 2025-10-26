@@ -3,11 +3,6 @@
 
 FROM postgres:13-alpine AS base
 
-# Install additional system dependencies
-RUN apk add --no-cache \
-  curl \
-  && rm -rf /var/cache/apk/*
-
 # Create directories for logs and data with proper permissions
 RUN mkdir -p /var/log/postgresql \
   && chown -R postgres:postgres /var/log/postgresql \

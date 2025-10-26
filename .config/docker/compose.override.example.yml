@@ -3,42 +3,49 @@
 # This file is gitignored to prevent committing local settings
 # NOTE: This is an EXAMPLE file with commented sections - not a valid standalone file
 # Linter warnings are expected - uncomment and modify sections as needed for your environment
+# yamllint disable rule:comments-indentation
 
-services:
-  # Example: Override PostgreSQL port for local development
-  # cluster-postgres:
-  #   ports:
-  #     - "5433:5432"  # Use different port to avoid conflicts
+services: {}
 
-  # Example: Mount local code for hot-reload
-  # cluster-web1:
-  #   volumes:
-  #     - ./web-content:/usr/share/nginx/html:ro
-  #     - ./local-dev:/app/dev
+# ---------------------------------------------------------------------------
+# Example overrides (uncomment the following snippet and merge into services)
+#
+# services:
+#   # Override PostgreSQL port for local development
+#   cluster-postgres:
+#     ports:
+#       - "5433:5432"  # Use different port to avoid conflicts
+#
+#   # Mount local code for hot-reload
+#   cluster-web1:
+#     volumes:
+#       - ./web-content:/usr/share/nginx/html:ro
+#       - ./local-dev:/app/dev
+#
+#   # Enable debug mode
+#   cluster-dashboard:
+#     environment:
+#       - DEBUG=true
+#       - NODE_ENV=development
+#
+#   # Increase resource limits for local testing
+#   cluster-jupyter:
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '16'
+#           memory: 16G
+#
+#   # Add local volume mounts
+#   cluster-prometheus:
+#     volumes:
+#       - ./local-prometheus-data:/prometheus
+#
+#   # Override command for debugging
+#   cluster-redis:
+#     command: redis-server --loglevel debug
 
-  # Example: Enable debug mode
-  # cluster-dashboard:
-  #   environment:
-  #     - DEBUG=true
-  #     - NODE_ENV=development
-
-  # Example: Increase resource limits for local testing
-  # cluster-jupyter:
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: '16'
-  #         memory: 16G
-
-  # Example: Add local volume mounts
-  # cluster-prometheus:
-  #   volumes:
-  #     - ./local-prometheus-data:/prometheus
-
-  # Example: Override command for debugging
-  # cluster-redis:
-  #   command: redis-server --loglevel debug
-# Example: Add development-only services
+# Example: Add development-only services (uncomment to use)
 # local-adminer:
 #   image: adminer
 #   ports:
