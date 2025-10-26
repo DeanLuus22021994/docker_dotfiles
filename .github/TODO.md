@@ -662,11 +662,12 @@ docs/
 
 ---
 
-## 📚 Phase 4.4: Documentation Consolidation (High Priority) ✅ COMPLETE
+## 📚 Phase 4.4: Documentation Consolidation (High Priority) 🔵 IN PROGRESS
 
-**Goal:** Organize documentation into single source of truth  
+**Goal:** Organize documentation into single source of truth with 150-word limit  
 **Priority:** 🟠 HIGH  
-**Target:** Week 4
+**Target:** Week 4  
+**Status:** 🔵 IN PROGRESS (80% complete)
 
 ### Current Issues (from archived CLEANUP-REPORT)
 
@@ -685,14 +686,18 @@ docs/
 
 ### Tasks
 
-#### 4.4.1 Create Documentation Index ✅ COMPLETE
+#### 4.4.1 Create Documentation Index 🔵 IN PROGRESS
 
-**Description:** Create centralized documentation index  
+**Description:** Create centralized documentation index with 150-word limit  
 **Acceptance Criteria:**
 
-- [x] Create `docs/INDEX.md` with all documentation links
+- [x] Create `docs/INDEX.md` with all documentation links (NEEDS DECOMPOSITION - 825w)
 - [x] Organize by category (Setup, Development, Architecture, Scripts)
 - [x] Add descriptions for each document
+- [x] Create quick reference section
+- [x] Link from main README.md
+- [ ] **NEW**: Decompose all docs to ≤150 words with YAML front matter
+- [ ] **NEW**: All docs in central docs/ folder (SSoT)
 - [x] Create quick reference section
 - [x] Link from main README.md
 - [x] Update all docs to reference INDEX.md
