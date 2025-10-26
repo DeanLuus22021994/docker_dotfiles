@@ -1,13 +1,11 @@
 """Tests for file_utils module."""
 
 import json
-import tempfile
 from pathlib import Path
-from typing import Generator
 
 import pytest
 
-from python.utils.file_utils import (
+from scripts.python.utils.file_utils import (
     ensure_dir,
     file_exists,
     get_file_size,
@@ -18,32 +16,7 @@ from python.utils.file_utils import (
     write_json,
 )
 
-
-@pytest.fixture
-def temp_dir() -> Generator[Path, None, None]:
-    """Create a temporary directory for testing."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        yield Path(tmpdir)
-
-
-@pytest.fixture
-def sample_json_file(temp_dir: Path) -> Path:
-    """Create sample JSON file."""
-    file_path = temp_dir / "sample.json"
-    data = {"name": "test", "value": 42, "items": ["a", "b", "c"]}
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(data, f)
-    return file_path
-
-
-@pytest.fixture
-def sample_text_file(temp_dir: Path) -> Path:
-    """Create sample text file."""
-    file_path = temp_dir / "sample.txt"
-    content = "line1\nline2\nline3\n"
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(content)
-    return file_path
+# Fixtures temp_dir, sample_json_file, sample_text_file imported from tests.fixtures.common
 
 
 class TestReadJson:

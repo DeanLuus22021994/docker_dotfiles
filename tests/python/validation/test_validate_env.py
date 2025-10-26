@@ -1,52 +1,17 @@
 """Tests for validate_env module."""
 
 import os
-from typing import Generator
 from unittest.mock import patch
 
 import pytest
 
-from python.validation.validate_env import (
+from scripts.python.validation.validate_env import (
     main,
     print_summary,
     validate_env_vars,
 )
 
-
-@pytest.fixture
-def clean_env() -> Generator[None, None, None]:
-    """Clean environment variables for each test."""
-    env_vars = [
-        "GITHUB_OWNER",
-        "GH_PAT",
-        "DOCKER_POSTGRES_PASSWORD",
-        "DOCKER_MARIADB_ROOT_PASSWORD",
-        "DOCKER_MARIADB_PASSWORD",
-        "DOCKER_REDIS_PASSWORD",
-        "DOCKER_MINIO_ROOT_USER",
-        "DOCKER_MINIO_ROOT_PASSWORD",
-        "DOCKER_GRAFANA_ADMIN_PASSWORD",
-        "DOCKER_JUPYTER_TOKEN",
-        "DOCKER_PGADMIN_PASSWORD",
-        "DOCKER_ACCESS_TOKEN",
-        "CODECOV_TOKEN",
-    ]
-
-    # Store original values
-    original_values = {var: os.environ.get(var) for var in env_vars}
-
-    # Clear all test environment variables
-    for var in env_vars:
-        os.environ.pop(var, None)
-
-    yield
-
-    # Restore original values
-    for var, value in original_values.items():
-        if value is not None:
-            os.environ[var] = value
-        else:
-            os.environ.pop(var, None)
+# Fixture clean_env imported from tests.fixtures.common
 
 
 class TestValidateEnvVars:

@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from python.audit.dependencies import (
+from scripts.python.audit.dependencies import (
     check_outdated_packages,
     check_pyproject_dependencies,
     list_installed_packages,

@@ -1,15 +1,12 @@
 """Tests for validate_configs module."""
 
 import json
-import subprocess
-import tempfile
 from pathlib import Path
-from typing import Generator
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
-from python.validation.validate_configs import (
+from scripts.python.validation.validate_configs import (
     main,
     validate_json_files,
     validate_mariadb_config,
@@ -18,18 +15,7 @@ from python.validation.validate_configs import (
     validate_yaml_files,
 )
 
-
-@pytest.fixture
-def temp_project_dir() -> Generator[Path, None, None]:
-    """Create temporary project directory structure."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        project_dir = Path(tmpdir)
-
-        # Create directory structure
-        (project_dir / ".config" / "nginx").mkdir(parents=True)
-        (project_dir / ".config" / "database").mkdir(parents=True)
-
-        yield project_dir
+# Fixture temp_project_dir imported from tests.fixtures.common
 
 
 class TestValidateYamlFiles:

@@ -9,6 +9,9 @@ import pytest
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root / "scripts"))
 
+# Import common fixtures to make them globally available
+pytest_plugins = ["tests.fixtures.common"]
+
 
 @pytest.fixture
 def project_root_path() -> Path:

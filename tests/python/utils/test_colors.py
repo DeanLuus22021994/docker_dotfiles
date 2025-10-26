@@ -1,8 +1,8 @@
-"""Tests for colors utility module."""
+"""Tests for colors module."""
 
 import pytest
 
-from python.utils.colors import (
+from scripts.python.utils.colors import (
     Colors,
     bold,
     colorize,

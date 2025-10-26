@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from python.audit.code_quality import (
+from scripts.python.audit.code_quality import (
     main,
     run_black_check,
     run_mypy_check,

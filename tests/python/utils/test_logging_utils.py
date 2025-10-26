@@ -2,12 +2,11 @@
 
 import logging
 from io import StringIO
-from typing import Generator
 
 import pytest
 
-from python.utils.colors import Colors
-from python.utils.logging_utils import ColoredFormatter, get_logger, setup_logger
+from scripts.python.utils.colors import Colors
+from scripts.python.utils.logging_utils import ColoredFormatter, get_logger, setup_logger
 
 
 class TestColoredFormatter:
@@ -56,15 +55,7 @@ class TestColoredFormatter:
         assert "custom message" in result
 
 
-@pytest.fixture
-def cleanup_loggers() -> Generator[None, None, None]:
-    """Cleanup loggers after each test."""
-    yield
-    # Clear all logger handlers
-    for logger_name in list(logging.Logger.manager.loggerDict.keys()):
-        logger = logging.getLogger(logger_name)
-        logger.handlers.clear()
-        logger.setLevel(logging.NOTSET)
+# Fixture cleanup_loggers imported from tests.fixtures.common
 
 
 class TestSetupLogger:
