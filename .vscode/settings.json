@@ -122,8 +122,28 @@
     "*.Dockerfile": "dockerfile"
   },
   
-  // Files to exclude from validation
-  "files.exclude": {},
+  // Files to exclude from validation and Copilot indexing
+  "files.exclude": {
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/htmlcov": true,
+    "**/.coverage": true,
+    "**/.coverage.*": true
+  },
+  
+  // Search exclusions (improves performance)
+  "search.exclude": {
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true,
+    "**/htmlcov": true,
+    "**/.coverage": true,
+    "**/.coverage.*": true,
+    "**/node_modules": true,
+    "**/.venv": true,
+    "**/volumes": true
+  },
   
   // Python settings
   "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe",

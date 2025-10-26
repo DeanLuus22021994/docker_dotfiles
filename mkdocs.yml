@@ -1,0 +1,204 @@
+# MkDocs Configuration for Modern Data Platform
+# Version: 1.0
+# Last Updated: 2025-10-26
+
+site_name: Modern Data Platform
+site_description: 'Production-ready Docker platform with monitoring, databases, and web dashboard'
+site_author: 'Cluster Dashboard Team'
+site_url: 'https://your-username.github.io/docker_dotfiles/'
+
+# Repository
+repo_name: 'your-org/docker_dotfiles'
+repo_url: 'https://github.com/your-org/docker_dotfiles'
+edit_uri: 'edit/main/docs/'
+
+# Copyright
+copyright: 'Copyright &copy; 2025 Cluster Dashboard Team'
+
+# Theme configuration
+theme:
+  name: material
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  font:
+    text: Roboto
+    code: Roboto Mono
+  
+  features:
+    - navigation.instant      # Instant loading
+    - navigation.tracking     # URL tracking
+    - navigation.tabs         # Top-level tabs
+    - navigation.tabs.sticky  # Sticky tabs
+    - navigation.sections     # Section navigation
+    - navigation.expand       # Expand sections by default
+    - navigation.path         # Breadcrumbs
+    - navigation.top          # Back to top button
+    - toc.integrate           # Integrate TOC into navigation
+    - toc.follow              # Follow TOC
+    - search.suggest          # Search suggestions
+    - search.highlight        # Highlight search terms
+    - search.share            # Share search results
+    - content.code.copy       # Copy code button
+    - content.code.annotate   # Code annotations
+  
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/docker
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+      lang: en
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+
+# Markdown extensions
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - meta
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Link to this section
+  
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Additional CSS/JS
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+# Extra configuration
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/your-org/docker_dotfiles
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/u/your-org
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX  # Replace with your Google Analytics ID
+
+# Navigation structure
+nav:
+  - Home: index.md
+  
+  - Getting Started:
+      - Overview: README.md
+      - Setup Guide: SETUP.md
+      - Quickstart: web-content/QUICKSTART.md
+      - Production Deployment: docs/production-deployment.md
+  
+  - Architecture:
+      - Overview: web-content/ARCHITECTURE.md
+      - Cluster Design: CLUSTER.md
+      - Security Policy: SECURITY.md
+      - API Security: api/SECURITY.md
+  
+  - Web Dashboard:
+      - Overview: web-content/README.md
+      - Installation: web-content/INSTALL.md
+      - Architecture: web-content/ARCHITECTURE.md
+  
+  - API Server:
+      - Overview: api/README.md
+      - Security: api/SECURITY.md
+      - Authentication: api/SECURITY.md#jwt-authentication
+      - Rate Limiting: api/SECURITY.md#rate-limiting
+  
+  - Scripts & Automation:
+      - Overview: scripts/README.md
+      - Python Scripts: scripts/python/README.md
+      - PowerShell Scripts: scripts/powershell/README.md
+      - Bash Scripts: scripts/bash/README.md
+      - Migration Guide: scripts/MIGRATION.md
+  
+  - Testing:
+      - Overview: tests/README.md
+      - Running Tests: tests/README.md#running-tests
+      - Writing Tests: tests/README.md#writing-tests
+      - Coverage: tests/README.md#coverage
+  
+  - Operations:
+      - Production Deployment: docs/production-deployment.md
+      - Troubleshooting: docs/troubleshooting.md
+      - Docker Socket Security: docs/docker-socket-security.md
+  
+  - AI Development:
+      - Overview: AGENT.md
+      - Copilot Instructions: .github/copilot-instructions.md
+  
+  - Reference:
+      - Documentation Index: docs/INDEX.md
+      - TODO & Roadmap: .github/TODO.md
+      - Environment Variables: .env.example
+      - Docker Compose: docker-compose.yml
+      - Contributing: CONTRIBUTING.md
+
+# Page tree validation
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn

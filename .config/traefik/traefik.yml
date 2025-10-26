@@ -1,0 +1,123 @@
+# Traefik Production Configuration with HTTPS
+# Version: 3.2
+# Last Updated: 2025-10-26
+
+# =============================================================================
+# GLOBAL CONFIGURATION
+# =============================================================================
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+# =============================================================================
+# API & DASHBOARD
+# =============================================================================
+api:
+  dashboard: true  # Enable dashboard (disable in production or secure it)
+  insecure: false  # Don't expose on insecure port 8080 in production
+
+# =============================================================================
+# ENTRY POINTS
+# =============================================================================
+entryPoints:
+  # HTTP entry point (port 80) - redirects to HTTPS
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  # HTTPS entry point (port 443)
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+        domains:
+          - main: "your-domain.com"
+            sans:
+              - "*.your-domain.com"
+      middlewares:
+        - security-headers@file
+        - rate-limit@file
+
+  # Traefik dashboard (port 8080) - optional, secure in production
+  traefik:
+    address: ":8080"
+
+# =============================================================================
+# CERTIFICATE RESOLVERS (Let's Encrypt)
+# =============================================================================
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "admin@your-domain.com"
+      storage: "/letsencrypt/acme.json"
+      # Use staging server for testing
+      # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
+      # Production server (default)
+      caServer: "https://acme-v02.api.letsencrypt.org/directory"
+      
+      # HTTP-01 challenge (simpler, works for single servers)
+      httpChallenge:
+        entryPoint: web
+      
+      # DNS-01 challenge (required for wildcard certs, needs DNS provider)
+      # dnsChallenge:
+      #   provider: cloudflare
+      #   delayBeforeCheck: 30s
+      #   resolvers:
+      #     - "1.1.1.1:53"
+      #     - "8.8.8.8:53"
+
+# =============================================================================
+# PROVIDERS
+# =============================================================================
+providers:
+  # Docker provider (automatic service discovery)
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false  # Only expose services with traefik.enable=true
+    network: "traefik-public"
+    watch: true
+
+  # File provider (for dynamic configuration)
+  file:
+    directory: "/etc/traefik/dynamic"
+    watch: true
+
+# =============================================================================
+# LOGGING
+# =============================================================================
+log:
+  level: INFO  # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
+  format: json
+  filePath: "/var/log/traefik/traefik.log"
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  format: json
+  bufferingSize: 100
+  filters:
+    statusCodes:
+      - "400-499"  # Log client errors
+      - "500-599"  # Log server errors
+
+# =============================================================================
+# METRICS (Optional - Prometheus integration)
+# =============================================================================
+metrics:
+  prometheus:
+    entryPoint: traefik
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+
+# =============================================================================
+# PING (Health check)
+# =============================================================================
+ping:
+  entryPoint: traefik

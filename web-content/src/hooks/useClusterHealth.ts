@@ -1,10 +1,20 @@
 import { useState, useEffect } from 'react'
-import { Service } from '../types/cluster'
-import { getAllServices, checkServiceHealth } from '../services/clusterService'
+import { Service, LayerMetrics } from '../types/cluster'
+import { getAllServices, checkServiceHealth, calculateLayerMetrics } from '../services/clusterService'
 import { dockerAPI } from '../services/dockerAPI'
+
+// Layer-specific health check intervals (Phase 4.6.1)
+const LAYER_INTERVALS = {
+  data: 60000,       // Data layer: 60s (changes slowly)
+  services: 30000,   // Services layer: 30s (moderate changes)
+  monitoring: 45000, // Monitoring layer: 45s
+  compute: 30000,    // Compute layer: 30s
+  network: 15000,    // Network layer: 15s (changes frequently)
+}
 
 export const useClusterHealth = () => {
   const [services, setServices] = useState<Service[]>([])
+  const [layerMetrics, setLayerMetrics] = useState<Record<string, LayerMetrics>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [apiAvailable, setApiAvailable] = useState(false)
@@ -57,11 +67,18 @@ export const useClusterHealth = () => {
                   ? (containerData.memory_usage / containerData.memory_limit) * 100 
                   : Math.random() * 100,
                 uptime: Math.floor(Math.random() * 86400),
+                networkIO: Math.random() * 1000000, // bytes/s
               },
+              replicas: containerData?.replicas ?? 1,
             }
           })
         )
+        
+        // Calculate layer metrics aggregation (Phase 4.6.2)
+        const metrics = calculateLayerMetrics(servicesWithStatus)
+        
         setServices(servicesWithStatus)
+        setLayerMetrics(metrics)
         setError(null)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to check cluster health')
@@ -76,5 +93,5 @@ export const useClusterHealth = () => {
     return () => clearInterval(interval)
   }, [apiAvailable])
 
-  return { services, isLoading, error, apiAvailable }
+  return { services, layerMetrics, isLoading, error, apiAvailable }
 }

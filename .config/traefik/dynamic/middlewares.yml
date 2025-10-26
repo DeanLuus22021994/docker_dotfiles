@@ -1,0 +1,52 @@
+# Traefik Dynamic Configuration
+# Security headers and middleware
+# Last Updated: 2025-10-26
+
+http:
+  middlewares:
+    # Security headers middleware
+    security-headers:
+      headers:
+        # HSTS configuration (force HTTPS for 1 year)
+        stsSeconds: 31536000
+        stsIncludeSubdomains: true
+        stsPreload: true
+        
+        # Content Security Policy
+        contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' http://localhost:3001 ws://localhost:3001"
+        
+        # Other security headers
+        frameDeny: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        referrerPolicy: "strict-origin-when-cross-origin"
+        permissionsPolicy: "geolocation=(), microphone=(), camera=()"
+        
+        # Force HTTPS
+        forceSTSHeader: true
+        
+    # Rate limiting middleware (global)
+    rate-limit:
+      rateLimit:
+        average: 100
+        period: "1m"
+        burst: 50
+        
+    # Rate limiting for API endpoints (stricter)
+    rate-limit-api:
+      rateLimit:
+        average: 50
+        period: "1m"
+        burst: 25
+        
+    # Authentication middleware (basic auth for dashboard)
+    dashboard-auth:
+      basicAuth:
+        users:
+          # admin:admin (change in production!)
+          # Generated with: echo $(htpasswd -nb admin admin) | sed -e s/\\$/\\$\\$/g
+          - "admin:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/"
+        
+    # Compression middleware
+    compression:
+      compress: {}

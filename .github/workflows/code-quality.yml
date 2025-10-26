@@ -1,0 +1,227 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [main, develop, 'feat/**']
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+# Cancel in-progress runs when a new workflow with the same group name is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Python code quality checks
+  python:
+    name: Python (Black, Ruff, mypy)
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: 'latest'
+      
+      - name: Cache uv dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+      
+      - name: Install dependencies
+        run: uv sync
+      
+      - name: Run Black formatter (check only)
+        run: uv run black --check --diff scripts/python tests
+      
+      - name: Run Ruff linter
+        run: uv run ruff check scripts/python tests
+      
+      - name: Run mypy type checker
+        run: uv run mypy scripts/python tests
+
+  # YAML validation
+  yaml:
+    name: YAML (yamllint)
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Install yamllint
+        run: pip install yamllint
+      
+      - name: Run yamllint
+        run: |
+          cat > .yamllint <<EOF
+          extends: default
+          rules:
+            line-length:
+              max: 120
+            document-start: disable
+          EOF
+          yamllint .
+
+  # Markdown linting
+  markdown:
+    name: Markdown (markdownlint)
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install markdownlint-cli
+        run: npm install -g markdownlint-cli
+      
+      - name: Run markdownlint
+        run: markdownlint '**/*.md' --ignore node_modules --disable MD013 MD033 MD041
+
+  # Docker image linting
+  docker:
+    name: Docker (hadolint)
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run hadolint on all Dockerfiles
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: 'dockerfile/*.Dockerfile'
+          ignore: 'DL3008,DL3009'
+          failure-threshold: warning
+
+  # Shell script linting
+  shellcheck:
+    name: Shell (shellcheck)
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run shellcheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          severity: warning
+          scandir: './scripts/bash'
+
+  # PowerShell script analysis
+  powershell:
+    name: PowerShell (PSScriptAnalyzer)
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+      
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          $results = Invoke-ScriptAnalyzer -Path ./scripts/powershell -Recurse -ReportSummary
+          if ($results.Count -gt 0) {
+            $results | Format-Table -AutoSize
+            exit 1
+          }
+
+  # Node.js dependencies audit
+  npm-audit:
+    name: npm audit
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        directory: ['./api', './web-content']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install dependencies
+        working-directory: ${{ matrix.directory }}
+        run: npm ci --legacy-peer-deps
+      
+      - name: Run npm audit
+        working-directory: ${{ matrix.directory }}
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+  # Security scanning
+  security:
+    name: Security (Trivy)
+    runs-on: self-hosted
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.16.1
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+      
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # All checks summary
+  quality-gate:
+    name: Quality Gate
+    runs-on: self-hosted
+    needs: [python, yaml, markdown, docker, shellcheck, powershell, npm-audit, security]
+    if: always()
+    
+    steps:
+      - name: Check all jobs status
+        run: |
+          if [[ "${{ needs.python.result }}" != "success" ]] || \
+             [[ "${{ needs.yaml.result }}" != "success" ]] || \
+             [[ "${{ needs.markdown.result }}" != "success" ]] || \
+             [[ "${{ needs.docker.result }}" != "success" ]] || \
+             [[ "${{ needs.shellcheck.result }}" != "success" ]] || \
+             [[ "${{ needs.powershell.result }}" != "success" ]] || \
+             [[ "${{ needs.security.result }}" != "success" ]]; then
+            echo "❌ Code quality checks failed"
+            exit 1
+          else
+            echo "✅ All code quality checks passed"
+          fi
