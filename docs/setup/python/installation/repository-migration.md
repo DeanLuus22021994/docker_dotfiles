@@ -16,7 +16,7 @@ Update repository references from Python 3.14.0 to 3.13.1.
 **Configuration:**
 - `pyproject.toml` (2 references)
 - `.pre-commit-config.yaml` (1 reference)
-- `.docker-compose/cluster.config.yml` (1 reference)
+- `.config/cluster/cluster.config.yml` (1 reference)
 
 **Containerization:**
 - `dockerfile/devcontainer.Dockerfile` (6 references)

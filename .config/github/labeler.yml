@@ -8,8 +8,8 @@ documentation:
       - 'documentation/**'
       - 'docs/**'
       - '**/*.md'
-      - '.config/jekyll.config.yml'
-      - '.config/Gemfile'
+      - '.config/jekyll/jekyll.config.yml'
+      - '.config/jekyll/Gemfile'
 
 # Configuration changes
 config:

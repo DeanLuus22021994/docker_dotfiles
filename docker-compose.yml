@@ -927,7 +927,7 @@ services:
   cluster-docs:
     container_name: cluster-docs
     image: jekyll/jekyll:4.2.2
-    command: sh -c "git config --global --add safe.directory /srv/jekyll && bundle config set --local path /usr/local/bundle && cd /srv/jekyll && BUNDLE_GEMFILE=.config/Gemfile bundle install && bundle exec jekyll serve --config .config/jekyll.config.yml --host 0.0.0.0 --port 4000 --livereload --force_polling"
+    command: sh -c "git config --global --add safe.directory /srv/jekyll && bundle config set --local path /usr/local/bundle && cd /srv/jekyll && BUNDLE_GEMFILE=.config/jekyll/Gemfile bundle install && bundle exec jekyll serve --config .config/jekyll/jekyll.config.yml --host 0.0.0.0 --port 4000 --livereload --force_polling"
     volumes:
       - .:/srv/jekyll:cached
       - ./vendor/bundle:/usr/local/bundle:cached

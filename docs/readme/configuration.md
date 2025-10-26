@@ -11,6 +11,16 @@ description: "Configuration management and validation procedures"
 
 All configurations centralized in `.config/` directory:
 
+**Cluster Configs** (`.config/cluster/`):
+- `cluster.config.yml` - Master service definitions for 25+ services
+
+**Testing Configs** (`.config/testing/`):
+- `test-suite.yml` - End-to-end test suite configurations
+
+**Jekyll Configs** (`.config/jekyll/`):
+- `jekyll.config.yml` - Jekyll static site configuration
+- `Gemfile` / `Gemfile.lock` - Ruby dependencies for documentation site
+
 **Web Configs** (`.config/web/`):
 - `nginx.conf` - React web dashboard nginx settings
 - `vite.config.ts` - Vite build configuration
@@ -44,6 +54,22 @@ All configurations centralized in `.config/` directory:
 
 **Docker Configs** (`.config/docker/`):
 - `buildkitd.toml` - 10GB cache, 3-day retention
+
+**Monitoring Configs** (`.config/monitoring/`):
+- `prometheus.yml` - Metrics scraping configuration
+- `alertmanager.yml` - Alert routing and grouping
+- `alerts/rules.yml` - Alert rules
+- `dashboards/` - Grafana dashboard definitions
+- `grafana/provisioning/` - Auto-provisioning for datasources
+
+**Traefik Configs** (`.config/traefik/`):
+- `traefik.yml` - Reverse proxy configuration
+- `dynamic/middlewares.yml` - Dynamic middleware definitions
+
+**GitHub Configs** (`.config/github/`):
+- `dependabot.yml` - Automated dependency updates
+- `labeler.yml` - PR auto-labeling rules
+- `workflows/` - Reusable workflow configurations
 
 **Note:** Root-level config files (`.pre-commit-config.yaml`, `pytest.ini`, `pyrightconfig.json`, `.devcontainer/`) are symlinks or redirects to `.config/` for tool compatibility.
 

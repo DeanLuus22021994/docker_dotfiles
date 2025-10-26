@@ -13,10 +13,14 @@ All configuration files for the Docker cluster stack, strictly organized accordi
 ```
 .config/
 ├── README.md                    # This file
-├── cluster.config.yml           # Master service definitions
-├── test-suite.yml               # E2E test configurations
-├── jekyll.config.yml            # Jekyll site configuration
-├── Gemfile / Gemfile.lock       # Ruby dependencies for Jekyll
+├── cluster/                     # Cluster configuration
+│   └── cluster.config.yml       # Master service definitions
+├── testing/                     # Test configurations
+│   └── test-suite.yml           # E2E test configurations
+├── jekyll/                      # Jekyll documentation site
+│   ├── jekyll.config.yml        # Jekyll site configuration
+│   ├── Gemfile                  # Ruby dependencies for Jekyll
+│   └── Gemfile.lock             # Locked Ruby versions
 ├── docker/                      # Docker-specific configurations
 │   ├── README.md                # Docker config guide
 │   ├── daemon.json              # Daemon config reference
@@ -60,17 +64,19 @@ This directory serves as the **single source of truth** for all configuration, f
 
 ## 📄 Core Configuration Files
 
-### `cluster.config.yml`
+### `cluster/cluster.config.yml`
+
 Master service definitions: 25+ services, ports, health checks, resources, volumes, network.
 
-### `test-suite.yml`
+### `testing/test-suite.yml`
+
 E2E test definitions: infrastructure validation, service health checks, connectivity tests.
 
-### `jekyll.config.yml`
-Jekyll static site: theme (Cayman), plugins, collections, navigation, build settings.
+### `jekyll/`
 
-### `Gemfile` / `Gemfile.lock`
-Ruby dependencies: github-pages, jekyll-seo-tag, jekyll-sitemap, jekyll-feed, webrick.
+Jekyll static site configuration and Ruby dependencies:
+- **jekyll.config.yml**: Theme (Cayman), plugins, collections, navigation, build settings
+- **Gemfile/Gemfile.lock**: Ruby dependencies (github-pages, jekyll-seo-tag, jekyll-sitemap, jekyll-feed, webrick)
 
 ### `docker/` Directory
 - **daemon.json**: Docker Engine reference config (BuildKit, logging, storage)
