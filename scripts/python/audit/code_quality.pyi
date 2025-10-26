@@ -1,0 +1,144 @@
+"""Type stubs for code_quality module.
+
+Provides type hints for code quality checking utilities.
+"""
+
+import subprocess
+from abc import ABC
+from collections.abc import Sequence
+from dataclasses import dataclass
+from typing import Final, Protocol, TypeAlias
+
+# Type aliases
+ToolName: TypeAlias = str
+CommandArgs: TypeAlias = Sequence[str]
+ErrorMessage: TypeAlias = str
+ExitCode: TypeAlias = int
+
+# Constants
+DEFAULT_PYTHON_DIRS: Final[tuple[str, ...]]
+BLACK_LINE_LENGTH: Final[int]
+
+@dataclass(frozen=True, slots=True)
+class CheckResult:
+    """Result of a code quality check."""
+    
+    passed: bool
+    tool_name: ToolName
+    errors: tuple[ErrorMessage, ...]
+    stdout: str
+    install_hint: str
+    
+    @property
+    def has_errors(self) -> bool: ...
+
+@dataclass(frozen=True, slots=True)
+class CodeQualityReport:
+    """Aggregated results from all code quality checks."""
+    
+    results: tuple[CheckResult, ...]
+    
+    @property
+    def passed(self) -> bool: ...
+    
+    @property
+    def total_checks(self) -> int: ...
+    
+    @property
+    def passed_checks(self) -> int: ...
+    
+    @property
+    def failed_checks(self) -> int: ...
+    
+    @property
+    def all_errors(self) -> tuple[ErrorMessage, ...]: ...
+
+class CheckerProtocol(Protocol):
+    """Protocol for code quality checkers."""
+    
+    @property
+    def tool_name(self) -> ToolName: ...
+    
+    def run(self, target_paths: Sequence[str]) -> CheckResult: ...
+
+class BaseChecker(ABC):
+    """Abstract base class for code quality checkers."""
+    
+    verbose: bool
+    
+    def __init__(self, *, verbose: bool = True) -> None: ...
+    
+    @property
+    def tool_name(self) -> ToolName: ...
+    
+    @property
+    def install_command(self) -> str: ...
+    
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
+    
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+    
+    def run(self, target_paths: Sequence[str]) -> CheckResult: ...
+
+class BlackChecker(BaseChecker):
+    """Black code formatter checker."""
+    
+    @property
+    def tool_name(self) -> ToolName: ...
+    
+    @property
+    def install_command(self) -> str: ...
+    
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
+    
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+
+class RuffChecker(BaseChecker):
+    """Ruff linter checker."""
+    
+    @property
+    def tool_name(self) -> ToolName: ...
+    
+    @property
+    def install_command(self) -> str: ...
+    
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
+    
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+
+class MypyChecker(BaseChecker):
+    """Mypy type checker."""
+    
+    @property
+    def tool_name(self) -> ToolName: ...
+    
+    @property
+    def install_command(self) -> str: ...
+    
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs: ...
+    
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None: ...
+
+class CodeQualityAuditor:
+    """Orchestrates code quality checks."""
+    
+    target_paths: Sequence[str]
+    verbose: bool
+    checkers: tuple[BaseChecker, ...]
+    
+    def __init__(
+        self,
+        *,
+        target_paths: Sequence[str] = DEFAULT_PYTHON_DIRS,
+        verbose: bool = True,
+    ) -> None: ...
+    
+    def run_all_checks(self) -> CodeQualityReport: ...
+    
+    def print_summary(self, report: CodeQualityReport) -> None: ...
+
+def main() -> ExitCode:
+    """Run all code quality checks."""
+    ...
+
+__all__: list[str]
