@@ -6,7 +6,7 @@
     Switches the active MCP server profile configuration.
 
 .DESCRIPTION
-    Copies a profile configuration from .vscode/configs/mcp/profiles/ to .vscode/mcp.json.
+    Copies a profile configuration from .vscode/profiles/ to .vscode/mcp.json.
     Backs up the current configuration before switching.
     Requires VS Code restart to apply changes.
 
@@ -36,6 +36,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
 # Profile definitions
 $profiles = @{
@@ -72,8 +73,7 @@ $profiles = @{
 }
 
 $workspaceRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
-$configDir = Join-Path $workspaceRoot ".vscode\configs\mcp"
-$profilesDir = Join-Path $configDir "profiles"
+$profilesDir = Join-Path $workspaceRoot ".vscode\profiles"
 $sourceFile = Join-Path $profilesDir $profiles[$Profile].file
 $targetFile = Join-Path $workspaceRoot ".vscode\mcp.json"
 

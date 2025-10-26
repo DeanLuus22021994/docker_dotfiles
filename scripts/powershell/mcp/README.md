@@ -18,7 +18,7 @@ Generate optimized MCP profile configurations.
 - **testing** (87 tools) - github, filesystem, playwright, git, fetch, postgres
 - **data** (47 tools) - github, filesystem, postgres, sqlite, memory, git, fetch
 
-**Output:** `.vscode/configs/mcp/profiles/`
+**Output:** `.vscode/profiles/`
 
 ---
 

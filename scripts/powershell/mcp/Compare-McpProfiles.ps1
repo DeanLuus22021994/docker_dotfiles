@@ -45,9 +45,10 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
 $workspaceRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
-$profilesDir = Join-Path $workspaceRoot ".vscode\configs\mcp\profiles"
+$profilesDir = Join-Path $workspaceRoot ".vscode\profiles"
 
 # Profile file mapping
 $profileFiles = @{

@@ -25,7 +25,7 @@ success, errors, warnings = validator.validate()
 python scripts/python/mcp/validate_config.py
 
 # Validate specific file
-python scripts/python/mcp/validate_config.py .vscode/configs/mcp/profiles/core.json
+python scripts/python/mcp/validate_config.py .vscode/profiles/core.json
 
 # Strict mode (warnings = errors)
 python scripts/python/mcp/validate_config.py --strict
@@ -57,7 +57,7 @@ analyzer.load_config()
 stats = analyzer.analyze()
 
 # Compare profiles
-comparison = analyzer.compare_profiles(Path(".vscode/configs/mcp/profiles/core.json"))
+comparison = analyzer.compare_profiles(Path(".vscode/profiles/core.json"))
 ```
 
 **CLI Usage:**
@@ -66,10 +66,10 @@ comparison = analyzer.compare_profiles(Path(".vscode/configs/mcp/profiles/core.j
 python scripts/python/mcp/analyze_tokens.py
 
 # Analyze specific file
-python scripts/python/mcp/analyze_tokens.py .vscode/configs/mcp/profiles/core.json
+python scripts/python/mcp/analyze_tokens.py .vscode/profiles/core.json
 
 # Compare two configs
-python scripts/python/mcp/analyze_tokens.py .vscode/mcp.json --compare .vscode/configs/mcp/profiles/core.json
+python scripts/python/mcp/analyze_tokens.py .vscode/mcp.json --compare .vscode/profiles/core.json
 
 # JSON output
 python scripts/python/mcp/analyze_tokens.py --json

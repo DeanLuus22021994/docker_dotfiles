@@ -203,7 +203,7 @@ def main() -> None:
         type=Path,
         nargs="?",
         default=Path.cwd() / ".vscode" / "mcp.json",
-        help="Path to mcp.json file",
+        help="Path to mcp.json file (or profile in .vscode/profiles/)",
     )
     parser.add_argument("--strict", action="store_true", help="Treat warnings as errors")
 

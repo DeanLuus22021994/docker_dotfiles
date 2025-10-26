@@ -35,6 +35,7 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
 $workspaceRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
 $healthCheckScript = Join-Path $workspaceRoot "scripts\javascript\mcp\health-check.js"

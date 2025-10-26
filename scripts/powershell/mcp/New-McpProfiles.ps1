@@ -31,12 +31,12 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
 
 # Resolve paths
 $workspaceRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
-$configDir = Join-Path $workspaceRoot ".vscode\configs\mcp"
-$profilesDir = Join-Path $configDir "profiles"
-$baseConfig = Join-Path $profilesDir "mcp.json"  # Base config in profiles directory
+$profilesDir = Join-Path $workspaceRoot ".vscode\profiles"
+$baseConfig = Join-Path $workspaceRoot ".vscode\mcp.json"
 
 # Ensure directories exist
 if (-not (Test-Path $profilesDir)) {

@@ -1,9 +1,0 @@
-{ "servers": {
-  "github":     {"command":"npx","args":["-y","@modelcontextprotocol/server-github"],"env":{"GITHUB_TOKEN":"${env:GITHUB_TOKEN}"}},
-  "filesystem":     {"command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","${workspaceFolder}"]},
-  "playwright":     {"command":"npx","args":["-y","@executeautomation/playwright-mcp-server"]},
-  "git":     {"command":"uvx","args":["mcp-server-git"]},
-  "fetch":     {"command":"uvx","args":["mcp-server-fetch"]},
-  "postgres":     {"command":"npx","args":["-y","@modelcontextprotocol/server-postgres","postgresql://postgres:${env:DOCKER_POSTGRES_PASSWORD}@localhost:5432/postgres"]}
-  }
-}

@@ -287,7 +287,7 @@ class MCPToolDiscovery {
 async function main() {
   const workspaceRoot = path.join(__dirname, '..', '..', '..');
   const mcpConfig = path.join(workspaceRoot, '.vscode', 'mcp.json');
-  const outputFile = path.join(workspaceRoot, '.vscode', 'configs', 'mcp', 'documentation', 'tools_report.json');
+  const outputFile = path.join(workspaceRoot, '.vscode', 'profiles', 'documentation', 'tools_report.json');
 
   const discovery = new MCPToolDiscovery(mcpConfig);
 

@@ -32,6 +32,8 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
+Set-StrictMode -Version Latest
+
 $testsPassed = 0
 $testsFailed = 0
 
@@ -43,8 +45,7 @@ function Write-TestInfo { param([string]$Message) Write-Host "  ℹ $Message" -F
 
 # Resolve paths
 $workspaceRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
-$configDir = Join-Path $workspaceRoot ".vscode\configs\mcp"
-$profilesDir = Join-Path $configDir "profiles"
+$profilesDir = Join-Path $workspaceRoot ".vscode\profiles"
 $mcpJsonPath = Join-Path $workspaceRoot ".vscode\mcp.json"
 $scriptsDir = Join-Path $workspaceRoot "scripts"
 
