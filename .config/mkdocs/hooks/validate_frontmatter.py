@@ -31,11 +31,9 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    DocFrontmatter = None  # type: ignore[misc]
+    DocFrontmatter = None  # type: ignore[assignment]
     ALLOWED_TAGS = set()
-    ValidationError = None  # type: ignore[misc]
-
-
+    ValidationError = None  # type: ignore[assignment]
 # ============================================================================
 # Type Protocols (PEP 544) - No Runtime Dependencies
 # ============================================================================
