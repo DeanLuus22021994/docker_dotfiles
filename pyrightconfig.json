@@ -1,5 +1,5 @@
 {
-  "include": ["scripts", "tests"],
+  "include": ["scripts", "tests", ".config/mkdocs"],
   "exclude": [
     "**/__pycache__",
     "**/node_modules",
@@ -7,7 +7,7 @@
     "**/venv"
   ],
   "ignore": [],
-  "extraPaths": ["scripts"],
+  "extraPaths": ["scripts", ".config/mkdocs"],
   "defineConstant": {
     "DEBUG": true
   },

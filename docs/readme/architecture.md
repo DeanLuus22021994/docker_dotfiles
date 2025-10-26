@@ -1,11 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["architecture", "system-design", "components", "infrastructure"]
-description: "System architecture and component overview of the Docker cluster"
+date_created: "2025-10-26T18:32:25.950834+00:00"
+last_updated: "2025-10-26T18:32:25.950834+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for architecture"
 ---
 
-# Architecture
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- architecture
+description: System architecture and component overview of the Docker cluster
+---\n# Architecture
 
 ```
 Internet → Load Balancer (nginx:8080)

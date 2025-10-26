@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["python", "migration", "version-update", "repository"]
-description: "Updating repository from Python 3.14 to 3.13"
+date_created: "2025-10-26T18:32:25.975515+00:00"
+last_updated: "2025-10-26T18:32:25.975515+00:00"
+tags: ['documentation', 'setup', 'installation', 'python']
+description: "Documentation for repository migration"
 ---
-# Repository Migration (3.14 → 3.13)
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- python
+- migration
+description: Updating repository from Python 3.14 to 3.13
+---\n# Repository Migration (3.14 → 3.13)
 
 Update repository references from Python 3.14.0 to 3.13.1.
 

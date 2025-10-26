@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["docker", "security", "monitoring", "detection", "incident-response"]
-description: "Docker socket security monitoring and incident response"
+date_created: "2025-10-26T18:32:25.977915+00:00"
+last_updated: "2025-10-26T18:32:25.977915+00:00"
+tags: ['documentation', 'security', 'docker', 'monitoring']
+description: "Documentation for monitoring"
 ---
-# Monitoring & Incident Response
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker
+- security
+- monitoring
+description: Docker socket security monitoring and incident response
+---\n# Monitoring & Incident Response
 
 ## Monitoring Tools
 

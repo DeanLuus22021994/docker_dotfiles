@@ -1,11 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["maintenance", "backup", "restore", "updates"]
-description: "Maintenance procedures including backup, restore, and updates"
+date_created: "2025-10-26T18:32:25.954276+00:00"
+last_updated: "2025-10-26T18:32:25.954276+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for maintenance"
 ---
 
-# Maintenance
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- documentation
+description: Maintenance procedures including backup, restore, and updates
+---\n# Maintenance
 
 ## Backup Database
 

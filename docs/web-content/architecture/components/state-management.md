@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "architecture", "state-management", "hooks"]
-description: "State management strategy using React hooks"
+date_created: "2025-10-26T18:32:25.962425+00:00"
+last_updated: "2025-10-26T18:32:25.962425+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for state management"
 ---
-# State Management
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- architecture
+- javascript
+description: State management strategy using React hooks
+---\n# State Management
 
 ## Custom Hooks
 

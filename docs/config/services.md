@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["config", "services", "documentation"]
-description: "Documentation for services in config"
+date_created: "2025-10-26T18:32:25.944469+00:00"
+last_updated: "2025-10-26T18:32:25.944469+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for services"
 ---
-# Services Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker-compose
+- documentation
+description: Documentation for services in config
+---\n# Services Configuration
 
 This directory contains configuration files for various service integrations.
 

@@ -1,11 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["installation", "deployment", "setup", "devcontainer"]
-description: "Installation and deployment guide for production and development"
+date_created: "2025-10-26T18:32:25.953769+00:00"
+last_updated: "2025-10-26T18:32:25.953769+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for installation"
 ---
 
-# Installation
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- installation
+- deployment
+- setup
+description: Installation and deployment guide for production and development
+---\n# Installation
 
 ## Production Deployment
 

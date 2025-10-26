@@ -15,6 +15,17 @@ help:
 	@echo "  make logs        - View logs"
 	@echo "  make ps          - Show status"
 	@echo ""
+	@echo "Documentation:"
+	@echo "  make docs-new       - Create new documentation file"
+	@echo "  make docs-audit     - Audit frontmatter compliance"
+	@echo "  make docs-fix       - Fix frontmatter issues"
+	@echo "  make docs-serve     - Serve docs locally (hot reload)"
+	@echo "  make docs-build     - Build static documentation"
+	@echo "  make docs-validate  - Validate docs health"
+	@echo "  make docs-metrics   - Show build metrics"
+	@echo "  make docs-up        - Start docs services (dev + prod)"
+	@echo "  make docs-down      - Stop docs services"
+	@echo ""
 	@echo "Validation:"
 	@echo "  make validate          - Validate docker-compose syntax"
 	@echo "  make validate-configs  - Validate all config files"
@@ -126,3 +137,69 @@ test-all: validate validate-configs validate-env test-health test-conn
 	@echo "=========================================="
 	@echo "✅ All tests completed successfully"
 	@echo "=========================================="
+
+# ==============================================================================
+# Documentation Targets
+# ==============================================================================
+
+docs-new:
+	@echo "Creating new documentation file..."
+	@python .config/mkdocs/scripts/new_doc.py
+
+docs-audit:
+	@echo "Auditing frontmatter compliance..."
+	@python .config/mkdocs/scripts/audit_frontmatter.py \
+		--docs-dir docs \
+		--output frontmatter-audit.json
+	@echo "✅ Audit complete: frontmatter-audit.json"
+
+docs-fix:
+	@echo "Fixing frontmatter issues..."
+	@python .config/mkdocs/scripts/fix_frontmatter.py \
+		--docs-dir docs \
+		--backup
+	@echo "✅ Frontmatter fixed (backups in docs/.backup/)"
+
+docs-serve:
+	@echo "Starting MkDocs dev server (http://localhost:8000)..."
+	@cd .config/mkdocs && mkdocs serve
+
+docs-build:
+	@echo "Building documentation..."
+	@cd .config/mkdocs && mkdocs build --strict --verbose
+	@echo "✅ Built to .config/mkdocs/site/"
+
+docs-validate:
+	@echo "Validating documentation health..."
+	@python .config/mkdocs/build/validate_health.py \
+		--site-dir .config/mkdocs/site \
+		--output health-report.json \
+		--min-score 85
+	@echo "✅ Health validation complete"
+
+docs-metrics:
+	@echo "Collecting build metrics..."
+	@python .config/mkdocs/build/build_metrics.py \
+		--site-dir .config/mkdocs/site \
+		--output build-metrics.json
+	@echo "✅ Metrics saved to build-metrics.json"
+
+docs-up:
+	@echo "Starting documentation services..."
+	@docker-compose --profile docs up -d
+	@echo "✅ Services started:"
+	@echo "   - Production: http://localhost:8080 (nginx)"
+	@echo "   - Development: http://localhost:8000 (hot reload)"
+	@echo "   - Traefik: http://docs.localhost"
+
+docs-down:
+	@echo "Stopping documentation services..."
+	@docker-compose --profile docs down
+	@echo "✅ Documentation services stopped"
+
+docs-clean:
+	@echo "Cleaning documentation build artifacts..."
+	@rm -rf .config/mkdocs/site/
+	@rm -f frontmatter-audit.json health-report.json build-metrics.json
+	@echo "✅ Documentation artifacts cleaned"
+

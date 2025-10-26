@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "quickstart", "documentation"]
-description: "Documentation for quickstart in web-content"
+date_created: "2025-10-26T18:32:25.960163+00:00"
+last_updated: "2025-10-26T18:32:25.960163+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for quickstart"
 ---
-# Cluster Dashboard - Quick Start
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- quickstart
+- documentation
+description: Documentation for quickstart in web-content
+---\n# Cluster Dashboard - Quick Start
 
 ## Development Mode (Hot Reload)
 

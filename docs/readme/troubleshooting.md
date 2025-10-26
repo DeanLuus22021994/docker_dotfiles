@@ -1,11 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["troubleshooting", "debugging", "issues", "solutions"]
-description: "Common issues and troubleshooting solutions for the cluster"
+date_created: "2025-10-26T18:32:25.958195+00:00"
+last_updated: "2025-10-26T18:32:25.958195+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for troubleshooting"
 ---
 
-# Troubleshooting
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- troubleshooting
+- debugging
+description: Common issues and troubleshooting solutions for the cluster
+---\n# Troubleshooting
 
 ## Port Conflicts
 

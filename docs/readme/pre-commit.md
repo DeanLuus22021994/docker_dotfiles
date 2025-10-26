@@ -1,11 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["pre-commit", "hooks", "automation", "quality", "validation"]
-description: "Pre-commit hooks for automated code quality and validation"
+date_created: "2025-10-26T18:32:25.955363+00:00"
+last_updated: "2025-10-26T18:32:25.955363+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for pre commit"
 ---
 
-# Pre-commit Hooks
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- validation
+- javascript
+- automation
+description: Pre-commit hooks for automated code quality and validation
+---\n# Pre-commit Hooks
 
 Pre-commit hooks run automatically in the `cluster-pre-commit` container service.
 

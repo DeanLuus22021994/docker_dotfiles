@@ -9,14 +9,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# Add parent directory for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
-from schemas.frontmatter import DocFrontmatter
-from new_doc import CATEGORIES
-
-# Add parent directory for imports
-sys.path.append(str(Path(__file__).parent.parent))
+from ..schemas.frontmatter import DocFrontmatter
+from .new_doc import CATEGORIES
 
 
 def test_basic_functionality() -> bool:

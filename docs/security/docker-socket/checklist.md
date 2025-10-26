@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["docker", "security", "checklist", "compliance"]
-description: "Docker socket security checklist for all environments"
+date_created: "2025-10-26T18:32:25.977310+00:00"
+last_updated: "2025-10-26T18:32:25.977310+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for checklist"
 ---
-# Security Checklist
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker
+- security
+description: Docker socket security checklist for all environments
+---\n# Security Checklist
 
 ## Development Environment
 

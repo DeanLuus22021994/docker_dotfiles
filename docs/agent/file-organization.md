@@ -1,11 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["organization", "structure", "files", "directories"]
-description: "File organization patterns and volume mount strategies"
+date_created: "2025-10-26T18:32:25.938943+00:00"
+last_updated: "2025-10-26T18:32:25.938943+00:00"
+tags: ['documentation', 'agent', 'development']
+description: "Documentation for file organization"
 ---
 
-# File Organization
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- architecture
+description: File organization patterns and volume mount strategies
+---\n# File Organization
 
 ## Volume Mounts
 

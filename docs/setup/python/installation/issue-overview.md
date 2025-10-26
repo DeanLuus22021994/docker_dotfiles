@@ -1,10 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["python", "installation", "windows", "troubleshooting"]
-description: "Python 3.14.0 Windows installation issue summary"
+date_created: "2025-10-26T18:32:25.974929+00:00"
+last_updated: "2025-10-26T18:32:25.974929+00:00"
+tags: ['documentation', 'setup', 'installation', 'python']
+description: "Documentation for issue overview"
 ---
-# Python 3.14.0 Installation Issue
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- python
+- installation
+- setup
+- troubleshooting
+description: Python 3.14.0 Windows installation issue summary
+---\n# Python 3.14.0 Installation Issue
 
 Windows Installer error 1603 preventing Python 3.14.0 installation.
 

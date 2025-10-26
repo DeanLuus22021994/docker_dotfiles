@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["scripts", "migration", "path-mapping", "reference"]
-description: "Complete path mapping for scripts migration"
+date_created: "2025-10-26T18:32:25.987433+00:00"
+last_updated: "2025-10-26T18:32:25.987433+00:00"
+tags: ['documentation', 'scripts', 'automation']
+description: "Documentation for path mapping"
 ---
-# Scripts Path Mapping
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- scripts
+- migration
+- documentation
+description: Complete path mapping for scripts migration
+---\n# Scripts Path Mapping
 
 Complete mapping from old to new paths.
 

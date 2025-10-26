@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["scripts", "overview", "organization"]
-description: "Scripts directory overview and organization"
+date_created: "2025-10-26T18:32:25.983526+00:00"
+last_updated: "2025-10-26T18:32:25.983526+00:00"
+tags: ['documentation', 'scripts', 'automation']
+description: "Documentation for overview"
 ---
-# Scripts Overview
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- scripts
+- overview
+- architecture
+description: Scripts directory overview and organization
+---\n# Scripts Overview
 
 Organized scripts following SRP (Single Responsibility Principle) and DRY (Don't Repeat Yourself) principles.
 

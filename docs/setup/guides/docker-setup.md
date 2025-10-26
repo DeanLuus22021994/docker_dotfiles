@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["setup", "docker", "containers", "services"]
-description: "Docker setup and service deployment"
+date_created: "2025-10-26T18:32:25.969806+00:00"
+last_updated: "2025-10-26T18:32:25.969806+00:00"
+tags: ['documentation', 'setup', 'installation', 'docker']
+description: "Documentation for docker setup"
 ---
-# Docker Setup
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- setup
+- docker
+- docker-compose
+description: Docker setup and service deployment
+---\n# Docker Setup
 
 ## Build Images
 

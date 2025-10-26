@@ -1,11 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["configuration", "settings", "management", "structure"]
-description: "Configuration management structure and organization guidelines"
+date_created: "2025-10-26T18:32:25.936902+00:00"
+last_updated: "2025-10-26T18:32:25.936902+00:00"
+tags: ['documentation', 'agent', 'development']
+description: "Documentation for configuration"
 ---
 
-# Configuration Management
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- configuration
+- architecture
+description: Configuration management structure and organization guidelines
+---\n# Configuration Management
 
 ## Structure
 

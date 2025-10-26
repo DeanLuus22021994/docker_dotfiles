@@ -1,11 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["development", "guidelines", "principles", "architecture"]
-description: "Core development principles and guidelines for the Docker cluster project"
+date_created: "2025-10-26T18:32:25.939451+00:00"
+last_updated: "2025-10-26T18:32:25.939451+00:00"
+tags: ['documentation', 'agent', 'development']
+description: "Documentation for principles"
 ---
 
-# Development Principles
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- development
+- best-practices
+- architecture
+description: Core development principles and guidelines for the Docker cluster project
+---\n# Development Principles
 
 **TDD** (Test-Driven Development): Write tests before implementation  
 **SRP** (Single Responsibility Principle): One concern per module/file  

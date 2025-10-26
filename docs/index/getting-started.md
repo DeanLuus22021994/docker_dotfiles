@@ -1,11 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["getting-started", "installation", "setup", "quickstart"]
-description: "Getting started guides for new users"
+date_created: "2025-10-26T18:32:25.945695+00:00"
+last_updated: "2025-10-26T18:32:25.945695+00:00"
+tags: ['documentation']
+description: "Documentation for getting started"
 ---
 
-# Getting Started
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- installation
+- setup
+- quickstart
+description: Getting started guides for new users
+---\n# Getting Started
 
 Quick links to begin using the platform:
 

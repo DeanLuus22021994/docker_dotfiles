@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["docker", "security", "threat-model", "attack-vectors"]
-description: "Docker socket threat model and attack vector analysis"
+date_created: "2025-10-26T18:32:25.979678+00:00"
+last_updated: "2025-10-26T18:32:25.979678+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for threat model"
 ---
-# Docker Socket Threat Model
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker
+- security
+description: Docker socket threat model and attack vector analysis
+---\n# Docker Socket Threat Model
 
 ## Attack Vectors
 

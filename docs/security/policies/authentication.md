@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["security", "authentication", "api"]
-description: "API authentication and authorization policies"
+date_created: "2025-10-26T18:32:25.980244+00:00"
+last_updated: "2025-10-26T18:32:25.980244+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for authentication"
 ---
-# Authentication & Authorization
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- security
+- authentication
+- api
+description: API authentication and authorization policies
+---\n# Authentication & Authorization
 
 ## JWT Authentication
 

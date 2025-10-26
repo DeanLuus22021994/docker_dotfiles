@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "installation", "documentation"]
-description: "Documentation for installation in web-content"
+date_created: "2025-10-26T18:32:25.959188+00:00"
+last_updated: "2025-10-26T18:32:25.959188+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for installation"
 ---
-# Cluster Dashboard - Installation & Usage Guide
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- installation
+- documentation
+description: Documentation for installation in web-content
+---\n# Cluster Dashboard - Installation & Usage Guide
 
 ## Quick Start
 

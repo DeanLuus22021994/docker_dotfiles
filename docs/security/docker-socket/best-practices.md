@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["docker", "security", "best-practices", "hardening"]
-description: "Docker socket security best practices and hardening guidelines"
+date_created: "2025-10-26T18:32:25.976763+00:00"
+last_updated: "2025-10-26T18:32:25.976763+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for best practices"
 ---
-# Docker Socket Best Practices
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker
+- security
+- best-practices
+description: Docker socket security best practices and hardening guidelines
+---\n# Docker Socket Best Practices
 
 ## ✅ DO
 

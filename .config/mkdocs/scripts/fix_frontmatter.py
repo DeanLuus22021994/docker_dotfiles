@@ -6,20 +6,18 @@ by mapping existing tags to approved vocabulary and adding missing fields.
 """
 
 import sys
-from pathlib import Path
-# Add parent directory for imports
-sys.path.append(str(Path(__file__).parent.parent))
 
 import re
 import subprocess
 from typing import Dict, List
 from datetime import datetime, timezone
+from pathlib import Path
 
 import yaml
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
-from schemas.frontmatter import ALLOWED_TAGS
+from ..schemas.frontmatter import ALLOWED_TAGS
 
 
 # Tag mapping for standardization

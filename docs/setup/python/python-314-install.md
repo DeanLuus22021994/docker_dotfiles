@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["python", "python-3.14", "installation", "issues"]
-description: "Python 3.14 installation issues and fixes"
+date_created: "2025-10-26T18:32:25.972355+00:00"
+last_updated: "2025-10-26T18:32:25.972355+00:00"
+tags: ['documentation', 'setup', 'installation', 'python']
+description: "Documentation for python 314 install"
 ---
-# Python 3.14 Installation Issues
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- python
+- installation
+- troubleshooting
+description: Python 3.14 installation issues and fixes
+---\n# Python 3.14 Installation Issues
 
 ## Windows Installation
 

@@ -1,11 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["environment", "configuration", "secrets", "credentials"]
-description: "Environment variables and secrets configuration guide"
+date_created: "2025-10-26T18:32:25.952569+00:00"
+last_updated: "2025-10-26T18:32:25.952569+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for environment setup"
 ---
 
-# Environment Setup
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- environment
+- configuration
+- secrets
+- authentication
+description: Environment variables and secrets configuration guide
+---\n# Environment Setup
 
 Required before starting the stack.
 

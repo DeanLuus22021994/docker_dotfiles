@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["setup", "prerequisites", "requirements", "installation"]
-description: "Software prerequisites and system requirements"
+date_created: "2025-10-26T18:32:25.971744+00:00"
+last_updated: "2025-10-26T18:32:25.971744+00:00"
+tags: ['documentation', 'setup', 'installation']
+description: "Documentation for prerequisites"
 ---
-# Prerequisites
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- setup
+- installation
+description: Software prerequisites and system requirements
+---\n# Prerequisites
 
 ## Required Software
 

@@ -85,10 +85,10 @@ except ImportError:
 
 
 # Add the parent directory to sys.path for imports
-sys.path.append(str(Path(__file__).parent.parent))
+# sys.path.append(str(Path(__file__).parent.parent))  # Not needed with relative import
 
 try:
-    from schemas.frontmatter import DocFrontmatter
+    from ..schemas.frontmatter import DocFrontmatter
 except ImportError:
     # Fallback if schemas not available
     @dataclass

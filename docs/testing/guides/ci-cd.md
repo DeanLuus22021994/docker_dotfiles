@@ -1,10 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["testing", "ci-cd", "github-actions", "automation"]
-description: "CI/CD pipeline configuration for automated testing"
+date_created: "2025-10-26T18:32:25.966835+00:00"
+last_updated: "2025-10-26T18:32:25.966835+00:00"
+tags: ['documentation', 'testing', 'pytest']
+description: "Documentation for ci cd"
 ---
-# CI/CD Pipeline
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- testing
+- ci-cd
+- github-actions
+- automation
+description: CI/CD pipeline configuration for automated testing
+---\n# CI/CD Pipeline
 
 ## GitHub Actions Workflow
 

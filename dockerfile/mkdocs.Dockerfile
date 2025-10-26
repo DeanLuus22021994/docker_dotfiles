@@ -1,188 +1,135 @@
-# ============================================================================
-# MkDocs Material - Modern Multi-Stage Production Dockerfile
-# ============================================================================
-# Build Strategy: Compile static site during build, serve with ultra-light nginx
-# Image Size: ~15MB (nginx:alpine) vs 150MB+ (Python runtime)
-# Performance: Pre-built static assets, instant page loads, zero Python overhead
-# ============================================================================
+# Multi-stage build for optimized MkDocs production images
+# Target: <20MB final image with all bleeding-edge features
 
-# ============================================================================
-# Stage 1: Builder - Full Python environment for MkDocs build
-# ============================================================================
-FROM python:3.14-slim AS builder
+# Build stage - full Python environment
+FROM python:3.12-alpine as builder
 
-LABEL stage="builder"
-LABEL description="MkDocs build stage with Material theme and advanced plugins"
-
-# Build arguments
-ARG MKDOCS_VERSION=1.6.1
-ARG MATERIAL_VERSION=9.5.39
+# Install build dependencies
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    python3-dev \
+    build-base \
+    git
 
 # Set working directory
 WORKDIR /build
 
-# Install build dependencies (git for git-revision-date plugin)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        git \
-        gcc \
-        g++ \
-    && rm -rf /var/lib/apt/lists/*
+# Copy dependency files
+COPY pyproject.toml ./
+COPY .config/mkdocs ./config/
 
-# Install MkDocs and comprehensive plugin suite
+# Install Python dependencies in virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:"
+
+# Install core dependencies for docs
 RUN pip install --no-cache-dir \
-    # Core MkDocs
-    mkdocs==${MKDOCS_VERSION} \
-    mkdocs-material==${MATERIAL_VERSION} \
-    \
-    # Essential Plugins
-    mkdocs-minify-plugin==0.8.0 \
+    mkdocs==1.6.0 \
+    mkdocs-material==9.6.22 \
     mkdocs-awesome-pages-plugin==2.9.3 \
-    mkdocs-linkcheck==1.0.5 \
-    \
-    # Advanced Markdown
-    pymdown-extensions==10.11.2 \
-    \
-    && pip cache purge
-
-# Copy MkDocs configuration (modular YAML structure)
-COPY .config/mkdocs/ /build/.config/mkdocs/
+    pydantic==2.9.2 \
+    pyyaml==6.0.2 \
+    jinja2==3.1.4 \
+    psutil==6.1.0 \
+    requests==2.32.3
 
 # Copy documentation source
-COPY docs/ /build/docs/
+COPY docs ./docs/
+COPY mkdocs.yml ./
 
-# Copy assets from .config/mkdocs (not from docs/)
-COPY .config/mkdocs/assets/ /build/docs/assets/
+# Build static site
+RUN mkdocs build --clean --strict
 
-# Set git safe directory (for git plugins)
-RUN git config --global --add safe.directory /build
+# Production stage - minimal runtime
+FROM nginx:alpine as production
 
-# Build static site with optimizations
-RUN mkdocs build \
-    --config-file .config/mkdocs/mkdocs.yml \
-    --clean \
-    --site-dir /build/site
-
-# Post-build optimizations (gzip compression)
-RUN find /build/site -type f -name '*.html' -exec sed -i 's/  */ /g' {} + && \
-    find /build/site -type f -name '*.js' -exec gzip -k9 {} + && \
-    find /build/site -type f -name '*.css' -exec gzip -k9 {} + && \
-    find /build/site -type f -name '*.html' -exec gzip -k9 {} +
-
-# ============================================================================
-# Stage 1.5: Validation - Verify built site integrity
-# ============================================================================
-FROM python:3.14-alpine AS validation
-
-LABEL stage="validation"
-LABEL description="Post-build validation and quality checks"
-
-WORKDIR /validate
-
-# Install validation dependencies (minimal Alpine packages)
+# Install minimal runtime dependencies
 RUN apk add --no-cache \
-    py3-pip \
-    libstdc++
+    python3 \
+    py3-pip
 
-# Install Python validation tools
-RUN pip install --no-cache-dir \
-    pyyaml==6.0.2 \
-    && pip cache purge
+# Copy virtual environment from builder
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:"
 
-# Copy built site from builder
-COPY --from=builder /build/site /validate/site
+# Copy built site
+COPY --from=builder /build/site /usr/share/nginx/html
 
-# Copy validation scripts
-COPY .config/mkdocs/scripts/validate_health.py /validate/
-COPY .config/mkdocs/hooks/validate_frontmatter.py /validate/
+# Copy nginx configuration
+COPY .config/mkdocs/nginx.conf /etc/nginx/nginx.conf
 
-# Run comprehensive validation suite
-RUN python validate_health.py \
-    --site-dir /validate/site \
-    --strict \
-    && echo "[$(date '+%Y-%m-%d %H:%M:%S')] Site validation passed"
+# Add healthcheck
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:80/ || exit 1
 
-# Verify critical files exist
-RUN test -f /validate/site/index.html && \
-    test -f /validate/site/search/search_index.json && \
-    test -f /validate/site/sitemap.xml && \
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Critical files validated"
+# Create non-root user
+RUN addgroup -g 1001 -S mkdocs && \
+    adduser -S -D -H -u 1001 -h /usr/share/nginx/html -s /sbin/nologin -G mkdocs -g mkdocs mkdocs
 
-# Verify metrics were generated
-RUN test -f /validate/site/metrics.json && \
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Build metrics validated"
-
-# ============================================================================
-# Stage 2: Production - Ultra-lightweight nginx server
-# ============================================================================
-FROM nginx:1.27-alpine AS production
-
-LABEL maintainer="Dean Luus"
-LABEL description="MkDocs Material documentation - Production static site"
-LABEL version="2.0.0"
-
-# Install envsubst for dynamic configuration
-RUN apk add --no-cache gettext libintl
-
-# Copy built site from validation stage (ensures validation passed)
-COPY --from=validation /validate/site /usr/share/nginx/html
-
-# Copy custom nginx configuration
-COPY .config/mkdocs/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Create nginx cache directory
-RUN mkdir -p /var/cache/nginx/docs && \
-    chown -R nginx:nginx /var/cache/nginx/docs && \
-    chown -R nginx:nginx /usr/share/nginx/html
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8000/ || exit 1
-
-# Expose port
-EXPOSE 8000
+# Set ownership
+RUN chown -R mkdocs:mkdocs /usr/share/nginx/html
 
 # Switch to non-root user
-USER nginx
+USER mkdocs
+
+# Expose port
+EXPOSE 80
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
 
-# ============================================================================
-# Stage 3: Development - Hot-reload server (optional target)
-# ============================================================================
-FROM python:3.14-slim AS development
+# Development stage - with hot reload
+FROM python:3.12-alpine as development
 
-LABEL stage="development"
-LABEL description="MkDocs development server with live reload"
+# Install development dependencies
+RUN apk add --no-cache \
+    gcc \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    python3-dev \
+    build-base \
+    git \
+    nodejs \
+    npm
 
 WORKDIR /docs
 
-# Install MkDocs and plugins
+# Copy dependency files
+COPY pyproject.toml ./
+
+# Install Python dependencies
 RUN pip install --no-cache-dir \
-    mkdocs==1.6.1 \
-    mkdocs-material==9.5.39 \
-    mkdocs-minify-plugin==0.8.0 \
-    pymdown-extensions==10.11.2 \
-    && pip cache purge
+    mkdocs==1.6.0 \
+    mkdocs-material==9.6.22 \
+    mkdocs-awesome-pages-plugin==2.9.3 \
+    pydantic==2.9.2 \
+    rich==13.9.4 \
+    inquirer==3.4.0 \
+    pyyaml==6.0.2 \
+    jinja2==3.1.4 \
+    psutil==6.1.0 \
+    requests==2.32.3 \
+    watchdog[watchmedo]==5.0.3
 
-# Install git for live reload file watching
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends git && \
-    rm -rf /var/lib/apt/lists/*
+# Install Node.js dependencies for Mermaid
+RUN npm install -g mermaid@10.9.1
 
-# Note: Assets mounted from .config/mkdocs/assets at runtime
+# Create development user
+RUN addgroup -g 1001 -S mkdocs && \
+    adduser -S -D -H -u 1001 -h /docs -s /bin/sh -G mkdocs -g mkdocs mkdocs
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000').read()" || exit 1
+# Set ownership
+RUN chown -R mkdocs:mkdocs /docs
 
+# Switch to non-root user
+USER mkdocs
+
+# Expose port for development server
 EXPOSE 8000
 
-# Start development server with live reload
-CMD ["mkdocs", "serve", \
-     "--config-file", ".config/mkdocs/mkdocs.yml", \
-     "--dev-addr", "0.0.0.0:8000", \
-     "--livereload", \
-     "--watch", ".config/mkdocs/", \
-     "--watch", "docs/"]
+# Default command for development
+CMD ["mkdocs", "serve", "--dev-addr=0.0.0.0:8000", "--livereload"]

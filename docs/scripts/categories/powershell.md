@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["scripts", "powershell", "windows"]
-description: "PowerShell scripts organization and usage"
+date_created: "2025-10-26T18:32:25.984090+00:00"
+last_updated: "2025-10-26T18:32:25.984090+00:00"
+tags: ['documentation', 'scripts', 'automation']
+description: "Documentation for powershell"
 ---
-# PowerShell Scripts
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- scripts
+- setup
+description: PowerShell scripts organization and usage
+---\n# PowerShell Scripts
 
 ## Categories
 

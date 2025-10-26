@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["docker", "security", "socket-proxy", "alternatives"]
-description: "Docker socket proxy implementation guide"
+date_created: "2025-10-26T18:32:25.979116+00:00"
+last_updated: "2025-10-26T18:32:25.979116+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for socket proxy"
 ---
-# Docker Socket Proxy Implementation
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker
+- security
+- reference
+description: Docker socket proxy implementation guide
+---\n# Docker Socket Proxy Implementation
 
 ## Recommended: tecnativa/docker-socket-proxy
 

@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["scripts", "migration", "overview", "restructure"]
-description: "Scripts migration guide overview for v3.0.0 restructure"
+date_created: "2025-10-26T18:32:25.986866+00:00"
+last_updated: "2025-10-26T18:32:25.986866+00:00"
+tags: ['documentation', 'scripts', 'automation']
+description: "Documentation for overview"
 ---
-# Scripts Migration Overview
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- scripts
+- migration
+- overview
+description: Scripts migration guide overview for v3.0.0 restructure
+---\n# Scripts Migration Overview
 
 Migration from flat scripts structure to organized SRP/DRY structure (v3.0.0, 2025-10-25).
 

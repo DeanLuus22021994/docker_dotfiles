@@ -1,11 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["usage", "commands", "makefile", "docker-compose"]
-description: "Common commands and usage patterns for managing the cluster"
+date_created: "2025-10-26T18:32:25.958667+00:00"
+last_updated: "2025-10-26T18:32:25.958667+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for usage"
 ---
 
-# Usage
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- usage
+- commands
+- docker-compose
+description: Common commands and usage patterns for managing the cluster
+---\n# Usage
 
 ## Makefile Commands
 

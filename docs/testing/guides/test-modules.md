@@ -1,10 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["testing", "test-modules", "coverage", "unit-tests"]
-description: "Detailed breakdown of test modules and coverage"
+date_created: "2025-10-26T18:32:25.968740+00:00"
+last_updated: "2025-10-26T18:32:25.968740+00:00"
+tags: ['documentation', 'testing', 'pytest']
+description: "Documentation for test modules"
 ---
-# Test Modules Breakdown
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- testing
+- test-modules
+- coverage
+- unit-tests
+description: Detailed breakdown of test modules and coverage
+---\n# Test Modules Breakdown
 
 ## Utils Tests (160 tests, >90% coverage)
 

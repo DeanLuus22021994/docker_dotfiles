@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["api", "security", "rate-limiting", "dos-protection"]
-description: "Rate limiting configuration and DoS protection"
+date_created: "2025-10-26T18:32:26.002342+00:00"
+last_updated: "2025-10-26T18:32:26.002342+00:00"
+tags: ['documentation', 'api', 'reference']
+description: "Documentation for rate limiting"
 ---
-# Rate Limiting
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- api
+- security
+description: Rate limiting configuration and DoS protection
+---\n# Rate Limiting
 
 ## Configuration
 

@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "architecture", "index"]
-description: "Web dashboard architecture documentation index"
+date_created: "2025-10-26T18:32:25.960770+00:00"
+last_updated: "2025-10-26T18:32:25.960770+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for index"
 ---
-# Web Dashboard Architecture
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- architecture
+- index
+description: Web dashboard architecture documentation index
+---\n# Web Dashboard Architecture
 
 React 18 + TypeScript + Vite dashboard for Modern Data Platform monitoring.
 

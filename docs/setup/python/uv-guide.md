@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["python", "uv", "package-manager", "installation"]
-description: "UV package manager installation and configuration"
+date_created: "2025-10-26T18:32:25.973830+00:00"
+last_updated: "2025-10-26T18:32:25.973830+00:00"
+tags: ['documentation', 'setup', 'installation', 'python']
+description: "Documentation for uv guide"
 ---
-# UV Package Manager
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- python
+- installation
+description: UV package manager installation and configuration
+---\n# UV Package Manager
 
 Modern Python package manager for fast, reliable dependency management.
 

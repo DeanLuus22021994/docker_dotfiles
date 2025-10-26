@@ -253,5 +253,9 @@
   "python.testing.pytestEnabled": true,
 
   // Disable link validation in instruction files (AI semantic references, not user-facing links)
-  "github.copilot.chat.promptsDiagnostics.enabled": false
+  "github.copilot.chat.promptsDiagnostics.enabled": false,
+  "pgsql.copilot.modelOptions": {
+
+  },
+  "python.analysis.aiHoverSummaries": true
 }

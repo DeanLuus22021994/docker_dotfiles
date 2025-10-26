@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["testing", "pytest", "commands", "execution"]
-description: "Running tests with pytest"
+date_created: "2025-10-26T18:32:25.965101+00:00"
+last_updated: "2025-10-26T18:32:25.965101+00:00"
+tags: ['documentation', 'testing', 'pytest']
+description: "Documentation for running tests"
 ---
-# Running Tests
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- testing
+- pytest
+- commands
+description: Running tests with pytest
+---\n# Running Tests
 
 Execute pytest tests with various configurations and filters.
 

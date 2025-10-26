@@ -1,11 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["services", "endpoints", "access", "urls", "ports"]
-description: "Service endpoints and access credentials for all cluster services"
+date_created: "2025-10-26T18:32:25.957668+00:00"
+last_updated: "2025-10-26T18:32:25.957668+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for service access"
 ---
 
-# Service Access
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker-compose
+description: Service endpoints and access credentials for all cluster services
+---\n# Service Access
 
 ## Web Services
 

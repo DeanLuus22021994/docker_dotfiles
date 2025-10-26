@@ -1,10 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["github", "branch-protection", "main-branch", "rules"]
-description: "Branch protection rules configuration for main branch"
+date_created: "2025-10-26T18:32:25.995652+00:00"
+last_updated: "2025-10-26T18:32:25.995652+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for branch protection"
 ---
-# Branch Protection Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- documentation
+description: Branch protection rules configuration for main branch
+---\n# Branch Protection Configuration
 
 Protection rules for `main` branch to ensure code quality and review process.
 

@@ -1,10 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["github", "runners", "self-hosted", "actions"]
-description: "Self-hosted GitHub Actions runners configuration"
+date_created: "2025-10-26T18:32:25.998127+00:00"
+last_updated: "2025-10-26T18:32:25.998127+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for runners"
 ---
-# Self-Hosted Runners Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- documentation
+description: Self-hosted GitHub Actions runners configuration
+---\n# Self-Hosted Runners Configuration
 
 Self-hosted runners for unlimited free GitHub Actions minutes.
 

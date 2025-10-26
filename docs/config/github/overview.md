@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["github", "config", "overview", "automation"]
-description: "GitHub configuration overview for repository automation and CI/CD"
+date_created: "2025-10-26T18:32:25.997571+00:00"
+last_updated: "2025-10-26T18:32:25.997571+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for overview"
 ---
-# GitHub Configuration Overview
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- overview
+- automation
+description: GitHub configuration overview for repository automation and CI/CD
+---\n# GitHub Configuration Overview
 
 Configuration files for GitHub-specific repository automation, CI/CD, security, and development workflows. All features are **FREE** for public repositories.
 

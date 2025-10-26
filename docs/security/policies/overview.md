@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["security", "policy", "overview"]
-description: "Project security policy and vulnerability reporting"
+date_created: "2025-10-26T18:32:25.982176+00:00"
+last_updated: "2025-10-26T18:32:25.982176+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for overview"
 ---
-# Security Policy Overview
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- security
+- overview
+description: Project security policy and vulnerability reporting
+---\n# Security Policy Overview
 
 Security policies and vulnerability reporting procedures for Modern Data Platform.
 

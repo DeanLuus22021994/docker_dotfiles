@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["github", "onboarding", "setup", "quickstart"]
-description: "New developer onboarding guide for GitHub configuration"
+date_created: "2025-10-26T18:32:25.997126+00:00"
+last_updated: "2025-10-26T18:32:25.997126+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for onboarding"
 ---
-# Developer Onboarding Guide
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- setup
+- quickstart
+description: New developer onboarding guide for GitHub configuration
+---\n# Developer Onboarding Guide
 
 Quick setup guide for new developers (~10 minutes).
 

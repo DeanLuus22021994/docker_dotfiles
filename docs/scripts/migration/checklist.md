@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["scripts", "migration", "checklist", "ci-cd"]
-description: "Migration checklist for developers and CI/CD pipelines"
+date_created: "2025-10-26T18:32:25.985633+00:00"
+last_updated: "2025-10-26T18:32:25.985633+00:00"
+tags: ['documentation', 'scripts', 'automation']
+description: "Documentation for checklist"
 ---
-# Migration Checklist
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- scripts
+- migration
+- ci-cd
+description: Migration checklist for developers and CI/CD pipelines
+---\n# Migration Checklist
 
 ## For Developers
 

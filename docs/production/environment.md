@@ -1,10 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["production", "environment", "configuration", "secrets"]
-description: "Production environment configuration and secrets management"
+date_created: "2025-10-26T18:32:25.947784+00:00"
+last_updated: "2025-10-26T18:32:25.947784+00:00"
+tags: ['documentation', 'production', 'deployment']
+description: "Documentation for environment"
 ---
-# Environment Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- production
+- environment
+- configuration
+- secrets
+description: Production environment configuration and secrets management
+---\n# Environment Configuration
 
 ## Create Production .env
 

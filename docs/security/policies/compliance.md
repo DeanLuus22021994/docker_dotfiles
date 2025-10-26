@@ -1,10 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["security", "compliance", "auditing"]
-description: "Security compliance and auditing procedures"
+date_created: "2025-10-26T18:32:25.980820+00:00"
+last_updated: "2025-10-26T18:32:25.980820+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for compliance"
 ---
-# Security Compliance
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- security
+description: Security compliance and auditing procedures
+---\n# Security Compliance
 
 ## Compliance Standards
 

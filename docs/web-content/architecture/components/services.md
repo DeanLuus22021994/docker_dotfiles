@@ -1,10 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "architecture", "services", "api"]
-description: "Service layer architecture and API communication"
+date_created: "2025-10-26T18:32:25.961846+00:00"
+last_updated: "2025-10-26T18:32:25.961846+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for services"
 ---
-# Services Layer
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- architecture
+- docker-compose
+- api
+description: Service layer architecture and API communication
+---\n# Services Layer
 
 ## Service Categories
 

@@ -6,21 +6,19 @@ frontmatter compliance issues according to the DocFrontmatter schema.
 """
 
 import sys
-from pathlib import Path
-# Add parent directory for imports
-sys.path.append(str(Path(__file__).parent.parent))
 
 import re
 from typing import Any, Dict, List, Optional
 from datetime import datetime, timezone
 from dataclasses import dataclass
+from pathlib import Path
 
 import yaml
 from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
-from schemas.frontmatter import ALLOWED_TAGS
+from ..schemas.frontmatter import ALLOWED_TAGS
 
 
 @dataclass

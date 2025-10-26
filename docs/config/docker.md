@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["config", "docker", "documentation"]
-description: "Documentation for docker in config"
+date_created: "2025-10-26T18:32:25.942834+00:00"
+last_updated: "2025-10-26T18:32:25.942834+00:00"
+tags: ['documentation', 'configuration', 'setup', 'docker']
+description: "Documentation for docker"
 ---
-# Docker Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- docker
+- documentation
+description: Documentation for docker in config
+---\n# Docker Configuration
 
 This directory contains Docker-specific configuration files for local development and production deployments.
 

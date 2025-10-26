@@ -1,11 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["contributing", "development", "guidelines", "community"]
-description: "Contribution guidelines and development workflow"
+date_created: "2025-10-26T18:32:25.952065+00:00"
+last_updated: "2025-10-26T18:32:25.952065+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for contributing"
 ---
 
-# Contributing
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- development
+- best-practices
+description: Contribution guidelines and development workflow
+---\n# Contributing
 
 Contributions are welcome! Please follow these guidelines:
 

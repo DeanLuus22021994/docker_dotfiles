@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "overview", "documentation"]
-description: "Documentation for overview in web-content"
+date_created: "2025-10-26T18:32:25.959682+00:00"
+last_updated: "2025-10-26T18:32:25.959682+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for overview"
 ---
-# Cluster Dashboard
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- overview
+- documentation
+description: Documentation for overview in web-content
+---\n# Cluster Dashboard
 
 A comprehensive React-based monitoring dashboard for the Modern Data Platform v2.0, providing real-time cluster status, service health monitoring, and system metrics visualization.
 

@@ -1,10 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["github", "dependabot", "automation", "dependencies"]
-description: "Dependabot configuration for automated dependency updates"
+date_created: "2025-10-26T18:32:25.996641+00:00"
+last_updated: "2025-10-26T18:32:25.996641+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for dependabot"
 ---
-# Dependabot Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- automation
+description: Dependabot configuration for automated dependency updates
+---\n# Dependabot Configuration
 
 Automated dependency updates for Docker images, Python packages, Node.js modules, and GitHub Actions.
 

@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["scripts", "orchestrator", "usage", "cli"]
-description: "Orchestrator usage guide for unified script execution"
+date_created: "2025-10-26T18:32:25.986224+00:00"
+last_updated: "2025-10-26T18:32:25.986224+00:00"
+tags: ['documentation', 'scripts', 'automation']
+description: "Documentation for orchestrator"
 ---
-# Orchestrator Usage
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- scripts
+- orchestrator
+- usage
+description: Orchestrator usage guide for unified script execution
+---\n# Orchestrator Usage
 
 Unified task execution across all platforms (PowerShell, Bash, Python).
 

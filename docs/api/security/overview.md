@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["api", "security", "overview"]
-description: "API security overview and threat mitigation"
+date_created: "2025-10-26T18:32:26.001818+00:00"
+last_updated: "2025-10-26T18:32:26.001818+00:00"
+tags: ['documentation', 'api', 'reference']
+description: "Documentation for overview"
 ---
-# API Security Overview
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- api
+- security
+- overview
+description: API security overview and threat mitigation
+---\n# API Security Overview
 
 Express.js API with JWT authentication, rate limiting, and Docker socket access controls.
 

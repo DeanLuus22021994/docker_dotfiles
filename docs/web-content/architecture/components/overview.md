@@ -1,10 +1,19 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "architecture", "overview", "react"]
-description: "Modern Data Platform web dashboard architecture overview"
+date_created: "2025-10-26T18:32:25.961283+00:00"
+last_updated: "2025-10-26T18:32:25.961283+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for overview"
 ---
-# Architecture Overview
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- architecture
+- overview
+- javascript
+description: Modern Data Platform web dashboard architecture overview
+---\n# Architecture Overview
 
 React 18 + TypeScript + Vite dashboard for Docker infrastructure monitoring.
 

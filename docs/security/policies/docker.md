@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["security", "docker", "containers"]
-description: "Docker container security policies and best practices"
+date_created: "2025-10-26T18:32:25.981516+00:00"
+last_updated: "2025-10-26T18:32:25.981516+00:00"
+tags: ['documentation', 'security', 'docker']
+description: "Documentation for docker"
 ---
-# Docker Security
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- security
+- docker
+description: Docker container security policies and best practices
+---\n# Docker Security
 
 ## Container Isolation
 

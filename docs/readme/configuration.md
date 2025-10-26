@@ -1,11 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["configuration", "settings", "validation", "pre-commit"]
-description: "Configuration management and validation procedures"
+date_created: "2025-10-26T18:32:25.951459+00:00"
+last_updated: "2025-10-26T18:32:25.951459+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for configuration"
 ---
 
-# Configuration
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- configuration
+- validation
+description: Configuration management and validation procedures
+---\n# Configuration
 
 ## Configuration Management (SSoT)
 

@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["setup", "environment", "configuration", "env"]
-description: "Environment configuration and .env file setup"
+date_created: "2025-10-26T18:32:25.970487+00:00"
+last_updated: "2025-10-26T18:32:25.970487+00:00"
+tags: ['documentation', 'setup', 'installation']
+description: "Documentation for environment"
 ---
-# Environment Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- setup
+- environment
+- configuration
+description: Environment configuration and .env file setup
+---\n# Environment Configuration
 
 ## Configuration Approach
 

@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["python", "troubleshooting", "setup", "errors"]
-description: "Python setup troubleshooting guide overview"
+date_created: "2025-10-26T18:32:25.972873+00:00"
+last_updated: "2025-10-26T18:32:25.972873+00:00"
+tags: ['documentation', 'setup', 'installation', 'python']
+description: "Documentation for troubleshooting"
 ---
-# Python Setup Troubleshooting
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- python
+- troubleshooting
+- setup
+description: Python setup troubleshooting guide overview
+---\n# Python Setup Troubleshooting
 
 Common Python 3.14 setup issues and solutions.
 

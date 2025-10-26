@@ -1,11 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["architecture", "design", "components", "infrastructure"]
-description: "Architecture and design documentation index"
+date_created: "2025-10-26T18:32:25.945017+00:00"
+last_updated: "2025-10-26T18:32:25.945017+00:00"
+tags: ['documentation']
+description: "Documentation for architecture"
 ---
 
-# Architecture
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- architecture
+description: Architecture and design documentation index
+---\n# Architecture
 
 System design and component documentation:
 

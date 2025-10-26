@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["api", "overview", "documentation"]
-description: "Documentation for overview in api"
+date_created: "2025-10-26T18:32:25.941921+00:00"
+last_updated: "2025-10-26T18:32:25.941921+00:00"
+tags: ['documentation', 'api', 'reference']
+description: "Documentation for overview"
 ---
-# Docker API Proxy
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- api
+- overview
+- documentation
+description: Documentation for overview in api
+---\n# Docker API Proxy
 
 Secure HTTP API for accessing Docker Engine metrics and container health information.
 

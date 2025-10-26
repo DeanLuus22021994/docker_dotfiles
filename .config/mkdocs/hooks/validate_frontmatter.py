@@ -25,17 +25,15 @@ from datetime import datetime
 
 import yaml
 
-# Add parent directory for imports
-sys.path.append(str(Path(__file__).parent.parent))
-
 try:
-    from schemas.frontmatter import DocFrontmatter, ALLOWED_TAGS
-
+    from ..schemas.frontmatter import DocFrontmatter, ALLOWED_TAGS
+    from pydantic import ValidationError
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
     DocFrontmatter = None
     ALLOWED_TAGS = set()
+    ValidationError = None
 
 
 # ============================================================================
@@ -257,7 +255,6 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
 
     if PYDANTIC_AVAILABLE and DocFrontmatter:
         # Use Pydantic validation
-        from pydantic import ValidationError
         try:
             # Convert ISO strings back to datetime objects for validation
             if "date_created" in frontmatter and isinstance(frontmatter["date_created"], str):

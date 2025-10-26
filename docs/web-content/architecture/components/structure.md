@@ -1,10 +1,18 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["web-content", "architecture", "components", "react"]
-description: "React component structure and organization"
+date_created: "2025-10-26T18:32:25.962899+00:00"
+last_updated: "2025-10-26T18:32:25.962899+00:00"
+tags: ['documentation', 'web-content', 'architecture']
+description: "Documentation for structure"
 ---
-# Component Structure
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- web-content
+- architecture
+- javascript
+description: React component structure and organization
+---\n# Component Structure
 
 ## Component Categories
 

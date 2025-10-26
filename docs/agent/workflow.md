@@ -1,11 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["workflow", "ai", "automation", "development"]
-description: "AI-optimized development workflow and human-in-the-loop procedures"
+date_created: "2025-10-26T18:32:25.941427+00:00"
+last_updated: "2025-10-26T18:32:25.941427+00:00"
+tags: ['documentation', 'agent', 'development']
+description: "Documentation for workflow"
 ---
 
-# AI-Optimized Workflow
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- automation
+- development
+description: AI-optimized development workflow and human-in-the-loop procedures
+---\n# AI-Optimized Workflow
 
 ## Human-in-the-Loop
 

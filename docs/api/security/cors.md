@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["api", "security", "cors", "cross-origin"]
-description: "CORS configuration for cross-origin requests"
+date_created: "2025-10-26T18:32:26.000108+00:00"
+last_updated: "2025-10-26T18:32:26.000108+00:00"
+tags: ['documentation', 'api', 'reference']
+description: "Documentation for cors"
 ---
-# CORS Configuration
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- api
+- security
+description: CORS configuration for cross-origin requests
+---\n# CORS Configuration
 
 ## Environment Variable
 

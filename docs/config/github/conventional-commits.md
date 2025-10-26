@@ -1,10 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["github", "conventional-commits", "git", "changelog"]
-description: "Conventional commits standard for semantic commit messages"
+date_created: "2025-10-26T18:32:25.996132+00:00"
+last_updated: "2025-10-26T18:32:25.996132+00:00"
+tags: ['documentation', 'configuration', 'setup']
+description: "Documentation for conventional commits"
 ---
-# Conventional Commits
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- documentation
+description: Conventional commits standard for semantic commit messages
+---\n# Conventional Commits
 
 Semantic commit message format for automatic changelog generation.
 

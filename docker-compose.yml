@@ -1012,6 +1012,77 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  cluster-mkdocs:
+    container_name: cluster-mkdocs
+    build:
+      context: .
+      dockerfile: .config/mkdocs/Dockerfile
+      target: runtime
+    ports:
+      - "8080:8080"
+    volumes:
+      - cluster_mkdocs_site:/usr/share/nginx/html:ro
+    networks:
+      - cluster-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health/"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          cpus: '0.1'
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    profiles:
+      - docs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.docs.rule=Host(`docs.localhost`)"
+      - "traefik.http.services.docs.loadbalancer.server.port=8080"
+
+  cluster-mkdocs-dev:
+    container_name: cluster-mkdocs-dev
+    image: python:3.14-slim
+    working_dir: /workspace
+    command: bash -c "cd .config/mkdocs && pip install -q -r requirements.txt && mkdocs serve -a 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/workspace:ro
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    profiles:
+      - docs
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.docs-dev.rule=Host(`docs-dev.localhost`)"
+      - "traefik.http.services.docs-dev.loadbalancer.server.port=8000"
+
 volumes:
   cluster_postgres_data:
   cluster_redis_data:

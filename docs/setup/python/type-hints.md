@@ -1,10 +1,17 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["python", "type-hints", "pep-585", "modernization"]
-description: "Python 3.14 type hints and PEP 585 built-in generics"
+date_created: "2025-10-26T18:32:25.973373+00:00"
+last_updated: "2025-10-26T18:32:25.973373+00:00"
+tags: ['documentation', 'setup', 'installation', 'python']
+description: "Documentation for type hints"
 ---
-# Python 3.14 Type Hints
+
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- python
+- development
+description: Python 3.14 type hints and PEP 585 built-in generics
+---\n# Python 3.14 Type Hints
 
 Modern type hints using PEP 585 built-in generics.
 

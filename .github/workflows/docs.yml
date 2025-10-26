@@ -1,0 +1,262 @@
+# ==============================================================================
+# GitHub Actions Workflow - MkDocs Documentation Deployment
+# ==============================================================================
+# Triggers: Push to main, PRs, manual dispatch
+# Validates: Frontmatter, links, build health
+# Deploys: GitHub Pages with Docker image artifact
+# ==============================================================================
+
+name: Deploy Documentation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.config/mkdocs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - '.config/mkdocs/**'
+      - 'mkdocs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  packages: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ==========================================================================
+  # Job 1: Validate Documentation
+  # ==========================================================================
+  validate:
+    name: Validate Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r .config/mkdocs/requirements.txt
+
+      - name: Audit frontmatter
+        run: |
+          python .config/mkdocs/scripts/audit_frontmatter.py \
+            --docs-dir docs \
+            --output frontmatter-audit.json
+          
+      - name: Validate frontmatter compliance
+        run: |
+          python -c "
+          import json, sys
+          with open('frontmatter-audit.json') as f:
+              audit = json.load(f)
+          if audit['compliance_rate'] < 100.0:
+              print(f\"❌ Frontmatter compliance: {audit['compliance_rate']}%\")
+              sys.exit(1)
+          print(f\"✅ Frontmatter 100% compliant\")
+          "
+
+      - name: Upload audit results
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontmatter-audit
+          path: frontmatter-audit.json
+
+  # ==========================================================================
+  # Job 2: Build and Test Documentation
+  # ==========================================================================
+  build:
+    name: Build Docs
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r .config/mkdocs/requirements.txt
+
+      - name: Build documentation
+        run: |
+          cd .config/mkdocs
+          mkdocs build --strict --verbose
+
+      - name: Collect build metrics
+        run: |
+          python .config/mkdocs/build/build_metrics.py \
+            --site-dir .config/mkdocs/site \
+            --output build-metrics.json
+
+      - name: Validate health
+        run: |
+          python .config/mkdocs/build/validate_health.py \
+            --site-dir .config/mkdocs/site \
+            --output health-report.json \
+            --min-score 85
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-site
+          path: .config/mkdocs/site/
+          retention-days: 7
+
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-metrics
+          path: |
+            build-metrics.json
+            health-report.json
+
+  # ==========================================================================
+  # Job 3: Build Docker Image
+  # ==========================================================================
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}/docs
+          tags: |
+            type=ref,event=branch
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: .config/mkdocs/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # ==========================================================================
+  # Job 4: Deploy to GitHub Pages
+  # ==========================================================================
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs-site
+          path: site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # ==========================================================================
+  # Job 5: Comment PR with Preview
+  # ==========================================================================
+  comment:
+    name: Comment PR
+    runs-on: ubuntu-latest
+    needs: [validate, build]
+    if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download metrics
+        uses: actions/download-artifact@v4
+        with:
+          name: build-metrics
+
+      - name: Generate comment
+        id: comment
+        run: |
+          cat > comment.md << 'EOF'
+          ## 📚 Documentation Build Report
+
+          **Validation Status:** ✅ Passed
+          **Build Status:** ✅ Success
+
+          ### Metrics
+          ```json
+          $(cat build-metrics.json | jq -r '.summary')
+          ```
+
+          ### Health Score
+          ```json
+          $(cat health-report.json | jq -r '.overall_score')
+          ```
+
+          ---
+          *Preview will be available after merge to `main`*
+          EOF
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const comment = fs.readFileSync('comment.md', 'utf8');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

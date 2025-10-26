@@ -1,11 +1,16 @@
 ---
-date_created: "2025-10-26T00:00:00Z"
-last_updated: "2025-10-26T00:00:00Z"
-tags: ["structure", "organization", "directories", "files"]
-description: "Project directory structure and file organization"
+date_created: "2025-10-26T18:32:25.956506+00:00"
+last_updated: "2025-10-26T18:32:25.956506+00:00"
+tags: ['documentation', 'readme', 'guide']
+description: "Documentation for project structure"
 ---
 
-# Project Structure
+---\ndate_created: '2025-10-26T00:00:00Z'
+last_updated: '2025-10-26T00:00:00Z'
+tags:
+- architecture
+description: Project directory structure and file organization
+---\n# Project Structure
 
 ```
 docker/
