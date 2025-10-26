@@ -1,16 +1,32 @@
-from pydantic import BaseModel, Field, ValidationError
-from typing import List, Optional
+"""
+MkDocs document frontmatter schema definitions.
+
+This module defines Pydantic models for validating MkDocs document frontmatter
+fields and provides allowed tag sets for consistency.
+"""
+
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 ALLOWED_TAGS = {
-    "installation", "configuration", "user-guide", "api", "security", "testing", "production", "development", "reference"
+    "installation",
+    "configuration",
+    "user-guide",
+    "api",
+    "security",
+    "testing",
+    "production",
+    "development",
+    "reference",
 }
 
 class DocFrontmatter(BaseModel):
     """Pydantic model for MkDocs document frontmatter validation."""
     
     title: Optional[str] = Field(None, description="Document title")
-    description: str = Field(..., description="Document description") 
+    description: str = Field(..., description="Document description")
     tags: List[str] = Field(default_factory=list, description="Document tags")
     date: Optional[str] = Field(None, description="Publication date")
     status: Optional[str] = Field(None, description="Document status")
