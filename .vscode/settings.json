@@ -88,12 +88,17 @@
 
   // YAML validation settings
   "yaml.schemas": {
-    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml"
+    "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml",
+    "https://json.schemastore.org/dependabot-2.0.json": ".github/dependabot.yml",
+    ".vscode/mkdocs-schema.json": "mkdocs.yml"
   },
   "yaml.validate": true,
   "yaml.customTags": [
     "!encrypted/pkcs1-oaep scalar",
-    "!vault scalar"
+    "!vault scalar",
+    "!!python/name:material.extensions.emoji.twemoji scalar",
+    "!!python/name:material.extensions.emoji.to_svg scalar",
+    "!!python/name:pymdownx.superfences.fence_code_format scalar"
   ],
   "yaml.schemaStore.enable": true,
   "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
