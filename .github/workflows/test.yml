@@ -2,7 +2,7 @@ name: Test Suite
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - "scripts/python/**"
       - "tests/**"
@@ -10,15 +10,12 @@ on:
       - "pytest.ini"
       - ".github/workflows/test.yml"
   pull_request:
-    branches: [main, develop]
+    branches: [main]
     paths:
       - "scripts/python/**"
       - "tests/**"
       - "pyproject.toml"
       - "pytest.ini"
-  schedule:
-    # Run nightly at 2 AM UTC
-    - cron: "0 2 * * *"
   workflow_dispatch: # Allow manual triggers
 
 jobs:

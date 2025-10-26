@@ -2,9 +2,9 @@ name: Code Quality
 
 on:
   push:
-    branches: [main, develop, 'feat/**']
+    branches: [main]
   pull_request:
-    branches: [main, develop]
+    branches: [main]
   workflow_dispatch:
 
 # Cancel in-progress runs when a new workflow with the same group name is triggered
