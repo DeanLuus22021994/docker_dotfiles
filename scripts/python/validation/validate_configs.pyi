@@ -82,7 +82,7 @@ class BaseConfigValidator(ABC):
         """Type of configuration being validated."""
     def validate(self) -> ValidationResult:
         """Validate configuration files."""
-    def _should_exclude_path(self, _path: Path, /) -> bool:
+    def _should_exclude_path(self, path: Path, /) -> bool:
         """Check if path should be excluded from validation."""
 
 class YamlValidator(BaseConfigValidator):

@@ -37,36 +37,36 @@ class ColorScheme:
     info: ColorCode
     highlight: ColorCode
 
-def colorize(_text: str, _color: ColorCode, /) -> FormattedText:
+def colorize(text: str, color: ColorCode, /) -> FormattedText:
     """Apply color to text."""
-    ...
+    pass
 
-def success(_text: str, /) -> FormattedText:
+def success(text: str, /) -> FormattedText:
     """Format text as success (green with checkmark)."""
-    ...
+    pass
 
-def warning(_text: str, /) -> FormattedText:
+def warning(text: str, /) -> FormattedText:
     """Format text as warning (yellow with warning symbol)."""
-    ...
+    pass
 
-def error(_text: str, /) -> FormattedText:
+def error(text: str, /) -> FormattedText:
     """Format text as error (red with X symbol)."""
-    ...
+    pass
 
-def info(_text: str, /) -> FormattedText:
+def info(text: str, /) -> FormattedText:
     """Format text as info (blue with info symbol)."""
-    ...
+    pass
 
-def bold(_text: str, /) -> FormattedText:
+def bold(text: str, /) -> FormattedText:
     """Apply bold formatting to text."""
-    ...
+    pass
 
-def header(_text: str, /) -> FormattedText:
+def header(text: str, /) -> FormattedText:
     """Format text as header (bold blue)."""
-    ...
+    pass
 
 def separator(width: int = 60, char: str = "=") -> FormattedText:
     """Create separator line."""
-    ...
+    pass
 
 __all__: list[str]

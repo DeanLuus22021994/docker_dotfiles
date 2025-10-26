@@ -75,11 +75,11 @@ class BaseChecker(ABC):
     @property
     def install_command(self) -> str:
         """Command to install the tool."""
-    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+    def build_command(self, target_paths: Sequence[str], /) -> CommandArgs:
         """Build command arguments."""
-    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+    def format_output(self, result: subprocess.CompletedProcess[str], /) -> None:
         """Format tool output."""
-    def run(self, _target_paths: Sequence[str], /) -> CheckResult:
+    def run(self, target_paths: Sequence[str], /) -> CheckResult:
         """Run the checker."""
 
 class BlackChecker(BaseChecker):
@@ -91,9 +91,9 @@ class BlackChecker(BaseChecker):
     @property
     def install_command(self) -> str:
         """Command to install Black."""
-    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+    def build_command(self, target_paths: Sequence[str], /) -> CommandArgs:
         """Build Black command arguments."""
-    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+    def format_output(self, result: subprocess.CompletedProcess[str], /) -> None:
         """Format Black output."""
 
 class RuffChecker(BaseChecker):
@@ -105,9 +105,9 @@ class RuffChecker(BaseChecker):
     @property
     def install_command(self) -> str:
         """Command to install Ruff."""
-    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+    def build_command(self, target_paths: Sequence[str], /) -> CommandArgs:
         """Build Ruff command arguments."""
-    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+    def format_output(self, result: subprocess.CompletedProcess[str], /) -> None:
         """Format Ruff output."""
 
 class MypyChecker(BaseChecker):
@@ -119,9 +119,9 @@ class MypyChecker(BaseChecker):
     @property
     def install_command(self) -> str:
         """Command to install mypy."""
-    def build_command(self, _target_paths: Sequence[str], /) -> CommandArgs:
+    def build_command(self, target_paths: Sequence[str], /) -> CommandArgs:
         """Build mypy command arguments."""
-    def format_output(self, _result: subprocess.CompletedProcess[str], /) -> None:
+    def format_output(self, result: subprocess.CompletedProcess[str], /) -> None:
         """Format mypy output."""
 
 class CodeQualityAuditor:
@@ -133,7 +133,7 @@ class CodeQualityAuditor:
 
     def run_all_checks(self) -> CodeQualityReport:
         """Run all configured code quality checks."""
-    def print_summary(self, _report: CodeQualityReport, /) -> None:
+    def print_summary(self, report: CodeQualityReport, /) -> None:
         """Print summary of check results."""
 
 def run_black_check() -> tuple[bool, list[str]]:

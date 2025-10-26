@@ -67,7 +67,7 @@ class ValidationReporter:
     """Formats and displays validation results."""
 
     @staticmethod
-    def print_summary(_result: ValidationResult, /) -> None:
+    def print_summary(result: ValidationResult, /) -> None:
         """Print formatted validation summary."""
 
 def validate_env_vars() -> tuple[bool, list[str], list[str]]:
@@ -78,11 +78,12 @@ def validate_env_vars() -> tuple[bool, list[str], list[str]]:
     """
 
 def print_summary(
-    _missing_required: list[str],
-    _missing_optional: list[str],
+    missing_required: list[str],
+    missing_optional: list[str],
     /,
 ) -> None:
     """Print validation summary."""
+    pass
 
 def main() -> ExitCode:
     """Run environment validation."""

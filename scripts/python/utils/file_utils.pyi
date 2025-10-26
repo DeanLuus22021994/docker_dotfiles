@@ -18,42 +18,42 @@ FileSize: TypeAlias = int
 DEFAULT_ENCODING: Final[str]
 DEFAULT_JSON_INDENT: Final[int]
 
-def ensure_directory(_path: StrPath, /) -> Path:
+def ensure_directory(path: StrPath, /) -> Path:
     """Ensure directory exists, creating if necessary."""
-    ...
+    pass
 
-def ensure_dir(_dir_path: StrPath, /) -> None:
+def ensure_dir(dir_path: StrPath, /) -> None:
     """Ensure directory exists, creating if necessary (alias for compatibility)."""
-    ...
+    pass
 
-def get_relative_path(_file_path: StrPath, _base_path: StrPath | None = None, /) -> str:
+def get_relative_path(file_path: StrPath, base_path: StrPath | None = None, /) -> str:
     """Get relative path from base to file."""
-    ...
+    pass
 
-def read_json(_file_path: StrPath, /) -> JSONDict:
+def read_json(file_path: StrPath, /) -> JSONDict:
     """Read and parse JSON file."""
-    ...
+    pass
 
 def write_json(
-    _file_path: StrPath,
-    _data: JSONDict,
+    file_path: StrPath,
+    data: JSONDict,
     /,
     indent: int = 2,
 ) -> None:
     """Write data to JSON file."""
-    ...
+    pass
 
-def file_exists(_path: StrPath, /) -> bool:
+def file_exists(file_path: StrPath, /) -> bool:
     """Check if file exists."""
-    ...
+    pass
 
-def read_lines(_file_path: StrPath, /, *, strip: bool = True) -> list[str]:
+def read_lines(file_path: StrPath, /, *, strip: bool = True) -> Sequence[str]:
     """Read file lines into list."""
-    ...
+    pass
 
-def write_lines(_file_path: StrPath, _lines: Sequence[str], /) -> None:
+def write_lines(file_path: StrPath, lines: Sequence[str], /) -> None:
     """Write lines to file."""
-    ...
+    pass
 
 def get_files_by_extension(
     _directory: StrPath,
@@ -65,9 +65,8 @@ def get_files_by_extension(
     """Get files matching extension."""
     ...
 
-def get_file_size(_file_path: StrPath, /) -> FileSize:
+def get_file_size(file_path: StrPath, /) -> FileSize:
     """Get file size in bytes."""
-    ...
 
 def safe_delete(_file_path: StrPath, /) -> bool:
     """Safely delete file if it exists."""

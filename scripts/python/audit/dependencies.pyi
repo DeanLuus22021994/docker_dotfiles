@@ -98,7 +98,7 @@ class BaseDependencyChecker(ABC):
         """Name of the check."""
     def run(self) -> DependencyCheckResult:
         """Run the dependency check."""
-    def _run_pip_command(self, _args: CommandArgs, /) -> subprocess.CompletedProcess[str]:
+    def _run_pip_command(self, args: CommandArgs, /) -> subprocess.CompletedProcess[str]:
         """Run pip command with arguments."""
 
 class OutdatedPackagesChecker(BaseDependencyChecker):
@@ -109,7 +109,7 @@ class OutdatedPackagesChecker(BaseDependencyChecker):
         """Name of the check."""
     def run(self) -> DependencyCheckResult:
         """Run the outdated packages check."""
-    def _parse_outdated_output(self, _output: str, /) -> tuple[Package, ...]:
+    def _parse_outdated_output(self, output: str, /) -> tuple[Package, ...]:
         """Parse outdated packages output."""
 
 class InstalledPackagesChecker(BaseDependencyChecker):
@@ -120,7 +120,7 @@ class InstalledPackagesChecker(BaseDependencyChecker):
         """Name of the check."""
     def run(self) -> DependencyCheckResult:
         """Run the installed packages check."""
-    def _parse_installed_output(self, _output: str, /) -> tuple[Package, ...]:
+    def _parse_installed_output(self, output: str, /) -> tuple[Package, ...]:
         """Parse installed packages output."""
 
 class PyprojectDependenciesChecker(BaseDependencyChecker):
@@ -140,7 +140,7 @@ class DependencyAuditor:
 
     def run_all_checks(self) -> DependencyReport:
         """Run all configured dependency checks."""
-    def print_summary(self, _report: DependencyReport, /) -> None:
+    def print_summary(self, report: DependencyReport, /) -> None:
         """Print summary of check results."""
 
 def check_outdated_packages() -> tuple[bool, list[str]]:
