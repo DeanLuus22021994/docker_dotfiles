@@ -1,165 +1,161 @@
 # GitHub Copilot Instructions
+**Last Updated:** 2025-10-26  
+**Philosophy:** Production-ready data platform. Zero backward compatibility, bleeding-edge syntax, modular architecture.
 
-## Stack & Environment
+---
 
-**Languages & Runtimes:**
+## Architecture Overview
 
-- Python 3.14 + UV package manager
-- Node.js 22 + Vite + React 18 + TypeScript
-- PostgreSQL 17 + MariaDB 11
+**Multi-service cluster:** 20+ Docker services across 5 architectural layers (Infrastructure, Data, Compute, Monitoring, Development). Services organized by layer in `docker-compose.yml` (1037 lines). All services require health checks and follow named volume pattern `docker_examples_<service>_<type>`.
 
-**Infrastructure:**
+**Key entry points:**
+- `scripts/orchestrator.py` - CLI for validation/audit/MCP tasks (205 lines)
+- `Makefile` - Production commands (build, up, down, validate, test-health)
+- `docker-compose.yml` - 20 services with GPU support, health checks, resource limits
+- `web-content/src/services/layers/` - Frontend service definitions mirroring cluster layers
 
-- Docker Compose (no `version:` key - deprecated)
-- Docker BuildKit for optimized builds
-- Nginx reverse proxy
-
-**Key Directories:**
-
-- `.github/` - CI/CD workflows, project docs
-- `scripts/` - Python/PowerShell/Bash automation
-- `dockerfile/` - All Dockerfiles
-- `web-content/` - React dashboard (Vite + TypeScript)
-- `api/` - Express.js backend (Node 22)
+**Critical workflows:**
+1. **Validation:** `make validate-env` → `make validate-configs` → `make validate` (Docker syntax)
+2. **Build:** `make build` (BuildKit multi-stage) → `make up` (production) or `make dev` (with devcontainer)
+3. **Testing:** `pytest` (143 tests, 97% coverage), `make test-health` (service health checks)
 
 ---
 
 ## Coding Standards
 
-### Docker Compose
+**Python 3.14 (strict):**
+- PEP 585 built-ins: `list[str]`, `dict[str, Any]` (never `List`, `Dict`)
+- Type aliases: `TaskName: TypeAlias = str` for domain semantics
+- Dataclasses: `@dataclass(frozen=True, slots=True)` for 40% memory reduction
+- Protocol types: Structural subtyping for interface definitions
+- UV package manager only (never pip)
+- Zero type suppressions - fix architecture instead
 
-```yaml
-# ❌ NEVER include version (deprecated in Compose v2)
-# version: "3.8"  # REMOVE THIS
+**Docker:**
+- No `version:` key in docker-compose.yml (Compose v2)
+- Named volumes: `docker_examples_<service>_<type>` pattern REQUIRED
+- Health checks: All services MUST have `HEALTHCHECK` in Dockerfile + `healthcheck:` in compose
+- Multi-stage builds: Builder → Validation → Production (see `dockerfile/*.Dockerfile`)
+- Resource limits: All services have `deploy.resources.limits` (CPU/memory)
 
-services:
-  postgres:
-    image: postgres:17
-    volumes:
-      - docker_examples_postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+**TypeScript/React (web-content):**
+- Service layer architecture: `src/services/layers/{infrastructure,data,compute,monitoring,development}.ts`
+- Type imports: `import type { Service } from '../types/cluster'`
+- Hooks naming: `useClusterHealth`, `useClusterMetrics` (30s, 15s polling)
+- Component structure: Feature-based in `src/components/{docker,health,metrics,network,services,storage}`
+
+**Formatting:**
+- Black: 100 char lines (configured in `pyproject.toml`)
+- Ruff: Strict linting, only E402 ignored (sys.path setup)
+- Pre-commit: 15 hooks (Black, Ruff, mypy, yamllint, shellcheck, markdownlint, hadolint)
+
+---
+
+## Key Patterns
+
+**Service layer pattern (web-content):**
+```typescript
+// Each cluster layer = separate module in src/services/layers/
+export const DATA_SERVICES: Omit<Service, 'status' | 'metrics'>[] = [
+  { id: 'postgres', name: 'PostgreSQL', category: 'database', 
+    port: 5432, healthEndpoint: 'http://localhost:5432',
+    description: 'PostgreSQL 13 relational database (cluster-postgres)',
+    icon: '🐘' }
+]
+// Aggregated in clusterService.ts: SERVICES_CONFIG = [...INFRASTRUCTURE_SERVICES, ...DATA_SERVICES, ...]
 ```
 
-**Volume Naming:** `docker_examples_<service>_<type>`  
-**Secrets:** Use `.env` files, never hardcode
-
-### Python
-
-**Version:** 3.14 (strict)  
-**Package Manager:** UV (not pip)  
-**Formatting:** Black (line-length=100)  
-**Linting:** Ruff (strict mode)  
-**Type Checking:** mypy (strict mode)
-
-**Type Hints (PEP 585):**
-
+**Orchestrator CLI pattern:**
 ```python
-# ✅ Modern built-in generics (Python 3.14)
-def process_items(items: list[str]) -> dict[str, int]:
-    return {item: len(item) for item in items}
-
-# ❌ Old typing module (deprecated)
-from typing import List, Dict
-def process_items(items: List[str]) -> Dict[str, int]:  # DON'T USE
+# scripts/orchestrator.py - Central CLI delegating to specialized modules
+# Tasks: validate (env, configs), audit (code, deps), mcp (validate, analyze)
+# Example: python orchestrator.py validate env --dry-run
+def execute_task(task: TaskName, action: ActionName) -> NoReturn:
+    script = SCRIPT_DIR / "python" / task / f"{action}.py"
+    result = subprocess.run([sys.executable, str(script)], check=False)
+    sys.exit(result.returncode)
 ```
 
-### Node.js
-
-**Version:** 22 (LTS)  
-**Package Manager:** npm  
-**Install Command:** `npm install --legacy-peer-deps`
-
-### Scripts Organization
-
+**Validation pattern:**
+```python
+# dataclass-based validators with Protocol interfaces
+@dataclass(frozen=True, slots=True)
+class EnvValidator:
+    required_vars: list[str]
+    def validate(self) -> ValidationResult: ...
 ```
-scripts/
-├── orchestrator.py|ps1|sh    # Main entry points
-├── python/
-│   ├── validation/           # Config validation
-│   ├── audit/                # Code quality checks
-│   └── utils/                # Shared utilities
-├── powershell/
-│   ├── config/               # Settings management
-│   ├── docker/               # Container ops
-│   └── cleanup/              # Maintenance
-└── bash/
-    ├── docker/               # Container ops
-    └── docs/                 # Documentation builds
+
+**Docker health checks:**
+```dockerfile
+# All Dockerfiles include health checks
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD curl -f http://localhost/health || exit 1
 ```
 
 ---
 
-## Common Commands
+## Common Operations
 
-**Validation:**
+**Add new service to cluster:**
+1. Determine layer (infrastructure/data/compute/monitoring/development)
+2. Add to `docker-compose.yml` with health check + resource limits + named volumes
+3. Create `dockerfile/<service>.Dockerfile` with multi-stage build + health check
+4. Add to web dashboard: `web-content/src/services/layers/<layer>.ts`
+5. Validate: `make validate` → `make validate-configs`
 
+**Add Python validation:**
+1. Create validator in `scripts/python/validation/<name>.py`
+2. Use dataclass pattern with Protocol interface
+3. Add CLI entry in `scripts/orchestrator.py`
+4. Write tests in `tests/python/validation/test_<name>.py`
+5. Run: `pytest tests/python/validation/ --cov`
+
+**Debug service health:**
 ```bash
-# Python scripts
-python scripts/orchestrator.py validate env
-python scripts/orchestrator.py validate configs
-python scripts/orchestrator.py audit code
-
-# Docker stacks
-python .docker-compose/validate_stacks.py
-```
-
-**Docker Compose:**
-
-```bash
-# Build & start
-docker-compose build
-docker-compose up -d
-
-# Specific stack
-docker-compose -f .docker-compose/basic-stack/docker-compose.yml up -d
-```
-
-**Development:**
-
-```bash
-# Web dashboard
-cd web-content && npm run dev
-
-# API server
-cd api && npm start
+make test-health                    # Check all services
+docker-compose logs <service>       # View service logs
+docker inspect <container> | findstr Health  # Check health status
+curl http://localhost:<port>/health  # Test health endpoint directly
 ```
 
 ---
 
-## Critical Guidelines
+## Project Structure
 
-**DO:**
+**See [AGENT.md](../AGENT.md) for complete paths**
 
-- ✅ Check `.github/TODO.md` for current tasks
-- ✅ Use UV for Python package management
-- ✅ Use modern type hints (PEP 585 built-ins)
-- ✅ Follow Black formatting (100 char lines)
-- ✅ Include health checks in all services
-- ✅ Use volume names with `docker_examples_` prefix
-
-**DON'T:**
-
-- ❌ Add `version:` to docker-compose.yml
-- ❌ Use deprecated `typing.List/Dict/Tuple`
-- ❌ Hardcode secrets or passwords
-- ❌ Use `pip` instead of `uv`
-- ❌ Skip health checks on services
+**Config:** `.config/{mkdocs,docker,python,git,markdownlint,monitoring}` - SSoT for all configs  
+**Scripts:** `scripts/{orchestrator.py,python/,powershell/,bash/}` - Automation (validation, audit, cleanup)  
+**Application:** `api/` (Express.js Node 22), `web-content/` (React 18 + Vite 6 + TypeScript)  
+**Dockerfiles:** `dockerfile/` - Multi-stage builds, health checks (20+ files)  
+**Docs:** `docs/` (MkDocs site), `.github/` (TODO, commands, instructions)  
+**Quality:** `pyproject.toml` (Python config), `.vscode/` (settings, snippets), `.pre-commit-config.yaml`
 
 ---
 
-## Documentation
+## Critical Rules
 
-**Project Status:** `.github/TODO.md`  
-**Security Policy:** `SECURITY.md`  
-**Setup Guide:** `SETUP.md`  
-**Architecture:** `web-content/ARCHITECTURE.md`  
-**Scripts Guide:** `scripts/README.md`
+**Before any work:**
+1. Check `.github/TODO.md` for current phase/tasks (v4.0: 30/30 tasks complete, ready for production)
+2. Run validation: `make validate-env && make validate-configs && make validate`
+3. Read relevant `.github/instructions/*.instructions.md` for file-type-specific rules
+
+**Never:**
+- ❌ Use `version:` in docker-compose.yml (Compose v2 deprecates it)
+- ❌ Hardcode secrets (use env vars, see `.env.example`)
+- ❌ Use type suppressions in Python (fix architecture instead)
+- ❌ Use `List`, `Dict`, `Tuple` in Python (PEP 585 built-ins only)
+- ❌ Skip health checks in Docker services
+- ❌ Use unnamed Docker volumes
+
+**Always:**
+- ✅ PEP 585 built-ins: `list[str]`, `dict[str, Any]`
+- ✅ Named volumes: `docker_examples_<service>_<type>`
+- ✅ Health checks with 30s interval, 10s timeout, 3 retries
+- ✅ Resource limits in docker-compose.yml `deploy.resources`
+- ✅ Validate before deploy: `make validate-env && make validate-configs && make validate`
+- ✅ 143 tests passing with >97% coverage before PR merge
 
 ---
 
-**Last Updated:** 2025-10-25
+**Commands:** [.github/commands.yml](commands.yml) | **File paths:** [AGENT.md](../AGENT.md) | **TODO:** [.github/TODO.md](TODO.md)

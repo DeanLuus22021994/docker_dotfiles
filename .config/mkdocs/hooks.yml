@@ -1,0 +1,10 @@
+# ============================================================================
+# Build Hooks - Custom Processing & Automation
+# ============================================================================
+
+hooks:
+  - .config/mkdocs/hooks/validate_frontmatter.py
+  - .config/mkdocs/hooks/build_metrics.py
+  - .config/mkdocs/hooks/processing.py
+  - .config/mkdocs/hooks/badges.py
+  - .config/mkdocs/hooks/diagrams.py

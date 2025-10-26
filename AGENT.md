@@ -21,16 +21,21 @@ Comprehensive development guidelines for AI agents and developers.
 
 **Workflow:** [AI Workflow](docs/agent/workflow.md) | [Quick Reference](docs/agent/reference.md)
 
+## File Structure
+
+**Config:** `.config/mkdocs/` (docs), `.config/docker/` (daemon), `.config/python/` (pyright/pytest), `.config/git/` (pre-commit), `.config/markdownlint/` (linting), `.config/monitoring/` (prometheus/grafana)
+
+**Application:** `api/` (Express.js), `web-content/` (React), `dockerfile/` (multi-stage builds)
+
+**Automation:** `scripts/orchestrator.py` (CLI), `scripts/python/` (validation/audit/utils), `scripts/powershell/` (config/docker/mcp)
+
+**Documentation:** `docs/` (MkDocs site), `.github/` (copilot instructions, TODO, commands, issue templates)
+
+**Quality:** `pyproject.toml` (Python config), `.vscode/` (workspace settings, snippets, instructions)
+
 ## Quick Commands
 
-```powershell
-# Validate
-python scripts/python/validation/validate_env.py
-docker-compose config --quiet
-
-# Deploy
-docker-compose --profile dev up -d
-```
+**See:** [.github/commands.yml](.github/commands.yml) for complete command reference
 
 **Golden Rule:** Config-driven, SSoT, explicit paths, validate before deploy, human approves all changes.
 

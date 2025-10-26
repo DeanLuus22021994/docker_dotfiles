@@ -1,0 +1,70 @@
+---
+# Common Commands Reference
+# Single source of truth for project commands
+
+validation:
+  environment:
+    command: "python scripts/orchestrator.py validate env"
+    description: "Validate environment variables and configuration"
+  
+  configs:
+    command: "python scripts/orchestrator.py validate configs"
+    description: "Validate all configuration files"
+  
+  code_quality:
+    command: "python scripts/orchestrator.py audit code"
+    description: "Run code quality checks (Pylint, Ruff, Black)"
+  
+  docker_stack:
+    command: "python .docker-compose/validate_stacks.py"
+    description: "Validate Docker Compose stacks"
+  
+  docker_config:
+    command: "docker-compose config --quiet"
+    description: "Validate docker-compose.yml syntax"
+
+docker:
+  build:
+    command: "docker-compose build"
+    description: "Build all Docker images"
+  
+  up:
+    command: "docker-compose up -d"
+    description: "Start all services in detached mode"
+  
+  down:
+    command: "docker-compose down"
+    description: "Stop and remove all containers"
+  
+  logs:
+    command: "docker-compose logs -f"
+    description: "Follow logs for all services"
+  
+  specific_stack:
+    command: "docker-compose -f .docker-compose/basic-stack/docker-compose.yml up -d"
+    description: "Start specific stack example"
+  
+  profile_dev:
+    command: "docker-compose --profile dev up -d"
+    description: "Start development profile services"
+
+development:
+  web_dev:
+    command: "cd web-content && npm run dev"
+    description: "Start React development server"
+  
+  web_build:
+    command: "cd web-content && npm run build"
+    description: "Build React production bundle"
+  
+  api_start:
+    command: "cd api && npm start"
+    description: "Start Express.js API server"
+  
+  docs_serve:
+    command: "mkdocs serve"
+    description: "Serve MkDocs documentation locally"
+  
+  docs_build:
+    command: "mkdocs build"
+    description: "Build MkDocs static site"

@@ -6,12 +6,12 @@ Delegates tasks to specialized scripts organized by function (SRP).
 Uses Python 3.14 type system features for improved maintainability.
 
 Usage:
-    python orchestrator.py <task> <action>
+    python orchestrator.py <task> <action> [--dry-run]
 
 Examples:
     python orchestrator.py validate env
-    python orchestrator.py validate configs
-    python orchestrator.py audit code
+    python orchestrator.py validate configs --dry-run
+    python orchestrator.py audit code --dry-run
     python orchestrator.py mcp validate
 """
 
@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 from typing import Final, NoReturn, TypeAlias
 
-from python.utils.colors import error, header, info
+from python.utils.colors import error, header, info, warning
 
 # Type aliases
 TaskName: TypeAlias = str
@@ -28,6 +28,7 @@ ActionName: TypeAlias = str
 ScriptPath: TypeAlias = Path
 ExitCode: TypeAlias = int
 SCRIPT_DIR: Final[Path] = Path(__file__).parent
+DRY_RUN: bool = "--dry-run" in sys.argv
 
 
 def show_help() -> None:
@@ -47,11 +48,15 @@ def show_help() -> None:
     print("  validate  Validate MCP configuration")
     print("  analyze   Analyze token usage\n")
 
+    print("Options:")
+    print("  --dry-run Show what would be executed without running\n")
+
     print("Examples:")
     print("  python orchestrator.py validate env")
+    print("  python orchestrator.py validate configs --dry-run")
     print("  python orchestrator.py mcp validate")
     print("  python orchestrator.py mcp analyze --json")
-    print("  python orchestrator.py audit code\n")
+    print("  python orchestrator.py audit code --dry-run\n")
 
 
 def execute_task(task: TaskName, action: ActionName) -> NoReturn:
@@ -64,12 +69,17 @@ def execute_task(task: TaskName, action: ActionName) -> NoReturn:
     Raises:
         SystemExit: Always exits with appropriate return code
     """
+    if DRY_RUN:
+        print(warning("DRY RUN MODE - No commands will be executed\n"))
 
     if task == "validate":
         if action == "env":
             script = SCRIPT_DIR / "python" / "validation" / "validate_env.py"
             if script.exists():
-                print(info("Validating environment variables..."))
+                print(info(f"Validating environment variables: {script}"))
+                if DRY_RUN:
+                    print(info(f"Would execute: {sys.executable} {script}"))
+                    sys.exit(0)
                 result = subprocess.run([sys.executable, str(script)], check=False)
                 sys.exit(result.returncode)
             else:
@@ -79,7 +89,10 @@ def execute_task(task: TaskName, action: ActionName) -> NoReturn:
         elif action == "configs":
             script = SCRIPT_DIR / "python" / "validation" / "validate_configs.py"
             if script.exists():
-                print(info("Validating configuration files..."))
+                print(info(f"Validating configuration files: {script}"))
+                if DRY_RUN:
+                    print(info(f"Would execute: {sys.executable} {script}"))
+                    sys.exit(0)
                 result = subprocess.run([sys.executable, str(script)], check=False)
                 sys.exit(result.returncode)
             else:
@@ -95,7 +108,10 @@ def execute_task(task: TaskName, action: ActionName) -> NoReturn:
         if action == "code":
             script = SCRIPT_DIR / "python" / "audit" / "code_quality.py"
             if script.exists():
-                print(info("Running code quality audit..."))
+                print(info(f"Running code quality audit: {script}"))
+                if DRY_RUN:
+                    print(info(f"Would execute: {sys.executable} {script}"))
+                    sys.exit(0)
                 result = subprocess.run([sys.executable, str(script)], check=False)
                 sys.exit(result.returncode)
             else:
@@ -105,7 +121,10 @@ def execute_task(task: TaskName, action: ActionName) -> NoReturn:
         elif action == "deps":
             script = SCRIPT_DIR / "python" / "audit" / "dependencies.py"
             if script.exists():
-                print(info("Running dependencies audit..."))
+                print(info(f"Running dependencies audit: {script}"))
+                if DRY_RUN:
+                    print(info(f"Would execute: {sys.executable} {script}"))
+                    sys.exit(0)
                 result = subprocess.run([sys.executable, str(script)], check=False)
                 sys.exit(result.returncode)
             else:
@@ -121,7 +140,10 @@ def execute_task(task: TaskName, action: ActionName) -> NoReturn:
         if action == "validate":
             script = SCRIPT_DIR / "python" / "mcp" / "validate_config.py"
             if script.exists():
-                print(info("Validating MCP configuration..."))
+                print(info(f"Validating MCP configuration: {script}"))
+                if DRY_RUN:
+                    print(info(f"Would execute: {sys.executable} {script}"))
+                    sys.exit(0)
                 result = subprocess.run([sys.executable, str(script)], check=False)
                 sys.exit(result.returncode)
             else:
@@ -131,9 +153,15 @@ def execute_task(task: TaskName, action: ActionName) -> NoReturn:
         elif action == "analyze":
             script = SCRIPT_DIR / "python" / "mcp" / "analyze_tokens.py"
             if script.exists():
-                print(info("Analyzing MCP token usage..."))
-                # Pass through any additional arguments
-                extra_args = sys.argv[3:] if len(sys.argv) > 3 else []
+                print(info(f"Analyzing MCP token usage: {script}"))
+                # Pass through any additional arguments except --dry-run
+                extra_args = [arg for arg in sys.argv[3:] if arg != "--dry-run"]
+                if DRY_RUN:
+                    cmd = f"{sys.executable} {script}"
+                    if extra_args:
+                        cmd += " " + " ".join(extra_args)
+                    print(info(f"Would execute: {cmd}"))
+                    sys.exit(0)
                 result = subprocess.run([sys.executable, str(script)] + extra_args, check=False)
                 sys.exit(result.returncode)
             else:

@@ -50,7 +50,7 @@ def temp_project_dir(temp_dir: Path) -> Path:
     - .config/database/
 
     Args:
-        temp_dir: Base temporary directory
+        temp_dir: Base temporary directory from temp_dir fixture
 
     Returns:
         Path to project root directory
@@ -59,9 +59,10 @@ def temp_project_dir(temp_dir: Path) -> Path:
         def test_config(temp_project_dir: Path) -> None:
             nginx_conf = temp_project_dir / ".config" / "nginx" / "main.conf"
     """
-    (temp_dir / ".config" / "nginx").mkdir(parents=True)
-    (temp_dir / ".config" / "database").mkdir(parents=True)
-    return temp_dir
+    base_dir = temp_dir
+    (base_dir / ".config" / "nginx").mkdir(parents=True)
+    (base_dir / ".config" / "database").mkdir(parents=True)
+    return base_dir
 
 
 @pytest.fixture
@@ -76,7 +77,7 @@ def sample_json_file(temp_dir: Path) -> Path:
     }
 
     Args:
-        temp_dir: Temporary directory for file
+        temp_dir: Temporary directory for file from temp_dir fixture
 
     Returns:
         Path to created JSON file
@@ -86,7 +87,8 @@ def sample_json_file(temp_dir: Path) -> Path:
             data = json.loads(sample_json_file.read_text())
             assert data["name"] == "test"
     """
-    file_path = temp_dir / "sample.json"
+    base_dir = temp_dir
+    file_path = base_dir / "sample.json"
     data = {"name": "test", "value": 42, "items": ["a", "b", "c"]}
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
@@ -100,7 +102,7 @@ def sample_text_file(temp_dir: Path) -> Path:
     Creates file with three lines: "line1", "line2", "line3"
 
     Args:
-        temp_dir: Temporary directory for file
+        temp_dir: Temporary directory for file from temp_dir fixture
 
     Returns:
         Path to created text file
@@ -110,7 +112,8 @@ def sample_text_file(temp_dir: Path) -> Path:
             lines = sample_text_file.read_text().splitlines()
             assert len(lines) == 3
     """
-    file_path = temp_dir / "sample.txt"
+    base_dir = temp_dir
+    file_path = base_dir / "sample.txt"
     content = "line1\nline2\nline3\n"
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)

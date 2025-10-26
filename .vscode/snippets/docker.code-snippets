@@ -1,0 +1,53 @@
+{
+  "Docker Compose Service": {
+    "scope": "yaml,dockercompose",
+    "prefix": "dc-service",
+    "body": [
+      "${1:service_name}:",
+      "  image: ${2:image:tag}",
+      "  container_name: ${3:container_name}",
+      "  volumes:",
+      "    - docker_examples_${1}_${4:data}:/var/lib/${1}/${4}",
+      "  environment:",
+      "    - ${5:ENV_VAR}=\\${${5}}",
+      "  healthcheck:",
+      "    test: [\"CMD-SHELL\", \"${6:health_command}\"]",
+      "    interval: 30s",
+      "    timeout: 10s",
+      "    retries: 3",
+      "    start_period: 40s",
+      "  networks:",
+      "    - ${7:network_name}",
+      "  ${0}"
+    ]
+  },
+  "Docker Named Volume": {
+    "scope": "yaml,dockercompose",
+    "prefix": "dc-volume",
+    "body": [
+      "volumes:",
+      "  docker_examples_${1:service}_${2:type}:",
+      "    driver: local",
+      "    ${0}"
+    ]
+  },
+  "Multi-stage Dockerfile": {
+    "scope": "dockerfile",
+    "prefix": "df-multistage",
+    "body": [
+      "# Stage 1: Builder",
+      "FROM ${1:python:3.14-slim} AS builder",
+      "WORKDIR /build",
+      "COPY ${2:requirements.txt} .",
+      "RUN ${3:pip install --no-cache-dir -r requirements.txt}",
+      "",
+      "# Stage 2: Production",
+      "FROM ${4:python:3.14-slim}",
+      "WORKDIR /app",
+      "COPY --from=builder ${5:/build} .",
+      "EXPOSE ${6:8000}",
+      "CMD [\"${7:python}\", \"${8:app.py}\"]",
+      "${0}"
+    ]
+  }
+}

@@ -1,0 +1,161 @@
+/* ============================================================================
+ * Custom Styles - MkDocs Material Extended Theme
+ * ============================================================================
+ * Modern design system with enhanced visual hierarchy and interactions
+ * ============================================================================ */
+
+:root {
+  /* Extended Color Palette */
+  --md-primary-fg-color: #0891b2;
+  --md-primary-fg-color--light: #06b6d4;
+  --md-primary-fg-color--dark: #0e7490;
+  --md-accent-fg-color: #f97316;
+  
+  /* Custom Variables */
+  --custom-code-background: #1e293b;
+  --custom-border-radius: 0.5rem;
+  --custom-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --custom-shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* ============================================================================
+ * Enhanced Code Blocks
+ * ============================================================================ */
+
+.highlight pre {
+  border-radius: var(--custom-border-radius) !important;
+  box-shadow: var(--custom-shadow);
+  padding: 1.5rem !important;
+}
+
+.highlight .filename {
+  background: var(--md-code-bg-color);
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: var(--custom-border-radius) var(--custom-border-radius) 0 0;
+  padding: 0.5rem 1rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.85em;
+  font-weight: 500;
+}
+
+/* Copy button enhancement */
+.md-clipboard {
+  transition: all 0.2s ease;
+}
+
+.md-clipboard:hover {
+  transform: translateY(-2px);
+}
+
+/* ============================================================================
+ * Admonitions - Enhanced Visual Design
+ * ============================================================================ */
+
+.admonition {
+  border-radius: var(--custom-border-radius);
+  box-shadow: var(--custom-shadow);
+  margin: 1.5rem 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admonition:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--custom-shadow-lg);
+}
+
+/* Gradient borders for different admonition types */
+.admonition.note {
+  border-left: 4px solid #3b82f6;
+}
+
+.admonition.tip {
+  border-left: 4px solid #10b981;
+}
+
+.admonition.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.admonition.danger {
+  border-left: 4px solid #ef4444;
+}
+
+/* ============================================================================
+ * Navigation Enhancements
+ * ============================================================================ */
+
+.md-nav__link--active {
+  font-weight: 600;
+  position: relative;
+}
+
+.md-nav__link--active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 70%;
+  background: var(--md-primary-fg-color);
+  border-radius: 2px;
+}
+
+/* ============================================================================
+ * Table Improvements
+ * ============================================================================ */
+
+.md-typeset table:not([class]) {
+  border-radius: var(--custom-border-radius);
+  overflow: hidden;
+  box-shadow: var(--custom-shadow);
+}
+
+.md-typeset table:not([class]) thead {
+  background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-primary-fg-color--light));
+  color: white;
+}
+
+.md-typeset table:not([class]) tbody tr:hover {
+  background-color: var(--md-default-fg-color--lightest);
+}
+
+/* ============================================================================
+ * Search Enhancement
+ * ============================================================================ */
+
+.md-search__input {
+  border-radius: 2rem;
+  transition: all 0.3s ease;
+}
+
+.md-search__input:focus {
+  box-shadow: 0 0 0 3px var(--md-primary-fg-color--light);
+}
+
+/* ============================================================================
+ * Responsive Utilities
+ * ============================================================================ */
+
+@media screen and (max-width: 76.1875em) {
+  .md-nav--primary .md-nav__title {
+    background-color: var(--md-primary-fg-color);
+  }
+}
+
+/* ============================================================================
+ * Print Styles
+ * ============================================================================ */
+
+@media print {
+  .md-header,
+  .md-tabs,
+  .md-sidebar,
+  .md-footer {
+    display: none;
+  }
+  
+  .md-content {
+    max-width: 100%;
+  }
+}

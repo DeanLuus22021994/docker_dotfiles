@@ -1,195 +1,27 @@
 {
-  "phases": {
-    "4.1": {
-      "name": "Testing Infrastructure",
-      "priority": "critical",
-      "tasks": [
-        {
-          "title": "[Phase 4.1.1] Setup pytest Framework",
-          "estimate": "1h",
-          "body": "## Objective\nInstall and configure pytest for Python 3.14 with all necessary plugins.\n\n## Acceptance Criteria\n- [ ] pytest installed with plugins (pytest-cov, pytest-mock, pytest-asyncio)\n- [ ] pyproject.toml updated with pytest configuration\n- [ ] Test discovery working for tests/ directory\n- [ ] Coverage reporting configured (>80% target)\n\n## Files to Modify\n- pyproject.toml\n\n## References\n- TODO.md Line 31-44\n- DEVELOPMENT_DEBT.md Phase 4.1"
-        },
-        {
-          "title": "[Phase 4.1.2] Create Test Structure",
-          "estimate": "1h",
-          "dependencies": "4.1.1",
-          "body": "## Objective\nCreate comprehensive test directory structure for all Python modules.\n\n## Acceptance Criteria\n- [ ] tests/python/ directory created with __init__.py\n- [ ] tests/python/audit/ for code_quality.py and dependencies.py tests\n- [ ] tests/python/utils/ for utilities tests\n- [ ] tests/python/validation/ for validation tests\n- [ ] tests/fixtures/ for test data\n\n## Structure\n```\ntests/\n├── __init__.py\n├── conftest.py\n├── fixtures/\n│   ├── sample.env\n│   └── docker-compose.test.yml\n└── python/\n    ├── __init__.py\n    ├── audit/\n    ├── utils/\n    └── validation/\n```"
-        },
-        {
-          "title": "[Phase 4.1.3] Write Unit Tests for Utils Module",
-          "estimate": "3h",
-          "dependencies": "4.1.2",
-          "body": "## Objective\nWrite comprehensive unit tests for utils module (colors.py, file_utils.py, logging_utils.py).\n\n## Acceptance Criteria\n- [ ] test_colors.py - Test all color output functions\n- [ ] test_file_utils.py - Test file operations\n- [ ] test_logging_utils.py - Test logging setup\n- [ ] All tests passing with >90% coverage\n\n## Key Test Cases\n- Colors: ANSI codes, non-ANSI terminals\n- File Utils: File existence, directory creation\n- Logging: Setup logger, log levels"
-        },
-        {
-          "title": "[Phase 4.1.4] Write Unit Tests for Validation Module",
-          "estimate": "3h",
-          "dependencies": "4.1.2",
-          "body": "## Objective\nWrite comprehensive unit tests for validation module.\n\n## Acceptance Criteria\n- [ ] test_validate_env.py - Test .env parsing\n- [ ] test_validate_configs.py - Test config validation\n- [ ] All tests passing with >90% coverage\n- [ ] Mock Docker commands\n\n## Key Test Cases\n- Valid/invalid .env files\n- Missing required variables\n- Config file validation"
-        },
-        {
-          "title": "[Phase 4.1.5] Write Unit Tests for Audit Module",
-          "estimate": "3h",
-          "dependencies": "4.1.2",
-          "body": "## Objective\nWrite comprehensive unit tests for audit module.\n\n## Acceptance Criteria\n- [ ] test_code_quality.py - Test Black/Ruff/mypy execution\n- [ ] test_dependencies.py - Test dependency scanning\n- [ ] All tests passing with >90% coverage\n- [ ] Mock external tool execution\n\n## Key Test Cases\n- Tool availability checks\n- Output parsing\n- Error handling"
-        },
-        {
-          "title": "[Phase 4.1.6] Setup CI/CD Testing Pipeline",
-          "estimate": "2h",
-          "dependencies": "4.1.3,4.1.4,4.1.5",
-          "body": "## Objective\nAdd automated testing to GitHub Actions.\n\n## Acceptance Criteria\n- [ ] .github/workflows/python-tests.yml created\n- [ ] Runs pytest on every push/PR\n- [ ] Coverage reports generated\n- [ ] Tests pass on Python 3.14\n- [ ] Badge added to README.md\n\n## Workflow Steps\n1. Checkout code\n2. Setup Python 3.14\n3. Install dependencies (uv sync)\n4. Run pytest with coverage\n5. Upload coverage reports"
-        }
-      ]
-    },
-    "4.2": {
-      "name": "Security Hardening",
-      "priority": "critical",
-      "tasks": [
-        {
-          "title": "[Phase 4.2.1] Implement Authentication Layer",
-          "estimate": "6h",
-          "body": "## Objective\nAdd authentication to web dashboard (JWT or OAuth).\n\n## Acceptance Criteria\n- [ ] Auth middleware in api/server.js\n- [ ] Login page in web-content/\n- [ ] JWT token generation/validation\n- [ ] Protected routes implementation\n- [ ] User session management\n\n## Files to Modify\n- api/server.js\n- web-content/src/ (add login component)\n- web-content/src/services/dockerAPI.ts"
-        },
-        {
-          "title": "[Phase 4.2.2] Add Rate Limiting",
-          "estimate": "2h",
-          "body": "## Objective\nImplement rate limiting for API endpoints.\n\n## Acceptance Criteria\n- [ ] express-rate-limit package installed\n- [ ] 100 req/15min for /api/*\n- [ ] 10 req/15min for /api/containers/:id/stats\n- [ ] Rate limit headers added\n- [ ] 429 responses on limit exceeded\n\n## Configuration\n```javascript\nconst apiLimiter = rateLimit({\n  windowMs: 15 * 60 * 1000,\n  max: 100\n});\n```"
-        },
-        {
-          "title": "[Phase 4.2.3] Enable HTTPS & Reverse Proxy",
-          "estimate": "4h",
-          "body": "## Objective\nSetup HTTPS for production with Traefik.\n\n## Acceptance Criteria\n- [ ] dockerfile/traefik.Dockerfile created\n- [ ] Traefik configured with Let's Encrypt\n- [ ] docker-compose.yml updated\n- [ ] HTTP→HTTPS redirect enabled\n- [ ] SSL certificates auto-renewal\n\n## Services to Proxy\n- Web Dashboard (80→443)\n- API Server (3001→443/api)\n- Grafana (3000→443/grafana)"
-        },
-        {
-          "title": "[Phase 4.2.4] API Request Validation",
-          "estimate": "2h",
-          "body": "## Objective\nAdd input validation and sanitization.\n\n## Acceptance Criteria\n- [ ] express-validator installed\n- [ ] Container ID validation (/^[a-f0-9]{12,64}$/)\n- [ ] Query parameter sanitization\n- [ ] Error responses for invalid input\n\n## Validation Rules\n- Container ID format\n- Query parameter whitelist\n- Header validation"
-        },
-        {
-          "title": "[Phase 4.2.5] Restrict CORS Origins",
-          "estimate": "1h",
-          "body": "## Objective\nConfigure CORS for specific origins only.\n\n## Acceptance Criteria\n- [ ] CORS config updated in api/server.js\n- [ ] Whitelist localhost and production domain\n- [ ] Deny all other origins\n- [ ] Credentials support enabled\n\n## Configuration\n```javascript\nconst corsOptions = {\n  origin: process.env.CORS_ORIGIN?.split(',') || ['http://localhost:3000']\n};\n```"
-        },
-        {
-          "title": "[Phase 4.2.6] Docker Socket Security Audit",
-          "estimate": "3h",
-          "body": "## Objective\nAudit and document Docker socket security.\n\n## Acceptance Criteria\n- [ ] Verify socket mounted read-only\n- [ ] Document socket permissions in SECURITY.md\n- [ ] Add Docker socket proxy alternative\n- [ ] Evaluate tecnativa/docker-socket-proxy\n\n## Benefits\n- Whitelists allowed API endpoints\n- Better audit trail\n- Reduced attack surface"
-        }
-      ]
-    },
-    "4.3": {
-      "name": "Planned Scripts",
-      "priority": "high",
-      "tasks": [
-        {
-          "title": "[Phase 4.3.1] PowerShell: Remove Old Images Script",
-          "estimate": "2h",
-          "body": "## Objective\nCreate cleanup/remove-old-images.ps1 for Docker image cleanup.\n\n## Features\n- -DaysOld parameter (default: 30)\n- -Force switch\n- -WhatIf preview\n- Exclude 'latest' and in-use images\n\n## Acceptance Criteria\n- [ ] Script created with parameters\n- [ ] Interactive confirmation\n- [ ] Dry-run mode\n- [ ] Color-coded output\n- [ ] Documentation in scripts/powershell/README.md"
-        },
-        {
-          "title": "[Phase 4.3.2] PowerShell: Clear Volumes Script",
-          "estimate": "2h",
-          "body": "## Objective\nCreate cleanup/clear-volumes.ps1 for volume cleanup.\n\n## Features\n- -UnusedOnly switch\n- -Force switch\n- -ExcludePattern\n- Size reporting\n\n## Acceptance Criteria\n- [ ] List volumes with size\n- [ ] Identify unused volumes\n- [ ] Interactive confirmation\n- [ ] Backup option\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.3.3] PowerShell: Security Scan Script",
-          "estimate": "4h",
-          "body": "## Objective\nCreate audit/security-scan.ps1 for vulnerability scanning.\n\n## Scan Tools\n1. Docker images (Trivy)\n2. Python dependencies (pip-audit)\n3. Node.js dependencies (npm audit)\n4. Configuration files\n\n## Acceptance Criteria\n- [ ] Multi-tool integration\n- [ ] JSON report generation\n- [ ] Severity filtering\n- [ ] HTML report option\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.3.4] Bash: Build Images Script",
-          "estimate": "3h",
-          "body": "## Objective\nCreate docker/build-images.sh with BuildKit optimization.\n\n## Features\n- Parallel builds (max 4)\n- BuildKit cache mounts\n- Build progress tracking\n- Error handling\n\n## Acceptance Criteria\n- [ ] --no-cache flag\n- [ ] --push flag for registry\n- [ ] --image flag for single build\n- [ ] Progress bars\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.3.5] Bash: Cleanup Volumes Script",
-          "estimate": "1h",
-          "body": "## Objective\nCreate docker/cleanup-volumes.sh (Bash equivalent of PS1).\n\n## Features\n- --force flag\n- --dry-run mode\n- Pattern exclusion\n- Confirmation prompts\n\n## Acceptance Criteria\n- [ ] List unused volumes\n- [ ] Filter by pattern\n- [ ] Interactive confirmation\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.3.6] Bash: Build Docs Script",
-          "estimate": "4h",
-          "body": "## Objective\nCreate docs/build-docs.sh for static documentation with MkDocs.\n\n## Features\n- MkDocs site generation\n- Material theme\n- Search functionality\n- Auto-deployment\n\n## Acceptance Criteria\n- [ ] mkdocs.yml created\n- [ ] Convert existing docs\n- [ ] Build static site\n- [ ] Serve locally\n- [ ] GitHub Pages deployment\n- [ ] Documentation"
-        }
-      ]
-    },
-    "4.4": {
-      "name": "Documentation Consolidation",
-      "priority": "high",
-      "tasks": [
-        {
-          "title": "[Phase 4.4.1] Create Documentation Index",
-          "estimate": "2h",
-          "body": "## Objective\nCreate docs/INDEX.md with centralized documentation links.\n\n## Structure\n- Getting Started\n- Architecture\n- Development\n- Monitoring\n\n## Acceptance Criteria\n- [ ] INDEX.md created\n- [ ] All docs categorized\n- [ ] Descriptions added\n- [ ] Quick reference table\n- [ ] README.md updated"
-        },
-        {
-          "title": "[Phase 4.4.2] Archive Obsolete Documentation",
-          "estimate": "2h",
-          "body": "## Objective\nDecompose large documentation files into focused dated entries.\n\n## Process\n- Extract sections into separate files (≤150w each)\n- Add YAML front matter (date, tags, description)\n- Organize in docs/reports/ structure\n- Use dated format: YYYY-MM-DD-topic.md\n\n## Acceptance Criteria\n- [ ] All files ≤150 words\n- [ ] YAML front matter present\n- [ ] Central docs/ structure\n- [ ] Cross-references updated"
-        },
-        {
-          "title": "[Phase 4.4.3] Consolidate Web-Content Docs",
-          "estimate": "3h",
-          "body": "## Objective\nReduce web-content docs from 5 to 3 essential files.\n\n## Plan\n- Keep: ARCHITECTURE.md, INSTALL.md\n- Merge: QUICKSTART.md + README.md\n- Archive: IMPLEMENTATION.md (already done), REFACTOR-SUMMARY.md (already done)\n\n## Acceptance Criteria\n- [ ] Merge QUICKSTART into README\n- [ ] Remove duplicated content\n- [ ] Update cross-references\n- [ ] Test all links"
-        },
-        {
-          "title": "[Phase 4.4.4] Create MkDocs Site",
-          "estimate": "4h",
-          "body": "## Objective\nBuild searchable static documentation site with MkDocs.\n\n## Features\n- Material theme\n- Search functionality\n- Navigation hierarchy\n- Code highlighting\n\n## Acceptance Criteria\n- [ ] Install MkDocs + Material\n- [ ] Create mkdocs.yml\n- [ ] Add all markdown files\n- [ ] Configure navigation\n- [ ] Test local serve\n- [ ] GitHub Pages deployment\n- [ ] Add link to README"
-        }
-      ]
-    },
-    "4.5": {
-      "name": "Code Quality Automation",
-      "priority": "medium",
-      "tasks": [
-        {
-          "title": "[Phase 4.5.1] Pre-commit Hooks Enhancement",
-          "estimate": "2h",
-          "body": "## Objective\nEnhance pre-commit hooks for all file types.\n\n## New Hooks\n- yamllint for YAML files\n- shellcheck for bash scripts\n- PSScriptAnalyzer for PowerShell\n- markdownlint for markdown\n- hadolint for Dockerfiles\n\n## Acceptance Criteria\n- [ ] .pre-commit-config.yaml updated\n- [ ] All hooks tested\n- [ ] Documentation updated\n- [ ] README.md badge"
-        },
-        {
-          "title": "[Phase 4.5.2] GitHub Actions Workflow for All Checks",
-          "estimate": "3h",
-          "body": "## Objective\nCreate comprehensive CI workflow for code quality.\n\n## Jobs\n- Python checks (Black, Ruff, mypy)\n- YAML checks (yamllint)\n- Markdown checks (markdownlint)\n- Docker checks (hadolint)\n- Shell checks (shellcheck)\n\n## Acceptance Criteria\n- [ ] .github/workflows/code-quality.yml created\n- [ ] All checks running in parallel\n- [ ] Status checks required\n- [ ] Badge in README.md"
-        },
-        {
-          "title": "[Phase 4.5.3] Automated Dependency Updates",
-          "estimate": "1h",
-          "body": "## Objective\nSetup Dependabot for automated dependency PRs.\n\n## Package Ecosystems\n- Python (pyproject.toml)\n- Node.js (package.json for api/ and web-content/)\n- Docker (dockerfile/)\n- GitHub Actions\n\n## Acceptance Criteria\n- [ ] .github/dependabot.yml created\n- [ ] Weekly update schedule\n- [ ] PR limit: 10 per ecosystem\n- [ ] Auto-merge config\n- [ ] Documentation"
-        }
-      ]
-    },
-    "4.6": {
-      "name": "Dashboard Enhancements",
-      "priority": "medium",
-      "tasks": [
-        {
-          "title": "[Phase 4.6.1] Layer-Specific Health Checks",
-          "estimate": "3h",
-          "body": "## Objective\nCustomize health check intervals per layer.\n\n## Intervals\n- Data: 60s (slow changes)\n- Services: 30s\n- Monitoring: 45s\n- Compute: 30s\n- Network: 15s (fast changes)\n\n## Acceptance Criteria\n- [ ] useClusterHealth.ts updated\n- [ ] Layer health aggregation\n- [ ] UI shows per-layer status\n- [ ] Documentation in ARCHITECTURE.md"
-        },
-        {
-          "title": "[Phase 4.6.2] Layer Metrics Aggregation",
-          "estimate": "4h",
-          "body": "## Objective\nAdd per-layer resource statistics.\n\n## Metrics\n- Total CPU per layer\n- Total memory per layer\n- Total network I/O per layer\n- Container count per layer\n\n## Acceptance Criteria\n- [ ] API endpoint: /api/layers/:id/metrics\n- [ ] Metrics aggregation logic\n- [ ] UI displays layer metrics\n- [ ] Charts per layer\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.6.3] Visual Layer Grouping",
-          "estimate": "3h",
-          "body": "## Objective\nAdd collapsible layer sections in UI.\n\n## Features\n- Expand/collapse buttons\n- LocalStorage state persistence\n- Smooth animations\n- Keyboard shortcuts\n\n## Acceptance Criteria\n- [ ] Layer headers clickable\n- [ ] Chevron icon for state\n- [ ] CSS transitions\n- [ ] State persists on reload\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.6.4] Layer Dependencies Visualization",
-          "estimate": "6h",
-          "body": "## Objective\nShow dependency trees between layers with D3.js.\n\n## Dependencies\n```\nNetwork → Services → Data → Monitoring\nCompute → Data\n```\n\n## Acceptance Criteria\n- [ ] Dependency graph config\n- [ ] D3.js or Cytoscape component\n- [ ] Interactive visualization\n- [ ] Highlight paths on hover\n- [ ] Export as image\n- [ ] Documentation"
-        },
-        {
-          "title": "[Phase 4.6.5] Layer Scaling Controls",
-          "estimate": "5h",
-          "body": "## Objective\nAdd UI controls to scale services per layer.\n\n## Features\n- Scale +/- buttons\n- Current replica count\n- Confirmation dialog\n- Error handling\n\n## Acceptance Criteria\n- [ ] API endpoint: POST /api/services/:id/scale\n- [ ] Scale controls on service cards\n- [ ] Replica count badge\n- [ ] Confirmation dialog\n- [ ] Real-time updates\n- [ ] Documentation"
-        }
-      ]
-    }
+  "bug": {
+    "title": "[BUG] Brief description",
+    "labels": ["bug", "triage"],
+    "body": "## Description\nClear description of the bug\n\n## Steps to Reproduce\n1. Step one\n2. Step two\n3. Step three\n\n## Expected Behavior\nWhat should happen\n\n## Actual Behavior\nWhat actually happens\n\n## Environment\n- OS: [e.g., Windows 11]\n- Python: [e.g., 3.14]\n- Docker: [e.g., 24.0.0]\n\n## Logs/Screenshots\n```\nPaste relevant logs here\n```\n\n## Checklist\n- [ ] Issue reproducible\n- [ ] Logs attached\n- [ ] Error message included"
+  },
+  "feature": {
+    "title": "[FEATURE] Brief description",
+    "labels": ["enhancement"],
+    "body": "## Objective\nWhat problem does this solve?\n\n## Proposed Solution\nHow should it work?\n\n## Acceptance Criteria\n- [ ] Criterion 1\n- [ ] Criterion 2\n- [ ] Criterion 3\n\n## Implementation Notes\n- Files to modify: \n- Dependencies: \n- Estimated effort: \n\n## References\n- Related docs: \n- Similar implementations: "
+  },
+  "refactor": {
+    "title": "[REFACTOR] Brief description",
+    "labels": ["refactor", "tech-debt"],
+    "body": "## Current State\nWhat exists now\n\n## Problem\nWhy it needs refactoring\n\n## Proposed Changes\nWhat should change\n\n## Benefits\n- Benefit 1\n- Benefit 2\n\n## Scope\n- [ ] Files affected\n- [ ] Tests required\n- [ ] Documentation updates\n\n## Breaking Changes\n- [ ] None\n- [ ] List breaking changes"
+  },
+  "documentation": {
+    "title": "[DOCS] Brief description",
+    "labels": ["documentation"],
+    "body": "## Documentation Type\n- [ ] New documentation\n- [ ] Update existing\n- [ ] Fix errors\n\n## Location\nFile path or section\n\n## Changes Needed\nWhat needs to be documented/updated\n\n## Audience\n- [ ] Developers\n- [ ] Users\n- [ ] Contributors\n\n## Checklist\n- [ ] Frontmatter added (date, description, tags)\n- [ ] Code examples included\n- [ ] Links verified\n- [ ] Spelling checked"
+  },
+  "task": {
+    "title": "[TASK] Brief description",
+    "labels": ["task"],
+    "body": "## Objective\nWhat needs to be done\n\n## Steps\n1. Step one\n2. Step two\n3. Step three\n\n## Acceptance Criteria\n- [ ] Criterion 1\n- [ ] Criterion 2\n- [ ] Criterion 3\n\n## Dependencies\n- Depends on: \n- Blocks: \n\n## Estimated Effort\n[e.g., 2h, 1d]\n\n## Files\n- Files to create: \n- Files to modify: \n\n## Verification\n- [ ] Tests pass\n- [ ] Documentation updated\n- [ ] Pre-commit hooks pass"
   }
 }

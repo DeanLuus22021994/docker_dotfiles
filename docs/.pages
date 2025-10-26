@@ -1,0 +1,22 @@
+# ==============================================================================
+# Root Navigation Configuration - MkDocs Awesome Pages
+# ==============================================================================
+# This file controls the automatic generation and ordering of navigation.
+# When you add new markdown files, they'll be auto-discovered without
+# touching the config. Manual ordering and collapsing can be done per-section.
+
+title: Documentation
+nav:
+  - index
+  - readme
+  - web-content
+  - api
+  - config
+  - scripts
+  - testing
+  - security
+  - setup
+  - production
+  - reports
+  - agent
+  - ...  # Auto-discover any other directories

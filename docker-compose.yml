@@ -198,7 +198,7 @@ services:
       - cluster-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -259,7 +259,7 @@ services:
   cluster-redis:
     container_name: cluster-redis
     image: redis:7-alpine
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --requirepass "${DOCKER_REDIS_PASSWORD}"
     volumes:
       - cluster_redis_data:/data
     ports:
@@ -268,7 +268,7 @@ services:
       - cluster-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "$${DOCKER_REDIS_PASSWORD}", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -724,7 +724,7 @@ services:
       context: .
       dockerfile: dockerfile/redis-commander.Dockerfile
     environment:
-      REDIS_HOSTS: "local:cluster-redis:6379:0"
+      REDIS_HOSTS: "local:cluster-redis:6379:0:${DOCKER_REDIS_PASSWORD}"
       HTTP_USER: admin
       HTTP_PASSWORD: admin
     ports:
@@ -907,6 +907,7 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - '--log.level=warn'
     volumes:
       - /:/host:ro
     ports:
@@ -934,32 +935,47 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # GitHub Pages - Documentation site (local development)
+  # MkDocs Material - Modern documentation platform with nginx production serving
   cluster-docs:
     container_name: cluster-docs
-    image: jekyll/jekyll:4.2.2
-    command: sh -c "git config --global --add safe.directory /srv/jekyll && bundle config set --local path /usr/local/bundle && cd /srv/jekyll && BUNDLE_GEMFILE=.config/jekyll/Gemfile bundle install && bundle exec jekyll serve --config .config/jekyll/jekyll.config.yml --host 0.0.0.0 --port 4000 --livereload --force_polling"
+    build:
+      context: .
+      dockerfile: dockerfile/mkdocs.Dockerfile
+      target: development  # Use 'production' for static nginx serving
+      args:
+        MKDOCS_VERSION: "1.6.1"
+        MATERIAL_VERSION: "9.5.39"
+    image: cluster-mkdocs:2.0-dev
     volumes:
-      - .:/srv/jekyll:cached
-      - ./vendor/bundle:/usr/local/bundle:cached
+      # Source files for hot reload (development mode only)
+      - ./docs:/docs/docs
+      - ./.config/mkdocs:/docs/.config/mkdocs
+      # Named volumes keep build artifacts clean
+      - cluster_mkdocs_site:/docs/site
+      - cluster_mkdocs_cache:/root/.cache
     ports:
-      - "4000:4000"
-      - "35729:35729"
+      - "8000:8000"
     networks:
       - cluster-network
     environment:
-      - JEKYLL_ENV=development
-      - PAGES_REPO_NWO=DeanLuus22021994/docker_dotfiles
+      - DOCS_SITE_URL=http://localhost:8000
+      - MKDOCS_LIVE_RELOAD_SUPPORT=true
     restart: unless-stopped
     profiles: ["docs", "dev"]
     deploy:
       resources:
         limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
           cpus: '0.5'
           memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000\").read()' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     logging:
       driver: "json-file"
       options:
@@ -1012,7 +1028,8 @@ volumes:
   cluster_buildkit_data:
   cluster_localstack_data:
   cluster_pgadmin_data:
-  cluster_docs_bundle:
+  cluster_mkdocs_site:
+  cluster_mkdocs_cache:
 
 networks:
   cluster-network:

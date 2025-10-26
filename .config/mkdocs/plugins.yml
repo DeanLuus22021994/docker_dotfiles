@@ -1,0 +1,169 @@
+# ============================================================================
+# Plugins Configuration - Extended Functionality
+# ============================================================================
+
+plugins:
+  # ============================================================================
+  # Search - Enhanced Full-Text Search
+  # ============================================================================
+  - search:
+      lang:
+        - en
+      separator: '[\s\-,:!=\[\]()"/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+      pipeline:
+        - stemmer
+        - stopWordFilter
+        - trimmer
+      
+  # ============================================================================
+  # Minification - Production Optimization
+  # ============================================================================
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+        remove_empty_space: true
+        reduce_boolean_attributes: true
+      cache_safe: true
+      js_files:
+        - assets/javascripts/custom.js
+        - assets/javascripts/analytics.js
+      css_files:
+        - assets/stylesheets/custom.css
+        - assets/stylesheets/animations.css
+  
+  # ============================================================================
+  # Git Integration - Contributors & Timestamps
+  # ============================================================================
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+      timezone: UTC
+      locale: en
+      fallback_to_build_date: true
+      
+  - git-authors:
+      show_contribution: true
+      show_line_count: true
+      show_email_address: false
+      count_empty_lines: false
+      sort_authors_by: contribution
+      authorship_threshold_percent: 5
+  
+  # ============================================================================
+  # Tags - Content Organization
+  # ============================================================================
+  - tags:
+      tags_file: tags.md
+      tags_extra_files:
+        production: production/tags.md
+        development: development/tags.md
+        security: security/tags.md
+  
+  # ============================================================================
+  # Social Cards - Open Graph Images
+  # ============================================================================
+  - social:
+      enabled: !ENV [SOCIAL_CARDS_ENABLED, true]
+      cache_dir: .cache/plugin/social
+      cards: true
+      cards_layout_options:
+        background_color: "#0891b2"  # Cyan 600
+        color: "#ffffff"
+  
+  # ============================================================================
+  # Redirects - URL Management
+  # ============================================================================
+  - redirects:
+      redirect_maps:
+        'old-docs/setup.md': 'readme/installation.md'
+        'quickstart.md': 'index/getting-started.md'
+  
+  # ============================================================================
+  # Macros - Dynamic Content
+  # ============================================================================
+  - macros:
+      module_name: .config/mkdocs/macros
+      include_dir: .config/mkdocs/includes
+      include_yaml:
+        - .config/mkdocs/variables.yml
+      
+  # ============================================================================
+  # Awesome Pages - Auto-Navigation from File Structure
+  # ============================================================================
+  - awesome-pages:
+      filename: .pages
+      collapse_single_pages: true
+      strict: true
+      order: asc
+      sort_type: natural
+      order_by: title
+  
+  # ============================================================================
+  # Link Validation - Broken Link Detection
+  # ============================================================================
+  - linkcheck:
+      # Fail build on broken links
+      error_on_broken: true
+      # Check external links
+      recurse: true
+      # Skip specific URLs (rate-limited APIs, etc.)
+      skip_file: .config/mkdocs/linkcheck-skip.txt
+      # Cache external link checks (24 hours)
+      cache_timeout: 86400
+      # User agent for external requests
+      user_agent: "MkDocs LinkChecker/1.0"
+      # Timeout for external requests (seconds)
+      timeout: 10
+      # Retry failed links
+      retry_on_error: 3
+      # Follow redirects
+      allow_redirects: true
+      # Check anchors on external sites
+      check_anchors: true
+  
+  # ============================================================================
+  # Privacy - External Link Protection
+  # ============================================================================
+  - privacy:
+      enabled: !ENV [PRIVACY_ENABLED, true]
+      cache: true
+      cache_dir: .cache/plugin/privacy
+      links_attr_map:
+        target: _blank
+        rel: noopener
+      
+  # ============================================================================
+  # Offline - Progressive Web App
+  # ============================================================================
+  - offline:
+      enabled: !ENV [OFFLINE_ENABLED, false]
+  
+  # ============================================================================
+  # Include Markdown - Content Reuse
+  # ============================================================================
+  - include-markdown:
+      opening_tag: "{!"
+      closing_tag: "!}"
+      encoding: utf-8
+      preserve_includer_indent: true
+      dedent: false
+      trailing_newlines: true
+      comments: true
+  
+  # ============================================================================
+  # Glightbox - Image Lightbox
+  # ============================================================================
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      auto_caption: true
+      caption_position: bottom

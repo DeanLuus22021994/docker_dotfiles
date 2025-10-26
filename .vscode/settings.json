@@ -90,27 +90,71 @@
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml",
     "https://json.schemastore.org/dependabot-2.0.json": ".github/dependabot.yml",
-    ".vscode/schemas/mkdocs-schema.json": "mkdocs.yml"
+    ".vscode/schemas/mkdocs-schema.json": [
+      ".config/mkdocs/mkdocs.yml",
+      ".config/mkdocs/base.yml",
+      ".config/mkdocs/theme.yml",
+      ".config/mkdocs/plugins.yml",
+      ".config/mkdocs/markdown.yml",
+      ".config/mkdocs/navigation.yml",
+      ".config/mkdocs/hooks.yml"
+    ],
+    ".vscode/schemas/markdown-doc.json": "docs/**/*.md"
   },
   "yaml.validate": true,
   "yaml.customTags": [
     "!encrypted/pkcs1-oaep scalar",
     "!vault scalar",
-    "!!python/name:material.extensions.emoji.twemoji scalar",
-    "!!python/name:material.extensions.emoji.to_svg scalar",
-    "!!python/name:pymdownx.superfences.fence_code_format scalar"
+    "!ENV sequence",
+    "tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji scalar",
+    "tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg scalar",
+    "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format scalar",
+    "tag:yaml.org,2002:python/object/apply:pymdownx.slugs.slugify mapping"
   ],
   "yaml.schemaStore.enable": true,
   "yaml.schemaStore.url": "https://www.schemastore.org/api/json/catalog.json",
   "yaml.disableDefaultProperties": false,
   "yaml.maxItemsComputed": 5000,
+    
+  // ============================================================================
+  // Markdown Settings - Format & Validation
+  // ============================================================================
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    },
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "on",
+      "strings": "on",
+      "other": "on"
+    },
+    "editor.suggest.showSnippets": true
+  },
+  
+  // Markdown snippets and suggestions
+  "editor.snippetSuggestions": "top",
   
   // Disable YAML validation for specific files that use custom schemas
   "[.config/monitoring/grafana/provisioning/datasources/prometheus.yml]": {
+
     "yaml.validate": false
   },
   "[.config/docker/compose.override.example.yml]": {
     "yaml.validate": false
+  },
+  "[.config/mkdocs/mkdocs.yml]": {
+    "yaml.validate": true
+  },
+  "[.config/mkdocs/*.yml]": {
+    "yaml.validate": true
+  },
+  "[.config/mkdocs/*.conf]": {
+    "yaml.validate": false,
+    "files.associations": {
+      "*.conf": "yaml"
+    }
   },
   
   // YAML formatting
@@ -152,8 +196,8 @@
   
   // Python settings
   "python.defaultInterpreterPath": "C:\\Users\\deanl.MSI\\miniconda3\\envs\\py314\\python.exe",
-  "python-envs.defaultEnvManager": "ms-python.python:venv",
-  "python-envs.defaultPackageManager": "ms-python.python:pip",
+  "python-envs.defaultEnvManager": "ms-python.python:conda",
+  "python-envs.defaultPackageManager": "ms-python.python:conda",
   "python-envs.pythonProjects": [],
   
   // Python analysis configured in pyrightconfig.json (takes precedence)
@@ -206,5 +250,8 @@
     "tests"
   ],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+
+  // Disable link validation in instruction files (AI semantic references, not user-facing links)
+  "github.copilot.chat.promptsDiagnostics.enabled": false
 }

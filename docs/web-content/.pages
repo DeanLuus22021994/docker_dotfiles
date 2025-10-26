@@ -1,0 +1,11 @@
+# ==============================================================================
+# Web Dashboard Section
+# ==============================================================================
+
+title: Web Dashboard
+collapse: true  # Start collapsed in navigation
+nav:
+  - overview.md
+  - architecture.md
+  - components.md
+  - ...

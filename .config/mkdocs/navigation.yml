@@ -1,0 +1,18 @@
+# ==============================================================================
+# Navigation Configuration - Auto-Discovery Enabled
+# ==============================================================================
+# Navigation is now auto-generated from the docs/ file structure using
+# mkdocs-awesome-pages plugin. To customize ordering or collapsing, add
+# .pages files in specific directories.
+#
+# Manual navigation is DEPRECATED. The plugin will:
+# - Auto-discover all markdown files
+# - Use .pages files for manual ordering when present
+# - Generate navigation hierarchy from directory structure
+# - Enable turnkey workflow: add files without touching config
+#
+# For details, see: .config/mkdocs/README.md
+# ==============================================================================
+
+# No manual navigation - fully auto-discovered from docs/ structure
+# Customize ordering via .pages files in each directory

@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/DeanLuus22021994/docker_dotfiles/schemas/markdown-doc.json",
+  "title": "Documentation Markdown File",
+  "description": "JSON Schema for validating frontmatter in documentation markdown files",
+  "type": "object",
+  "required": ["title", "description"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Document title (used in navigation and page header)",
+      "minLength": 3,
+      "maxLength": 100,
+      "pattern": "^[A-Z].*$"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief summary of the document content (used for SEO and page meta)",
+      "minLength": 10,
+      "maxLength": 300
+    },
+    "tags": {
+      "type": "array",
+      "description": "Topic tags for content categorization",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-]+$"
+      },
+      "minItems": 1,
+      "maxItems": 10,
+      "uniqueItems": true
+    },
+    "date": {
+      "type": "string",
+      "description": "Document creation or last major update date (YYYY-MM-DD)",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "status": {
+      "type": "string",
+      "description": "Document status for content management",
+      "enum": ["draft", "review", "published", "deprecated"],
+      "default": "published"
+    },
+    "author": {
+      "type": "string",
+      "description": "Primary document author",
+      "minLength": 2,
+      "maxLength": 50
+    },
+    "category": {
+      "type": "string",
+      "description": "High-level category for organizational purposes",
+      "enum": [
+        "installation",
+        "configuration",
+        "user-guide",
+        "api",
+        "security",
+        "testing",
+        "production",
+        "development",
+        "reference"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "description": "Content priority for ordering and recommendations",
+      "enum": ["high", "medium", "low"],
+      "default": "medium"
+    },
+    "related": {
+      "type": "array",
+      "description": "Related document paths for cross-referencing",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9-/]+\\.md$"
+      },
+      "uniqueItems": true
+    },
+    "version": {
+      "type": "string",
+      "description": "Document version for tracking major changes",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?$"
+    },
+    "template": {
+      "type": "string",
+      "description": "Template type used to generate this document",
+      "enum": ["guide", "reference", "tutorial", "api-doc", "changelog"]
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "title": "Getting Started Guide",
+      "description": "Complete guide to setting up the Docker development environment from scratch",
+      "tags": ["installation", "quickstart", "docker"],
+      "date": "2025-10-26",
+      "status": "published",
+      "author": "Dean Luus",
+      "category": "installation",
+      "priority": "high",
+      "related": ["readme/prerequisites.md", "config/docker.md"],
+      "version": "2.0.0",
+      "template": "guide"
+    }
+  ]
+}

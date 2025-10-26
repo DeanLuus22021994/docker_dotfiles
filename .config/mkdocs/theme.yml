@@ -1,0 +1,142 @@
+# ============================================================================
+# Theme Configuration - Material Design Extended
+# ============================================================================
+
+theme:
+  name: material
+  language: en
+  custom_dir: .config/mkdocs/overrides
+  
+  # ============================================================================
+  # Color Palette - Adaptive Dark/Light Mode
+  # ============================================================================
+  palette:
+    # Automatic Mode (System Preference)
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    
+    # Light Mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    
+    # Dark Mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  
+  # ============================================================================
+  # Typography - Professional Sans-Serif
+  # ============================================================================
+  font:
+    text: Inter
+    code: Fira Code
+  
+  # ============================================================================
+  # Iconography
+  # ============================================================================
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/docker
+    edit: material/pencil
+    view: material/eye
+    
+    # Navigation Icons
+    previous: material/arrow-left
+    next: material/arrow-right
+    top: material/arrow-up
+    
+    # Admonition Icons (Enhanced)
+    admonition:
+      note: octicons/tag-16
+      abstract: octicons/checklist-16
+      info: octicons/info-16
+      tip: octicons/light-bulb-16
+      success: octicons/check-16
+      question: octicons/question-16
+      warning: octicons/alert-16
+      failure: octicons/x-circle-16
+      danger: octicons/zap-16
+      bug: octicons/bug-16
+      example: octicons/beaker-16
+      quote: octicons/quote-16
+  
+  # ============================================================================
+  # Features - Maximum Functionality
+  # ============================================================================
+  features:
+    # Announcements
+    - announce.dismiss
+    
+    # Content Features
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.footnote.tooltips
+    - content.tabs.link
+    - content.tooltips
+    
+    # Header Features
+    - header.autohide
+    
+    # Navigation Features (Enhanced)
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.preview
+    - navigation.instant.progress
+    - navigation.path
+    - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    
+    # Search Features (Advanced)
+    - search.highlight
+    - search.share
+    - search.suggest
+    
+    # Table of Contents
+    - toc.follow
+    - toc.integrate
+  
+  # ============================================================================
+  # Favicon & Logo
+  # ============================================================================
+  favicon: ../.config/mkdocs/assets/images/favicon.png
+  logo: ../.config/mkdocs/assets/images/logo.svg
+
+# ============================================================================
+# Custom Styles & Scripts
+# ============================================================================
+extra_css:
+  - ../.config/mkdocs/assets/stylesheets/custom.css
+  - ../.config/mkdocs/assets/stylesheets/animations.css
+  - ../.config/mkdocs/assets/stylesheets/code-blocks.css
+  - ../.config/mkdocs/assets/stylesheets/admonitions.css
+  - https://cdn.jsdelivr.net/npm/inter-ui@3.19.3/inter.min.css
+  - https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css
+
+extra_javascript:
+  - ../.config/mkdocs/assets/javascripts/custom.js
+  - ../.config/mkdocs/assets/javascripts/analytics.js
+  - ../.config/mkdocs/assets/javascripts/shortcuts.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs

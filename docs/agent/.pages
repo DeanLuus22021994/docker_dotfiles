@@ -1,0 +1,17 @@
+# ==============================================================================
+# AI Agent Development Section
+# ==============================================================================
+
+title: AI Agent Development
+collapse: true
+nav:
+  - principles.md
+  - configuration.md
+  - environment.md
+  - python-setup.md
+  - docker-stack.md
+  - file-organization.md
+  - code-quality.md
+  - security.md
+  - workflow.md
+  - reference.md

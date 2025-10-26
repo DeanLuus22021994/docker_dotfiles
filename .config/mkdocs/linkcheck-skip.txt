@@ -1,0 +1,33 @@
+# ==============================================================================
+# Link Check Skip List - URLs to Exclude from Validation
+# ==============================================================================
+# Add URLs or patterns that should be skipped during link checking.
+# Useful for:
+# - Rate-limited APIs
+# - Authentication-required resources
+# - Local development URLs
+# - Placeholder/example URLs
+#
+# Format: One URL or pattern per line
+# Comments start with #
+# ==============================================================================
+
+# Local development URLs
+http://localhost
+http://127.0.0.1
+
+# Authentication-required resources
+https://api.github.com/user/*
+
+# Rate-limited services
+https://hub.docker.com/api/*
+
+# Placeholder URLs
+http://example.com
+https://example.com
+http://your-domain.com
+https://your-domain.com
+
+# CI/CD internal URLs
+http://jenkins.local
+http://gitlab.local

@@ -1,0 +1,38 @@
+{
+  "React 18 Component": {
+    "scope": "typescript,typescriptreact",
+    "prefix": "react-component",
+    "body": [
+      "import { FC } from 'react';",
+      "",
+      "interface ${1:Component}Props {",
+      "  ${2:prop}: ${3:string};",
+      "}",
+      "",
+      "export const ${1:Component}: FC<${1:Component}Props> = ({ ${2:prop} }) => {",
+      "  return (",
+      "    <div>",
+      "      ${0}",
+      "    </div>",
+      "  );",
+      "};"
+    ]
+  },
+  "Custom Hook": {
+    "scope": "typescript,typescriptreact",
+    "prefix": "react-hook",
+    "body": [
+      "import { useState, useEffect } from 'react';",
+      "",
+      "export const use${1:Hook} = (${2:param}: ${3:string}) => {",
+      "  const [${4:state}, set${4/(.*)/${1:/capitalize}/}] = useState<${5:string}>(${6:''});",
+      "",
+      "  useEffect(() => {",
+      "    ${0}",
+      "  }, [${2:param}]);",
+      "",
+      "  return { ${4:state}, set${4/(.*)/${1:/capitalize}/} };",
+      "};"
+    ]
+  }
+}

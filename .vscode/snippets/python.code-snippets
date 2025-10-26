@@ -1,0 +1,49 @@
+{
+  "Python 3.14 Function": {
+    "scope": "python",
+    "prefix": "py314-func",
+    "body": [
+      "def ${1:function_name}(${2:args}: ${3:list[str]}) -> ${4:dict[str, int]}:",
+      "    \"\"\"${5:Brief description.}\"\"\"",
+      "    ${0:pass}"
+    ]
+  },
+  "Python 3.14 Dataclass": {
+    "scope": "python",
+    "prefix": "py314-dataclass",
+    "body": [
+      "from dataclasses import dataclass",
+      "",
+      "@dataclass(frozen=True, slots=True)",
+      "class ${1:ClassName}:",
+      "    \"\"\"${2:Brief description.}\"\"\"",
+      "    ${3:field}: ${4:str}",
+      "    ${0}"
+    ]
+  },
+  "Python 3.14 Protocol": {
+    "scope": "python",
+    "prefix": "py314-protocol",
+    "body": [
+      "from typing import Protocol",
+      "",
+      "class ${1:ProtocolName}(Protocol):",
+      "    \"\"\"${2:Structural subtype interface.}\"\"\"",
+      "    def ${3:method}(self, ${4:arg}: ${5:str}) -> ${6:None}:",
+      "        ${0:...}"
+    ]
+  },
+  "Python 3.14 Match/Case": {
+    "scope": "python",
+    "prefix": "py314-match",
+    "body": [
+      "match ${1:value}:",
+      "    case ${2:pattern1}:",
+      "        ${3:pass}",
+      "    case ${4:pattern2}:",
+      "        ${5:pass}",
+      "    case _:",
+      "        ${0:pass}"
+    ]
+  }
+}

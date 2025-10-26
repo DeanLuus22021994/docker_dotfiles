@@ -109,3 +109,30 @@ repos:
         language: system
         files: docker-compose\.yml$
         pass_filenames: false
+
+  # ============================================================================
+  # MkDocs Documentation Quality Gates
+  # ============================================================================
+  
+  # Frontmatter validation
+  - repo: local
+    hooks:
+      - id: mkdocs-frontmatter
+        name: Validate Markdown Frontmatter
+        entry: python
+        args: ['.config/mkdocs/scripts/validate_frontmatter_cli.py']
+        language: system
+        files: ^docs/.*\.md$
+        pass_filenames: true
+        
+  # MkDocs build test (expensive - manual only)
+  - repo: local
+    hooks:
+      - id: mkdocs-build
+        name: MkDocs Build Test
+        entry: mkdocs
+        args: ['build', '--config-file', '.config/mkdocs/mkdocs.yml', '--strict']
+        language: system
+        pass_filenames: false
+        files: ^(docs/.*\.md|\.config/mkdocs/.*\.yml)$
+        stages: [manual]

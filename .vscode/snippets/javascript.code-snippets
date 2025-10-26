@@ -1,0 +1,93 @@
+{
+  "Express.js Route Handler": {
+    "scope": "javascript",
+    "prefix": "express-route",
+    "body": [
+      "router.${1|get,post,put,patch,delete|}('${2:/path}', async (req, res) => {",
+      "  try {",
+      "    ${3:// Implementation}",
+      "    res.status(200).json({ ${4:data} });",
+      "  } catch (error) {",
+      "    console.error('Error:', error);",
+      "    res.status(500).json({ error: error.message });",
+      "  }",
+      "});",
+      "${0}"
+    ]
+  },
+  "Express.js Middleware": {
+    "scope": "javascript",
+    "prefix": "express-middleware",
+    "body": [
+      "const ${1:middlewareName} = (req, res, next) => {",
+      "  try {",
+      "    ${2:// Middleware logic}",
+      "    next();",
+      "  } catch (error) {",
+      "    console.error('Middleware error:', error);",
+      "    res.status(500).json({ error: error.message });",
+      "  }",
+      "};",
+      "",
+      "module.exports = ${1:middlewareName};",
+      "${0}"
+    ]
+  },
+  "Async Function with Error Handling": {
+    "scope": "javascript",
+    "prefix": "async-func",
+    "body": [
+      "async function ${1:functionName}(${2:params}) {",
+      "  try {",
+      "    ${3:// Implementation}",
+      "    return ${4:result};",
+      "  } catch (error) {",
+      "    console.error('Error in ${1:functionName}:', error);",
+      "    throw error;",
+      "  }",
+      "}",
+      "${0}"
+    ]
+  },
+  "Node.js Module Export": {
+    "scope": "javascript",
+    "prefix": "node-export",
+    "body": [
+      "const ${1:functionName} = (${2:params}) => {",
+      "  ${3:// Implementation}",
+      "};",
+      "",
+      "module.exports = {",
+      "  ${1:functionName}",
+      "};",
+      "${0}"
+    ]
+  },
+  "JWT Authentication Middleware": {
+    "scope": "javascript",
+    "prefix": "jwt-middleware",
+    "body": [
+      "const jwt = require('jsonwebtoken');",
+      "",
+      "const authenticateToken = (req, res, next) => {",
+      "  const authHeader = req.headers['authorization'];",
+      "  const token = authHeader && authHeader.split(' ')[1];",
+      "",
+      "  if (!token) {",
+      "    return res.status(401).json({ error: 'Access token required' });",
+      "  }",
+      "",
+      "  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {",
+      "    if (err) {",
+      "      return res.status(403).json({ error: 'Invalid token' });",
+      "    }",
+      "    req.user = user;",
+      "    next();",
+      "  });",
+      "};",
+      "",
+      "module.exports = authenticateToken;",
+      "${0}"
+    ]
+  }
+}

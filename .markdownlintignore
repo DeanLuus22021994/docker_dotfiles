@@ -1,0 +1,36 @@
+# Markdownlint Ignore Patterns
+# =============================
+# Files and directories to exclude from markdown linting
+
+# Node modules
+node_modules/
+
+# Build output
+site/
+build/
+dist/
+htmlcov/
+
+# Cache directories
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Docker volumes
+volumes/
+
+# Generated documentation
+docs/reports/coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Third-party content
+docs/external/

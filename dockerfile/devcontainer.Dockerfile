@@ -31,7 +31,6 @@ RUN add-apt-repository ppa:deadsnakes/ppa \
         python3-pip \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.14 1 \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3.14 1 \
-    && python3 -m pip install --upgrade pip setuptools wheel \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -53,9 +52,8 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl \
     && rm kubectl
 
-# Create non-root user with sudo access
-RUN useradd -m -s /bin/bash -u 1000 vscode \
-    && echo 'vscode ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/vscode \
+# Create non-root user with sudo access (vscode user already exists in base image)
+RUN echo 'vscode ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/vscode \
     && chmod 0440 /etc/sudoers.d/vscode \
     && mkdir -p /workspaces \
     && chown -R vscode:vscode /workspaces
