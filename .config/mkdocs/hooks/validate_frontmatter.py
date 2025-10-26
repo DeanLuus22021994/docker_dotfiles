@@ -31,9 +31,9 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    DocFrontmatter = None
+    DocFrontmatter = None  # type: ignore[assignment]
     ALLOWED_TAGS = set()
-    ValidationError = None
+    ValidationError = None  # type: ignore[assignment]
 
 
 # ============================================================================

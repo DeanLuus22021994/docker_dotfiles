@@ -100,7 +100,7 @@ except ImportError:
         tags: list[str]
         description: str
 
-    DocFrontmatter = FallbackDocFrontmatter
+    DocFrontmatter = FallbackDocFrontmatter  # type: ignore[assignment]
 
 
 @dataclass(frozen=True, slots=True)
@@ -240,7 +240,7 @@ def interactive_prompt(console: Any) -> tuple[str, str, Any]:
     frontmatter = DocFrontmatter(
         title=title,
         date_created=now, last_updated=now, tags=selected_tags, description=description
-    )
+    )  # type: ignore[call-arg]
 
     return selected_category.name, title, frontmatter
 
@@ -349,7 +349,7 @@ def main() -> None:
                 last_updated=now,
                 tags=args.tags or [args.category, "documentation"],
                 description=args.description,
-            )
+            )  # type: ignore[call-arg]
 
             category = args.category
             title = args.title

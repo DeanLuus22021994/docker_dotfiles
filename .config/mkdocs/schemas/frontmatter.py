@@ -9,7 +9,7 @@ ALLOWED_TAGS = {
 class DocFrontmatter(BaseModel):
     """Pydantic model for MkDocs document frontmatter validation."""
     
-    title: str = Field(..., description="Document title")
+    title: Optional[str] = Field(None, description="Document title")
     description: str = Field(..., description="Document description") 
     tags: List[str] = Field(default_factory=list, description="Document tags")
     date: Optional[str] = Field(None, description="Publication date")

@@ -29,7 +29,7 @@ def test_basic_functionality() -> bool:
             last_updated=now,
             tags=["testing", "documentation"],
             description="Test document for validation",
-        )
+        )  # type: ignore[call-arg]
         print(f"✅ Frontmatter creation successful: {frontmatter.tags}")
 
         # Test template directory exists
