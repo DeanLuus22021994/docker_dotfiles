@@ -45,6 +45,7 @@
 !.vscode/keybindings.json
 !.vscode/configs/
 !.vscode/schemas/
+!.vscode/profiles/
 .vscode/settings.local.json
 .vscode/mcp.json
 .vscode/mcp.backup.json

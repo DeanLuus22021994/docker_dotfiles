@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "MCP Server Toolset",
+  "description": "Complete list of tools available from configured MCP servers",
+  "version": "1.0.0",
+  "lastUpdated": "2025-10-25",
+  "servers": {
+    "github": {
+      "package": "@modelcontextprotocol/server-github",
+      "runtime": "npx",
+      "description": "GitHub repository operations and API access",
+      "requiresEnv": ["GITHUB_TOKEN"],
+      "tools": [
+        {
+          "name": "create_or_update_file",
+          "description": "Create or update a single file in a GitHub repository"
+        },
+        {
+          "name": "search_repositories",
+          "description": "Search for GitHub repositories"
+        },
+        {
+          "name": "create_repository",
+          "description": "Create a new GitHub repository"
+        },
+        {
+          "name": "get_file_contents",
+          "description": "Get the contents of a file or directory from a repository"
+        },
+        {
+          "name": "push_files",
+          "description": "Push multiple files to a repository in a single commit"
+        },
+        {
+          "name": "create_issue",
+          "description": "Create a new issue in a repository"
+        },
+        {
+          "name": "create_pull_request",
+          "description": "Create a new pull request"
+        },
+        {
+          "name": "fork_repository",
+          "description": "Fork a repository to your account"
+        },
+        {
+          "name": "create_branch",
+          "description": "Create a new branch in a repository"
+        },
+        {
+          "name": "list_commits",
+          "description": "Get list of commits"
+        },
+        {
+          "name": "list_issues",
+          "description": "List issues in a repository"
+        },
+        {
+          "name": "update_issue",
+          "description": "Update an existing issue"
+        },
+        {
+          "name": "add_issue_comment",
+          "description": "Add a comment to an issue"
+        },
+        {
+          "name": "search_code",
+          "description": "Search for code in GitHub repositories"
+        },
+        {
+          "name": "search_issues",
+          "description": "Search for issues and pull requests"
+        },
+        {
+          "name": "search_users",
+          "description": "Search for users on GitHub"
+        }
+      ]
+    },
+    "filesystem": {
+      "package": "@modelcontextprotocol/server-filesystem",
+      "runtime": "npx",
+      "description": "File system operations with workspace access",
+      "allowedDirectories": ["${workspaceFolder}"],
+      "tools": [
+        {
+          "name": "read_file",
+          "description": "Read the complete contents of a file"
+        },
+        {
+          "name": "read_multiple_files",
+          "description": "Read multiple files simultaneously"
+        },
+        {
+          "name": "write_file",
+          "description": "Create or overwrite a file with new content"
+        },
+        {
+          "name": "edit_file",
+          "description": "Make line-based edits to a text file"
+        },
+        {
+          "name": "create_directory",
+          "description": "Create a new directory or ensure it exists"
+        },
+        {
+          "name": "list_directory",
+          "description": "List contents of a directory"
+        },
+        {
+          "name": "directory_tree",
+          "description": "Get a recursive tree view of files and directories"
+        },
+        {
+          "name": "move_file",
+          "description": "Move or rename files and directories"
+        },
+        {
+          "name": "search_files",
+          "description": "Search for files and directories"
+        },
+        {
+          "name": "get_file_info",
+          "description": "Get metadata about a file or directory"
+        },
+        {
+          "name": "list_allowed_directories",
+          "description": "List directories the server can access"
+        }
+      ]
+    },
+    "postgres": {
+      "package": "@modelcontextprotocol/server-postgres",
+      "runtime": "npx",
+      "description": "PostgreSQL database operations",
+      "connectionString": "postgresql://postgres:${env:DOCKER_POSTGRES_PASSWORD}@localhost:5432/postgres",
+      "requiresEnv": ["DOCKER_POSTGRES_PASSWORD"],
+      "tools": [
+        {
+          "name": "query",
+          "description": "Execute a SELECT query on the PostgreSQL database"
+        },
+        {
+          "name": "write",
+          "description": "Execute an INSERT, UPDATE, or DELETE query"
+        },
+        {
+          "name": "create_table",
+          "description": "Create a new table in the database"
+        },
+        {
+          "name": "list_tables",
+          "description": "List all tables in the database"
+        },
+        {
+          "name": "describe_table",
+          "description": "Get schema information for a specific table"
+        }
+      ]
+    },
+    "git": {
+      "package": "mcp-server-git",
+      "runtime": "uvx",
+      "description": "Git repository operations and version control",
+      "language": "python",
+      "tools": [
+        {
+          "name": "git_status",
+          "description": "Show the working tree status",
+          "inputs": ["repo_path"]
+        },
+        {
+          "name": "git_diff_unstaged",
+          "description": "Show changes in working directory not yet staged",
+          "inputs": ["repo_path", "context_lines?"]
+        },
+        {
+          "name": "git_diff_staged",
+          "description": "Show changes that are staged for commit",
+          "inputs": ["repo_path", "context_lines?"]
+        },
+        {
+          "name": "git_diff",
+          "description": "Show differences between branches or commits",
+          "inputs": ["repo_path", "target", "context_lines?"]
+        },
+        {
+          "name": "git_commit",
+          "description": "Record changes to the repository",
+          "inputs": ["repo_path", "message"]
+        },
+        {
+          "name": "git_add",
+          "description": "Add file contents to the staging area",
+          "inputs": ["repo_path", "files[]"]
+        },
+        {
+          "name": "git_reset",
+          "description": "Unstage all staged changes",
+          "inputs": ["repo_path"]
+        },
+        {
+          "name": "git_log",
+          "description": "Show commit logs with optional date filtering",
+          "inputs": ["repo_path", "max_count?", "start_timestamp?", "end_timestamp?"]
+        },
+        {
+          "name": "git_create_branch",
+          "description": "Create a new branch",
+          "inputs": ["repo_path", "branch_name", "base_branch?"]
+        },
+        {
+          "name": "git_checkout",
+          "description": "Switch branches",
+          "inputs": ["repo_path", "branch_name"]
+        },
+        {
+          "name": "git_show",
+          "description": "Show the contents of a commit",
+          "inputs": ["repo_path", "revision"]
+        },
+        {
+          "name": "git_branch",
+          "description": "List Git branches",
+          "inputs": ["repo_path", "branch_type", "contains?", "not_contains?"]
+        }
+      ]
+    },
+    "memory": {
+      "package": "@modelcontextprotocol/server-memory",
+      "runtime": "npx",
+      "description": "Knowledge graph storage and retrieval",
+      "tools": [
+        {
+          "name": "create_entities",
+          "description": "Create multiple new entities in the knowledge graph"
+        },
+        {
+          "name": "create_relations",
+          "description": "Create multiple new relations between entities"
+        },
+        {
+          "name": "add_observations",
+          "description": "Add new observations to existing entities"
+        },
+        {
+          "name": "delete_entities",
+          "description": "Delete multiple entities and their associated relations"
+        },
+        {
+          "name": "delete_observations",
+          "description": "Delete specific observations from entities"
+        },
+        {
+          "name": "delete_relations",
+          "description": "Delete multiple relations from the knowledge graph"
+        },
+        {
+          "name": "read_graph",
+          "description": "Read the entire knowledge graph"
+        },
+        {
+          "name": "search_nodes",
+          "description": "Search for nodes based on a query"
+        },
+        {
+          "name": "open_nodes",
+          "description": "Open specific nodes by their names"
+        }
+      ]
+    },
+    "puppeteer": {
+      "package": "@modelcontextprotocol/server-puppeteer",
+      "runtime": "npx",
+      "description": "Headless browser automation with Puppeteer",
+      "tools": [
+        {
+          "name": "puppeteer_navigate",
+          "description": "Navigate to a URL"
+        },
+        {
+          "name": "puppeteer_screenshot",
+          "description": "Take a screenshot of the current page or a specific element"
+        },
+        {
+          "name": "puppeteer_click",
+          "description": "Click an element on the page"
+        },
+        {
+          "name": "puppeteer_fill",
+          "description": "Fill out an input field"
+        },
+        {
+          "name": "puppeteer_select",
+          "description": "Select an element from a dropdown"
+        },
+        {
+          "name": "puppeteer_hover",
+          "description": "Hover over an element"
+        },
+        {
+          "name": "puppeteer_evaluate",
+          "description": "Execute JavaScript in the browser context"
+        }
+      ]
+    },
+    "fetch": {
+      "package": "mcp-server-fetch",
+      "runtime": "uvx",
+      "description": "HTTP requests and web content fetching",
+      "language": "python",
+      "tools": [
+        {
+          "name": "fetch",
+          "description": "Fetch a URL and extract its contents as markdown",
+          "inputs": ["url", "max_length?", "start_index?", "raw?"]
+        }
+      ]
+    },
+    "playwright": {
+      "package": "@executeautomation/playwright-mcp-server",
+      "runtime": "npx",
+      "description": "Browser automation with Playwright",
+      "tools": [
+        {
+          "name": "playwright_navigate",
+          "description": "Navigate to a URL"
+        },
+        {
+          "name": "playwright_screenshot",
+          "description": "Take a screenshot"
+        },
+        {
+          "name": "playwright_click",
+          "description": "Click an element"
+        },
+        {
+          "name": "playwright_fill",
+          "description": "Fill an input field"
+        },
+        {
+          "name": "playwright_evaluate",
+          "description": "Execute JavaScript in the page context"
+        }
+      ]
+    },
+    "sqlite": {
+      "package": "mcp-server-sqlite-npx",
+      "runtime": "npx",
+      "description": "SQLite database operations and business intelligence",
+      "databasePath": "${workspaceFolder}/db.sqlite",
+      "tools": [
+        {
+          "name": "read_query",
+          "description": "Execute SELECT queries to read data",
+          "inputs": ["query"]
+        },
+        {
+          "name": "write_query",
+          "description": "Execute INSERT, UPDATE, or DELETE queries",
+          "inputs": ["query"]
+        },
+        {
+          "name": "create_table",
+          "description": "Create new tables in the database",
+          "inputs": ["query"]
+        },
+        {
+          "name": "list_tables",
+          "description": "Get a list of all tables in the database"
+        },
+        {
+          "name": "describe_table",
+          "description": "View schema information for a specific table",
+          "inputs": ["table_name"]
+        },
+        {
+          "name": "append_insight",
+          "description": "Add business insights to the memo resource",
+          "inputs": ["insight"]
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalServers": 9,
+    "totalTools": 80,
+    "runtimeDistribution": {
+      "npx": 7,
+      "uvx": 2
+    },
+    "languageDistribution": {
+      "javascript": 7,
+      "python": 2
+    },
+    "categories": {
+      "versionControl": ["github", "git"],
+      "fileSystem": ["filesystem"],
+      "database": ["postgres", "sqlite"],
+      "browserAutomation": ["puppeteer", "playwright"],
+      "webContent": ["fetch"],
+      "knowledgeGraph": ["memory"]
+    }
+  },
+  "prerequisites": {
+    "required": [
+      "Node.js >= 18.0.0 (for npx servers)",
+      "UV Python package manager (for uvx servers)"
+    ],
+    "environmentVariables": [
+      {
+        "name": "GITHUB_TOKEN",
+        "required": true,
+        "description": "GitHub personal access token for API authentication"
+      },
+      {
+        "name": "DOCKER_POSTGRES_PASSWORD",
+        "required": true,
+        "description": "PostgreSQL database password"
+      }
+    ],
+    "installation": {
+      "node": "Already installed (v25.0.0)",
+      "uv": {
+        "windows": "irm https://astral.sh/uv/install.ps1 | iex",
+        "macos": "curl -LsSf https://astral.sh/uv/install.sh | sh",
+        "linux": "curl -LsSf https://astral.sh/uv/install.sh | sh"
+      }
+    }
+  }
+}
