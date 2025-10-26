@@ -23,6 +23,9 @@ keywords = [
     "prometheus",
     "mcp",
 ]
+dependencies = [
+    "yamllint>=1.37.1",
+]
 
 [tool.setuptools.packages.find]
 where = ["scripts"]

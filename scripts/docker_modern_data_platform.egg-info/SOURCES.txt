@@ -3,6 +3,7 @@ pyproject.toml
 scripts/docker_modern_data_platform.egg-info/PKG-INFO
 scripts/docker_modern_data_platform.egg-info/SOURCES.txt
 scripts/docker_modern_data_platform.egg-info/dependency_links.txt
+scripts/docker_modern_data_platform.egg-info/requires.txt
 scripts/docker_modern_data_platform.egg-info/top_level.txt
 scripts/python/__init__.py
 scripts/python/__path_setup__.py

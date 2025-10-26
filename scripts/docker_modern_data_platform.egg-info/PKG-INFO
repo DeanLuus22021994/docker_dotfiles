@@ -10,6 +10,7 @@ Project-URL: Issues, https://github.com/DeanLuus22021994/docker_dotfiles/issues
 Keywords: docker,data-platform,gpu,jupyter,postgresql,mariadb,redis,minio,grafana,prometheus,mcp
 Requires-Python: >=3.14.0
 Description-Content-Type: text/markdown
+Requires-Dist: yamllint>=1.37.1
 
 ---
 date_created: "2025-10-26T00:00:00Z"
