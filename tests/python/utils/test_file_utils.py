@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import cast
 
 import pytest
 
@@ -60,7 +61,7 @@ class TestWriteJson:
     def test_write_json_basic(self, temp_dir: Path) -> None:
         """Test writing JSON data."""
         file_path = temp_dir / "output.json"
-        data = {"key": "value", "number": 123}
+        data: JSONDict = cast(JSONDict, {"key": "value", "number": 123})
 
         write_json(str(file_path), data)
 
@@ -82,7 +83,9 @@ class TestWriteJson:
     def test_write_json_complex(self, temp_dir: Path) -> None:
         """Test writing complex nested JSON."""
         file_path = temp_dir / "complex.json"
-        data = {"nested": {"deep": {"value": [1, 2, 3]}}, "list": ["a", "b"]}
+        data: JSONDict = cast(
+            JSONDict, {"nested": {"deep": {"value": [1, 2, 3]}}, "list": ["a", "b"]}
+        )
 
         write_json(str(file_path), data)
 

@@ -154,13 +154,13 @@ class BaseChecker(ABC):
     @abstractmethod
     def tool_name(self) -> ToolName:
         """Name of the quality checking tool."""
-        ...
+        raise NotImplementedError
 
     @property
     @abstractmethod
     def install_command(self) -> str:
         """Command to install the tool."""
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
@@ -172,7 +172,7 @@ class BaseChecker(ABC):
         Returns:
             Command arguments as sequence
         """
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
@@ -181,7 +181,7 @@ class BaseChecker(ABC):
         Args:
             result: Subprocess result from tool execution
         """
-        ...
+        raise NotImplementedError
 
     def run(self, target_paths: Sequence[str]) -> CheckResult:
         """Run the quality check.

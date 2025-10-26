@@ -43,16 +43,13 @@ from .file_utils import (
     JSONValue,
     StrPath,
     ensure_dir,
-    ensure_directory,
     file_exists,
     get_file_size,
     get_files_by_extension,
     get_relative_path,
     read_json,
     read_lines,
-    safe_delete,
     write_json,
-    write_lines,
 )
 
 # Logging utils module exports
@@ -102,16 +99,13 @@ __all__: list[str] = [
     "DEFAULT_JSON_INDENT",
     # File utils - functions
     "ensure_dir",
-    "ensure_directory",
     "read_json",
     "write_json",
     "file_exists",
     "read_lines",
-    "write_lines",
     "get_files_by_extension",
     "get_file_size",
     "get_relative_path",
-    "safe_delete",
     # Logging utils - types and constants
     "LogLevel",
     "LogLevelName",

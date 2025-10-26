@@ -67,7 +67,7 @@ class FormatterProtocol(Protocol):
         Returns:
             Formatted log message string
         """
-        ...
+        return ""  # Protocol method - implementation required in subclasses
 
 
 class ColoredFormatter(logging.Formatter):

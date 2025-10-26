@@ -70,8 +70,7 @@ class EnvVarConfig:
     @property
     def is_set(self) -> bool:
         """Check if environment variable is currently set."""
-        # Type ignore: os.getenv accepts str, mypy overly strict with EnvVarName alias
-        return os.getenv(self.name) is not None  # type: ignore[arg-type]
+        return os.getenv(str(self.name)) is not None
 
     def get_masked_value(self) -> str:
         """Get masked value for display.
@@ -79,8 +78,7 @@ class EnvVarConfig:
         Returns:
             Masked value string, or empty if not set
         """
-        # Type ignore: os.getenv accepts str, mypy overly strict with EnvVarName alias
-        value = os.getenv(self.name)  # type: ignore[arg-type]
+        value = os.getenv(str(self.name))
         if not value:
             return ""
 

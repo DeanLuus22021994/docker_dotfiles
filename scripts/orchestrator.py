@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""
-Python Orchestrator for Docker Infrastructure Scripts
-Central orchestrator for all Python-based automation scripts
-Delegates tasks to specialized scripts organized by function (SRP)
+"""Python Orchestrator for Docker Infrastructure Scripts.
+
+Central orchestrator for all Python-based automation scripts.
+Delegates tasks to specialized scripts organized by function (SRP).
+Uses Python 3.14 type system features for improved maintainability.
 
 Usage:
     python orchestrator.py <task> <action>
@@ -10,14 +11,23 @@ Usage:
 Examples:
     python orchestrator.py validate env
     python orchestrator.py validate configs
+    python orchestrator.py audit code
+    python orchestrator.py mcp validate
 """
 
 import subprocess
 import sys
 from pathlib import Path
+from typing import Final, NoReturn, TypeAlias
 
-# Add scripts directory to path before other imports
-SCRIPT_DIR = Path(__file__).parent
+# Type aliases
+TaskName: TypeAlias = str
+ActionName: TypeAlias = str
+ScriptPath: TypeAlias = Path
+ExitCode: TypeAlias = int
+
+# Constants
+SCRIPT_DIR: Final[Path] = Path(__file__).parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
@@ -49,8 +59,16 @@ def show_help() -> None:
     print("  python orchestrator.py audit code\n")
 
 
-def execute_task(task: str, action: str) -> None:
-    """Execute specified task and action"""
+def execute_task(task: TaskName, action: ActionName) -> NoReturn:
+    """Execute specified task and action.
+
+    Args:
+        task: Task category (validate, audit, mcp, help)
+        action: Specific action within task category
+
+    Raises:
+        SystemExit: Always exits with appropriate return code
+    """
 
     if task == "validate":
         if action == "env":
@@ -153,7 +171,7 @@ def main() -> None:
 
     try:
         execute_task(task, action)
-        print(success(f"Task completed: {task} {action}"))
+        # Note: execute_task calls sys.exit() with appropriate code
     except (OSError, subprocess.SubprocessError, KeyboardInterrupt) as e:
         print(error(f"Task failed: {type(e).__name__}"))
         sys.exit(1)

@@ -39,6 +39,12 @@ from .validate_configs import (
     YAML_LINE_LENGTH,
     YamlValidator,
     main as configs_main,
+    # Backward-compatible function wrappers
+    validate_json_files,
+    validate_mariadb_config,
+    validate_nginx_configs,
+    validate_postgresql_config,
+    validate_yaml_files,
 )
 from .validate_env import (
     EnvVarConfig,
@@ -86,7 +92,12 @@ __all__: list[str] = [
     "MASK_SUFFIX",
     "SHORT_MASK",
     "env_main",
-    # Legacy env validation functions (backward compatibility)
+    # Legacy/backward-compatible validation functions
     "validate_env_vars",
+    "validate_json_files",
+    "validate_mariadb_config",
+    "validate_nginx_configs",
+    "validate_postgresql_config",
+    "validate_yaml_files",
     "print_summary",
 ]

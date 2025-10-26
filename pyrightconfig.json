@@ -34,5 +34,7 @@
   "reportGeneralTypeIssues": "none",
   "reportOptionalMemberAccess": "none",
   "reportOptionalSubscript": "none",
-  "reportPrivateImportUsage": "none"
+  "reportPrivateImportUsage": "none",
+  "reportUnnecessaryEllipsis": "none",
+  "reportArgumentType": "none"
 }

@@ -194,12 +194,12 @@ class BaseDependencyChecker(ABC):
     @abstractmethod
     def check_name(self) -> str:
         """Name of the dependency check."""
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def run(self) -> DependencyCheckResult:
         """Run the dependency check."""
-        ...
+        raise NotImplementedError
 
     def _run_pip_command(self, args: CommandArgs) -> subprocess.CompletedProcess[str]:
         """Run pip command with given arguments.

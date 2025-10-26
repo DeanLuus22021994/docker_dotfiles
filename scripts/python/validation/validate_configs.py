@@ -161,12 +161,12 @@ class BaseConfigValidator(ABC):
     @abstractmethod
     def config_type(self) -> ConfigType:
         """Type of configuration this validator handles."""
-        ...
+        raise NotImplementedError
 
     @abstractmethod
     def validate(self) -> ValidationResult:
         """Validate configuration files."""
-        ...
+        raise NotImplementedError
 
     def _should_exclude_path(self, path: Path) -> bool:
         """Check if path should be excluded from validation.
@@ -576,6 +576,78 @@ class ConfigurationAuditor:
             print("\nErrors:")
             for err in report.all_errors:
                 print(f"  - {err}")
+
+
+# =============================================================================
+# Backward-Compatible Function Wrappers for Testing
+# =============================================================================
+# These wrappers maintain API compatibility with existing tests while using
+# the new class-based validation architecture.
+
+
+def validate_json_files(verbose: bool = True) -> ValidationResult:
+    """Validate JSON configuration files (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = JsonValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_yaml_files(verbose: bool = True) -> ValidationResult:
+    """Validate YAML configuration files (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = YamlValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_nginx_configs(verbose: bool = True) -> ValidationResult:
+    """Validate nginx configuration files (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = NginxValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_postgresql_config(verbose: bool = True) -> ValidationResult:
+    """Validate PostgreSQL configuration (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = PostgresqlValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_mariadb_config(verbose: bool = True) -> ValidationResult:
+    """Validate MariaDB configuration (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = MariadbValidator(verbose=verbose)
+    return validator.validate()
 
 
 def main() -> ExitCode:

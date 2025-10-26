@@ -28,10 +28,10 @@ class TestValidateYamlFiles:
         mock_rglob.return_value = [Path("test.yml"), Path("config.yaml")]
         mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
 
-        passed, errors = validate_yaml_files()
+        result = validate_yaml_files()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
         mock_run.assert_called_once()
 
     @patch("subprocess.run")
@@ -43,11 +43,11 @@ class TestValidateYamlFiles:
             returncode=1, stdout="test.yml: line 10: syntax error", stderr=""
         )
 
-        passed, errors = validate_yaml_files()
+        result = validate_yaml_files()
 
-        assert passed is False
-        assert len(errors) == 1
-        assert "yamllint failed" in errors[0]
+        assert result.passed is False
+        assert result.error_count == 1
+        assert "yamllint failed" in result.errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     @patch("pathlib.Path.rglob")
@@ -55,21 +55,21 @@ class TestValidateYamlFiles:
         """Test YAML validation when yamllint is not installed."""
         mock_rglob.return_value = [Path("test.yml")]
 
-        passed, errors = validate_yaml_files()
+        result = validate_yaml_files()
 
-        assert passed is False
-        assert len(errors) == 1
-        assert "yamllint not found" in errors[0]
+        assert result.passed is False
+        assert result.error_count == 1
+        assert "yamllint not found" in result.errors[0]
 
     @patch("pathlib.Path.rglob")
     def test_validate_yaml_no_files(self, mock_rglob: Mock) -> None:
         """Test YAML validation with no files."""
         mock_rglob.return_value = []
 
-        passed, errors = validate_yaml_files()
+        result = validate_yaml_files()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
 
 class TestValidateJsonFiles:
@@ -81,10 +81,10 @@ class TestValidateJsonFiles:
         json_file.write_text(json.dumps({"key": "value"}), encoding="utf-8")
 
         with patch("pathlib.Path.rglob", return_value=[json_file]):
-            passed, errors = validate_json_files()
+            result = validate_json_files()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     def test_validate_json_invalid(self, temp_project_dir: Path) -> None:
         """Test JSON validation with invalid file."""
@@ -92,19 +92,19 @@ class TestValidateJsonFiles:
         json_file.write_text("{invalid json", encoding="utf-8")
 
         with patch("pathlib.Path.rglob", return_value=[json_file]):
-            passed, errors = validate_json_files()
+            result = validate_json_files()
 
-        assert passed is False
-        assert len(errors) == 1
-        assert "invalid.json" in errors[0]
+        assert result.passed is False
+        assert result.error_count == 1
+        assert "invalid.json" in result.errors[0]
 
     def test_validate_json_no_files(self) -> None:
         """Test JSON validation with no files."""
         with patch("pathlib.Path.rglob", return_value=[]):
-            passed, errors = validate_json_files()
+            result = validate_json_files()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     def test_validate_json_excludes_vscode(self, temp_project_dir: Path) -> None:
         """Test JSON validation excludes .vscode directory."""
@@ -113,11 +113,11 @@ class TestValidateJsonFiles:
         vscode_json.write_text('{"key": "value"}', encoding="utf-8")
 
         with patch("pathlib.Path.rglob", return_value=[vscode_json]):
-            passed, errors = validate_json_files()
+            result = validate_json_files()
 
         # Should skip .vscode files
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     def test_validate_json_multiple_files(self, temp_project_dir: Path) -> None:
         """Test JSON validation with multiple files."""
@@ -130,10 +130,10 @@ class TestValidateJsonFiles:
         json3.write_text("{invalid}", encoding="utf-8")
 
         with patch("pathlib.Path.rglob", return_value=[json1, json2, json3]):
-            passed, errors = validate_json_files()
+            result = validate_json_files()
 
-        assert passed is False
-        assert len(errors) == 1
+        assert result.passed is False
+        assert result.error_count == 1
 
 
 class TestValidateNginxConfigs:
@@ -149,10 +149,10 @@ class TestValidateNginxConfigs:
         mock_run.return_value = Mock(returncode=0, stdout="", stderr="")
 
         with patch("pathlib.Path.exists", return_value=True):
-            passed, errors = validate_nginx_configs()
+            result = validate_nginx_configs()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     @patch("subprocess.run")
     def test_validate_nginx_failure(self, mock_run: Mock, temp_project_dir: Path) -> None:
@@ -160,27 +160,27 @@ class TestValidateNginxConfigs:
         mock_run.return_value = Mock(returncode=1, stdout="", stderr="nginx: configuration error")
 
         with patch("pathlib.Path.exists", return_value=True):
-            passed, errors = validate_nginx_configs()
+            result = validate_nginx_configs()
 
-        assert passed is False
-        assert len(errors) > 0
+        assert result.passed is False
+        assert result.error_count > 0
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     def test_validate_nginx_no_docker(self, mock_run: Mock) -> None:
         """Test nginx validation when Docker is not available."""
         with patch("pathlib.Path.exists", return_value=True):
-            passed, errors = validate_nginx_configs()
+            result = validate_nginx_configs()
 
-        assert passed is False
-        assert "Docker not found" in errors[0]
+        assert result.passed is False
+        assert "Docker not found" in result.errors[0]
 
     def test_validate_nginx_no_configs(self) -> None:
         """Test nginx validation with no config files."""
         with patch("pathlib.Path.exists", return_value=False):
-            passed, errors = validate_nginx_configs()
+            result = validate_nginx_configs()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
 
 class TestValidatePostgresqlConfig:
@@ -201,10 +201,10 @@ class TestValidatePostgresqlConfig:
                 return_value=open(pg_config, "r", encoding="utf-8"),
             ),
         ):
-            passed, errors = validate_postgresql_config()
+            result = validate_postgresql_config()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     def test_validate_postgresql_invalid_syntax(self, temp_project_dir: Path) -> None:
         """Test PostgreSQL config with invalid syntax."""
@@ -219,10 +219,10 @@ class TestValidatePostgresqlConfig:
                 return_value=open(pg_config, "r", encoding="utf-8"),
             ),
         ):
-            passed, errors = validate_postgresql_config()
+            result = validate_postgresql_config()
 
-        assert passed is False
-        assert len(errors) == 1
+        assert result.passed is False
+        assert result.error_count == 1
 
     def test_validate_postgresql_comments_ignored(self, temp_project_dir: Path) -> None:
         """Test PostgreSQL config ignores comments."""
@@ -237,18 +237,18 @@ class TestValidatePostgresqlConfig:
                 return_value=open(pg_config, "r", encoding="utf-8"),
             ),
         ):
-            passed, errors = validate_postgresql_config()
+            result = validate_postgresql_config()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     def test_validate_postgresql_no_config(self) -> None:
         """Test PostgreSQL validation with no config file."""
         with patch("pathlib.Path.exists", return_value=False):
-            passed, errors = validate_postgresql_config()
+            result = validate_postgresql_config()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
 
 class TestValidateMariadbConfig:
@@ -267,10 +267,10 @@ class TestValidateMariadbConfig:
                 return_value=open(maria_config, "r", encoding="utf-8"),
             ),
         ):
-            passed, errors = validate_mariadb_config()
+            result = validate_mariadb_config()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
     def test_validate_mariadb_invalid_syntax(self, temp_project_dir: Path) -> None:
         """Test MariaDB config with invalid syntax."""
@@ -285,18 +285,18 @@ class TestValidateMariadbConfig:
                 return_value=open(maria_config, "r", encoding="utf-8"),
             ),
         ):
-            passed, errors = validate_mariadb_config()
+            result = validate_mariadb_config()
 
-        assert passed is False
-        assert len(errors) == 1
+        assert result.passed is False
+        assert result.error_count == 1
 
     def test_validate_mariadb_no_config(self) -> None:
         """Test MariaDB validation with no config file."""
         with patch("pathlib.Path.exists", return_value=False):
-            passed, errors = validate_mariadb_config()
+            result = validate_mariadb_config()
 
-        assert passed is True
-        assert len(errors) == 0
+        assert result.passed is True
+        assert result.error_count == 0
 
 
 class TestMain:
