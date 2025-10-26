@@ -18,18 +18,12 @@ Examples:
     >>> print(report.has_issues)  # True if issues found
 """
 
-import sys
-from pathlib import Path
-
-# Add scripts directory to path BEFORE other imports
-scripts_dir = Path(__file__).parent.parent.parent
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Final, Protocol, TypeAlias
 
 from python.utils.colors import error, header, info, separator, success, warning
@@ -169,7 +163,7 @@ class DependencyCheckerProtocol(Protocol):
     @property
     def check_name(self) -> str:
         """Name of the dependency check."""
-        ...
+        raise NotImplementedError
 
     def run(self) -> DependencyCheckResult:
         """Run the dependency check.
@@ -177,7 +171,7 @@ class DependencyCheckerProtocol(Protocol):
         Returns:
             DependencyCheckResult with packages and issues
         """
-        ...
+        raise NotImplementedError
 
 
 class BaseDependencyChecker(ABC):

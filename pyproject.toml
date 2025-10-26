@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=70.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "docker-modern-data-platform"
 version = "2.0.0"
@@ -19,6 +23,13 @@ keywords = [
     "prometheus",
     "mcp",
 ]
+
+[tool.setuptools.packages.find]
+where = ["scripts"]
+include = ["python*"]
+
+[tool.setuptools.package-dir]
+"" = "scripts"
 
 [project.urls]
 Homepage = "https://github.com/DeanLuus22021994/docker_dotfiles"
@@ -108,7 +119,7 @@ init-hook = "import sys; sys.path.append('scripts')"
 max-line-length = 100
 
 [tool.pylint.messages_control]
-# No suppressions - all code must be clean
+# Zero suppressions - all warnings resolved through proper architecture
 disable = []
 
 [tool.docker-cluster]

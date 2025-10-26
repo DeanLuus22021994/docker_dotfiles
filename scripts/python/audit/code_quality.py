@@ -27,11 +27,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final, Protocol, TypeAlias
 
-# Add scripts dir to sys.path for imports
-scripts_dir = Path(__file__).parent.parent.parent
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
 from python.utils.colors import error, header, info, separator, success, warning
 
 # Type aliases for semantic clarity
@@ -117,7 +112,7 @@ class CheckerProtocol(Protocol):
     @property
     def tool_name(self) -> ToolName:
         """Name of the quality checking tool."""
-        ...
+        raise NotImplementedError
 
     def run(self, target_paths: Sequence[str]) -> CheckResult:
         """Run the quality check.
@@ -128,7 +123,7 @@ class CheckerProtocol(Protocol):
         Returns:
             CheckResult with pass/fail status and errors
         """
-        ...
+        raise NotImplementedError
 
 
 class BaseChecker(ABC):

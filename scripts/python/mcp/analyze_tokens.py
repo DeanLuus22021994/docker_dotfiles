@@ -12,17 +12,11 @@ Examples:
 
 # pylint: disable=logging-fstring-interpolation  # CLI display output
 
-import sys
-from pathlib import Path
-
-# Add scripts directory to path BEFORE other imports
-_SCRIPTS_DIR: Path = Path(__file__).parent.parent.parent
-if str(_SCRIPTS_DIR) not in sys.path:
-    sys.path.insert(0, str(_SCRIPTS_DIR))
-
 import argparse
 import json
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Final, TypeAlias
 
 from python.utils.colors import Colors

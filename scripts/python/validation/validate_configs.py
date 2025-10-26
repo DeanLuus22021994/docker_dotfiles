@@ -18,18 +18,12 @@ Examples:
     >>> print(report.is_valid)  # True if all configs valid
 """
 
-import sys
-from pathlib import Path
-
-# Add scripts directory to path BEFORE other imports
-scripts_dir = Path(__file__).parent.parent.parent
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
 import json
 import subprocess
+import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Final, Literal, Protocol, TypeAlias
 
 from python.utils.colors import error, header, separator, success
@@ -129,7 +123,7 @@ class ConfigValidatorProtocol(Protocol):
     @property
     def config_type(self) -> ConfigType:
         """Type of configuration this validator handles."""
-        ...
+        raise NotImplementedError
 
     def validate(self) -> ValidationResult:
         """Validate configuration files.
@@ -137,7 +131,7 @@ class ConfigValidatorProtocol(Protocol):
         Returns:
             ValidationResult with pass/fail status and errors
         """
-        ...
+        raise NotImplementedError
 
 
 class BaseConfigValidator(ABC):

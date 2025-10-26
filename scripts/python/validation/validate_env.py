@@ -17,15 +17,8 @@ Examples:
     >>> print(report.is_valid)  # True if all required vars set
 """
 
-import sys
-from pathlib import Path
-
-# Add scripts directory to path BEFORE other imports
-scripts_dir = Path(__file__).parent.parent.parent
-if str(scripts_dir) not in sys.path:
-    sys.path.insert(0, str(scripts_dir))
-
 import os
+import sys
 from dataclasses import dataclass, field
 from typing import Final, TypeAlias
 
@@ -307,10 +300,11 @@ def print_summary(
     """Legacy wrapper: Print validation summary.
 
     Args:
-        all_valid: Whether all required variables are set
+        all_valid: Whether all required variables are set (currently unused - for compatibility)
         missing_required: List of missing required variable names
         missing_optional: List of missing optional variable names
     """
+    _ = all_valid  # Unused but kept for backward compatibility
     # Reconstruct a ValidationResult from the legacy parameters
     missing_req_configs = tuple(var for var in REQUIRED_ENV_VARS if var.name in missing_required)
     missing_opt_configs = tuple(var for var in OPTIONAL_ENV_VARS if var.name in missing_optional)
