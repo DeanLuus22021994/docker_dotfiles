@@ -202,32 +202,22 @@ class EnvValidator:
         # Check required variables
         if self.verbose:
             print(f"{bold('Required Variables:')}")
-
-        for var_config in self.required_vars:
-            if var_config.is_set:
-                present_vars.append(var_config)
-                if self.verbose:
-                    masked = var_config.get_masked_value()
-                    print(f"  {success(f'{var_config.name}: {masked}')}")
-            else:
-                missing_required.append(var_config)
-                if self.verbose:
-                    print(f"  {error(f'{var_config.name}: NOT SET - {var_config.description}')}")
+        self._check_vars(
+            self.required_vars,
+            present_list=present_vars,
+            missing_list=missing_required,
+            message_func=error,
+        )
 
         # Check optional variables
         if self.verbose:
             print(f"\n{bold('Optional Variables:')}")
-
-        for var_config in self.optional_vars:
-            if var_config.is_set:
-                present_vars.append(var_config)
-                if self.verbose:
-                    masked = var_config.get_masked_value()
-                    print(f"  {success(f'{var_config.name}: {masked}')}")
-            else:
-                missing_optional.append(var_config)
-                if self.verbose:
-                    print(f"  {warning(f'{var_config.name}: NOT SET - {var_config.description}')}")
+        self._check_vars(
+            self.optional_vars,
+            present_list=present_vars,
+            missing_list=missing_optional,
+            message_func=warning,
+        )
 
         return ValidationResult(
             missing_required=tuple(missing_required),
@@ -300,49 +290,6 @@ def main() -> ExitCode:
     reporter.print_summary(result)
 
     return 0 if result.is_valid else 1
-
-
-# Backward-compatible wrapper functions for legacy test code
-def validate_env_vars() -> tuple[bool, list[str], list[str]]:
-    """Legacy wrapper: Validate environment variables.
-
-    Returns:
-        Tuple of (all_valid, missing_required_names, missing_optional_names)
-    """
-    validator = EnvValidator()
-    result = validator.validate()
-    missing_req = [var.name for var in result.missing_required]
-    missing_opt = [var.name for var in result.missing_optional]
-    return result.is_valid, missing_req, missing_opt
-
-
-def print_summary(
-    all_valid: bool, missing_required: list[str], missing_optional: list[str]
-) -> None:
-    """Legacy wrapper: Print validation summary.
-
-    Args:
-        all_valid: Whether all required variables are set (currently unused - for compatibility)
-        missing_required: List of missing required variable names
-        missing_optional: List of missing optional variable names
-    """
-    _ = all_valid  # Unused but kept for backward compatibility
-    # Reconstruct a ValidationResult from the legacy parameters
-    missing_req_configs = tuple(var for var in REQUIRED_ENV_VARS if var.name in missing_required)
-    missing_opt_configs = tuple(var for var in OPTIONAL_ENV_VARS if var.name in missing_optional)
-    # Present vars are all that aren't missing
-    all_vars = REQUIRED_ENV_VARS + OPTIONAL_ENV_VARS
-    missing_all = set(missing_required + missing_optional)
-    present_configs = tuple(var for var in all_vars if var.name not in missing_all)
-
-    result = ValidationResult(
-        missing_required=missing_req_configs,
-        missing_optional=missing_opt_configs,
-        present_vars=present_configs,
-    )
-
-    reporter = ValidationReporter()
-    reporter.print_summary(result)
 
 
 if __name__ == "__main__":

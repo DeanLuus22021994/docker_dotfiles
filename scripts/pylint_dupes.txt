@@ -1,0 +1,2436 @@
+************* Module orchestrator
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.validation.validate_configs:[39:648]
+==python.validation.validate_configs:[39:648]
+@dataclass(frozen=True, slots=True)
+class ValidationResult:
+    """Result of a configuration validation check.
+
+    Attributes:
+        passed: Whether validation succeeded
+        config_type: Type of configuration validated
+        validated_files: Files that were validated
+        errors: Error messages from validation
+    """
+
+    passed: bool
+    config_type: ConfigType
+    validated_files: tuple[Path, ...] = field(default_factory=tuple)
+    errors: tuple[ErrorMessage, ...] = field(default_factory=tuple)
+
+    @property
+    def file_count(self) -> int:
+        """Number of files validated."""
+        return len(self.validated_files)
+
+    @property
+    def error_count(self) -> int:
+        """Number of errors found."""
+        return len(self.errors)
+
+    @property
+    def has_errors(self) -> bool:
+        """Check if validation found any errors."""
+        return len(self.errors) > 0
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationReport:
+    """Aggregated results from all configuration validations.
+
+    Attributes:
+        results: Tuple of all validation results
+    """
+
+    results: tuple[ValidationResult, ...]
+
+    @property
+    def is_valid(self) -> bool:
+        """Check if all validations passed."""
+        return all(result.passed for result in self.results)
+
+    @property
+    def total_files(self) -> int:
+        """Total number of files validated."""
+        return sum(result.file_count for result in self.results)
+
+    @property
+    def total_errors(self) -> int:
+        """Total number of errors found."""
+        return sum(result.error_count for result in self.results)
+
+    @property
+    def all_errors(self) -> tuple[ErrorMessage, ...]:
+        """Collect all errors from all validations."""
+        errors: list[ErrorMessage] = []
+        for result in self.results:
+            errors.extend(result.errors)
+        return tuple(errors)
+
+    @property
+    def failed_validators(self) -> tuple[ConfigType, ...]:
+        """Get types of validators that failed."""
+        return tuple(result.config_type for result in self.results if not result.passed)
+
+
+class ConfigValidatorProtocol(Protocol):
+    """Protocol defining interface for configuration validators."""
+
+    @property
+    def config_type(self) -> ConfigType:
+        """Type of configuration this validator handles."""
+        raise NotImplementedError
+
+    def validate(self) -> ValidationResult:
+        """Validate configuration files.
+
+        Returns:
+            ValidationResult with pass/fail status and errors
+        """
+        raise NotImplementedError
+
+
+class BaseConfigValidator(ABC):
+    """Abstract base class for configuration validators.
+
+    Provides common functionality for file discovery and validation.
+    """
+
+    def __init__(self, *, verbose: bool = True) -> None:
+        """Initialize validator.
+
+        Args:
+            verbose: Enable verbose output (default: True)
+        """
+        self.verbose = verbose
+
+    @property
+    @abstractmethod
+    def config_type(self) -> ConfigType:
+        """Type of configuration this validator handles."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def validate(self) -> ValidationResult:
+        """Validate configuration files."""
+        raise NotImplementedError
+
+    def _should_exclude_path(self, path: Path) -> bool:
+        """Check if path should be excluded from validation.
+
+        Args:
+            path: Path to check
+
+        Returns:
+            True if path should be excluded
+        """
+        excluded_dirs = {".git", "node_modules", ".vscode"}
+        return any(excluded in path.parts for excluded in excluded_dirs)
+
+    def _create_error_result(self, error_msg: ErrorMessage) -> ValidationResult:
+        """Create ValidationResult for error consistently.
+
+        Args:
+            error_msg: Error message
+
+        Returns:
+            ValidationResult with passed=False and error
+        """
+        if self.verbose:
+            print(error(error_msg))
+        return ValidationResult(
+            passed=False,
+            config_type=self.config_type,
+            errors=(error_msg,),
+        )
+
+
+class YamlValidator(BaseConfigValidator):
+    """Validates YAML configuration files using yamllint."""
+
+    @property
+    def config_type(self) -> ConfigType:
+        return "yaml"
+
+    def validate(self) -> ValidationResult:
+        """Validate all YAML files in repository."""
+        if self.verbose:
+            print(f"\n{header('=== Validating YAML Files ===')}")
+
+        # Find all YAML files
+        yaml_files = list(Path(".").rglob("*.yml")) + list(Path(".").rglob("*.yaml"))
+        yaml_files = [f for f in yaml_files if not self._should_exclude_path(f)]
+
+        if not yaml_files:
+            if self.verbose:
+                print("No YAML files found")
+            return ValidationResult(passed=True, config_type=self.config_type)
+
+        try:
+            result = subprocess.run(
+                [
+                    "yamllint",
+                    "-d",
+                    f"{{extends: default, rules: {{line-length: {{max: {YAML_LINE_LENGTH}}}, document-start: disable}}}}",
+                    ".",
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            if result.returncode != 0:
+                errors = (f"yamllint failed:\n{result.stdout}",)
+                if self.verbose:
+                    print(error("YAML validation failed"))
+                    print(result.stdout)
+                return ValidationResult(
+                    passed=False,
+                    config_type=self.config_type,
+                    validated_files=tuple(yaml_files),
+                    errors=errors,
+                )
+
+            if self.verbose:
+                print(success(f"All {len(yaml_files)} YAML files valid"))
+            return ValidationResult(
+                passed=True,
+                config_type=self.config_type,
+                validated_files=tuple(yaml_files),
+            )
+
+        except FileNotFoundError:
+            error_msg = "yamllint not found. Install with: pip install yamllint"
+            return self._create_error_result(error_msg)
+
+
+class JsonValidator(BaseConfigValidator):
+    """Validates JSON configuration files using built-in json module."""
+
+    @property
+    def config_type(self) -> ConfigType:
+        return "json"
+
+    def validate(self) -> ValidationResult:
+        """Validate all JSON files in repository."""
+        if self.verbose:
+            print(f"\n{header('=== Validating JSON Files ===')}")
+
+        # Find all JSON files
+        json_files = list(Path(".").rglob("*.json"))
+        json_files = [f for f in json_files if not self._should_exclude_path(f)]
+
+        if not json_files:
+            if self.verbose:
+                print("No JSON files found")
+            return ValidationResult(passed=True, config_type=self.config_type)
+
+        errors: list[ErrorMessage] = []
+        valid_count = 0
+
+        for json_file in json_files:
+            try:
+                with open(json_file, "r", encoding="utf-8") as f:
+                    json.load(f)
+                valid_count += 1
+            except json.JSONDecodeError as e:
+                error_msg = f"{json_file}: {e}"
+                errors.append(error_msg)
+                if self.verbose:
+                    print(error(error_msg))
+
+        if errors:
+            if self.verbose:
+                print(error(f"{len(errors)} JSON file(s) invalid"))
+            return ValidationResult(
+                passed=False,
+                config_type=self.config_type,
+                validated_files=tuple(json_files),
+                errors=tuple(errors),
+            )
+
+        if self.verbose:
+            print(success(f"All {valid_count} JSON files valid"))
+        return ValidationResult(
+            passed=True,
+            config_type=self.config_type,
+            validated_files=tuple(json_files),
+        )
+
+
+class NginxValidator(BaseConfigValidator):
+    """Validates nginx configuration files using Docker nginx container."""
+
+    @property
+    def config_type(self) -> ConfigType:
+        return "nginx"
+
+    def validate(self) -> ValidationResult:
+        """Validate nginx configuration files."""
+        if self.verbose:
+            print(f"\n{header('=== Validating nginx Configs ===')}")
+
+        # Find existing nginx configs
+        existing_configs = [Path(f) for f in NGINX_CONFIGS if Path(f).exists()]
+
+        if not existing_configs:
+            if self.verbose:
+                print("No nginx configs found")
+            return ValidationResult(passed=True, config_type=self.config_type)
+
+        errors: list[ErrorMessage] = []
+
+        for config in existing_configs:
+            try:
+                result = subprocess.run(
+                    [
+                        "docker",
+                        "run",
+                        "--rm",
+                        "-v",
+                        f"{config.absolute()}:/etc/nginx/test.conf:ro",
+                        "nginx:alpine",
+                        "nginx",
+                        "-t",
+                        "-c",
+                        "/etc/nginx/test.conf",
+                    ],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+
+                if result.returncode != 0:
+                    error_msg = f"{config}: nginx validation failed\n{result.stderr}"
+                    errors.append(error_msg)
+                    if self.verbose:
+                        print(error(f"{config}: validation failed"))
+                        print(result.stderr)
+                else:
+                    if self.verbose:
+                        print(success(f"{config}: valid"))
+
+            except FileNotFoundError:
+                error_msg = "Docker not found. Cannot validate nginx configs without Docker"
+                if self.verbose:
+                    print(error(error_msg))
+                return ValidationResult(
+                    passed=False,
+                    config_type=self.config_type,
+                    errors=(error_msg,),
+                )
+
+        if errors:
+            if self.verbose:
+                print(error(f"{len(errors)} nginx config(s) invalid"))
+            return ValidationResult(
+                passed=False,
+                config_type=self.config_type,
+                validated_files=tuple(existing_configs),
+                errors=tuple(errors),
+            )
+
+        if self.verbose:
+            print(success(f"All {len(existing_configs)} nginx configs valid"))
+        return ValidationResult(
+            passed=True,
+            config_type=self.config_type,
+            validated_files=tuple(existing_configs),
+        )
+
+
+class PostgresqlValidator(BaseConfigValidator):
+    """Validates PostgreSQL configuration file with basic syntax checking."""
+
+    @property
+    def config_type(self) -> ConfigType:
+        return "postgresql"
+
+    def validate(self) -> ValidationResult:
+        """Validate PostgreSQL configuration file."""
+        if self.verbose:
+            print(f"\n{header('=== Validating PostgreSQL Config ===')}")
+
+        if not POSTGRESQL_CONFIG.exists():
+            if self.verbose:
+                print("PostgreSQL config not found")
+            return ValidationResult(passed=True, config_type=self.config_type)
+
+        errors: list[ErrorMessage] = []
+
+        try:
+            with open(POSTGRESQL_CONFIG, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+
+            for i, line in enumerate(lines, 1):
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+
+                if "=" not in line:
+                    error_msg = f"{POSTGRESQL_CONFIG}:{i}: Missing '=' in configuration line"
+                    errors.append(error_msg)
+                    if self.verbose:
+                        print(error(f"{POSTGRESQL_CONFIG}:{i}: Missing '='"))
+
+            if errors:
+                if self.verbose:
+                    print(error(f"PostgreSQL config has {len(errors)} error(s)"))
+                return ValidationResult(
+                    passed=False,
+                    config_type=self.config_type,
+                    validated_files=(POSTGRESQL_CONFIG,),
+                    errors=tuple(errors),
+                )
+
+            if self.verbose:
+                print(success("PostgreSQL config valid (basic syntax check)"))
+            return ValidationResult(
+                passed=True,
+                config_type=self.config_type,
+                validated_files=(POSTGRESQL_CONFIG,),
+            )
+
+        except (OSError, IOError, PermissionError) as e:
+            error_msg = f"{POSTGRESQL_CONFIG}: {e}"
+            return self._create_error_result(error_msg)
+
+
+class MariadbValidator(BaseConfigValidator):
+    """Validates MariaDB configuration file with basic syntax checking."""
+
+    @property
+    def config_type(self) -> ConfigType:
+        return "mariadb"
+
+    def validate(self) -> ValidationResult:
+        """Validate MariaDB configuration file."""
+        if self.verbose:
+            print(f"\n{header('=== Validating MariaDB Config ===')}")
+
+        if not MARIADB_CONFIG.exists():
+            if self.verbose:
+                print("MariaDB config not found")
+            return ValidationResult(passed=True, config_type=self.config_type)
+
+        errors: list[ErrorMessage] = []
+
+        try:
+            with open(MARIADB_CONFIG, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+
+            in_section = False
+            for i, line in enumerate(lines, 1):
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+
+                if line.startswith("[") and line.endswith("]"):
+                    in_section = True
+                    continue
+
+                if in_section and "=" not in line and "-" not in line:
+                    error_msg = f"{MARIADB_CONFIG}:{i}: Invalid configuration line"
+                    errors.append(error_msg)
+                    if self.verbose:
+                        print(error(f"{MARIADB_CONFIG}:{i}: Invalid line"))
+
+            if errors:
+                if self.verbose:
+                    print(error(f"MariaDB config has {len(errors)} error(s)"))
+                return ValidationResult(
+                    passed=False,
+                    config_type=self.config_type,
+                    validated_files=(MARIADB_CONFIG,),
+                    errors=tuple(errors),
+                )
+
+            if self.verbose:
+                print(success("MariaDB config valid (basic syntax check)"))
+            return ValidationResult(
+                passed=True,
+                config_type=self.config_type,
+                validated_files=(MARIADB_CONFIG,),
+            )
+
+        except (OSError, IOError, PermissionError) as e:
+            error_msg = f"{MARIADB_CONFIG}: {e}"
+            return self._create_error_result(error_msg)
+
+
+class ConfigurationAuditor:
+    """Orchestrates configuration validation across multiple validators.
+
+    Runs YAML, JSON, nginx, PostgreSQL, and MariaDB validators,
+    aggregating results into a comprehensive report.
+
+    Example:
+        >>> auditor = ConfigurationAuditor()
+        >>> report = auditor.validate_all()
+        >>> if report.is_valid:
+        ...     print("All configs valid!")
+    """
+
+    def __init__(self, *, verbose: bool = True) -> None:
+        """Initialize auditor with validators.
+
+        Args:
+            verbose: Enable verbose output (default: True)
+        """
+        self.verbose = verbose
+        self.validators: tuple[BaseConfigValidator, ...] = (
+            YamlValidator(verbose=verbose),
+            JsonValidator(verbose=verbose),
+            NginxValidator(verbose=verbose),
+            PostgresqlValidator(verbose=verbose),
+            MariadbValidator(verbose=verbose),
+        )
+
+    def validate_all(self) -> ValidationReport:
+        """Run all configuration validators.
+
+        Returns:
+            ValidationReport with aggregated results
+        """
+        if self.verbose:
+            print(separator())
+            print(header("Configuration Validation"))
+            print(separator())
+
+        results: list[ValidationResult] = []
+        for validator in self.validators:
+            result = validator.validate()
+            results.append(result)
+
+        return ValidationReport(results=tuple(results))
+
+    def print_summary(self, report: ValidationReport) -> None:
+        """Print human-readable summary of validation results.
+
+        Args:
+            report: Report to summarize
+        """
+        print(f"\n{separator()}")
+        if report.is_valid:
+            print(success("ALL VALIDATIONS PASSED"))
+        else:
+            print(error(f"VALIDATION FAILED ({report.total_errors} error(s))"))
+
+        print(separator())
+
+        if not report.is_valid and report.all_errors:
+            print("\nErrors:")
+            for err in report.all_errors:
+                print(f"  - {err}")
+
+
+# =============================================================================
+# Backward-Compatible Function Wrappers for Testing
+# =============================================================================
+# These wrappers maintain API compatibility with existing tests while using
+# the new class-based validation architecture.
+
+
+def validate_json_files(verbose: bool = True) -> ValidationResult:
+    """Validate JSON configuration files (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = JsonValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_yaml_files(verbose: bool = True) -> ValidationResult:
+    """Validate YAML configuration files (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = YamlValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_nginx_configs(verbose: bool = True) -> ValidationResult:
+    """Validate nginx configuration files (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = NginxValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_postgresql_config(verbose: bool = True) -> ValidationResult:
+    """Validate PostgreSQL configuration (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = PostgresqlValidator(verbose=verbose)
+    return validator.validate()
+
+
+def validate_mariadb_config(verbose: bool = True) -> ValidationResult:
+    """Validate MariaDB configuration (backward-compatible wrapper).
+
+    Args:
+        verbose: Whether to print validation progress
+
+    Returns:
+        ValidationResult with validation outcome
+    """
+    validator = MariadbValidator(verbose=verbose)
+    return validator.validate()
+
+
+def main() -> ExitCode:
+    """Run all configuration validations and return exit code.
+
+    Returns:
+        0 if all validations passed, 1 otherwise
+    """
+    auditor = ConfigurationAuditor()
+    report = auditor.validate_all()
+    auditor.print_summary(report)
+
+    return 0 if report.is_valid else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main()) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.audit.dependencies:[32:482]
+==python.audit.dependencies:[32:482]
+@dataclass(frozen=True, slots=True)
+class Package:
+    """Represents a Python package with version information.
+
+    Attributes:
+        name: Package name (normalized to lowercase)
+        current_version: Currently installed version
+        latest_version: Latest available version (None if unknown)
+    """
+
+    name: PackageName
+    current_version: Version
+    latest_version: Version | None = None
+
+    @property
+    def is_outdated(self) -> bool:
+        """Check if package has newer version available."""
+        return self.latest_version is not None and self.current_version != self.latest_version
+
+    @property
+    def version_info(self) -> str:
+        """Human-readable version information."""
+        if self.is_outdated:
+            return f"{self.name}: {self.current_version} -> {self.latest_version}"
+        return f"{self.name}: {self.current_version}"
+
+
+@dataclass(frozen=True, slots=True)
+class DependencyCheckResult:
+    """Result of a dependency check.
+
+    Attributes:
+        passed: Whether the check succeeded without issues
+        check_name: Name of the check that ran
+        packages: Packages found during check (if applicable)
+        missing_packages: Package names that are missing
+        errors: List of error messages
+        warnings: List of warning messages
+    """
+
+    passed: bool
+    check_name: str
+    packages: tuple[Package, ...] = field(default_factory=tuple)
+    missing_packages: tuple[PackageName, ...] = field(default_factory=tuple)
+    errors: tuple[ErrorMessage, ...] = field(default_factory=tuple)
+    warnings: tuple[str, ...] = field(default_factory=tuple)
+
+    @property
+    def has_issues(self) -> bool:
+        """Check if result contains errors or warnings."""
+        return len(self.errors) > 0 or len(self.warnings) > 0
+
+    @property
+    def outdated_packages(self) -> tuple[Package, ...]:
+        """Get only outdated packages."""
+        return tuple(pkg for pkg in self.packages if pkg.is_outdated)
+
+
+@dataclass(frozen=True, slots=True)
+class DependencyReport:
+    """Aggregated results from all dependency checks.
+
+    Attributes:
+        results: Tuple of all check results
+    """
+
+    results: tuple[DependencyCheckResult, ...]
+
+    @property
+    def passed(self) -> bool:
+        """Check if all dependency checks passed."""
+        return all(result.passed for result in self.results)
+
+    @property
+    def has_issues(self) -> bool:
+        """Check if any issues were found."""
+        return any(result.has_issues for result in self.results)
+
+    @property
+    def all_errors(self) -> tuple[ErrorMessage, ...]:
+        """Collect all errors from checks."""
+        errors: list[ErrorMessage] = []
+        for result in self.results:
+            errors.extend(result.errors)
+        return tuple(errors)
+
+    @property
+    def all_warnings(self) -> tuple[str, ...]:
+        """Collect all warnings from checks."""
+        warnings: list[str] = []
+        for result in self.results:
+            warnings.extend(result.warnings)
+        return tuple(warnings)
+
+    @property
+    def all_outdated_packages(self) -> tuple[Package, ...]:
+        """Get all outdated packages from all checks."""
+        packages: list[Package] = []
+        for result in self.results:
+            packages.extend(result.outdated_packages)
+        return tuple(packages)
+
+    @property
+    def all_missing_packages(self) -> tuple[PackageName, ...]:
+        """Get all missing packages from all checks."""
+        missing: list[PackageName] = []
+        for result in self.results:
+            missing.extend(result.missing_packages)
+        return tuple(missing)
+
+
+class DependencyCheckerProtocol(Protocol):
+    """Protocol defining interface for dependency checkers."""
+
+    @property
+    def check_name(self) -> str:
+        """Name of the dependency check."""
+        raise NotImplementedError
+
+    def run(self) -> DependencyCheckResult:
+        """Run the dependency check.
+
+        Returns:
+            DependencyCheckResult with packages and issues
+        """
+        raise NotImplementedError
+
+
+class BaseDependencyChecker(ABC):
+    """Abstract base class for dependency checkers."""
+
+    def __init__(self, *, verbose: bool = True) -> None:
+        """Initialize checker.
+
+        Args:
+            verbose: Enable verbose output (default: True)
+        """
+        self.verbose = verbose
+
+    @property
+    @abstractmethod
+    def check_name(self) -> str:
+        """Name of the dependency check."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def run(self) -> DependencyCheckResult:
+        """Run the dependency check."""
+        raise NotImplementedError
+
+    def _run_pip_command(self, args: CommandArgs) -> subprocess.CompletedProcess[str]:
+        """Run pip command with given arguments.
+
+        Args:
+            args: Command arguments after 'pip'
+
+        Returns:
+            Completed subprocess result
+
+        Raises:
+            FileNotFoundError: If pip is not available
+        """
+        return subprocess.run(
+            [sys.executable, "-m", "pip", *args],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    def _handle_pip_not_found(self) -> DependencyCheckResult:
+        """Handle pip not found error consistently.
+
+        Returns:
+            DependencyCheckResult with error
+        """
+        if self.verbose:
+            print(error("pip not found"))
+        return DependencyCheckResult(
+            passed=False,
+            check_name=self.check_name,
+            errors=("pip not found",),
+        )
+
+
+class OutdatedPackagesChecker(BaseDependencyChecker):
+    """Checks for outdated Python packages."""
+
+    @property
+    def check_name(self) -> str:
+        return "Outdated Packages"
+
+    def run(self) -> DependencyCheckResult:
+        """Check for outdated packages."""
+        if self.verbose:
+            print(f"\n{header('=== Checking Outdated Packages ===')}")
+
+        try:
+            result = self._run_pip_command(["list", "--outdated"])
+
+            if result.stdout.strip():
+                # Parse outdated packages
+                packages = self._parse_outdated_output(result.stdout)
+                warnings_msg = (f"Found {len(packages)} outdated package(s)",)
+
+                if self.verbose:
+                    print(warning("Outdated packages found"))
+                    print(result.stdout)
+                    print(info("Run 'pip install --upgrade <package>' to update"))
+
+                return DependencyCheckResult(
+                    passed=False,
+                    check_name=self.check_name,
+                    packages=packages,
+                    warnings=warnings_msg,
+                )
+
+            if self.verbose:
+                print(success("All packages are up to date"))
+            return DependencyCheckResult(passed=True, check_name=self.check_name)
+
+        except FileNotFoundError:
+            return self._handle_pip_not_found()
+
+    def _parse_outdated_output(self, output: str) -> tuple[Package, ...]:
+        """Parse pip list --outdated output into Package objects."""
+        packages: list[Package] = []
+        lines = output.strip().split("\n")[2:]  # Skip header lines
+
+        for line in lines:
+            parts = line.split()
+            if len(parts) >= 3:
+                name, current, latest = parts[0], parts[1], parts[2]
+                packages.append(Package(name=name, current_version=current, latest_version=latest))
+
+        return tuple(packages)
+
+
+class InstalledPackagesChecker(BaseDependencyChecker):
+    """Lists all installed packages and versions."""
+
+    @property
+    def check_name(self) -> str:
+        return "Installed Packages"
+
+    def run(self) -> DependencyCheckResult:
+        """List all installed packages."""
+        if self.verbose:
+            print(f"\n{header('=== Installed Packages ===')}")
+
+        try:
+            result = self._run_pip_command(["list"])
+
+            if self.verbose:
+                print(result.stdout)
+                print(success("Package list retrieved successfully"))
+
+            packages = self._parse_installed_output(result.stdout)
+            return DependencyCheckResult(
+                passed=True,
+                check_name=self.check_name,
+                packages=packages,
+            )
+
+        except FileNotFoundError:
+            return self._handle_pip_not_found()
+
+    def _parse_installed_output(self, output: str) -> tuple[Package, ...]:
+        """Parse pip list output into Package objects."""
+        packages: list[Package] = []
+        lines = output.strip().split("\n")[2:]  # Skip header lines
+
+        for line in lines:
+            parts = line.split()
+            if len(parts) >= 2:
+                name, version = parts[0], parts[1]
+                packages.append(Package(name=name, current_version=version))
+
+        return tuple(packages)
+
+
+class PyprojectDependenciesChecker(BaseDependencyChecker):
+    """Checks if all pyproject.toml dependencies are installed."""
+
+    @property
+    def check_name(self) -> str:
+        return "Required Dependencies"
+
+    def run(self) -> DependencyCheckResult:
+        """Check if required dependencies from pyproject.toml are installed."""
+        if self.verbose:
+            print(f"\n{header('=== Checking pyproject.toml Dependencies ===')}")
+
+        if not PYPROJECT_PATH.exists():
+            if self.verbose:
+                print(info("No pyproject.toml found"))
+            return DependencyCheckResult(passed=True, check_name=self.check_name)
+
+        try:
+            result = self._run_pip_command(["list"])
+            installed = result.stdout.lower()
+
+            missing = tuple(pkg for pkg in REQUIRED_PACKAGES if pkg.lower() not in installed)
+
+            if missing:
+                error_msg = f"Missing packages: {', '.join(missing)}"
+                if self.verbose:
+                    print(warning(f"Missing required packages: {', '.join(missing)}"))
+                    print(info(f"Run 'pip install {' '.join(missing)}' to install"))
+
+                return DependencyCheckResult(
+                    passed=False,
+                    check_name=self.check_name,
+                    missing_packages=missing,
+                    errors=(error_msg,),
+                )
+
+            if self.verbose:
+                print(success("All required dependencies installed"))
+            return DependencyCheckResult(passed=True, check_name=self.check_name)
+
+        except FileNotFoundError:
+            return self._handle_pip_not_found()
+
+
+class DependencyAuditor:
+    """Orchestrates dependency checks across multiple checkers.
+
+    Runs checks for required, outdated, and installed packages,
+    aggregating results into a comprehensive report.
+
+    Example:
+        >>> auditor = DependencyAuditor()
+        >>> report = auditor.run_all_checks()
+        >>> if report.passed:
+        ...     print("All dependencies OK!")
+    """
+
+    def __init__(self, *, verbose: bool = True) -> None:
+        """Initialize auditor with checkers.
+
+        Args:
+            verbose: Enable verbose output (default: True)
+        """
+        self.verbose = verbose
+        self.checkers: tuple[BaseDependencyChecker, ...] = (
+            PyprojectDependenciesChecker(verbose=verbose),
+            OutdatedPackagesChecker(verbose=verbose),
+            InstalledPackagesChecker(verbose=verbose),
+        )
+
+    def run_all_checks(self) -> DependencyReport:
+        """Run all configured dependency checks.
+
+        Returns:
+            DependencyReport with aggregated results
+        """
+        if self.verbose:
+            print(separator())
+            print(header("Dependencies Audit"))
+            print(separator())
+
+        results: list[DependencyCheckResult] = []
+        for checker in self.checkers:
+            result = checker.run()
+            results.append(result)
+
+        return DependencyReport(results=tuple(results))
+
+    def print_summary(self, report: DependencyReport) -> None:
+        """Print human-readable summary of audit results.
+
+        Args:
+            report: Report to summarize
+        """
+        print(f"\n{separator()}")
+        if report.passed:
+            print(success("ALL DEPENDENCY CHECKS PASSED"))
+        else:
+            issue_count = len(report.all_errors) + len(report.all_warnings)
+            print(warning(f"DEPENDENCY AUDIT COMPLETED WITH WARNINGS ({issue_count} issue(s))"))
+
+        print(separator())
+
+        if report.has_issues:
+            if report.all_errors:
+                print("\nErrors:")
+                for err in report.all_errors:
+                    print(f"  - {err}")
+
+            if report.all_warnings:
+                print("\nWarnings:")
+                for warn in report.all_warnings:
+                    print(f"  - {warn}")
+
+
+def main() -> ExitCode:
+    """Run all dependency checks and return exit code.
+
+    Returns:
+        0 if all checks passed, 1 if warnings/errors found
+    """
+    auditor = DependencyAuditor()
+    report = auditor.run_all_checks()
+    auditor.print_summary(report)
+
+    return 0 if report.passed else 1
+
+
+# Backward-compatible wrapper functions for legacy test code
+def check_outdated_packages() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Check for outdated packages.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = OutdatedPackagesChecker(verbose=False)
+    result = checker.run()
+    errors = list(result.errors) if result.errors else []
+    if result.warnings and not errors:
+        errors = list(result.warnings)
+    return result.passed, errors
+
+
+def list_installed_packages() -> tuple[bool, list[str]]:
+    """Legacy wrapper: List all installed packages.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = InstalledPackagesChecker(verbose=False)
+    result = checker.run()
+    return result.passed, list(result.errors)
+
+
+def check_pyproject_dependencies() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Check pyproject.toml dependencies.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = PyprojectDependenciesChecker(verbose=False)
+    result = checker.run()
+    errors = list(result.errors) if result.errors else []
+    if result.missing_packages and not errors:
+        errors = [f"Missing packages: {', '.join(result.missing_packages)}"]
+    return result.passed, errors
+
+
+if __name__ == "__main__":
+    sys.exit(main()) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.audit.code_quality:[35:440]
+==python.audit.code_quality:[35:440]
+@dataclass(frozen=True, slots=True)
+class CheckResult:
+    """Result of a code quality check.
+
+    Attributes:
+        passed: Whether the check succeeded
+        tool_name: Name of the tool that ran the check
+        errors: List of error messages (empty if passed)
+        stdout: Raw stdout from tool execution
+        install_hint: Installation command if tool not found
+    """
+
+    passed: bool
+    tool_name: ToolName
+    errors: tuple[ErrorMessage, ...] = field(default_factory=tuple)
+    stdout: str = ""
+    install_hint: str = ""
+
+    @property
+    def has_errors(self) -> bool:
+        """Check if result contains any errors."""
+        return len(self.errors) > 0
+
+
+@dataclass(frozen=True, slots=True)
+class CodeQualityReport:
+    """Aggregated results from all code quality checks.
+
+    Attributes:
+        results: Tuple of all check results
+        total_checks: Total number of checks run
+        passed_checks: Number of checks that passed
+        failed_checks: Number of checks that failed
+    """
+
+    results: tuple[CheckResult, ...]
+
+    @property
+    def passed(self) -> bool:
+        """Check if all quality checks passed."""
+        return all(result.passed for result in self.results)
+
+    @property
+    def total_checks(self) -> int:
+        """Total number of checks run."""
+        return len(self.results)
+
+    @property
+    def passed_checks(self) -> int:
+        """Number of checks that passed."""
+        return sum(1 for result in self.results if result.passed)
+
+    @property
+    def failed_checks(self) -> int:
+        """Number of checks that failed."""
+        return sum(1 for result in self.results if not result.passed)
+
+    @property
+    def all_errors(self) -> tuple[ErrorMessage, ...]:
+        """Collect all errors from failed checks."""
+        errors: list[ErrorMessage] = []
+        for result in self.results:
+            errors.extend(result.errors)
+        return tuple(errors)
+
+
+class CheckerProtocol(Protocol):
+    """Protocol defining interface for code quality checkers."""
+
+    @property
+    def tool_name(self) -> ToolName:
+        """Name of the quality checking tool."""
+        raise NotImplementedError
+
+    def run(self, target_paths: Sequence[str]) -> CheckResult:
+        """Run the quality check.
+
+        Args:
+            target_paths: Paths to check
+
+        Returns:
+            CheckResult with pass/fail status and errors
+        """
+        raise NotImplementedError
+
+
+class BaseChecker(ABC):
+    """Abstract base class for code quality checkers.
+
+    Provides common functionality for running subprocess commands
+    and handling tool availability.
+    """
+
+    def __init__(self, *, verbose: bool = True) -> None:
+        """Initialize checker.
+
+        Args:
+            verbose: Enable verbose output (default: True)
+        """
+        self.verbose = verbose
+
+    @property
+    @abstractmethod
+    def tool_name(self) -> ToolName:
+        """Name of the quality checking tool."""
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def install_command(self) -> str:
+        """Command to install the tool."""
+        raise NotImplementedError
+
+    @abstractmethod
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
+        """Build command arguments for the tool.
+
+        Args:
+            target_paths: Paths to check
+
+        Returns:
+            Command arguments as sequence
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
+        """Format and print tool output.
+
+        Args:
+            result: Subprocess result from tool execution
+        """
+        raise NotImplementedError
+
+    def run(self, target_paths: Sequence[str]) -> CheckResult:
+        """Run the quality check.
+
+        Args:
+            target_paths: Paths to check
+
+        Returns:
+            CheckResult with pass/fail status and errors
+        """
+        if self.verbose:
+            print(f"\n{header(f'=== Running {self.tool_name} ===')}")
+
+        try:
+            cmd = self.build_command(target_paths)
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            if result.returncode != 0:
+                errors = (f"{self.tool_name} found issues:\n{result.stdout}",)
+                if self.verbose:
+                    self.format_output(result)
+                return CheckResult(
+                    passed=False,
+                    tool_name=self.tool_name,
+                    errors=errors,
+                    stdout=result.stdout,
+                )
+
+            if self.verbose:
+                print(success(f"{self.tool_name} check passed"))
+            return CheckResult(passed=True, tool_name=self.tool_name)
+
+        except FileNotFoundError:
+            error_msg = f"{self.tool_name} not found"
+            if self.verbose:
+                print(error(error_msg))
+            return CheckResult(
+                passed=False,
+                tool_name=self.tool_name,
+                errors=(error_msg,),
+                install_hint=self.install_command,
+            )
+
+
+class BlackChecker(BaseChecker):
+    """Black code formatter checker.
+
+    Runs Black in check mode to verify code formatting without
+    making changes. Uses 100-character line length.
+    """
+
+    @property
+    def tool_name(self) -> ToolName:
+        return "Black"
+
+    @property
+    def install_command(self) -> str:
+        return "pip install black"
+
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
+        """Build Black command with check flag and line length."""
+        return [
+            sys.executable,
+            "-m",
+            "black",
+            "--check",
+            f"--line-length={BLACK_LINE_LENGTH}",
+            *target_paths,
+        ]
+
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
+        """Format Black output with fix instructions."""
+        print(warning("Black found formatting issues"))
+        print(result.stdout)
+        print(info("Run 'black scripts/python/ scripts/orchestrator.py' to fix"))
+
+
+class RuffChecker(BaseChecker):
+    """Ruff linter checker.
+
+    Runs Ruff linter to identify code quality issues,
+    potential bugs, and style violations.
+    """
+
+    @property
+    def tool_name(self) -> ToolName:
+        return "Ruff"
+
+    @property
+    def install_command(self) -> str:
+        return "pip install ruff"
+
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
+        """Build Ruff command for linting."""
+        return [sys.executable, "-m", "ruff", "check", *target_paths]
+
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
+        """Format Ruff output with fix instructions."""
+        print(warning("Ruff found linting issues"))
+        print(result.stdout)
+        print(info("Run 'ruff check --fix scripts/python/ scripts/orchestrator.py' to fix"))
+
+
+class MypyChecker(BaseChecker):
+    """Mypy type checker.
+
+    Runs mypy in strict mode to verify type annotations
+    and catch potential type-related bugs.
+    """
+
+    @property
+    def tool_name(self) -> ToolName:
+        return "mypy"
+
+    @property
+    def install_command(self) -> str:
+        return "pip install mypy"
+
+    def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
+        """Build mypy command with strict mode and explicit package bases."""
+        # Set MYPYPATH to scripts dir to resolve module paths correctly
+        os.environ["MYPYPATH"] = str(Path(__file__).parent.parent.parent)
+        return [
+            sys.executable,
+            "-m",
+            "mypy",
+            "--strict",
+            "--explicit-package-bases",
+            "--namespace-packages",
+            *target_paths,
+        ]
+
+    def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
+        """Format mypy output."""
+        print(warning("mypy found type errors"))
+        print(result.stdout)
+
+
+class CodeQualityAuditor:
+    """Orchestrates code quality checks across multiple tools.
+
+    Runs Black, Ruff, and mypy checks and aggregates results
+    into a comprehensive report.
+
+    Example:
+        >>> auditor = CodeQualityAuditor()
+        >>> report = auditor.run_all_checks()
+        >>> if report.passed:
+        ...     print("All checks passed!")
+    """
+
+    def __init__(
+        self,
+        *,
+        target_paths: Sequence[str] = DEFAULT_PYTHON_DIRS,
+        verbose: bool = True,
+    ) -> None:
+        """Initialize auditor with checkers.
+
+        Args:
+            target_paths: Paths to check (default: scripts/python/)
+            verbose: Enable verbose output (default: True)
+        """
+        self.target_paths = target_paths
+        self.verbose = verbose
+        self.checkers: tuple[BaseChecker, ...] = (
+            BlackChecker(verbose=verbose),
+            RuffChecker(verbose=verbose),
+            MypyChecker(verbose=verbose),
+        )
+
+    def run_all_checks(self) -> CodeQualityReport:
+        """Run all configured code quality checks.
+
+        Returns:
+            CodeQualityReport with aggregated results
+        """
+        if self.verbose:
+            print(separator())
+            print(header("Code Quality Audit"))
+            print(separator())
+
+        results: list[CheckResult] = []
+        for checker in self.checkers:
+            result = checker.run(self.target_paths)
+            results.append(result)
+
+        return CodeQualityReport(results=tuple(results))
+
+    def print_summary(self, report: CodeQualityReport) -> None:
+        """Print human-readable summary of audit results.
+
+        Args:
+            report: Report to summarize
+        """
+        print(f"\n{separator()}")
+        if report.passed:
+            print(success("ALL CODE QUALITY CHECKS PASSED"))
+        else:
+            print(
+                error(
+                    f"CODE QUALITY AUDIT FAILED ({report.failed_checks}/{report.total_checks} checks)"
+                )
+            )
+
+        print(separator())
+
+        if not report.passed and report.all_errors:
+            print("\nIssues:")
+            for err in report.all_errors:
+                print(f"  - {err}")
+
+            # Print install hints for missing tools
+            for result in report.results:
+                if result.install_hint:
+                    print(f"\nInstall {result.tool_name}: {result.install_hint}")
+
+
+def main() -> ExitCode:
+    """Run all code quality checks and return exit code.
+
+    Returns:
+        0 if all checks passed, 1 otherwise
+    """
+    auditor = CodeQualityAuditor()
+    report = auditor.run_all_checks()
+    auditor.print_summary(report)
+
+    return 0 if report.passed else 1
+
+
+# Backward-compatible wrapper functions for legacy test code
+def run_black_check() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Run Black format check.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = BlackChecker(verbose=False)
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+def run_ruff_check() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Run Ruff linting check.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = RuffChecker(verbose=False)
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+def run_mypy_check() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Run mypy type check.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = MypyChecker(verbose=False)
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+if __name__ == "__main__":
+    sys.exit(main()) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.validation.validate_env:[39:349]
+==python.validation.validate_env:[39:349]
+@dataclass(frozen=True, slots=True)
+class EnvVarConfig:
+    """Configuration for an environment variable.
+
+    Attributes:
+        name: Environment variable name
+        description: Human-readable description
+        required: Whether variable is required (vs optional)
+    """
+
+    name: EnvVarName
+    description: Description
+    required: bool = True
+
+    @property
+    def is_set(self) -> bool:
+        """Check if environment variable is currently set."""
+        return os.getenv(str(self.name)) is not None
+
+    def get_masked_value(self) -> str:
+        """Get masked value for display.
+
+        Returns:
+            Masked value string, or empty if not set
+        """
+        value = os.getenv(str(self.name))
+        if not value:
+            return ""
+
+        if len(value) > MASK_LENGTH:
+            return f"{value[:MASK_LENGTH]}{MASK_SUFFIX}"
+        return SHORT_MASK
+
+
+@dataclass(frozen=True, slots=True)
+class ValidationResult:
+    """Result of environment validation.
+
+    Attributes:
+        missing_required: Required variables that are not set
+        missing_optional: Optional variables that are not set
+        present_vars: Variables that are properly set
+    """
+
+    missing_required: tuple[EnvVarConfig, ...] = field(default_factory=tuple)
+    missing_optional: tuple[EnvVarConfig, ...] = field(default_factory=tuple)
+    present_vars: tuple[EnvVarConfig, ...] = field(default_factory=tuple)
+
+    @property
+    def is_valid(self) -> bool:
+        """Check if all required variables are set."""
+        return len(self.missing_required) == 0
+
+    @property
+    def has_warnings(self) -> bool:
+        """Check if any optional variables are missing."""
+        return len(self.missing_optional) > 0
+
+    @property
+    def total_missing(self) -> int:
+        """Total count of missing variables."""
+        return len(self.missing_required) + len(self.missing_optional)
+
+
+# Environment variable configurations
+REQUIRED_ENV_VARS: Final[tuple[EnvVarConfig, ...]] = (
+    EnvVarConfig("GITHUB_OWNER", "GitHub organization/username for API access", required=True),
+    EnvVarConfig("GH_PAT", "GitHub Personal Access Token for authentication", required=True),
+    EnvVarConfig("DOCKER_POSTGRES_PASSWORD", "PostgreSQL database password", required=True),
+    EnvVarConfig("DOCKER_MARIADB_ROOT_PASSWORD", "MariaDB root password", required=True),
+    EnvVarConfig("DOCKER_MARIADB_PASSWORD", "MariaDB cluster_user password", required=True),
+    EnvVarConfig("DOCKER_REDIS_PASSWORD", "Redis authentication password", required=True),
+    EnvVarConfig("DOCKER_MINIO_ROOT_USER", "MinIO root username", required=True),
+    EnvVarConfig("DOCKER_MINIO_ROOT_PASSWORD", "MinIO root password", required=True),
+    EnvVarConfig("DOCKER_GRAFANA_ADMIN_PASSWORD", "Grafana admin password", required=True),
+    EnvVarConfig("DOCKER_JUPYTER_TOKEN", "Jupyter notebook access token", required=True),
+    EnvVarConfig("DOCKER_PGADMIN_PASSWORD", "pgAdmin web interface password", required=True),
+)
+
+OPTIONAL_ENV_VARS: Final[tuple[EnvVarConfig, ...]] = (
+    EnvVarConfig(
+        "DOCKER_ACCESS_TOKEN",
+        "Docker Hub access token for increased pull limits",
+        required=False,
+    ),
+    EnvVarConfig("CODECOV_TOKEN", "Codecov token for coverage reporting", required=False),
+)
+
+
+class EnvValidator:
+    """Validates environment variables configuration.
+
+    Checks required and optional environment variables,
+    providing detailed status and instructions.
+
+    Example:
+        >>> validator = EnvValidator()
+        >>> result = validator.validate()
+        >>> if result.is_valid:
+        ...     print("Ready to start!")
+    """
+
+    def __init__(
+        self,
+        *,
+        required_vars: tuple[EnvVarConfig, ...] = REQUIRED_ENV_VARS,
+        optional_vars: tuple[EnvVarConfig, ...] = OPTIONAL_ENV_VARS,
+        verbose: bool = True,
+    ) -> None:
+        """Initialize validator.
+
+        Args:
+            required_vars: Required environment variables config
+            optional_vars: Optional environment variables config
+            verbose: Enable verbose output (default: True)
+        """
+        self.required_vars = required_vars
+        self.optional_vars = optional_vars
+        self.verbose = verbose
+
+    def _check_vars(
+        self,
+        vars_to_check: tuple[EnvVarConfig, ...],
+        *,
+        present_list: list[EnvVarConfig],
+        missing_list: list[EnvVarConfig],
+        message_func: Callable[[str], str],
+    ) -> None:
+        """Check variables and categorize them.
+
+        Args:
+            vars_to_check: Variables to validate
+            present_list: List to append present variables to
+            missing_list: List to append missing variables to
+            message_func: Function to format missing message (error/warning)
+        """
+        for var_config in vars_to_check:
+            if var_config.is_set:
+                present_list.append(var_config)
+                if self.verbose:
+                    masked = var_config.get_masked_value()
+                    print(f"  {success(f'{var_config.name}: {masked}')}")
+            else:
+                missing_list.append(var_config)
+                if self.verbose:
+                    print(
+                        f"  {message_func(f'{var_config.name}: NOT SET - {var_config.description}')}"
+                    )
+
+    def validate(self) -> ValidationResult:
+        """Validate all environment variables.
+
+        Returns:
+            ValidationResult with missing/present variables
+        """
+        if self.verbose:
+            print(f"\n{header('=== Environment Variables Validation ===')}\n")
+
+        missing_required: list[EnvVarConfig] = []
+        missing_optional: list[EnvVarConfig] = []
+        present_vars: list[EnvVarConfig] = []
+
+        # Check required variables
+        if self.verbose:
+            print(f"{bold('Required Variables:')}")
+
+        for var_config in self.required_vars:
+            if var_config.is_set:
+                present_vars.append(var_config)
+                if self.verbose:
+                    masked = var_config.get_masked_value()
+                    print(f"  {success(f'{var_config.name}: {masked}')}")
+            else:
+                missing_required.append(var_config)
+                if self.verbose:
+                    print(f"  {error(f'{var_config.name}: NOT SET - {var_config.description}')}")
+
+        # Check optional variables
+        if self.verbose:
+            print(f"\n{bold('Optional Variables:')}")
+
+        for var_config in self.optional_vars:
+            if var_config.is_set:
+                present_vars.append(var_config)
+                if self.verbose:
+                    masked = var_config.get_masked_value()
+                    print(f"  {success(f'{var_config.name}: {masked}')}")
+            else:
+                missing_optional.append(var_config)
+                if self.verbose:
+                    print(f"  {warning(f'{var_config.name}: NOT SET - {var_config.description}')}")
+
+        return ValidationResult(
+            missing_required=tuple(missing_required),
+            missing_optional=tuple(missing_optional),
+            present_vars=tuple(present_vars),
+        )
+
+
+class ValidationReporter:
+    """Formats and displays validation results.
+
+    Provides human-readable output with actionable instructions
+    for fixing missing environment variables.
+    """
+
+    @staticmethod
+    def print_summary(result: ValidationResult) -> None:
+        """Print validation summary with instructions.
+
+        Args:
+            result: Validation result to display
+        """
+        print(f"\n{separator()}")
+
+        if result.is_valid:
+            print(f"{success('All required environment variables are set!')}")
+
+            if result.has_warnings:
+                print(f"\n{warning('Optional variables missing:')}")
+                for var in result.missing_optional:
+                    print(f"  - {var.name}")
+                print(f"\n{warning('Consider setting these for full functionality.')}")
+
+            print(f"\n{Colors.GREEN}You can now start the stack:{Colors.RESET}")
+            print("  docker-compose up -d")
+            print("  docker-compose --profile dev up -d  # Include devcontainer")
+
+        else:
+            print(f"{error('Missing required environment variables!')}")
+            print(f"\n{Colors.RED}Required variables missing:{Colors.RESET}")
+            for var in result.missing_required:
+                print(f"  - {var.name}: {var.description}")
+
+            print(f"\n{Colors.BLUE}To fix this:{Colors.RESET}")
+            print("  1. Copy .env.example to .env:")
+            print("     cp .env.example .env")
+            print("  2. Edit .env and fill in your values")
+            print("  3. Source the .env file:")
+            print("     export $(cat .env | xargs)  # Linux/macOS")
+            powershell_cmd = (
+                "     Get-Content .env | ForEach-Object { $var = $_.Split('='); "
+                "[Environment]::SetEnvironmentVariable($var[0], $var[1], 'Process') }  # PowerShell"
+            )
+            print(powershell_cmd)
+            print("  4. Run this script again to verify")
+
+        print(f"{separator()}\n")
+
+
+def main() -> ExitCode:
+    """Run environment validation and return exit code.
+
+    Returns:
+        0 if all required vars set, 1 otherwise
+    """
+    validator = EnvValidator()
+    result = validator.validate()
+
+    reporter = ValidationReporter()
+    reporter.print_summary(result)
+
+    return 0 if result.is_valid else 1
+
+
+# Backward-compatible wrapper functions for legacy test code
+def validate_env_vars() -> tuple[bool, list[str], list[str]]:
+    """Legacy wrapper: Validate environment variables.
+
+    Returns:
+        Tuple of (all_valid, missing_required_names, missing_optional_names)
+    """
+    validator = EnvValidator()
+    result = validator.validate()
+    missing_req = [var.name for var in result.missing_required]
+    missing_opt = [var.name for var in result.missing_optional]
+    return result.is_valid, missing_req, missing_opt
+
+
+def print_summary(
+    all_valid: bool, missing_required: list[str], missing_optional: list[str]
+) -> None:
+    """Legacy wrapper: Print validation summary.
+
+    Args:
+        all_valid: Whether all required variables are set (currently unused - for compatibility)
+        missing_required: List of missing required variable names
+        missing_optional: List of missing optional variable names
+    """
+    _ = all_valid  # Unused but kept for backward compatibility
+    # Reconstruct a ValidationResult from the legacy parameters
+    missing_req_configs = tuple(var for var in REQUIRED_ENV_VARS if var.name in missing_required)
+    missing_opt_configs = tuple(var for var in OPTIONAL_ENV_VARS if var.name in missing_optional)
+    # Present vars are all that aren't missing
+    all_vars = REQUIRED_ENV_VARS + OPTIONAL_ENV_VARS
+    missing_all = set(missing_required + missing_optional)
+    present_configs = tuple(var for var in all_vars if var.name not in missing_all)
+
+    result = ValidationResult(
+        missing_required=missing_req_configs,
+        missing_optional=missing_opt_configs,
+        present_vars=present_configs,
+    )
+
+    reporter = ValidationReporter()
+    reporter.print_summary(result)
+
+
+if __name__ == "__main__":
+    sys.exit(main()) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.utils.colors:[24:188]
+==python.utils.colors:[24:188]
+__all__: list[str] = [
+    "Colors",
+    "ColorScheme",
+    "colorize",
+    "success",
+    "warning",
+    "error",
+    "info",
+    "bold",
+    "header",
+    "separator",
+    "ColorCode",
+    "FormattedText",
+]
+
+
+class Colors:
+    """ANSI color codes for terminal output.
+
+    All constants are immutable (Final) to prevent accidental modification
+    and ensure consistent formatting across the application.
+    """
+
+    GREEN: Final[ColorCode] = "\033[92m"
+    YELLOW: Final[ColorCode] = "\033[93m"
+    RED: Final[ColorCode] = "\033[91m"
+    BLUE: Final[ColorCode] = "\033[94m"
+    MAGENTA: Final[ColorCode] = "\033[95m"
+    CYAN: Final[ColorCode] = "\033[96m"
+    WHITE: Final[ColorCode] = "\033[97m"
+    RESET: Final[AnsiCode] = "\033[0m"
+    BOLD: Final[AnsiCode] = "\033[1m"
+    DIM: Final[AnsiCode] = "\033[2m"
+    ITALIC: Final[AnsiCode] = "\033[3m"
+    UNDERLINE: Final[AnsiCode] = "\033[4m"
+
+
+@dataclass(frozen=True, slots=True)
+class ColorScheme:
+    """Immutable color scheme for consistent theming.
+
+    Attributes:
+        success: Color for success messages (default: GREEN)
+        warning: Color for warning messages (default: YELLOW)
+        error: Color for error messages (default: RED)
+        info: Color for informational messages (default: BLUE)
+        highlight: Color for highlighted text (default: CYAN)
+
+    Example:
+        >>> scheme = ColorScheme()
+        >>> print(colorize("Success", scheme.success))
+    """
+
+    success: ColorCode = Colors.GREEN
+    warning: ColorCode = Colors.YELLOW
+    error: ColorCode = Colors.RED
+    info: ColorCode = Colors.BLUE
+    highlight: ColorCode = Colors.CYAN
+
+
+def colorize(text: str, color: ColorCode) -> FormattedText:
+    """Wrap text with ANSI color codes.
+
+    Args:
+        text: Text to colorize
+        color: ANSI color code (e.g., Colors.GREEN)
+
+    Returns:
+        Text wrapped with color codes and automatic reset
+
+    Example:
+        >>> colorize("Hello", Colors.GREEN)
+        '\\033[92mHello\\033[0m'
+    """
+    return f"{color}{text}{Colors.RESET}"
+
+
+def success(text: str) -> FormattedText:
+    """Format text as success message with checkmark.
+
+    Args:
+        text: Message content
+
+    Returns:
+        Green colored text with Γ£ô prefix
+    """
+    return colorize(f"Γ£ô {text}", Colors.GREEN)
+
+
+def warning(text: str) -> FormattedText:
+    """Format text as warning message.
+
+    Args:
+        text: Warning content
+
+    Returns:
+        Yellow colored text with ΓÜá prefix
+    """
+    return colorize(f"ΓÜá {text}", Colors.YELLOW)
+
+
+def error(text: str) -> FormattedText:
+    """Format text as error message.
+
+    Args:
+        text: Error content
+
+    Returns:
+        Red colored text with Γ£ù prefix
+    """
+    return colorize(f"Γ£ù {text}", Colors.RED)
+
+
+def info(text: str) -> FormattedText:
+    """Format text as informational message.
+
+    Args:
+        text: Info content
+
+    Returns:
+        Blue colored text with Γä╣ prefix
+    """
+    return colorize(f"Γä╣ {text}", Colors.BLUE)
+
+
+def bold(text: str) -> FormattedText:
+    """Format text as bold.
+
+    Args:
+        text: Text to make bold
+
+    Returns:
+        Bold formatted text
+    """
+    return colorize(text, Colors.BOLD)
+
+
+def header(text: str) -> FormattedText:
+    """Format text as bold blue header.
+
+    Args:
+        text: Header text
+
+    Returns:
+        Bold blue formatted text
+    """
+    return colorize(text, f"{Colors.BOLD}{Colors.BLUE}")
+
+
+def separator(width: int = 60, char: str = "=") -> FormattedText:
+    """Create a bold separator line.
+
+    Args:
+        width: Line width in characters (default: 60)
+        char: Character to repeat (default: '=')
+
+    Returns:
+        Bold formatted separator line
+
+    Example:
+        >>> separator(40, '-')
+        '\\033[1m----------------------------------------\\033[0m'
+    """
+    return colorize(char * width, Colors.BOLD) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.utils.logging_utils:[28:180]
+==python.utils.logging_utils:[28:180]
+__all__: list[str] = [
+    "ColoredFormatter",
+    "setup_logger",
+    "get_logger",
+    "LogLevel",
+    "LogLevelName",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
+]
+
+
+class FormatterProtocol(Protocol):
+    """Protocol defining the interface for log formatters.
+
+    Any class implementing this protocol can be used as a log formatter.
+    Provides type safety for formatter objects in logging configuration.
+    """
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format a log record into a string.
+
+        Args:
+            record: Log record to format
+
+        Returns:
+            Formatted log message string
+        """
+        return ""  # Protocol method - implementation required in subclasses
+
+
+class ColoredFormatter(logging.Formatter):
+    """Custom formatter with ANSI color support.
+
+    Automatically colorizes log level names based on severity.
+    Uses immutable mapping for consistent color assignment.
+
+    Attributes:
+        LEVEL_COLORS: Immutable mapping of log levels to color codes
+
+    Example:
+        >>> formatter = ColoredFormatter("%(levelname)s: %(message)s")
+        >>> handler.setFormatter(formatter)
+    """
+
+    LEVEL_COLORS: Final[dict[LogLevel, ColorCode]] = {
+        logging.DEBUG: Colors.CYAN,
+        logging.INFO: Colors.BLUE,
+        logging.WARNING: Colors.YELLOW,
+        logging.ERROR: Colors.RED,
+        logging.CRITICAL: f"{Colors.BOLD}{Colors.RED}",
+    }
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format log record with appropriate color.
+
+        Args:
+            record: Log record to format
+
+        Returns:
+            Formatted and colorized log message
+        """
+        color = self.LEVEL_COLORS.get(record.levelno, Colors.RESET)
+        record.levelname = f"{color}{record.levelname}{Colors.RESET}"
+        return super().format(record)
+
+
+def setup_logger(
+    name: LoggerName,
+    *,
+    level: LogLevel = INFO,
+    format_string: FormatString | None = None,
+    use_colors: bool = True,
+) -> logging.Logger:
+    """Setup and configure logger with color support.
+
+    Creates a new logger or reconfigures existing one with the specified
+    settings. Automatically clears existing handlers to prevent duplication.
+
+    Args:
+        name: Logger name (typically __name__ or module name)
+        level: Logging level (default: INFO). Use module constants:
+               DEBUG, INFO, WARNING, ERROR, CRITICAL
+        format_string: Custom format string (default: DEFAULT_FORMAT)
+                      Supports standard logging format specifiers
+        use_colors: Enable ANSI color output (default: True)
+                   Automatically uses ColoredFormatter when True
+
+    Returns:
+        Configured logger instance ready for use
+
+    Example:
+        >>> logger = setup_logger(__name__, level=DEBUG, use_colors=True)
+        >>> logger.debug("Debug message")  # Cyan colored
+        >>> logger.info("Info message")   # Blue colored
+        >>> logger.warning("Warning")      # Yellow colored
+        >>> logger.error("Error occurred") # Red colored
+
+    Note:
+        If logger already exists, all handlers are cleared and reconfigured.
+        This ensures consistent configuration across multiple setup calls.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    # Remove existing handlers to prevent duplication
+    logger.handlers.clear()
+
+    # Create console handler with same level
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(level)
+
+    # Determine formatter based on color preference
+    if format_string is None:
+        format_string = DEFAULT_LOG_FORMAT
+
+    formatter: FormatterProtocol
+    if use_colors:
+        formatter = ColoredFormatter(format_string)
+    else:
+        formatter = logging.Formatter(format_string)
+
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    return logger
+
+
+def get_logger(name: LoggerName) -> logging.Logger:
+    """Get existing logger instance.
+
+    Retrieves logger by name without modifying configuration.
+    If logger doesn't exist, creates basic logger with default settings.
+
+    Args:
+        name: Logger name to retrieve
+
+    Returns:
+        Logger instance (may be unconfigured if new)
+
+    Example:
+        >>> # After setup_logger(__name__) in module
+        >>> logger = get_logger(__name__)
+        >>> logger.info("Using existing logger")
+
+    Note:
+        Prefer using setup_logger() for initial configuration.
+        Use get_logger() only when logger is already configured.
+    """
+    return logging.getLogger(name) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.utils.file_utils:[26:212]
+==python.utils.file_utils:[26:212]
+__all__: list[str] = [
+    "read_json",
+    "write_json",
+    "read_lines",
+    "file_exists",
+    "ensure_dir",
+    "get_files_by_extension",
+    "get_file_size",
+    "get_relative_path",
+    "StrPath",
+    "JSONDict",
+    "FileSize",
+]
+
+
+def read_json(file_path: StrPath) -> JSONDict:
+    """Read and parse JSON file.
+
+    Args:
+        file_path: Path to JSON file (str or PathLike)
+
+    Returns:
+        Parsed JSON as dictionary
+
+    Raises:
+        FileNotFoundError: If file doesn't exist
+        json.JSONDecodeError: If file is not valid JSON
+        PermissionError: If file is not readable
+
+    Example:
+        >>> config = read_json(Path(".config/app.json"))
+        >>> print(config["version"])
+    """
+    with open(file_path, "r", encoding=DEFAULT_ENCODING) as f:
+        result: JSONDict = json.load(f)
+        return result
+
+
+def write_json(file_path: StrPath, data: JSONDict, indent: int = DEFAULT_JSON_INDENT) -> None:
+    """Write dictionary to JSON file.
+
+    Args:
+        file_path: Path to output JSON file (str or PathLike)
+        data: Dictionary to write
+        indent: JSON indentation spaces (default: 2)
+
+    Raises:
+        PermissionError: If file is not writable
+        OSError: If disk is full or other I/O error
+
+    Example:
+        >>> config = {"version": "1.0", "debug": True}
+        >>> write_json("config.json", config, indent=4)
+    """
+    with open(file_path, "w", encoding=DEFAULT_ENCODING) as f:
+        json.dump(data, f, indent=indent)
+
+
+def read_lines(file_path: StrPath, *, strip: bool = True) -> list[str]:
+    """Read file lines into list.
+
+    Args:
+        file_path: Path to file (str or PathLike)
+        strip: Strip whitespace from lines (default: True)
+
+    Returns:
+        List of lines from file
+
+    Raises:
+        FileNotFoundError: If file doesn't exist
+        PermissionError: If file is not readable
+
+    Example:
+        >>> lines = read_lines("requirements.txt", strip=True)
+        >>> packages = [line for line in lines if line and not line.startswith("#")]
+    """
+    with open(file_path, "r", encoding=DEFAULT_ENCODING) as f:
+        lines = f.readlines()
+
+    if strip:
+        return [line.strip() for line in lines]
+    return lines
+
+
+def file_exists(file_path: StrPath) -> bool:
+    """Check if file or directory exists.
+
+    Args:
+        file_path: Path to check (str or PathLike)
+
+    Returns:
+        True if path exists, False otherwise
+
+    Example:
+        >>> if file_exists(".env"):
+        ...     print("Environment file found")
+    """
+    return Path(file_path).exists()
+
+
+def ensure_dir(dir_path: StrPath) -> None:
+    """Ensure directory exists, create if needed.
+
+    Creates all parent directories as needed (like mkdir -p).
+
+    Args:
+        dir_path: Path to directory (str or PathLike)
+
+    Raises:
+        PermissionError: If directory cannot be created
+        OSError: If creation fails for other reasons
+
+    Example:
+        >>> ensure_dir("logs/application/debug")
+        >>> # All parent directories created if needed
+    """
+    Path(dir_path).mkdir(parents=True, exist_ok=True)
+
+
+def get_files_by_extension(
+    directory: StrPath, extension: str, *, recursive: bool = True
+) -> Sequence[Path]:
+    """Get all files with specific extension in directory.
+
+    Args:
+        directory: Directory to search (str or PathLike)
+        extension: File extension (e.g., '.py', '.json', or 'py')
+        recursive: Search subdirectories recursively (default: True)
+
+    Returns:
+        Sequence of Path objects matching extension
+
+    Example:
+        >>> py_files = get_files_by_extension("src", ".py", recursive=True)
+        >>> for file in py_files:
+        ...     print(file.name)
+    """
+    path = Path(directory)
+
+    if not extension.startswith("."):
+        extension = f".{extension}"
+
+    if recursive:
+        return tuple(path.rglob(f"*{extension}"))
+    return tuple(path.glob(f"*{extension}"))
+
+
+def get_file_size(file_path: StrPath) -> FileSize:
+    """Get file size in bytes.
+
+    Args:
+        file_path: Path to file (str or PathLike)
+
+    Returns:
+        File size in bytes
+
+    Raises:
+        FileNotFoundError: If file doesn't exist
+        PermissionError: If file stats cannot be read
+
+    Example:
+        >>> size_bytes = get_file_size("large_file.bin")
+        >>> size_mb = size_bytes / (1024 * 1024)
+        >>> print(f"Size: {size_mb:.2f} MB")
+    """
+    return Path(file_path).stat().st_size
+
+
+def get_relative_path(file_path: StrPath, base_path: StrPath | None = None) -> str:
+    """Get relative path from base path.
+
+    Args:
+        file_path: Path to file (str or PathLike)
+        base_path: Base path for relativity (default: current working directory)
+
+    Returns:
+        Relative path string
+
+    Example:
+        >>> rel_path = get_relative_path("/home/user/project/src/main.py", "/home/user")
+        >>> print(rel_path)  # "project/src/main.py"
+    """
+    if base_path is None:
+        base_path = os.getcwd()
+
+    return os.path.relpath(file_path, base_path) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.types.constants.__init__:[33:43]
+==python.types.constants.formatting:[17:25]
+__all__: list[str] = [
+    "BLACK_LINE_LENGTH",
+    "RUFF_LINE_LENGTH",
+    "YAML_LINE_LENGTH",
+    "DEFAULT_JSON_INDENT",
+    "MASK_LENGTH",
+    "MASK_SUFFIX",
+    "SHORT_MASK", (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.utils.__init__:[84:93]
+==python.utils.colors:[27:35]
+    "colorize",
+    "success",
+    "warning",
+    "error",
+    "info",
+    "bold",
+    "header",
+    "separator",
+    # File utils - types and constants (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.mcp.analyze_tokens:[188:195]
+==python.mcp.validate_config:[233:240]
+    parser.add_argument(
+        "config",
+        type=Path,
+        nargs="?",
+        default=Path.cwd() / ".vscode" / "mcp.json",
+        help="Path to mcp.json file (or profile in .vscode/profiles/)",
+    ) (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.validation.validate_configs:[173:182]
+==python.validation.validate_configs:[349:357]
+        if self.verbose:
+            print(error(error_msg))
+        return ValidationResult(
+            passed=False,
+            config_type=self.config_type,
+            errors=(error_msg,),
+        )
+
+ (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.validation.validate_configs:[173:182]
+==python.validation.validate_configs:[349:357]
+                if self.verbose:
+                    print(error(error_msg))
+                return ValidationResult(
+                    passed=False,
+                    config_type=self.config_type,
+                    errors=(error_msg,),
+                )
+ (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.audit.dependencies:[252:262]
+==python.audit.dependencies:[295:305]
+        except FileNotFoundError:
+            return self._handle_pip_not_found()
+
+    def _parse_outdated_output(self, output: str) -> tuple[Package, ...]:
+        """Parse pip list --outdated output into Package objects."""
+        packages: list[Package] = []
+        lines = output.strip().split("\n")[2:]  # Skip header lines
+
+        for line in lines:
+            parts = line.split() (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.audit.dependencies:[252:262]
+==python.audit.dependencies:[295:305]
+        except FileNotFoundError:
+            return self._handle_pip_not_found()
+
+    def _parse_outdated_output(self, output: str) -> tuple[Package, ...]:
+        """Parse pip list --outdated output into Package objects."""
+        packages: list[Package] = []
+        lines = output.strip().split("\n")[2:]  # Skip header lines
+
+        for line in lines:
+            parts = line.split() (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.types.constants.__init__:[43:50]
+==python.types.constants.paths:[22:28]
+    "DEFAULT_PYTHON_DIRS",
+    "NGINX_CONFIGS",
+    "POSTGRESQL_CONFIG",
+    "MARIADB_CONFIG",
+    "PYPROJECT_PATH",
+    "DEFAULT_ENCODING", (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.validation.validate_env:[206:212]
+==python.validation.validate_env:[221:227]
+            if var_config.is_set:
+                present_vars.append(var_config)
+                if self.verbose:
+                    masked = var_config.get_masked_value()
+                    print(f"  {success(f'{var_config.name}: {masked}')}")
+            else: (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.validation.validate_env:[206:212]
+==python.validation.validate_env:[221:227]
+            if var_config.is_set:
+                present_vars.append(var_config)
+                if self.verbose:
+                    masked = var_config.get_masked_value()
+                    print(f"  {success(f'{var_config.name}: {masked}')}")
+            else: (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.types.constants.__init__:[52:58]
+==python.types.constants.mcp:[18:23]
+    "MCP_PROTOCOL_VERSION",
+    "MCP_VALID_COMMANDS",
+    "MCP_REQUIRED_FIELDS",
+    "TOKENS_PER_TOOL",
+    "TOKENS_PER_SERVER",
+    # Logging (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.types.enums.__init__:[15:20]
+==python.utils.logging_utils:[34:39]
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL", (duplicate-code)
+orchestrator.py:1:0: R0801: Similar lines in 2 files
+==python.utils.__init__:[113:118]
+==python.utils.logging_utils:[34:39]
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL", (duplicate-code)
+
+------------------------------------------------------------------
+Your code has been rated at 9.92/10 (previous run: 9.72/10, +0.19)
+

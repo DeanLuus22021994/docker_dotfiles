@@ -200,18 +200,47 @@ class BaseDependencyChecker(ABC):
         )
 
     def _handle_pip_not_found(self) -> DependencyCheckResult:
-        """Handle pip not found error consistently.
+        """Handle FileNotFoundError for missing pip command.
 
         Returns:
-            DependencyCheckResult with error
+            DependencyCheckResult indicating pip not found
         """
+        error_msg = "pip not found. Ensure Python environment is activated."
         if self.verbose:
-            print(error("pip not found"))
+            print(error(error_msg))
         return DependencyCheckResult(
             passed=False,
             check_name=self.check_name,
-            errors=("pip not found",),
+            errors=(error_msg,),
         )
+
+    def _parse_pip_list_output(
+        self, output: str, *, include_latest: bool = False
+    ) -> tuple[Package, ...]:
+        """Parse pip list output into Package objects.
+
+        Args:
+            output: Raw pip list output
+            include_latest: Whether output includes latest version column
+
+        Returns:
+            Tuple of Package objects
+        """
+        packages: list[Package] = []
+        lines = output.strip().split("\n")[2:]  # Skip header lines
+
+        for line in lines:
+            parts = line.split()
+            if include_latest and len(parts) >= 3:
+                name, current, latest = parts[0], parts[1], parts[2]
+                packages.append(
+                    Package(name=name, current_version=current, latest_version=latest)
+                )
+            elif not include_latest and len(parts) >= 2:
+                name, version = parts[0], parts[1]
+                packages.append(Package(name=name, current_version=version))
+
+        return tuple(packages)
 
 
 class OutdatedPackagesChecker(BaseDependencyChecker):
@@ -231,7 +260,7 @@ class OutdatedPackagesChecker(BaseDependencyChecker):
 
             if result.stdout.strip():
                 # Parse outdated packages
-                packages = self._parse_outdated_output(result.stdout)
+                packages = self._parse_pip_list_output(result.stdout, include_latest=True)
                 warnings_msg = (f"Found {len(packages)} outdated package(s)",)
 
                 if self.verbose:
@@ -253,19 +282,6 @@ class OutdatedPackagesChecker(BaseDependencyChecker):
         except FileNotFoundError:
             return self._handle_pip_not_found()
 
-    def _parse_outdated_output(self, output: str) -> tuple[Package, ...]:
-        """Parse pip list --outdated output into Package objects."""
-        packages: list[Package] = []
-        lines = output.strip().split("\n")[2:]  # Skip header lines
-
-        for line in lines:
-            parts = line.split()
-            if len(parts) >= 3:
-                name, current, latest = parts[0], parts[1], parts[2]
-                packages.append(Package(name=name, current_version=current, latest_version=latest))
-
-        return tuple(packages)
-
 
 class InstalledPackagesChecker(BaseDependencyChecker):
     """Lists all installed packages and versions."""
@@ -286,7 +302,7 @@ class InstalledPackagesChecker(BaseDependencyChecker):
                 print(result.stdout)
                 print(success("Package list retrieved successfully"))
 
-            packages = self._parse_installed_output(result.stdout)
+            packages = self._parse_pip_list_output(result.stdout, include_latest=False)
             return DependencyCheckResult(
                 passed=True,
                 check_name=self.check_name,
@@ -295,19 +311,6 @@ class InstalledPackagesChecker(BaseDependencyChecker):
 
         except FileNotFoundError:
             return self._handle_pip_not_found()
-
-    def _parse_installed_output(self, output: str) -> tuple[Package, ...]:
-        """Parse pip list output into Package objects."""
-        packages: list[Package] = []
-        lines = output.strip().split("\n")[2:]  # Skip header lines
-
-        for line in lines:
-            parts = line.split()
-            if len(parts) >= 2:
-                name, version = parts[0], parts[1]
-                packages.append(Package(name=name, current_version=version))
-
-        return tuple(packages)
 
 
 class PyprojectDependenciesChecker(BaseDependencyChecker):
