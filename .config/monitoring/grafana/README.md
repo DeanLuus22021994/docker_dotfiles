@@ -1,3 +1,10 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["monitoring", "grafana", "configuration", "provisioning"]
+description: "Automated provisioning configuration for Grafana dashboards and datasources"
+---
+
 # Grafana Configuration
 
 Automated provisioning for Grafana dashboards and datasources.

@@ -1,3 +1,10 @@
+---
+date_created: "2025-10-26T00:00:00Z"
+last_updated: "2025-10-26T00:00:00Z"
+tags: ["testing", "fixtures", "sample-data", "pytest"]
+description: "Shared test fixtures and sample data for test suites"
+---
+
 # Test fixtures and sample data
 
 This directory contains shared test fixtures and sample data used across test suites.
