@@ -109,7 +109,7 @@
     1025,  // MailHog SMTP
     8025,  // MailHog UI
     5050,  // pgAdmin
-    8081   // Redis Commander
+    8082   // Redis Commander
   ],
   "portsAttributes": {
     "8080": {
@@ -172,7 +172,7 @@
       "label": "pgAdmin Database UI",
       "onAutoForward": "openBrowser"
     },
-    "8081": {
+    "8082": {
       "label": "Redis Commander",
       "onAutoForward": "openBrowser"
     }

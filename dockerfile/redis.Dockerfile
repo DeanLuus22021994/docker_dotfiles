@@ -29,8 +29,9 @@ USER redis
 # Expose Redis port
 EXPOSE 6379
 
-# Volume for persistence
+# Volume for persistence (uses named volume from docker-compose)
 VOLUME ["/data"]
 
-# Start Redis with custom config or default
-CMD ["redis-server", "--appendonly", "yes", "--requirepass", "changeme"]
+# Start Redis with persistence enabled
+# Password set via docker-compose environment variable
+CMD ["redis-server", "--appendonly", "yes"]

@@ -302,14 +302,11 @@ def print_summary(
         missing_optional: List of missing optional variable names
     """
     # Reconstruct configs for display using module-level constants
-    missing_req_configs = [
-        var for var in REQUIRED_ENV_VARS if var.name in missing_required
-    ]
-    missing_opt_configs = [
-        var for var in OPTIONAL_ENV_VARS if var.name in missing_optional
-    ]
+    missing_req_configs = [var for var in REQUIRED_ENV_VARS if var.name in missing_required]
+    missing_opt_configs = [var for var in OPTIONAL_ENV_VARS if var.name in missing_optional]
     present_configs = [
-        var for var in (*REQUIRED_ENV_VARS, *OPTIONAL_ENV_VARS)
+        var
+        for var in (*REQUIRED_ENV_VARS, *OPTIONAL_ENV_VARS)
         if var.name not in missing_required and var.name not in missing_optional
     ]
 
@@ -320,6 +317,22 @@ def print_summary(
     )
 
     ValidationReporter.print_summary(result)
+
+
+# Re-export constants for external use
+__all__ = [
+    "EnvVarConfig",
+    "ValidationResult",
+    "EnvValidator",
+    "ValidationReporter",
+    "REQUIRED_ENV_VARS",
+    "OPTIONAL_ENV_VARS",
+    "MASK_LENGTH",
+    "MASK_SUFFIX",
+    "SHORT_MASK",
+    "validate_env_vars",
+    "print_summary",
+]
 
 
 def main() -> ExitCode:

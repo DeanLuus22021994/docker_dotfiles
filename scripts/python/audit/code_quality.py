@@ -389,7 +389,7 @@ class CodeQualityAuditor:
 
 def run_black_check() -> tuple[bool, list[str]]:
     """Run Black format check (simplified interface).
-    
+
     Returns:
         Tuple of (passed, errors)
     """
@@ -400,7 +400,7 @@ def run_black_check() -> tuple[bool, list[str]]:
 
 def run_ruff_check() -> tuple[bool, list[str]]:
     """Run Ruff lint check (simplified interface).
-    
+
     Returns:
         Tuple of (passed, errors)
     """
@@ -411,7 +411,7 @@ def run_ruff_check() -> tuple[bool, list[str]]:
 
 def run_mypy_check() -> tuple[bool, list[str]]:
     """Run mypy type check (simplified interface).
-    
+
     Returns:
         Tuple of (passed, errors)
     """
@@ -420,6 +420,7 @@ def run_mypy_check() -> tuple[bool, list[str]]:
     return result.passed, list(result.errors)
 
 
+# Re-export constants for external use
 __all__ = [
     "CheckResult",
     "CodeQualityReport",
@@ -431,6 +432,8 @@ __all__ = [
     "run_black_check",
     "run_ruff_check",
     "run_mypy_check",
+    "BLACK_LINE_LENGTH",
+    "DEFAULT_PYTHON_DIRS",
 ]
 
 

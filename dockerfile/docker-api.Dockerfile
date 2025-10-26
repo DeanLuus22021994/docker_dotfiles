@@ -15,7 +15,7 @@ RUN npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy application code
-COPY api/server.js ./
+COPY api/server.js api/auth.js api/middleware.js ./
 
 # For Docker Desktop, socket permissions require root access
 # Since socket is mounted read-only, this is acceptable

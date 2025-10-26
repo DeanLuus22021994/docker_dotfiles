@@ -1,48 +1,51 @@
 # BuildKit Daemon Configuration
-# Optimized for local development with aggressive caching
+# Enterprise-grade configuration with garbage collection and registry optimization
 
+# Debug logging
+debug = false
+
+# Root directory for buildkit state
+root = "/var/lib/buildkit"
+
+# Worker configuration
 [worker.oci]
   enabled = true
   platforms = ["linux/amd64", "linux/arm64"]
   max-parallelism = 4
+  gc = true
+  gckeepstorage = 10737418240  # 10GB
+  
+  # GC policy configuration
+  [[worker.oci.gcpolicy]]
+    keepBytes = 5368709120  # 5GB
+    keepDuration = 172800    # 2 days in seconds
+    filters = ["type==source.local,type==exec.cachemount,type==source.git.checkout"]
+    
+  [[worker.oci.gcpolicy]]
+    all = true
+    keepBytes = 2147483648  # 2GB
+    keepDuration = 86400     # 1 day in seconds
 
 [worker.containerd]
   enabled = false
 
-# Garbage collection settings
-[worker.oci.gc]
-  enabled = true
-  keepBytes = 10737418240  # 10GB
-  keepDuration = 259200     # 3 days in seconds
-  
-[worker.oci.gcpolicy]
-  [[worker.oci.gcpolicy.all]]
-    keepBytes = 5368709120  # 5GB
-    keepDuration = 172800    # 2 days
-    
-  [[worker.oci.gcpolicy.all]]
-    keepBytes = 2147483648  # 2GB
-    keepDuration = 86400     # 1 day
-
-# Registry mirror and cache settings
+# Registry configuration for mirrors and authentication
 [registry."docker.io"]
   mirrors = ["mirror.gcr.io"]
   
-[registry."registry.hub.docker.com"]
-  insecure = false
-  ca = []
-  
-# Build cache settings
-[worker.oci.snapshotter]
-  name = "overlayfs"
+[registry."registry-1.docker.io"]
+  http = false
 
-# Debug and tracing
+# gRPC server configuration
 [grpc]
   address = ["tcp://0.0.0.0:1234"]
-  uid = 1000
-  gid = 1000
+  
+  [grpc.tls]
+    cert = ""
+    key = ""
+    ca = ""
 
-# History and export settings
+# Build history configuration
 [history]
-  maxAge = 259200  # 3 days
+  maxAge = 259200     # 3 days in seconds
   maxEntries = 100

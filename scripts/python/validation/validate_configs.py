@@ -19,6 +19,7 @@ Examples:
 """
 
 import json
+import re
 import subprocess
 import sys
 from abc import ABC, abstractmethod
@@ -271,7 +272,14 @@ class JsonValidator(BaseConfigValidator):
         for json_file in json_files:
             try:
                 with open(json_file, "r", encoding="utf-8") as f:
-                    json.load(f)
+                    content = f.read()
+                    # Strip comments for JSONC files (devcontainer.json, tsconfig.json, etc.)
+                    if json_file.name in ("devcontainer.json", "tsconfig.json", "package.json"):
+                        # Remove single-line comments
+                        content = re.sub(r'//.*?$', '', content, flags=re.MULTILINE)
+                        # Remove trailing commas before closing brackets/braces
+                        content = re.sub(r',\s*([}\]])', r'\1', content)
+                    json.loads(content)
                 valid_count += 1
             except json.JSONDecodeError as e:
                 error_msg = f"{json_file}: {e}"
@@ -560,7 +568,7 @@ class ConfigurationAuditor:
 
 def validate_yaml_files() -> ValidationResult:
     """Validate YAML configuration files (simplified interface).
-    
+
     Returns:
         Validation result
     """
@@ -570,7 +578,7 @@ def validate_yaml_files() -> ValidationResult:
 
 def validate_json_files() -> ValidationResult:
     """Validate JSON configuration files (simplified interface).
-    
+
     Returns:
         Validation result
     """
@@ -580,7 +588,7 @@ def validate_json_files() -> ValidationResult:
 
 def validate_nginx_configs() -> ValidationResult:
     """Validate nginx configuration files (simplified interface).
-    
+
     Returns:
         Validation result
     """
@@ -590,7 +598,7 @@ def validate_nginx_configs() -> ValidationResult:
 
 def validate_postgresql_config() -> ValidationResult:
     """Validate PostgreSQL configuration file (simplified interface).
-    
+
     Returns:
         Validation result
     """
@@ -600,7 +608,7 @@ def validate_postgresql_config() -> ValidationResult:
 
 def validate_mariadb_config() -> ValidationResult:
     """Validate MariaDB configuration file (simplified interface).
-    
+
     Returns:
         Validation result
     """
@@ -608,6 +616,7 @@ def validate_mariadb_config() -> ValidationResult:
     return validator.validate()
 
 
+# Re-export constants for external use
 __all__ = [
     "ValidationResult",
     "ValidationReport",
@@ -623,6 +632,10 @@ __all__ = [
     "validate_nginx_configs",
     "validate_postgresql_config",
     "validate_mariadb_config",
+    "YAML_LINE_LENGTH",
+    "NGINX_CONFIGS",
+    "POSTGRESQL_CONFIG",
+    "MARIADB_CONFIG",
 ]
 
 

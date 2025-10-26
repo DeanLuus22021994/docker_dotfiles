@@ -35,6 +35,7 @@ __all__: list[str] = [
     "separator",
     "ColorCode",
     "FormattedText",
+    "AnsiCode",
 ]
 
 

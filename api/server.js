@@ -20,6 +20,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const auth = require('./auth');
+const { body } = require('express-validator');
 const {
   apiLimiter,
   statsLimiter,
@@ -525,7 +526,7 @@ app.get('/api/layers/metrics', async (req, res) => {
 // Scale a service (requires authentication)
 app.post(
   '/api/services/:serviceId/scale',
-  authenticate,
+  auth.authenticate,
   body('replicas').isInt({ min: 1, max: 10 }),
   handleValidationErrors,
   async (req, res) => {

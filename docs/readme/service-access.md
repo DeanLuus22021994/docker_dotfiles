@@ -11,8 +11,8 @@ description: "Service endpoints and access credentials for all cluster services"
 
 - **Load Balancer**: http://localhost:8080 (Web UI)
 - **MailHog**: http://localhost:8025 (Email testing UI, SMTP: 1025)
-- **pgAdmin**: http://localhost:5050 (admin@cluster.local/admin)
-- **Redis Commander**: http://localhost:8081 (admin/admin)
+- **pgAdmin**: http://localhost:5050 (admin@example.com/admin)
+- **Redis Commander**: http://localhost:8082 (admin/admin)
 
 ## Databases
 

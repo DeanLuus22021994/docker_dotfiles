@@ -36,6 +36,8 @@ __all__: list[str] = [
     "StrPath",
     "JSONDict",
     "FileSize",
+    "DEFAULT_ENCODING",
+    "DEFAULT_JSON_INDENT",
 ]
 
 

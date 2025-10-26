@@ -6,14 +6,14 @@ FROM localstack/localstack:latest
 # Install additional AWS CLI tools
 USER root
 
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
-    py3-pip \
+    python3-pip \
     curl \
     jq \
     bash \
-    aws-cli \
-    docker-cli
+    awscli \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install AWS SAM CLI
 RUN pip3 install --no-cache-dir \

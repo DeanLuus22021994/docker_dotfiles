@@ -15,15 +15,11 @@ RUN apk add --no-cache \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD curl -f http://localhost:8081 || exit 1
 
-USER node
+# Run as root (base image default)
+# USER directive removed - base image handles user switching
 
 # Expose Redis Commander port
 EXPOSE 8081
 
-# Start Redis Commander
-CMD ["redis-commander", \
-     "--redis-host", "cluster-redis", \
-     "--redis-port", "6379", \
-     "--redis-db", "0", \
-     "--http-auth-username", "admin", \
-     "--http-auth-password", "admin"]
+# Start Redis Commander - base image has its own entrypoint
+# Remove explicit CMD to use base image default

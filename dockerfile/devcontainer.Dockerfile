@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
@@ -28,7 +28,6 @@ RUN add-apt-repository ppa:deadsnakes/ppa \
         python3.14 \
         python3.14-venv \
         python3.14-dev \
-        python3.14-distutils \
         python3-pip \
     && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.14 1 \
     && update-alternatives --install /usr/bin/python python /usr/bin/python3.14 1 \

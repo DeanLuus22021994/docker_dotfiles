@@ -33,7 +33,8 @@ EXPOSE 1234
 # Volume for cache
 VOLUME ["/var/lib/buildkit"]
 
-USER buildkit
+# Run as root for privileged operations (container has privileged: true in compose)
+USER root
 
 # Start BuildKit daemon
 ENTRYPOINT ["buildkitd"]

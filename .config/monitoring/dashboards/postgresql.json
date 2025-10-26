@@ -1,83 +1,115 @@
 {
-  "dashboard": {
-    "title": "PostgreSQL Database Metrics",
-    "uid": "postgresql-metrics",
-    "timezone": "browser",
-    "schemaVersion": 27,
-    "version": 1,
-    "refresh": "1m",
-    "panels": [
-      {
-        "id": 1,
-        "title": "Active Connections",
-        "type": "graph",
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-        "targets": [
-          {
-            "expr": "pg_stat_database_numbackends{datname=\"postgres\"}",
-            "legendFormat": "Connections",
-            "refId": "A"
-          }
-        ],
-        "yaxes": [
-          {"format": "short", "label": "Connections"},
-          {"format": "short"}
-        ]
+  "title": "PostgreSQL Database Metrics",
+  "uid": "postgresql-metrics",
+  "timezone": "browser",
+  "schemaVersion": 27,
+  "version": 1,
+  "refresh": "1m",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Active Connections",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
       },
-      {
-        "id": 2,
-        "title": "Transaction Rate",
-        "type": "graph",
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-        "targets": [
-          {
-            "expr": "rate(pg_stat_database_xact_commit{datname=\"postgres\"}[5m])",
-            "legendFormat": "Commits",
-            "refId": "A"
-          },
-          {
-            "expr": "rate(pg_stat_database_xact_rollback{datname=\"postgres\"}[5m])",
-            "legendFormat": "Rollbacks",
-            "refId": "B"
-          }
-        ],
-        "yaxes": [
-          {"format": "ops", "label": "Transactions/s"},
-          {"format": "short"}
-        ]
+      "targets": [
+        {
+          "expr": "pg_stat_database_numbackends{datname=\"postgres\"}",
+          "legendFormat": "Connections",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "short",
+          "label": "Connections"
+        },
+        {
+          "format": "short"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Transaction Rate",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
       },
-      {
-        "id": 3,
-        "title": "Database Size",
-        "type": "graph",
-        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
-        "targets": [
-          {
-            "expr": "pg_database_size_bytes / 1024 / 1024",
-            "legendFormat": "{{datname}}",
-            "refId": "A"
-          }
-        ],
-        "yaxes": [
-          {"format": "decmbytes", "label": "Size"},
-          {"format": "short"}
-        ]
+      "targets": [
+        {
+          "expr": "rate(pg_stat_database_xact_commit{datname=\"postgres\"}[5m])",
+          "legendFormat": "Commits",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(pg_stat_database_xact_rollback{datname=\"postgres\"}[5m])",
+          "legendFormat": "Rollbacks",
+          "refId": "B"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "ops",
+          "label": "Transactions/s"
+        },
+        {
+          "format": "short"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Database Size",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
       },
-      {
-        "id": 4,
-        "title": "Cache Hit Ratio",
-        "type": "gauge",
-        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
-        "targets": [
-          {
-            "expr": "pg_stat_database_blks_hit{datname=\"postgres\"} / (pg_stat_database_blks_hit{datname=\"postgres\"} + pg_stat_database_blks_read{datname=\"postgres\"}) * 100",
-            "refId": "A"
-          }
-        ],
-        "format": "percent",
-        "thresholds": "80,95"
-      }
-    ]
-  },
-  "overwrite": true
+      "targets": [
+        {
+          "expr": "pg_database_size_bytes / 1024 / 1024",
+          "legendFormat": "{{datname}}",
+          "refId": "A"
+        }
+      ],
+      "yaxes": [
+        {
+          "format": "decmbytes",
+          "label": "Size"
+        },
+        {
+          "format": "short"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Cache Hit Ratio",
+      "type": "gauge",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "pg_stat_database_blks_hit{datname=\"postgres\"} / (pg_stat_database_blks_hit{datname=\"postgres\"} + pg_stat_database_blks_read{datname=\"postgres\"}) * 100",
+          "refId": "A"
+        }
+      ],
+      "format": "percent",
+      "thresholds": "80,95"
+    }
+  ]
 }

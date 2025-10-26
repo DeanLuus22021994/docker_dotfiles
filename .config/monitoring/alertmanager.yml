@@ -57,10 +57,11 @@ receivers:
           <hr>
           <p>⚠️ Immediate action required!</p>
     
-    # Webhook for Slack/Teams integration (example)
-    webhook_configs:
-      - url: 'http://localhost:5001/webhook'
-        send_resolved: true
+    # Webhook for external integrations (Slack/Teams/PagerDuty)
+    # Configure with actual endpoint when integrating with external services
+    # webhook_configs:
+    #   - url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
+    #     send_resolved: true
 
   - name: 'warning-alerts'
     email_configs:

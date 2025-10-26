@@ -233,9 +233,7 @@ class BaseDependencyChecker(ABC):
             parts = line.split()
             if include_latest and len(parts) >= 3:
                 name, current, latest = parts[0], parts[1], parts[2]
-                packages.append(
-                    Package(name=name, current_version=current, latest_version=latest)
-                )
+                packages.append(Package(name=name, current_version=current, latest_version=latest))
             elif not include_latest and len(parts) >= 2:
                 name, version = parts[0], parts[1]
                 packages.append(Package(name=name, current_version=version))
@@ -430,7 +428,7 @@ class DependencyAuditor:
 
 def check_outdated_packages() -> tuple[bool, list[str]]:
     """Check for outdated packages (simplified interface).
-    
+
     Returns:
         Tuple of (passed, errors)
     """
@@ -441,7 +439,7 @@ def check_outdated_packages() -> tuple[bool, list[str]]:
 
 def list_installed_packages() -> tuple[bool, list[str]]:
     """List installed packages (simplified interface).
-    
+
     Returns:
         Tuple of (passed, errors)
     """
@@ -452,7 +450,7 @@ def list_installed_packages() -> tuple[bool, list[str]]:
 
 def check_pyproject_dependencies() -> tuple[bool, list[str]]:
     """Check pyproject.toml dependencies (simplified interface).
-    
+
     Returns:
         Tuple of (passed, errors)
     """
@@ -461,6 +459,7 @@ def check_pyproject_dependencies() -> tuple[bool, list[str]]:
     return result.passed, list(result.errors)
 
 
+# Re-export constants for external use
 __all__ = [
     "Package",
     "DependencyCheckResult",
@@ -473,6 +472,8 @@ __all__ = [
     "check_outdated_packages",
     "list_installed_packages",
     "check_pyproject_dependencies",
+    "PYPROJECT_PATH",
+    "REQUIRED_PACKAGES",
 ]
 
 

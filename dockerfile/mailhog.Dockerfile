@@ -1,11 +1,15 @@
 # MailHog Dockerfile - Email testing tool
 # Captures emails sent during development for testing
 
-FROM mailhog/mailhog:latest
+FROM mailhog/mailhog:latest AS base
 
-# Health check
+# Install curl for health check
+USER root
+RUN apk add --no-cache curl
+
+# Health check using curl (wget not available)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:8025 || exit 1
+    CMD curl -f http://localhost:8025 || exit 1
 
 USER mailhog
 

@@ -44,6 +44,12 @@ services:
     port: 6379
     persistence: true
     health_check_interval: "30s"
+  
+  redis_exporter:
+    enabled: true
+    port: 9121
+    custom_build: true  # Uses custom Dockerfile with curl for health checks
+    health_check_interval: "30s"
     
   minio:
     enabled: true
@@ -101,12 +107,12 @@ services:
   pgadmin:
     enabled: true
     port: 5050
-    default_email: "admin@cluster.local"
+    default_email: "admin@example.com"
     health_check_interval: "30s"
 
   redis_commander:
     enabled: true
-    port: 8081
+    port: 8082
     health_check_interval: "30s"
 
 volumes:

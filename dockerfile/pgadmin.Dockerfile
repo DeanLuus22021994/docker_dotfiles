@@ -12,10 +12,11 @@ RUN apk add --no-cache \
     curl \
     bash
 
-# Create pgadmin directories
+# Create pgadmin directories with proper ownership
+# pgAdmin container runs as UID 5050 by default
 RUN mkdir -p /var/lib/pgadmin/storage \
     && mkdir -p /var/lib/pgadmin/sessions \
-    && chown -R pgadmin:pgadmin /var/lib/pgadmin
+    && chown -R 5050:5050 /var/lib/pgadmin
 
 # Copy server definitions
 COPY .config/services/pgadmin-servers.json /pgadmin4/servers.json
@@ -24,7 +25,7 @@ COPY .config/services/pgadmin-servers.json /pgadmin4/servers.json
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:80/misc/ping || exit 1
 
-USER pgadmin
+USER 5050
 
 # Expose pgAdmin port
 EXPOSE 80

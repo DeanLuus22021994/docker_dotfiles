@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: dockerfile/pre-commit.Dockerfile
-    profiles: ["dev"]
     volumes:
       - .:/workspace:rw
       - ./.git:/workspace/.git:rw
@@ -28,8 +27,9 @@ services:
 
   devcontainer:
     container_name: cluster-devcontainer
-    image: mcr.microsoft.com/devcontainers/base:ubuntu
-    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: dockerfile/devcontainer.Dockerfile
     environment:
       - GITHUB_OWNER=${GITHUB_OWNER:-DeanLuus22021994}
       - DOCKER_ACCESS_TOKEN=${DOCKER_ACCESS_TOKEN}
@@ -58,6 +58,10 @@ services:
         reservations:
           cpus: '1.0'
           memory: 2G
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     logging:
       driver: "json-file"
       options:
@@ -79,7 +83,7 @@ services:
       - cluster-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      test: ["CMD", "curl", "-f", "-4", "http://localhost:80"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -581,7 +585,7 @@ services:
       - cluster-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "buildctl", "debug", "workers"]
+      test: ["CMD", "nc", "-z", "localhost", "1234"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -679,7 +683,7 @@ services:
       context: .
       dockerfile: dockerfile/pgadmin.Dockerfile
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@cluster.local
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: ${DOCKER_PGADMIN_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
@@ -719,8 +723,12 @@ services:
     build:
       context: .
       dockerfile: dockerfile/redis-commander.Dockerfile
+    environment:
+      REDIS_HOSTS: "local:cluster-redis:6379:0"
+      HTTP_USER: admin
+      HTTP_PASSWORD: admin
     ports:
-      - "8081:8081"
+      - "8082:8081"
     networks:
       - cluster-network
     restart: unless-stopped
@@ -857,9 +865,12 @@ services:
   # Redis Exporter - Cache metrics for Prometheus
   cluster-redis-exporter:
     container_name: cluster-redis-exporter
-    image: oliver006/redis_exporter:v1.55.0
+    build:
+      context: .
+      dockerfile: dockerfile/redis-exporter.Dockerfile
     environment:
       REDIS_ADDR: cluster-redis:6379
+      REDIS_PASSWORD: ${DOCKER_REDIS_PASSWORD}
     ports:
       - "9121:9121"
     networks:
@@ -868,7 +879,7 @@ services:
     depends_on:
       - cluster-redis
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9121/metrics"]
+      test: ["CMD", "curl", "-f", "http://localhost:9121/metrics"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -897,7 +908,7 @@ services:
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     volumes:
-      - /:/host:ro,rslave
+      - /:/host:ro
     ports:
       - "9100:9100"
     networks:
@@ -949,6 +960,36 @@ services:
         reservations:
           cpus: '0.5'
           memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # NVIDIA GPU Device Plugin for Kubernetes
+  cluster-gpu-node:
+    container_name: cluster-gpu-node
+    build:
+      context: .
+      dockerfile: dockerfile/gpu-node.Dockerfile
+    volumes:
+      - /var/lib/kubelet/device-plugins:/var/lib/kubelet/device-plugins
+    networks:
+      - cluster-network
+    restart: unless-stopped
+    privileged: true
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     logging:
       driver: "json-file"
       options:

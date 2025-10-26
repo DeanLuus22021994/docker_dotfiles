@@ -42,7 +42,7 @@ def temp_dir() -> Generator[Path, None, None]:
 
 
 @pytest.fixture
-def temp_project_dir(_temp_dir: Path) -> Path:
+def temp_project_dir(temp_dir: Path) -> Path:
     """Create temporary project directory structure.
 
     Creates standard project structure:
@@ -50,7 +50,7 @@ def temp_project_dir(_temp_dir: Path) -> Path:
     - .config/database/
 
     Args:
-        _temp_dir: Base temporary directory
+        temp_dir: Base temporary directory
 
     Returns:
         Path to project root directory
@@ -59,13 +59,13 @@ def temp_project_dir(_temp_dir: Path) -> Path:
         def test_config(temp_project_dir: Path) -> None:
             nginx_conf = temp_project_dir / ".config" / "nginx" / "main.conf"
     """
-    (_temp_dir / ".config" / "nginx").mkdir(parents=True)
-    (_temp_dir / ".config" / "database").mkdir(parents=True)
-    return _temp_dir
+    (temp_dir / ".config" / "nginx").mkdir(parents=True)
+    (temp_dir / ".config" / "database").mkdir(parents=True)
+    return temp_dir
 
 
 @pytest.fixture
-def sample_json_file(_temp_dir: Path) -> Path:
+def sample_json_file(temp_dir: Path) -> Path:
     """Create sample JSON file for testing.
 
     Creates file with structure:
@@ -76,7 +76,7 @@ def sample_json_file(_temp_dir: Path) -> Path:
     }
 
     Args:
-        _temp_dir: Temporary directory for file
+        temp_dir: Temporary directory for file
 
     Returns:
         Path to created JSON file
@@ -86,7 +86,7 @@ def sample_json_file(_temp_dir: Path) -> Path:
             data = json.loads(sample_json_file.read_text())
             assert data["name"] == "test"
     """
-    file_path = _temp_dir / "sample.json"
+    file_path = temp_dir / "sample.json"
     data = {"name": "test", "value": 42, "items": ["a", "b", "c"]}
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(data, f)
@@ -94,13 +94,13 @@ def sample_json_file(_temp_dir: Path) -> Path:
 
 
 @pytest.fixture
-def sample_text_file(_temp_dir: Path) -> Path:
+def sample_text_file(temp_dir: Path) -> Path:
     """Create sample text file for testing.
 
     Creates file with three lines: "line1", "line2", "line3"
 
     Args:
-        _temp_dir: Temporary directory for file
+        temp_dir: Temporary directory for file
 
     Returns:
         Path to created text file
@@ -110,7 +110,7 @@ def sample_text_file(_temp_dir: Path) -> Path:
             lines = sample_text_file.read_text().splitlines()
             assert len(lines) == 3
     """
-    file_path = _temp_dir / "sample.txt"
+    file_path = temp_dir / "sample.txt"
     content = "line1\nline2\nline3\n"
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)

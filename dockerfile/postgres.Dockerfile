@@ -20,12 +20,15 @@ COPY --chown=postgres:postgres .config/database/postgresql.conf /etc/postgresql/
 # Switch to postgres user
 USER postgres
 
-# Health check
+# Health check - uses environment variables set by docker-compose
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=5 \
-  CMD pg_isready -U user -d mydb || exit 1
+  CMD pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB || exit 1
 
 # Expose PostgreSQL port
 EXPOSE 5432
+
+# Volume for data persistence
+VOLUME ["/var/lib/postgresql/data"]
 
 # Default command with performance monitoring
 CMD ["postgres", \

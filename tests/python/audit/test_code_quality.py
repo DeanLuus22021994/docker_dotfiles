@@ -38,7 +38,7 @@ class TestRunBlackCheck:
 
         assert passed is False
         assert len(errors) == 1
-        assert "Black formatting issues" in errors[0]
+        assert "Black found issues:" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     def test_black_check_not_installed(self, _mock_run: Mock) -> None:
@@ -77,7 +77,7 @@ class TestRunRuffCheck:
 
         assert passed is False
         assert len(errors) == 1
-        assert "Ruff found linting issues" in errors[0]
+        assert "Ruff found issues:" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     def test_ruff_check_not_installed(self, _mock_run: Mock) -> None:
@@ -116,7 +116,7 @@ class TestRunMypyCheck:
 
         assert passed is False
         assert len(errors) == 1
-        assert "mypy found type errors" in errors[0]
+        assert "mypy found issues:" in errors[0]
 
     @patch("subprocess.run", side_effect=FileNotFoundError())
     def test_mypy_check_not_installed(self, _mock_run: Mock) -> None:
