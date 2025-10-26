@@ -15,6 +15,7 @@ export interface Service {
   id: string
   name: string
   category: ServiceCategory
+  layer: string // Layer identifier (data, services, monitoring, compute, network)
   status: ServiceStatus
   url?: string
   port?: number
@@ -22,14 +23,27 @@ export interface Service {
   description: string
   icon: string
   metrics?: ServiceMetrics
+  replicas?: number // Current replica count (Phase 4.6.5)
 }
 
 export interface ServiceMetrics {
   cpu: number
   memory: number
   uptime: number
+  networkIO?: number // Network I/O in bytes/s (Phase 4.6.2)
   requests?: number
   latency?: number
+}
+
+// Layer Metrics (Phase 4.6.2)
+export interface LayerMetrics {
+  layer: string
+  totalCpu: number
+  totalMemory: number
+  totalNetworkIO: number
+  serviceCount: number
+  healthyCount: number
+  unhealthyCount: number
 }
 
 // Cluster Metrics
@@ -58,3 +72,11 @@ export interface NetworkConnection {
   port: number
   status: 'active' | 'idle'
 }
+
+// Layer Dependencies (Phase 4.6.4)
+export interface LayerDependency {
+  from: string
+  to: string
+  type: 'requires' | 'uses' | 'monitors'
+}
+

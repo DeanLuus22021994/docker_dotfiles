@@ -255,6 +255,58 @@ class DockerAPIService {
   async checkHealth(): Promise<{ status: string; timestamp: string }> {
     return this.fetchWithRetry(`http://localhost:3001/health`)
   }
+
+  /**
+   * Get metrics for a specific layer (Phase 4.6.2)
+   */
+  async getLayerMetrics(layerId: string): Promise<any> {
+    return this.fetchWithRetry(`${this.baseURL}/layers/${layerId}/metrics`)
+  }
+
+  /**
+   * Get metrics for all layers (Phase 4.6.2)
+   */
+  async getAllLayerMetrics(): Promise<any> {
+    return this.fetchWithRetry(`${this.baseURL}/layers/metrics`)
+  }
+
+  /**
+   * Scale a service to specified number of replicas (Phase 4.6.5)
+   * Requires authentication
+   */
+  async scaleService(serviceId: string, replicas: number): Promise<any> {
+    if (!authToken) {
+      throw new Error('Authentication required for scaling operations')
+    }
+
+    const response = await fetch(`${this.baseURL}/services/${serviceId}/scale`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({ replicas }),
+    })
+
+    if (response.status === 401) {
+      this.clearToken()
+      throw new Error('Authentication required')
+    }
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.message || 'Failed to scale service')
+    }
+
+    return response.json()
+  }
+
+  /**
+   * Get service replica count (Phase 4.6.5)
+   */
+  async getServiceReplicas(serviceId: string): Promise<any> {
+    return this.fetchWithRetry(`${this.baseURL}/services/${serviceId}/replicas`)
+  }
 }
 
 export const dockerAPI = new DockerAPIService()

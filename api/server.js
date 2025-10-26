@@ -358,6 +358,256 @@ app.get('/api/stats/aggregate', async (req, res) => {
 });
 
 // ============================================================================
+// LAYER METRICS API (Phase 4.6.2)
+// ============================================================================
+
+// Layer configuration mapping service names to layers
+const LAYER_CONFIG = {
+  data: ['postgres', 'mariadb', 'redis', 'minio'],
+  services: ['api', 'web-content'],
+  monitoring: ['grafana', 'prometheus'],
+  compute: ['jupyter', 'localstack'],
+  network: ['nginx', 'traefik', 'mailhog']
+};
+
+// Get metrics for specific layer
+app.get('/api/layers/:layerId/metrics', async (req, res) => {
+  try {
+    const { layerId } = req.params;
+    const layerServices = LAYER_CONFIG[layerId];
+    
+    if (!layerServices) {
+      return res.status(404).json({ 
+        error: 'Layer not found',
+        availableLayers: Object.keys(LAYER_CONFIG)
+      });
+    }
+
+    const containers = await docker.listContainers();
+    const layerContainers = containers.filter(c => 
+      layerServices.some(service => 
+        c.Names[0].toLowerCase().includes(service.toLowerCase())
+      )
+    );
+
+    const layerStats = await Promise.all(
+      layerContainers.map(async (container) => {
+        try {
+          const containerObj = docker.getContainer(container.Id);
+          const stats = await containerObj.stats({ stream: false });
+          const inspect = await containerObj.inspect();
+          
+          const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
+                           stats.precpu_stats.cpu_usage.total_usage;
+          const systemDelta = stats.cpu_stats.system_cpu_usage - 
+                              stats.precpu_stats.system_cpu_usage;
+          const cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
+          
+          const memoryPercent = (stats.memory_stats.usage / stats.memory_stats.limit) * 100;
+          
+          const networks = stats.networks || {};
+          const networkIO = Object.values(networks).reduce(
+            (acc, net) => acc + net.rx_bytes + net.tx_bytes, 
+            0
+          );
+          
+          return {
+            name: container.Names[0].replace(/^\//, ''),
+            status: inspect.State.Status === 'running' ? 'healthy' : 'unhealthy',
+            cpu: cpuPercent,
+            memory: memoryPercent,
+            networkIO: networkIO
+          };
+        } catch (err) {
+          console.error(`Error getting stats for ${container.Names[0]}:`, err);
+          return null;
+        }
+      })
+    );
+
+    const validStats = layerStats.filter(s => s !== null);
+    
+    const metrics = {
+      layer: layerId,
+      totalCpu: validStats.reduce((acc, s) => acc + s.cpu, 0),
+      totalMemory: validStats.reduce((acc, s) => acc + s.memory, 0),
+      totalNetworkIO: validStats.reduce((acc, s) => acc + s.networkIO, 0),
+      serviceCount: validStats.length,
+      healthyCount: validStats.filter(s => s.status === 'healthy').length,
+      unhealthyCount: validStats.filter(s => s.status === 'unhealthy').length,
+      services: validStats,
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(metrics);
+  } catch (error) {
+    console.error('Error fetching layer metrics:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get metrics for all layers
+app.get('/api/layers/metrics', async (req, res) => {
+  try {
+    const layerIds = Object.keys(LAYER_CONFIG);
+    const allMetrics = {};
+
+    for (const layerId of layerIds) {
+      const layerServices = LAYER_CONFIG[layerId];
+      const containers = await docker.listContainers();
+      const layerContainers = containers.filter(c => 
+        layerServices.some(service => 
+          c.Names[0].toLowerCase().includes(service.toLowerCase())
+        )
+      );
+
+      const layerStats = await Promise.all(
+        layerContainers.map(async (container) => {
+          try {
+            const containerObj = docker.getContainer(container.Id);
+            const stats = await containerObj.stats({ stream: false });
+            const inspect = await containerObj.inspect();
+            
+            const cpuDelta = stats.cpu_stats.cpu_usage.total_usage - 
+                             stats.precpu_stats.cpu_usage.total_usage;
+            const systemDelta = stats.cpu_stats.system_cpu_usage - 
+                                stats.precpu_stats.system_cpu_usage;
+            const cpuPercent = (cpuDelta / systemDelta) * stats.cpu_stats.online_cpus * 100;
+            
+            const memoryPercent = (stats.memory_stats.usage / stats.memory_stats.limit) * 100;
+            
+            const networks = stats.networks || {};
+            const networkIO = Object.values(networks).reduce(
+              (acc, net) => acc + net.rx_bytes + net.tx_bytes, 
+              0
+            );
+            
+            return {
+              name: container.Names[0].replace(/^\//, ''),
+              status: inspect.State.Status === 'running' ? 'healthy' : 'unhealthy',
+              cpu: cpuPercent,
+              memory: memoryPercent,
+              networkIO: networkIO
+            };
+          } catch (err) {
+            return null;
+          }
+        })
+      );
+
+      const validStats = layerStats.filter(s => s !== null);
+      
+      allMetrics[layerId] = {
+        layer: layerId,
+        totalCpu: validStats.reduce((acc, s) => acc + s.cpu, 0),
+        totalMemory: validStats.reduce((acc, s) => acc + s.memory, 0),
+        totalNetworkIO: validStats.reduce((acc, s) => acc + s.networkIO, 0),
+        serviceCount: validStats.length,
+        healthyCount: validStats.filter(s => s.status === 'healthy').length,
+        unhealthyCount: validStats.filter(s => s.status === 'unhealthy').length
+      };
+    }
+
+    res.json({
+      layers: allMetrics,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching all layer metrics:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================================================
+// SERVICE SCALING API (Phase 4.6.5)
+// ============================================================================
+
+// Scale a service (requires authentication)
+app.post(
+  '/api/services/:serviceId/scale',
+  authenticate,
+  body('replicas').isInt({ min: 1, max: 10 }),
+  handleValidationErrors,
+  async (req, res) => {
+    try {
+      const { serviceId } = req.params;
+      const { replicas } = req.body;
+
+      // In standalone Docker, we use docker-compose scale
+      // This requires docker-compose to be installed and the service to be part of a stack
+      const { exec } = require('child_process');
+      const util = require('util');
+      const execPromise = util.promisify(exec);
+
+      // Validate service exists
+      const containers = await docker.listContainers({ all: true });
+      const serviceContainer = containers.find(c => 
+        c.Names[0].toLowerCase().includes(serviceId.toLowerCase())
+      );
+
+      if (!serviceContainer) {
+        return res.status(404).json({ 
+          error: 'Service not found',
+          serviceId 
+        });
+      }
+
+      // For Docker Compose services, use docker-compose scale
+      try {
+        await execPromise(`docker-compose scale ${serviceId}=${replicas}`);
+        
+        res.json({
+          success: true,
+          service: serviceId,
+          replicas: replicas,
+          message: `Scaled ${serviceId} to ${replicas} replicas`,
+          timestamp: new Date().toISOString()
+        });
+      } catch (scaleError) {
+        // Fallback: Service might not support scaling
+        res.status(400).json({
+          error: 'Scaling not supported',
+          message: 'This service does not support scaling. Ensure it is part of a Docker Compose stack.',
+          serviceId
+        });
+      }
+    } catch (error) {
+      console.error('Error scaling service:', error);
+      res.status(500).json({ error: error.message });
+    }
+  }
+);
+
+// Get service replica count
+app.get('/api/services/:serviceId/replicas', async (req, res) => {
+  try {
+    const { serviceId } = req.params;
+    const containers = await docker.listContainers({ all: true });
+    
+    // Count containers matching the service name
+    const replicas = containers.filter(c => 
+      c.Names[0].toLowerCase().includes(serviceId.toLowerCase())
+    );
+
+    res.json({
+      service: serviceId,
+      replicas: replicas.length,
+      running: replicas.filter(c => c.State === 'running').length,
+      containers: replicas.map(c => ({
+        id: c.Id,
+        name: c.Names[0].replace(/^\//, ''),
+        state: c.State,
+        status: c.Status
+      })),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching replica count:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================================================
 // ERROR HANDLING
 // ============================================================================
 
@@ -376,4 +626,6 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Docker API Proxy listening on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`Layer metrics: http://localhost:${PORT}/api/layers/metrics`);
+  console.log(`Service scaling: POST http://localhost:${PORT}/api/services/:id/scale`);
 });

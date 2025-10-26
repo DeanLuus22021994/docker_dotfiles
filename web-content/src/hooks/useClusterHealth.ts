@@ -33,9 +33,11 @@ export const useClusterHealth = () => {
   }, [])
 
   useEffect(() => {
-    const checkAllServices = async () => {
+    const layerTimers = new Map<string, NodeJS.Timeout>()
+    
+    const checkLayerServices = async (layerId: string) => {
       try {
-        const serviceConfigs = getAllServices()
+        const serviceConfigs = getAllServices().filter(s => s.layer === layerId)
         
         // Fetch real container data if API is available
         let containersData: any = null
@@ -74,23 +76,53 @@ export const useClusterHealth = () => {
           })
         )
         
-        // Calculate layer metrics aggregation (Phase 4.6.2)
-        const metrics = calculateLayerMetrics(servicesWithStatus)
+        // Update services state by merging with existing services
+        setServices(prevServices => {
+          const otherLayerServices = prevServices.filter(s => s.layer !== layerId)
+          const updatedServices = [...otherLayerServices, ...servicesWithStatus]
+          
+          // Calculate layer metrics aggregation (Phase 4.6.2)
+          const metrics = calculateLayerMetrics(updatedServices)
+          setLayerMetrics(metrics)
+          
+          return updatedServices
+        })
         
-        setServices(servicesWithStatus)
-        setLayerMetrics(metrics)
         setError(null)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to check cluster health')
+        setError(err instanceof Error ? err.message : `Failed to check ${layerId} layer health`)
       } finally {
         setIsLoading(false)
       }
     }
 
-    checkAllServices()
-    const interval = setInterval(checkAllServices, 30000) // Check every 30 seconds
+    // Initialize health checks for all layers with layer-specific intervals
+    const initializeHealthChecks = () => {
+      const layers = Object.keys(LAYER_INTERVALS) as Array<keyof typeof LAYER_INTERVALS>
+      
+      layers.forEach(layerId => {
+        // Initial check
+        checkLayerServices(layerId)
+        
+        // Setup interval for layer-specific polling
+        const interval = setInterval(
+          () => checkLayerServices(layerId),
+          LAYER_INTERVALS[layerId]
+        )
+        
+        layerTimers.set(layerId, interval)
+      })
+    }
 
-    return () => clearInterval(interval)
+    if (apiAvailable !== null) {
+      initializeHealthChecks()
+    }
+
+    return () => {
+      // Cleanup all layer timers
+      layerTimers.forEach(timer => clearInterval(timer))
+      layerTimers.clear()
+    }
   }, [apiAvailable])
 
   return { services, layerMetrics, isLoading, error, apiAvailable }
