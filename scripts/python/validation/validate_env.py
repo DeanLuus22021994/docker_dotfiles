@@ -24,11 +24,12 @@ from pathlib import Path
 from typing import Final, TypeAlias
 
 # Add parent directory to path for imports
-_script_dir = Path(__file__).parent.parent.parent
-if str(_script_dir) not in sys.path:
-    sys.path.insert(0, str(_script_dir))
+# Add scripts dir to path for imports
+scripts_dir = Path(__file__).parent.parent.parent
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
-from scripts.python.utils.colors import (
+from python.utils.colors import (
     Colors,
     bold,
     error,
@@ -47,9 +48,6 @@ ExitCode: TypeAlias = int
 # Constants
 MASK_LENGTH: Final[int] = 8
 MASK_SUFFIX: Final[str] = "..."
-SHORT_MASK: Final[str] = "***"
-
-
 SHORT_MASK: Final[str] = "***"
 
 

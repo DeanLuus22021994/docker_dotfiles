@@ -28,12 +28,13 @@ from pathlib import Path
 from typing import Final, Literal, Protocol, TypeAlias
 
 # Add parent directory to path for imports
-_script_dir = Path(__file__).parent.parent.parent
-if str(_script_dir) not in sys.path:
-    sys.path.insert(0, str(_script_dir))
+# Add scripts dir to path for imports
+scripts_dir = Path(__file__).parent.parent.parent
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
-from scripts.python.utils.colors import error, header, separator, success
-from scripts.python.utils.file_utils import StrPath
+from python.utils.colors import error, header, separator, success
+from python.utils.file_utils import StrPath
 
 # Type aliases for semantic clarity
 ConfigType: TypeAlias = Literal["yaml", "json", "nginx", "postgresql", "mariadb"]
@@ -49,9 +50,6 @@ NGINX_CONFIGS: Final[tuple[str, ...]] = (
     ".config/nginx/default.conf",
 )
 POSTGRESQL_CONFIG: Final[Path] = Path(".config/database/postgresql.conf")
-MARIADB_CONFIG: Final[Path] = Path(".config/database/mariadb.conf")
-
-
 MARIADB_CONFIG: Final[Path] = Path(".config/database/mariadb.conf")
 
 

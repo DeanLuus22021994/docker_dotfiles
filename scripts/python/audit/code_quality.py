@@ -18,6 +18,7 @@ Examples:
     >>> print(report.passed)  # True if all checks passed
 """
 
+import os
 import subprocess
 import sys
 from abc import ABC, abstractmethod
@@ -27,22 +28,18 @@ from pathlib import Path
 from typing import Final, Protocol, TypeAlias
 
 # Add parent directory to path for imports
-_script_dir = Path(__file__).parent.parent.parent
-if str(_script_dir) not in sys.path:
-    sys.path.insert(0, str(_script_dir))
+# Add scripts dir to path for imports
+scripts_dir = Path(__file__).parent.parent.parent
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
-from scripts.python.utils.colors import error, header, info, separator, success, warning
+from python.utils.colors import error, header, info, separator, success, warning
 
 # Type aliases for semantic clarity
 ToolName: TypeAlias = str
 CommandArgs: TypeAlias = Sequence[str]
 ErrorMessage: TypeAlias = str
 ExitCode: TypeAlias = int
-
-# Constants
-DEFAULT_PYTHON_DIRS: Final[tuple[str, ...]] = ("scripts/python/", "scripts/orchestrator.py")
-BLACK_LINE_LENGTH: Final[int] = 100
-
 
 # Constants
 DEFAULT_PYTHON_DIRS: Final[tuple[str, ...]] = ("scripts/python/", "scripts/orchestrator.py")
@@ -248,7 +245,14 @@ class BlackChecker(BaseChecker):
 
     def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
         """Build Black command with check flag and line length."""
-        return ["black", "--check", f"--line-length={BLACK_LINE_LENGTH}", *target_paths]
+        return [
+            sys.executable,
+            "-m",
+            "black",
+            "--check",
+            f"--line-length={BLACK_LINE_LENGTH}",
+            *target_paths,
+        ]
 
     def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
         """Format Black output with fix instructions."""
@@ -274,7 +278,7 @@ class RuffChecker(BaseChecker):
 
     def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
         """Build Ruff command for linting."""
-        return ["ruff", "check", *target_paths]
+        return [sys.executable, "-m", "ruff", "check", *target_paths]
 
     def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
         """Format Ruff output with fix instructions."""
@@ -299,8 +303,18 @@ class MypyChecker(BaseChecker):
         return "pip install mypy"
 
     def build_command(self, target_paths: Sequence[str]) -> CommandArgs:
-        """Build mypy command with strict mode."""
-        return ["mypy", "--strict", *target_paths]
+        """Build mypy command with strict mode and explicit package bases."""
+        # Set MYPYPATH to scripts dir to resolve module paths correctly
+        os.environ["MYPYPATH"] = str(Path(__file__).parent.parent.parent)
+        return [
+            sys.executable,
+            "-m",
+            "mypy",
+            "--strict",
+            "--explicit-package-bases",
+            "--namespace-packages",
+            *target_paths,
+        ]
 
     def format_output(self, result: subprocess.CompletedProcess[str]) -> None:
         """Format mypy output."""

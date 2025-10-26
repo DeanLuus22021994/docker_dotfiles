@@ -24,8 +24,8 @@ _SCRIPTS_DIR: Final[Path] = Path(__file__).parent.parent.parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
-from scripts.python.utils.colors import Colors
-from scripts.python.utils.logging_utils import setup_logger
+from python.utils.colors import Colors
+from python.utils.logging_utils import setup_logger
 
 logger = setup_logger("token_analyzer")
 

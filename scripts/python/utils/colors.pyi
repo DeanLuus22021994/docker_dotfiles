@@ -16,6 +16,9 @@ class Colors:
 
     RESET: Final[ColorCode]
     BOLD: Final[AnsiCode]
+    DIM: Final[AnsiCode]
+    ITALIC: Final[AnsiCode]
+    UNDERLINE: Final[AnsiCode]
     RED: Final[ColorCode]
     GREEN: Final[ColorCode]
     YELLOW: Final[ColorCode]
@@ -73,7 +76,7 @@ def header(text: str) -> FormattedText:
     """Format text as header (bold blue)."""
     ...
 
-def separator(length: int = 80, char: str = "=") -> FormattedText:
+def separator(width: int = 60, char: str = "=") -> FormattedText:
     """Create separator line."""
     ...
 

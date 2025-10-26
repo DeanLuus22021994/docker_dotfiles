@@ -25,11 +25,12 @@ Homepage = "https://github.com/DeanLuus22021994/docker_dotfiles"
 Repository = "https://github.com/DeanLuus22021994/docker_dotfiles.git"
 Issues = "https://github.com/DeanLuus22021994/docker_dotfiles/issues"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "black>=24.0",
     "ruff>=0.6",
     "mypy>=1.11",
+    "pylint>=4.0",
     "pytest>=8.3",
     "pytest-cov>=6.0",
     "pytest-mock>=3.14",
@@ -116,6 +117,8 @@ disable = [
     "W0621", # redefined-outer-name - pytest fixtures intentionally shadow fixture names
     "W0612", # unused-variable - intentionally unused variables in test unpacking
     "C0301", # line-too-long - handled by Black formatter (100 chars)
+    "W2301", # unnecessary-ellipsis - False positive for Protocol methods and stub files (PEP 544, PEP 561)
+    "C0116", # missing-function-docstring - Stub files don't need docstrings (type hints only)
 ]
 
 [tool.docker-cluster]

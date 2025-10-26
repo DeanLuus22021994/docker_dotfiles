@@ -24,8 +24,8 @@ _SCRIPTS_DIR: Final[Path] = Path(__file__).parent.parent.parent
 if str(_SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS_DIR))
 
-from scripts.python.utils.colors import Colors
-from scripts.python.utils.logging_utils import setup_logger
+from python.utils.colors import Colors
+from python.utils.logging_utils import setup_logger
 
 logger = setup_logger("mcp_validator")
 
@@ -97,8 +97,8 @@ class MCPConfigValidator:
         Returns:
             Tuple of (success, errors, warnings)
         """
-        self.errors = []
-        self.warnings = []
+        self._errors = []
+        self._warnings = []
 
         # Load and parse JSON
         if not self._load_json():
@@ -120,7 +120,7 @@ class MCPConfigValidator:
         """Load and parse JSON configuration."""
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
-                self.config = json.load(f)
+                self._config = json.load(f)
             return True
         except FileNotFoundError:
             self.errors.append(f"Config file not found: {self.config_path}")
@@ -162,9 +162,9 @@ class MCPConfigValidator:
     def _validate_server(self, name: str, config: dict[str, Any]) -> None:
         """Validate a single server configuration."""
         # Check required fields
-        for field in self.REQUIRED_SERVER_FIELDS:
-            if field not in config:
-                self.errors.append(f"Server '{name}': Missing required field '{field}'")
+        for field_name in self.REQUIRED_SERVER_FIELDS:
+            if field_name not in config:
+                self.errors.append(f"Server '{name}': Missing required field '{field_name}'")
 
         # Validate command
         if "command" in config:

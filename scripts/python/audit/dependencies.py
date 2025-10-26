@@ -27,11 +27,12 @@ from pathlib import Path
 from typing import Final, Protocol, TypeAlias
 
 # Add parent directory to path for imports
-_script_dir = Path(__file__).parent.parent.parent
-if str(_script_dir) not in sys.path:
-    sys.path.insert(0, str(_script_dir))
+# Add scripts dir to path for imports
+scripts_dir = Path(__file__).parent.parent.parent
+if str(scripts_dir) not in sys.path:
+    sys.path.insert(0, str(scripts_dir))
 
-from scripts.python.utils.colors import error, header, info, separator, success, warning
+from python.utils.colors import error, header, info, separator, success, warning
 
 # Type aliases for semantic clarity
 PackageName: TypeAlias = str
