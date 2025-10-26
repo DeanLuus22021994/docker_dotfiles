@@ -22,6 +22,14 @@ def ensure_directory(path: StrPath) -> Path:
     """Ensure directory exists, creating if necessary."""
     ...
 
+def ensure_dir(dir_path: StrPath) -> None:
+    """Ensure directory exists, creating if necessary (alias for compatibility)."""
+    ...
+
+def get_relative_path(file_path: StrPath, base_path: StrPath | None = None) -> str:
+    """Get relative path from base to file."""
+    ...
+
 def read_json(file_path: StrPath) -> JSONDict:
     """Read and parse JSON file."""
     ...
@@ -29,7 +37,7 @@ def read_json(file_path: StrPath) -> JSONDict:
 def write_json(
     file_path: StrPath,
     data: JSONDict,
-    indent: int = DEFAULT_JSON_INDENT,
+    indent: int = 2,
 ) -> None:
     """Write data to JSON file."""
     ...

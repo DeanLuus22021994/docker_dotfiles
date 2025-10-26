@@ -2,16 +2,18 @@
 Python Validation Package
 
 Provides comprehensive validation tools for environment variables and
-configuration files. Ensures all required settings are present and valid
-before Docker stack deployment.
+configuration files using modular validator classes. Each validation type
+is handled by dedicated classes following the Single Responsibility Principle.
 
 Modules:
-    validate_configs: Validates YAML, JSON, nginx, PostgreSQL, and MariaDB configs
-    validate_env: Validates required and optional environment variables
+    validate_configs: Validates configs with ConfigurationAuditor
+    validate_env: Validates environment variables with EnvValidator
 
 Examples:
-    >>> from python.validation import validate_env_vars, validate_yaml_files
-    >>> from python.validation import *  # Exports via __all__
+    >>> from python.validation import EnvValidator, ConfigurationAuditor
+    >>> validator = EnvValidator()
+    >>> result = validator.validate()
+    >>> print(result.is_valid)
 
 See Also:
     - scripts/orchestrator.py validate env
@@ -20,16 +22,36 @@ See Also:
 
 # Import submodules to make them available in the package namespace
 from . import validate_configs, validate_env
+
+# Import new class-based APIs
 from .validate_configs import (
+    BaseConfigValidator,
+    ConfigurationAuditor,
+    JsonValidator,
+    MARIADB_CONFIG,
+    MariadbValidator,
+    NGINX_CONFIGS,
+    NginxValidator,
+    POSTGRESQL_CONFIG,
+    PostgresqlValidator,
+    ValidationReport,
+    ValidationResult,
+    YAML_LINE_LENGTH,
+    YamlValidator,
     main as configs_main,
-    validate_json_files,
-    validate_mariadb_config,
-    validate_nginx_configs,
-    validate_postgresql_config,
-    validate_yaml_files,
 )
 from .validate_env import (
+    EnvVarConfig,
+    EnvValidator,
+    MASK_LENGTH,
+    MASK_SUFFIX,
+    OPTIONAL_ENV_VARS,
+    REQUIRED_ENV_VARS,
+    SHORT_MASK,
+    ValidationReporter,
+    ValidationResult as EnvValidationResult,
     main as env_main,
+    # Legacy function wrappers for backward compatibility
     print_summary,
     validate_env_vars,
 )
@@ -38,15 +60,33 @@ __all__: list[str] = [
     # Submodules
     "validate_configs",
     "validate_env",
-    # Config validation functions
-    "validate_yaml_files",
-    "validate_json_files",
-    "validate_nginx_configs",
-    "validate_postgresql_config",
-    "validate_mariadb_config",
+    # Config validation classes and constants
+    "ConfigurationAuditor",
+    "BaseConfigValidator",
+    "YamlValidator",
+    "JsonValidator",
+    "NginxValidator",
+    "PostgresqlValidator",
+    "MariadbValidator",
+    "ValidationResult",
+    "ValidationReport",
+    "YAML_LINE_LENGTH",
+    "NGINX_CONFIGS",
+    "POSTGRESQL_CONFIG",
+    "MARIADB_CONFIG",
     "configs_main",
-    # Env validation functions
+    # Env validation classes and constants
+    "EnvValidator",
+    "ValidationReporter",
+    "EnvVarConfig",
+    "EnvValidationResult",
+    "REQUIRED_ENV_VARS",
+    "OPTIONAL_ENV_VARS",
+    "MASK_LENGTH",
+    "MASK_SUFFIX",
+    "SHORT_MASK",
+    "env_main",
+    # Legacy env validation functions (backward compatibility)
     "validate_env_vars",
     "print_summary",
-    "env_main",
 ]

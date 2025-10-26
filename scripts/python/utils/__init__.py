@@ -2,23 +2,28 @@
 Python Utilities Package
 
 Shared utility modules providing DRY (Don't Repeat Yourself) functionality
-across all Python scripts. Contains color formatting, file operations,
-and logging configuration helpers.
+across all Python scripts with Python 3.14 type system features.
 
 Submodules:
-    colors: ANSI color codes and terminal formatting functions
-    file_utils: File I/O and path management utilities
-    logging_utils: Logging configuration with color support
+    colors: ANSI color codes, ColorScheme dataclass, and formatting functions
+    file_utils: File I/O with PathLike support and semantic types
+    logging_utils: Logging configuration with Protocol and Literal types
 
 Examples:
-    >>> from python.utils import success, error
-    >>> from python.utils import read_json
-    >>> from python.utils import setup_logger
+    >>> from python.utils import success, error, ColorScheme
+    >>> from python.utils import read_json, StrPath
+    >>> from python.utils import setup_logger, LogLevel
 """
 
 from . import colors, file_utils, logging_utils
+
+# Colors module exports
 from .colors import (
+    AnsiCode,
+    ColorCode,
     Colors,
+    ColorScheme,
+    FormattedText,
     bold,
     colorize,
     error,
@@ -28,25 +33,58 @@ from .colors import (
     success,
     warning,
 )
+
+# File utils module exports
 from .file_utils import (
+    DEFAULT_ENCODING,
+    DEFAULT_JSON_INDENT,
+    FileSize,
+    JSONDict,
+    JSONValue,
+    StrPath,
     ensure_dir,
+    ensure_directory,
     file_exists,
     get_file_size,
     get_files_by_extension,
     get_relative_path,
     read_json,
     read_lines,
+    safe_delete,
     write_json,
+    write_lines,
 )
-from .logging_utils import ColoredFormatter, get_logger, setup_logger
+
+# Logging utils module exports
+from .logging_utils import (
+    CRITICAL,
+    DEBUG,
+    DEFAULT_FORMAT,
+    ERROR,
+    INFO,
+    WARNING,
+    ColoredFormatter,
+    FormatString,
+    FormatterProtocol,
+    LogLevel,
+    LogLevelName,
+    LoggerName,
+    get_logger,
+    setup_logger,
+)
 
 __all__: list[str] = [
     # Submodules
     "colors",
     "file_utils",
     "logging_utils",
-    # Colors
+    # Colors - classes and types
     "Colors",
+    "ColorScheme",
+    "ColorCode",
+    "AnsiCode",
+    "FormattedText",
+    # Colors - functions
     "colorize",
     "success",
     "warning",
@@ -55,16 +93,38 @@ __all__: list[str] = [
     "bold",
     "header",
     "separator",
-    # File utils
+    # File utils - types and constants
+    "StrPath",
+    "JSONValue",
+    "JSONDict",
+    "FileSize",
+    "DEFAULT_ENCODING",
+    "DEFAULT_JSON_INDENT",
+    # File utils - functions
+    "ensure_dir",
+    "ensure_directory",
     "read_json",
     "write_json",
-    "read_lines",
     "file_exists",
-    "ensure_dir",
+    "read_lines",
+    "write_lines",
     "get_files_by_extension",
     "get_file_size",
     "get_relative_path",
-    # Logging utils
+    "safe_delete",
+    # Logging utils - types and constants
+    "LogLevel",
+    "LogLevelName",
+    "FormatString",
+    "LoggerName",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
+    "DEFAULT_FORMAT",
+    # Logging utils - classes and functions
+    "FormatterProtocol",
     "ColoredFormatter",
     "setup_logger",
     "get_logger",

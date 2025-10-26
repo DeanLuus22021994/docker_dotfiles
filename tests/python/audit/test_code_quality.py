@@ -5,6 +5,10 @@ from unittest.mock import Mock, patch
 import pytest
 
 from scripts.python.audit.code_quality import (
+    BlackChecker,
+    CodeQualityAuditor,
+    MypyChecker,
+    RuffChecker,
     main,
     run_black_check,
     run_mypy_check,

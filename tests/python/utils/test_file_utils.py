@@ -14,6 +14,7 @@ from scripts.python.utils.file_utils import (
     read_json,
     read_lines,
     write_json,
+    JSONDict,
 )
 
 # Fixtures temp_dir, sample_json_file, sample_text_file imported from tests.fixtures.common
@@ -71,7 +72,7 @@ class TestWriteJson:
     def test_write_json_custom_indent(self, temp_dir: Path) -> None:
         """Test writing JSON with custom indentation."""
         file_path = temp_dir / "output.json"
-        data = {"key": "value"}
+        data: JSONDict = {"key": "value"}  # Explicitly type as JSONDict
 
         write_json(str(file_path), data, indent=4)
 

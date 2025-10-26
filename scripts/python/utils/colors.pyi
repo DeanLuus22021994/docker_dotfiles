@@ -13,7 +13,7 @@ FormattedText: TypeAlias = str
 
 class Colors:
     """ANSI color codes for terminal output."""
-    
+
     RESET: Final[ColorCode]
     BOLD: Final[AnsiCode]
     RED: Final[ColorCode]
@@ -23,19 +23,19 @@ class Colors:
     MAGENTA: Final[ColorCode]
     CYAN: Final[ColorCode]
     WHITE: Final[ColorCode]
-    
+
     def __init__(self) -> None: ...
 
 @dataclass(frozen=True, slots=True)
 class ColorScheme:
     """Immutable color scheme for consistent styling."""
-    
+
     success: ColorCode
     warning: ColorCode
     error: ColorCode
     info: ColorCode
     highlight: ColorCode
-    
+
     def __init__(
         self,
         success: ColorCode = ...,

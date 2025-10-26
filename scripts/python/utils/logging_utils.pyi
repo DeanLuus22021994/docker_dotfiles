@@ -26,14 +26,14 @@ DEFAULT_FORMAT: Final[FormatString]
 
 class FormatterProtocol(Protocol):
     """Protocol for log formatters."""
-    
+
     def format(self, record: logging.LogRecord) -> str: ...
 
 class ColoredFormatter(logging.Formatter):
     """Custom formatter with ANSI color support."""
-    
+
     LEVEL_COLORS: Final[dict[LogLevel, ColorCode]]
-    
+
     def format(self, record: logging.LogRecord) -> str: ...
 
 def setup_logger(

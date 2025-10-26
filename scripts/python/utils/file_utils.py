@@ -6,7 +6,7 @@ Provides cross-platform file operation helpers with type-safe interfaces.
 Handles JSON parsing, file I/O, directory operations, and path management
 with proper error handling and encoding support.
 
-This module uses Python 3.14 type system features including TypeAlias, 
+This module uses Python 3.14 type system features including TypeAlias,
 os.PathLike support, and recursive type definitions for improved type safety.
 
 Examples:
@@ -69,9 +69,7 @@ def read_json(file_path: StrPath) -> JSONDict:
         return result
 
 
-def write_json(
-    file_path: StrPath, data: JSONDict, indent: int = DEFAULT_JSON_INDENT
-) -> None:
+def write_json(file_path: StrPath, data: JSONDict, indent: int = DEFAULT_JSON_INDENT) -> None:
     """Write dictionary to JSON file.
 
     Args:

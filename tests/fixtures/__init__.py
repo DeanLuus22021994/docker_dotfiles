@@ -20,6 +20,15 @@ Import fixtures directly in tests without explicit imports:
 See common.py for detailed fixture documentation.
 """
 
+from .common import (
+    clean_env,
+    cleanup_loggers,
+    sample_json_file,
+    sample_text_file,
+    temp_dir,
+    temp_project_dir,
+)
+
 __all__ = [
     "clean_env",
     "cleanup_loggers",

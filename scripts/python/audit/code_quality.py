@@ -369,7 +369,11 @@ class CodeQualityAuditor:
         if report.passed:
             print(success("ALL CODE QUALITY CHECKS PASSED"))
         else:
-            print(error(f"CODE QUALITY AUDIT FAILED ({report.failed_checks}/{report.total_checks} checks)"))
+            print(
+                error(
+                    f"CODE QUALITY AUDIT FAILED ({report.failed_checks}/{report.total_checks} checks)"
+                )
+            )
 
         print(separator())
 
@@ -395,6 +399,40 @@ def main() -> ExitCode:
     auditor.print_summary(report)
 
     return 0 if report.passed else 1
+
+
+# Backward-compatible wrapper functions for legacy test code
+def run_black_check() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Run Black format check.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = BlackChecker(verbose=False)
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+def run_ruff_check() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Run Ruff linting check.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = RuffChecker(verbose=False)
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
+
+
+def run_mypy_check() -> tuple[bool, list[str]]:
+    """Legacy wrapper: Run mypy type check.
+
+    Returns:
+        Tuple of (passed, errors) for backward compatibility
+    """
+    checker = MypyChecker(verbose=False)
+    result = checker.run(DEFAULT_PYTHON_DIRS)
+    return result.passed, list(result.errors)
 
 
 if __name__ == "__main__":

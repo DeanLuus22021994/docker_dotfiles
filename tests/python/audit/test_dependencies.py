@@ -6,6 +6,10 @@ from unittest.mock import Mock, patch
 import pytest
 
 from scripts.python.audit.dependencies import (
+    DependencyAuditor,
+    InstalledPackagesChecker,
+    OutdatedPackagesChecker,
+    PyprojectDependenciesChecker,
     check_outdated_packages,
     check_pyproject_dependencies,
     list_installed_packages,
