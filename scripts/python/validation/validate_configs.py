@@ -24,26 +24,17 @@ import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final, Literal, Protocol, TypeAlias
+from typing import Protocol
 
-from python.utils.colors import error, header, separator, success
-from python.utils.file_utils import StrPath
-
-# Type aliases for semantic clarity
-ConfigType: TypeAlias = Literal["yaml", "json", "nginx", "postgresql", "mariadb"]
-ErrorMessage: TypeAlias = str
-ConfigPath: TypeAlias = StrPath
-ExitCode: TypeAlias = int
-
-# Constants
-YAML_LINE_LENGTH: Final[int] = 120
-NGINX_CONFIGS: Final[tuple[str, ...]] = (
-    ".config/nginx/loadbalancer.conf",
-    ".config/nginx/main.conf",
-    ".config/nginx/default.conf",
+from python.types.aliases import ErrorMessage, ExitCode
+from python.types.aliases_validation import ConfigType
+from python.types.constants import (
+    MARIADB_CONFIG,
+    NGINX_CONFIGS,
+    POSTGRESQL_CONFIG,
+    YAML_LINE_LENGTH,
 )
-POSTGRESQL_CONFIG: Final[Path] = Path(".config/database/postgresql.conf")
-MARIADB_CONFIG: Final[Path] = Path(".config/database/mariadb.conf")
+from python.utils.colors import error, header, separator, success
 
 
 @dataclass(frozen=True, slots=True)
@@ -171,6 +162,23 @@ class BaseConfigValidator(ABC):
         excluded_dirs = {".git", "node_modules", ".vscode"}
         return any(excluded in path.parts for excluded in excluded_dirs)
 
+    def _create_error_result(self, error_msg: ErrorMessage) -> ValidationResult:
+        """Create ValidationResult for error consistently.
+
+        Args:
+            error_msg: Error message
+
+        Returns:
+            ValidationResult with passed=False and error
+        """
+        if self.verbose:
+            print(error(error_msg))
+        return ValidationResult(
+            passed=False,
+            config_type=self.config_type,
+            errors=(error_msg,),
+        )
+
 
 class YamlValidator(BaseConfigValidator):
     """Validates YAML configuration files using yamllint."""
@@ -228,13 +236,7 @@ class YamlValidator(BaseConfigValidator):
 
         except FileNotFoundError:
             error_msg = "yamllint not found. Install with: pip install yamllint"
-            if self.verbose:
-                print(error(error_msg))
-            return ValidationResult(
-                passed=False,
-                config_type=self.config_type,
-                errors=(error_msg,),
-            )
+            return self._create_error_result(error_msg)
 
 
 class JsonValidator(BaseConfigValidator):
@@ -426,13 +428,7 @@ class PostgresqlValidator(BaseConfigValidator):
 
         except (OSError, IOError, PermissionError) as e:
             error_msg = f"{POSTGRESQL_CONFIG}: {e}"
-            if self.verbose:
-                print(error(error_msg))
-            return ValidationResult(
-                passed=False,
-                config_type=self.config_type,
-                errors=(error_msg,),
-            )
+            return self._create_error_result(error_msg)
 
 
 class MariadbValidator(BaseConfigValidator):
@@ -494,13 +490,7 @@ class MariadbValidator(BaseConfigValidator):
 
         except (OSError, IOError, PermissionError) as e:
             error_msg = f"{MARIADB_CONFIG}: {e}"
-            if self.verbose:
-                print(error(error_msg))
-            return ValidationResult(
-                passed=False,
-                config_type=self.config_type,
-                errors=(error_msg,),
-            )
+            return self._create_error_result(error_msg)
 
 
 class ConfigurationAuditor:

@@ -17,19 +17,15 @@ import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Final, TypeAlias
+from typing import Any
 
+from python.types.aliases import ErrorMessage, WarningMessage
+from python.types.aliases_mcp import ServerConfig
+from python.types.constants import MCP_REQUIRED_FIELDS, MCP_VALID_COMMANDS
 from python.utils.colors import Colors
 from python.utils.logging_utils import setup_logger
 
 logger = setup_logger("mcp_validator")
-
-# Type aliases
-ServerName: TypeAlias = str
-FieldName: TypeAlias = str
-ErrorMessage: TypeAlias = str
-WarningMessage: TypeAlias = str
-ServerConfig: TypeAlias = dict[str, Any]
 
 
 @dataclass(frozen=True, slots=True)
@@ -53,15 +49,6 @@ class ValidationResult:
 
 class MCPConfigValidator:
     """Validates MCP configuration files."""
-
-    # MCP protocol version
-    PROTOCOL_VERSION: Final[str] = "2024-11-05"
-
-    # Valid commands
-    VALID_COMMANDS: Final[tuple[str, ...]] = ("npx", "uvx", "node", "python", "python3")
-
-    # Required fields
-    REQUIRED_SERVER_FIELDS: Final[tuple[FieldName, ...]] = ("command", "args")
 
     def __init__(self, config_path: Path) -> None:
         """Initialize validator with config file path."""
@@ -157,7 +144,7 @@ class MCPConfigValidator:
     def _validate_server(self, name: str, config: dict[str, Any]) -> None:
         """Validate a single server configuration."""
         # Check required fields
-        for field_name in self.REQUIRED_SERVER_FIELDS:
+        for field_name in MCP_REQUIRED_FIELDS:
             if field_name not in config:
                 self.errors.append(f"Server '{name}': Missing required field '{field_name}'")
 
@@ -166,10 +153,10 @@ class MCPConfigValidator:
             command = config["command"]
             if not isinstance(command, str):
                 self.errors.append(f"Server '{name}': 'command' must be a string")
-            elif command not in self.VALID_COMMANDS:
+            elif command not in MCP_VALID_COMMANDS:
                 self.warnings.append(
                     f"Server '{name}': Unusual command '{command}' "
-                    f"(expected: {', '.join(self.VALID_COMMANDS)})"
+                    f"(expected: {', '.join(MCP_VALID_COMMANDS)})"
                 )
 
         # Validate args

@@ -17,19 +17,15 @@ import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Final, TypeAlias
+from typing import Any
 
+from python.types.aliases import ConfigPath, ToolCount
+from python.types.aliases_mcp import ServerConfig, ServerName
+from python.types.constants import TOKENS_PER_SERVER, TOKENS_PER_TOOL
 from python.utils.colors import Colors
 from python.utils.logging_utils import setup_logger
 
 logger = setup_logger("token_analyzer")
-
-# Type aliases
-ServerName: TypeAlias = str
-ConfigPath: TypeAlias = Path
-TokenCount: TypeAlias = int
-ToolCount: TypeAlias = int
-ServerConfig: TypeAlias = dict[str, Any]
 
 
 @dataclass(frozen=True, slots=True)
@@ -51,14 +47,8 @@ class TokenStats:
 class TokenAnalyzer:
     """Analyzes token usage for MCP configurations."""
 
-    # Token estimates per tool (average from schema analysis)
-    TOKENS_PER_TOOL: Final[int] = 180  # Average: name, description, input schema
-
-    # Base overhead tokens per server
-    TOKENS_PER_SERVER: Final[int] = 50  # Server metadata, connection info
-
     # Tool count estimates per server (from discovery)
-    KNOWN_TOOL_COUNTS: Final[dict[ServerName, ToolCount]] = {
+    KNOWN_TOOL_COUNTS: dict[ServerName, ToolCount] = {
         "playwright": 32,
         "github": 26,
         "filesystem": 14,
@@ -110,8 +100,8 @@ class TokenAnalyzer:
 
         # Calculate token estimates
         server_count = len(servers)
-        tool_tokens = total_tools * self.TOKENS_PER_TOOL
-        server_overhead = server_count * self.TOKENS_PER_SERVER
+        tool_tokens = total_tools * TOKENS_PER_TOOL
+        server_overhead = server_count * TOKENS_PER_SERVER
         estimated_total = tool_tokens + server_overhead
 
         # Token range (±15% variance)
@@ -121,8 +111,8 @@ class TokenAnalyzer:
         return {
             "server_count": server_count,
             "tool_count": total_tools,
-            "tokens_per_tool": self.TOKENS_PER_TOOL,
-            "tokens_per_server": self.TOKENS_PER_SERVER,
+            "tokens_per_tool": TOKENS_PER_TOOL,
+            "tokens_per_server": TOKENS_PER_SERVER,
             "tool_tokens": tool_tokens,
             "server_overhead": server_overhead,
             "estimated_tokens": estimated_total,

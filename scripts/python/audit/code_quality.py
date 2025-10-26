@@ -25,19 +25,12 @@ from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Final, Protocol, TypeAlias
+from typing import Protocol
 
+from python.types.aliases import CommandArgs, ErrorMessage, ExitCode
+from python.types.aliases_audit import ToolName
+from python.types.constants import BLACK_LINE_LENGTH, DEFAULT_PYTHON_DIRS
 from python.utils.colors import error, header, info, separator, success, warning
-
-# Type aliases for semantic clarity
-ToolName: TypeAlias = str
-CommandArgs: TypeAlias = Sequence[str]
-ErrorMessage: TypeAlias = str
-ExitCode: TypeAlias = int
-
-# Constants
-DEFAULT_PYTHON_DIRS: Final[tuple[str, ...]] = ("scripts/python/", "scripts/orchestrator.py")
-BLACK_LINE_LENGTH: Final[int] = 100
 
 
 @dataclass(frozen=True, slots=True)

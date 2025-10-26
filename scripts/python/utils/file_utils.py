@@ -19,17 +19,10 @@ import json
 import os
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Final, TypeAlias
 
-# Type aliases for semantic clarity and type safety
-StrPath: TypeAlias = str | os.PathLike[str]
-JSONValue: TypeAlias = dict[str, Any] | list[Any] | str | int | float | bool | None
-JSONDict: TypeAlias = dict[str, JSONValue]
-FileSize: TypeAlias = int
-
-# Constants
-DEFAULT_ENCODING: Final[str] = "utf-8"
-DEFAULT_JSON_INDENT: Final[int] = 2
+from python.types.aliases import FileSize, JSONDict, StrPath
+from python.types.constants.formatting import DEFAULT_JSON_INDENT
+from python.types.constants.paths import DEFAULT_ENCODING
 
 __all__: list[str] = [
     "read_json",

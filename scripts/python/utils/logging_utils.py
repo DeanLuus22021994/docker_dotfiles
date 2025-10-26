@@ -17,25 +17,14 @@ Examples:
 
 import logging
 import sys
-from typing import Final, Literal, Protocol, TypeAlias
+from typing import Final, Protocol
 
-from .colors import ColorCode, Colors
+from python.types.aliases_colors import ColorCode
+from python.types.aliases_logging import FormatString, LoggerName, LogLevel, LogLevelName
+from python.types.constants.logging import DEFAULT_LOG_FORMAT
+from python.types.enums import CRITICAL, DEBUG, ERROR, INFO, WARNING
 
-# Type aliases for semantic clarity
-LogLevel: TypeAlias = int
-LogLevelName: TypeAlias = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-FormatString: TypeAlias = str
-LoggerName: TypeAlias = str
-
-# Log level constants
-DEBUG: Final[LogLevel] = logging.DEBUG
-INFO: Final[LogLevel] = logging.INFO
-WARNING: Final[LogLevel] = logging.WARNING
-ERROR: Final[LogLevel] = logging.ERROR
-CRITICAL: Final[LogLevel] = logging.CRITICAL
-
-# Default format
-DEFAULT_FORMAT: Final[FormatString] = "%(levelname)s: %(message)s"
+from .colors import Colors
 
 __all__: list[str] = [
     "ColoredFormatter",
@@ -153,7 +142,7 @@ def setup_logger(
 
     # Determine formatter based on color preference
     if format_string is None:
-        format_string = DEFAULT_FORMAT
+        format_string = DEFAULT_LOG_FORMAT
 
     formatter: FormatterProtocol
     if use_colors:

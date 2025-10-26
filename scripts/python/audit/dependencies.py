@@ -21,29 +21,13 @@ Examples:
 import subprocess
 import sys
 from abc import ABC, abstractmethod
-from collections.abc import Sequence
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Final, Protocol, TypeAlias
+from typing import Protocol
 
+from python.types.aliases import CommandArgs, ErrorMessage, ExitCode
+from python.types.aliases_audit import PackageName, Version
+from python.types.constants import PYPROJECT_PATH, REQUIRED_PACKAGES
 from python.utils.colors import error, header, info, separator, success, warning
-
-# Type aliases for semantic clarity
-PackageName: TypeAlias = str
-Version: TypeAlias = str
-CommandArgs: TypeAlias = Sequence[str]
-ErrorMessage: TypeAlias = str
-ExitCode: TypeAlias = int
-
-# Constants
-REQUIRED_PACKAGES: Final[tuple[PackageName, ...]] = (
-    "black",
-    "ruff",
-    "mypy",
-    "yamllint",
-    "pytest",
-)
-PYPROJECT_PATH: Final[Path] = Path("pyproject.toml")
 
 
 @dataclass(frozen=True, slots=True)
@@ -215,6 +199,20 @@ class BaseDependencyChecker(ABC):
             check=False,
         )
 
+    def _handle_pip_not_found(self) -> DependencyCheckResult:
+        """Handle pip not found error consistently.
+
+        Returns:
+            DependencyCheckResult with error
+        """
+        if self.verbose:
+            print(error("pip not found"))
+        return DependencyCheckResult(
+            passed=False,
+            check_name=self.check_name,
+            errors=("pip not found",),
+        )
+
 
 class OutdatedPackagesChecker(BaseDependencyChecker):
     """Checks for outdated Python packages."""
@@ -253,13 +251,7 @@ class OutdatedPackagesChecker(BaseDependencyChecker):
             return DependencyCheckResult(passed=True, check_name=self.check_name)
 
         except FileNotFoundError:
-            if self.verbose:
-                print(error("pip not found"))
-            return DependencyCheckResult(
-                passed=False,
-                check_name=self.check_name,
-                errors=("pip not found",),
-            )
+            return self._handle_pip_not_found()
 
     def _parse_outdated_output(self, output: str) -> tuple[Package, ...]:
         """Parse pip list --outdated output into Package objects."""
@@ -302,13 +294,7 @@ class InstalledPackagesChecker(BaseDependencyChecker):
             )
 
         except FileNotFoundError:
-            if self.verbose:
-                print(error("pip not found"))
-            return DependencyCheckResult(
-                passed=False,
-                check_name=self.check_name,
-                errors=("pip not found",),
-            )
+            return self._handle_pip_not_found()
 
     def _parse_installed_output(self, output: str) -> tuple[Package, ...]:
         """Parse pip list output into Package objects."""
@@ -365,13 +351,7 @@ class PyprojectDependenciesChecker(BaseDependencyChecker):
             return DependencyCheckResult(passed=True, check_name=self.check_name)
 
         except FileNotFoundError:
-            if self.verbose:
-                print(error("pip not found"))
-            return DependencyCheckResult(
-                passed=False,
-                check_name=self.check_name,
-                errors=("pip not found",),
-            )
+            return self._handle_pip_not_found()
 
 
 class DependencyAuditor:

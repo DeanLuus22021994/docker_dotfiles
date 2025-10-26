@@ -19,9 +19,13 @@ Examples:
 
 import os
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Final, TypeAlias
+from typing import Final
 
+from python.types.aliases import Description, ExitCode
+from python.types.aliases_validation import EnvVarName
+from python.types.constants import MASK_LENGTH, MASK_SUFFIX, SHORT_MASK
 from python.utils.colors import (
     Colors,
     bold,
@@ -31,17 +35,6 @@ from python.utils.colors import (
     success,
     warning,
 )
-
-# Type aliases for semantic clarity
-EnvVarName: TypeAlias = str
-EnvVarValue: TypeAlias = str
-Description: TypeAlias = str
-ExitCode: TypeAlias = int
-
-# Constants
-MASK_LENGTH: Final[int] = 8
-MASK_SUFFIX: Final[str] = "..."
-SHORT_MASK: Final[str] = "***"
 
 
 @dataclass(frozen=True, slots=True)
@@ -163,6 +156,35 @@ class EnvValidator:
         self.required_vars = required_vars
         self.optional_vars = optional_vars
         self.verbose = verbose
+
+    def _check_vars(
+        self,
+        vars_to_check: tuple[EnvVarConfig, ...],
+        *,
+        present_list: list[EnvVarConfig],
+        missing_list: list[EnvVarConfig],
+        message_func: Callable[[str], str],
+    ) -> None:
+        """Check variables and categorize them.
+
+        Args:
+            vars_to_check: Variables to validate
+            present_list: List to append present variables to
+            missing_list: List to append missing variables to
+            message_func: Function to format missing message (error/warning)
+        """
+        for var_config in vars_to_check:
+            if var_config.is_set:
+                present_list.append(var_config)
+                if self.verbose:
+                    masked = var_config.get_masked_value()
+                    print(f"  {success(f'{var_config.name}: {masked}')}")
+            else:
+                missing_list.append(var_config)
+                if self.verbose:
+                    print(
+                        f"  {message_func(f'{var_config.name}: NOT SET - {var_config.description}')}"
+                    )
 
     def validate(self) -> ValidationResult:
         """Validate all environment variables.

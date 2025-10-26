@@ -18,12 +18,9 @@ Examples:
 """
 
 from dataclasses import dataclass
-from typing import Final, TypeAlias
+from typing import Final
 
-# Type aliases for semantic clarity
-ColorCode: TypeAlias = str
-AnsiCode: TypeAlias = str
-FormattedText: TypeAlias = str
+from python.types.aliases_colors import AnsiCode, ColorCode, FormattedText
 
 __all__: list[str] = [
     "Colors",
