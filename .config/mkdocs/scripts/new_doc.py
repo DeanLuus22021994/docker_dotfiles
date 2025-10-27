@@ -11,7 +11,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, TYPE_CHECKING, cast
+from typing import Any, Callable, cast
 
 # Handle optional dependencies gracefully
 try:
@@ -91,13 +91,15 @@ except ImportError:
 # Add the parent directory to sys.path for imports
 # sys.path.append(str(Path(__file__).parent.parent))  # Not needed with relative import
 
-# DocFrontmatter type will be imported below with fallback
+# Define type for DocFrontmatter
+_DocFrontmatterType = Any  # Will be set to actual type below
 
 
 # Import schema definitions with fallback
 try:
     from ..schemas.frontmatter import DocFrontmatter as _RuntimeDocFrontmatter  # type: ignore[import-not-found]
     from ..schemas.frontmatter import ALLOWED_TAGS  # type: ignore[import-not-found]
+    _DocFrontmatterType = _RuntimeDocFrontmatter
 except ImportError:
     # Fallback if schemas not available
     ALLOWED_TAGS = set()
@@ -113,6 +115,7 @@ except ImportError:
         description: str
 
     _RuntimeDocFrontmatter = _FallbackDocFrontmatter
+    _DocFrontmatterType = _FallbackDocFrontmatter
 
 
 def _build_frontmatter(**kwargs: Any) -> _DocFrontmatterType:

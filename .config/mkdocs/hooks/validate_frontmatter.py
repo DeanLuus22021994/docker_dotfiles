@@ -44,7 +44,7 @@ DocFrontmatterCallable = Callable[..., _DocFrontmatterModel]
 ValidationErrorType = type[Exception]
 
 doc_frontmatter_factory: DocFrontmatterCallable | None = None
-validation_error_type: ValidationErrorType | None = None
+_validation_error_type: ValidationErrorType | None = None
 
 try:
     from pydantic import ValidationError as _ValidationError
@@ -75,10 +75,10 @@ ALLOWED_TAGS = set(SCHEMA_ALLOWED_TAGS) if "SCHEMA_ALLOWED_TAGS" in locals() els
 if _ValidationError is not None and _DocFrontmatter is not None:
     PYDANTIC_AVAILABLE = True
     doc_frontmatter_factory = cast(DocFrontmatterCallable, _DocFrontmatter)
-    validation_error_type: type[Exception] = _PYDANTIC_VALIDATION_ERROR
+    _validation_error_type = _PYDANTIC_VALIDATION_ERROR
 else:
     PYDANTIC_AVAILABLE = False
-    validation_error_type = Exception
+    _validation_error_type = Exception
 # ============================================================================
 # Type Protocols (PEP 544) - No Runtime Dependencies
 # ============================================================================
@@ -296,7 +296,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
     """
     errors: list[str] = []
 
-    if PYDANTIC_AVAILABLE and doc_frontmatter_factory and validation_error_type:
+    if PYDANTIC_AVAILABLE and doc_frontmatter_factory and _validation_error_type:
         # Use Pydantic validation
         try:
             # Convert ISO strings back to datetime objects for validation
@@ -319,12 +319,15 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
             # Validate with Pydantic
             doc_frontmatter_factory(**frontmatter)
 
-        except validation_error_type as e:  # noqa: BLE001
-            # Parse Pydantic validation errors
-            for error in e.errors():
-                field = error.get("loc", ["unknown"])[0]
-                msg = error.get("msg", str(error))
-                errors.append(f"Field '{field}': {msg}")
+        except Exception as e:  # noqa: BLE001
+            # Parse Pydantic validation errors if available
+            if hasattr(e, 'errors') and callable(getattr(e, 'errors')):
+                for error in e.errors():
+                    field = error.get("loc", ["unknown"])[0]
+                    msg = error.get("msg", str(error))
+                    errors.append(f"Field '{field}': {msg}")
+            else:
+                errors.append(f"Validation error: {e}")
     else:
         # Fallback validation without Pydantic
         required_fields = set(REQUIRED_FIELDS)
