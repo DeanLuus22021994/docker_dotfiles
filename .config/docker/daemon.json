@@ -1,11 +1,16 @@
 {
   "builder": {
     "gc": {
-      "defaultKeepStorage": "20GB",
+      "defaultKeepStorage": "250GB",
       "enabled": true
     }
   },
-  "experimental": false,
+  "dns": [
+    "8.8.8.8",
+    "8.8.4.4",
+    "1.1.1.1"
+  ],
+  "experimental": true,
   "features": {
     "buildkit": true
   },
@@ -14,11 +19,19 @@
     "max-size": "10m",
     "max-file": "3"
   },
+  "max-concurrent-downloads": 50,
+  "max-concurrent-uploads": 50,
   "storage-driver": "overlay2",
   "default-address-pools": [
     {
       "base": "172.20.0.0/16",
       "size": 24
     }
-  ]
+  ],
+  "runtimes": {
+    "nvidia": {
+      "path": "nvidia-container-runtime",
+      "runtimeArgs": []
+    }
+  }
 }

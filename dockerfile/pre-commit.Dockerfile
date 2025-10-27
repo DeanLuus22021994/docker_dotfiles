@@ -7,6 +7,7 @@ LABEL description="Pre-commit hooks automation with strict error enforcement"
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
+    libatomic1 \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python tools

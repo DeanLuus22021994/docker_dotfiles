@@ -116,7 +116,7 @@
       "command": "npm",
       "args": ["run", "dev"],
       "options": {
-        "cwd": "${workspaceFolder}/web-content"
+        "cwd": "${workspaceFolder}/dashboard"
       },
       "isBackground": true,
       "group": "build",
@@ -148,7 +148,7 @@
       "command": "npm",
       "args": ["run", "build"],
       "options": {
-        "cwd": "${workspaceFolder}/web-content"
+        "cwd": "${workspaceFolder}/dashboard"
       },
       "group": "build",
       "presentation": {
@@ -352,6 +352,46 @@
         "panel": "shared"
       },
       "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "problemMatcher": [],
+      "presentation": {
+        "focus": true,
+        "clear": true,
+        "panel": "shared",
+        "echo": true,
+        "reveal": "always"
+      },
+      "command": ".\\scripts\\powershell\\security\\Initialize-DockerSecrets.ps1",
+      "label": "Security: Setup Docker Secrets"
+    },
+    {
+      "type": "shell",
+      "problemMatcher": [],
+      "presentation": {
+        "focus": true,
+        "clear": true,
+        "panel": "shared",
+        "echo": true,
+        "reveal": "always"
+      },
+      "command": ".\\scripts\\powershell\\security\\Test-DockerSecrets.ps1",
+      "label": "Security: Validate Secrets"
+    },
+    {
+      "args": ["-SecretName", "${input:secretToRotate}"],
+      "type": "shell",
+      "command": ".\\scripts\\powershell\\security\\Update-DockerSecret.ps1",
+      "label": "Security: Rotate Secret",
+      "problemMatcher": [],
+      "presentation": {
+        "focus": true,
+        "clear": true,
+        "panel": "shared",
+        "echo": true,
+        "reveal": "always"
+      }
     }
   ],
   "inputs": [
@@ -397,6 +437,20 @@
       "description": "Select second MCP profile to compare",
       "options": ["core", "fullstack", "testing", "data"],
       "default": "fullstack"
+    },
+    {
+      "id": "secretToRotate",
+      "type": "pickString",
+      "description": "Select secret to rotate",
+      "options": [
+        "postgres_user",
+        "postgres_password",
+        "redis_password",
+        "mariadb_root_password",
+        "mariadb_password",
+        "mariadb_user"
+      ],
+      "default": "postgres_password"
     }
   ]
 }

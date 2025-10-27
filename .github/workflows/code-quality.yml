@@ -159,7 +159,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        directory: ["./api", "./web-content"]
+        directory: ["./backend", "./dashboard"]
 
     steps:
       - name: Checkout code

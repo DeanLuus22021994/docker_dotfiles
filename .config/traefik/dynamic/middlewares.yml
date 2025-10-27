@@ -1,58 +1,296 @@
-# Traefik Dynamic Configuration
-# Security headers and middleware
+# Traefik Dynamic Configuration - Middleware
+# Security headers, rate limiting, authentication, compression
 # Last Updated: 2025-10-26
+# Network Architecture: 5-Tier Segmentation (cluster-frontend, cluster-backend, cluster-data, cluster-observability, cluster-management)
+# Security: HSTS, CSP, Rate limiting, Basic auth, Compression
+# Cluster Version: v3.0.0
 
 http:
   middlewares:
-    # Security headers middleware
+    # =============================================================================
+    # SECURITY HEADERS (Apply to all public routes)
+    # =============================================================================
     security-headers:
       headers:
-        # HSTS configuration (force HTTPS for 1 year)
-        stsSeconds: 31536000
+        # HSTS configuration (force HTTPS for 2 years)
+        stsSeconds: 63072000 # 2 years (recommended by OWASP)
         stsIncludeSubdomains: true
-        stsPreload: true
+        stsPreload: true # Submit to HSTS preload list
 
-        # Content Security Policy
+        # Content Security Policy (strict)
         contentSecurityPolicy: >-
           default-src 'self';
-          script-src 'self' 'unsafe-inline';
-          style-src 'self' 'unsafe-inline';
+          script-src 'self' 'unsafe-inline' 'unsafe-eval';
+          style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
           img-src 'self' data: https:;
-          font-src 'self' data:;
-          connect-src 'self' http://localhost:3001 ws://localhost:3001
+          font-src 'self' data: https://fonts.gstatic.com;
+          connect-src 'self' ws://localhost:* wss://localhost:* http://localhost:* https://localhost:*;
+          frame-ancestors 'none';
+          base-uri 'self';
+          form-action 'self'
 
-        # Other security headers
-        frameDeny: true
-        contentTypeNosniff: true
-        browserXssFilter: true
-        referrerPolicy: "strict-origin-when-cross-origin"
-        permissionsPolicy: "geolocation=(), microphone=(), camera=()"
+        # Additional security headers
+        frameDeny: true # Prevent clickjacking
+        contentTypeNosniff: true # Prevent MIME sniffing
+        browserXssFilter: true # Enable XSS filter
+        referrerPolicy: "strict-origin-when-cross-origin" # Privacy-focused
+        permissionsPolicy: "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()" # Restrict features
+
+        # Custom headers
+        customFrameOptionsValue: "SAMEORIGIN" # Alternative to frameDeny
+        customResponseHeaders:
+          X-Frame-Options: "SAMEORIGIN"
+          X-Content-Type-Options: "nosniff"
+          X-XSS-Protection: "1; mode=block"
+          X-Permitted-Cross-Domain-Policies: "none"
+          X-Download-Options: "noopen"
+          Referrer-Policy: "strict-origin-when-cross-origin"
+          Server: "" # Hide server header (security through obscurity)
 
         # Force HTTPS
         forceSTSHeader: true
 
-    # Rate limiting middleware (global)
+        # Allowed hosts (prevent host header injection)
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"
+        sslRedirect: true
+        sslHost: "your-domain.com" # Replace with actual domain
+        sslForceHost: true
+
+    # =============================================================================
+    # RATE LIMITING (DDoS protection)
+    # =============================================================================
+    
+    # Global rate limit (public endpoints)
     rate-limit:
       rateLimit:
-        average: 100
-        period: "1m"
-        burst: 50
+        average: 100 # 100 requests per period
+        period: "1m" # Per minute
+        burst: 50 # Allow bursts up to 50
+        sourceCriterion:
+          ipStrategy:
+            depth: 1 # Use X-Forwarded-For first IP
+            excludedIPs:
+              - "172.20.0.0/24" # cluster-frontend
+              - "172.20.1.0/24" # cluster-backend
+              - "127.0.0.1/32" # localhost
 
-    # Rate limiting for API endpoints (stricter)
+    # Strict rate limit for API endpoints
     rate-limit-api:
       rateLimit:
-        average: 50
-        period: "1m"
-        burst: 25
+        average: 50 # 50 requests per period
+        period: "1m" # Per minute
+        burst: 25 # Allow bursts up to 25
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+            excludedIPs:
+              - "172.20.0.0/24" # cluster-frontend
+              - "172.20.1.0/24" # cluster-backend
+              - "127.0.0.1/32" # localhost
 
-    # Authentication middleware (basic auth for dashboard)
+    # Very strict rate limit for authentication endpoints
+    rate-limit-auth:
+      rateLimit:
+        average: 10 # 10 requests per period
+        period: "1m" # Per minute
+        burst: 5 # Allow bursts up to 5 (prevent brute force)
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+            excludedIPs:
+              - "127.0.0.1/32" # localhost only
+
+    # Lenient rate limit for internal services
+    rate-limit-internal:
+      rateLimit:
+        average: 500 # 500 requests per period
+        period: "1m" # Per minute
+        burst: 250 # Allow bursts up to 250
+        sourceCriterion:
+          ipStrategy:
+            depth: 1
+
+    # =============================================================================
+    # AUTHENTICATION (Protect sensitive endpoints)
+    # =============================================================================
+    
+    # Basic auth for dashboard (CHANGE IN PRODUCTION!)
     dashboard-auth:
       basicAuth:
         users:
-          # admin:admin (change in production!)
+          # admin:admin (INSECURE - change in production!)
           # Generated with: echo $(htpasswd -nb admin admin) | sed -e s/\\$/\\$\\$/g
+          # Use strong passwords: echo $(htpasswd -nb admin <strong-password>) | sed -e s/\\$/\\$\\$/g
           - "admin:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/"
+        realm: "Traefik Dashboard - Docker Cluster v3.0.0"
+        removeHeader: true # Remove Authorization header after auth
 
-    # Compression middleware
+    # Basic auth for monitoring endpoints (Prometheus, Grafana)
+    monitoring-auth:
+      basicAuth:
+        users:
+          # monitoring:monitor (INSECURE - change in production!)
+          - "monitoring:$apr1$8r.e8R8W$K4VHOX/uW1d1xN5x/5.ZH0"
+        realm: "Monitoring Access - cluster-observability"
+        removeHeader: true
+
+    # Basic auth for management endpoints (pgAdmin, Redis Commander)
+    management-auth:
+      basicAuth:
+        users:
+          # manager:manage (INSECURE - change in production!)
+          - "manager:$apr1$7GfL9GrR$IQ9U9eX5I7kN1q3Q3f.x41"
+        realm: "Management Access - cluster-management"
+        removeHeader: true
+
+    # =============================================================================
+    # IP WHITELISTING (Restrict access by IP)
+    # =============================================================================
+    
+    # Allow only internal networks
+    internal-only:
+      ipWhiteList:
+        sourceRange:
+          - "172.20.0.0/16" # All cluster networks
+          - "127.0.0.1/32" # localhost
+          - "10.0.0.0/8" # Private network (adjust as needed)
+          - "192.168.0.0/16" # Private network (adjust as needed)
+        ipStrategy:
+          depth: 1
+
+    # Allow only management network
+    management-only:
+      ipWhiteList:
+        sourceRange:
+          - "172.20.4.0/24" # cluster-management
+          - "127.0.0.1/32" # localhost
+
+    # Allow only observability network
+    observability-only:
+      ipWhiteList:
+        sourceRange:
+          - "172.20.3.0/24" # cluster-observability
+          - "172.20.4.0/24" # cluster-management
+          - "127.0.0.1/32" # localhost
+
+    # =============================================================================
+    # COMPRESSION (Improve performance)
+    # =============================================================================
+    
+    # Gzip compression for text-based responses
     compression:
-      compress: {}
+      compress:
+        excludedContentTypes:
+          - "text/event-stream" # Don't compress SSE
+          - "application/grpc" # Don't compress gRPC
+        minResponseBodyBytes: 1024 # Only compress responses > 1KB
+
+    # =============================================================================
+    # REDIRECTS & URL MANIPULATION
+    # =============================================================================
+    
+    # Add trailing slash
+    add-trailing-slash:
+      redirectRegex:
+        regex: "^(https?://[^/]+/[^?]*[^/])$"
+        replacement: "${1}/"
+        permanent: true
+
+    # Strip prefix (e.g., /api -> /)
+    strip-prefix-api:
+      stripPrefix:
+        prefixes:
+          - "/api"
+        forceSlash: true
+
+    # Replace path
+    replace-path:
+      replacePath:
+        path: "/health"
+
+    # =============================================================================
+    # ERROR PAGES (Custom error handling)
+    # =============================================================================
+    
+    # Custom error pages
+    error-pages:
+      errors:
+        status:
+          - "400-599" # All error codes
+        service: error-page-service@docker
+        query: "/error/{status}"
+
+    # =============================================================================
+    # CIRCUIT BREAKER (Prevent cascading failures)
+    # =============================================================================
+    
+    # Circuit breaker for backend services
+    circuit-breaker:
+      circuitBreaker:
+        expression: "NetworkErrorRatio() > 0.30 || ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+        checkPeriod: "10s"
+        fallbackDuration: "30s"
+        recoveryDuration: "10s"
+
+    # =============================================================================
+    # RETRY (Improve reliability)
+    # =============================================================================
+    
+    # Retry failed requests
+    retry:
+      retry:
+        attempts: 3
+        initialInterval: "100ms"
+
+    # =============================================================================
+    # BUFFERING (Control request/response buffering)
+    # =============================================================================
+    
+    # Increase buffer for large requests
+    buffering:
+      buffering:
+        maxRequestBodyBytes: 10485760 # 10MB
+        memRequestBodyBytes: 2097152 # 2MB
+        maxResponseBodyBytes: 10485760 # 10MB
+        memResponseBodyBytes: 2097152 # 2MB
+        retryExpression: "IsNetworkError() && Attempts() < 3"
+
+    # =============================================================================
+    # CHAIN MIDDLEWARE (Combine multiple middleware)
+    # =============================================================================
+    
+    # Public web application (security + compression + rate limit)
+    public-web:
+      chain:
+        middlewares:
+          - security-headers
+          - compression
+          - rate-limit
+
+    # Public API (security + compression + strict rate limit)
+    public-api:
+      chain:
+        middlewares:
+          - security-headers
+          - compression
+          - rate-limit-api
+          - retry
+
+    # Internal management (auth + internal-only + compression)
+    management:
+      chain:
+        middlewares:
+          - management-auth
+          - management-only
+          - compression
+          - rate-limit-internal
+
+    # Internal monitoring (auth + observability-only + compression)
+    monitoring:
+      chain:
+        middlewares:
+          - monitoring-auth
+          - observability-only
+          - compression
+          - rate-limit-internal

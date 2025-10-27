@@ -76,5 +76,8 @@ volumes/
 secrets/
 !secrets/.secrets.example
 
+# Exclude pre-commit config (use mounted version from .config/git/)
+.pre-commit-config.yaml
+
 # Keep only necessary files for Python builds
 !python_utils/

@@ -1,30 +1,53 @@
 global:
   resolve_timeout: 5m
-  # SMTP configuration for email notifications
+  # SMTP configuration for email notifications (using MailHog for development)
   smtp_smarthost: "cluster-mailhog:1025"
   smtp_from: "alertmanager@docker-cluster.local"
   smtp_require_tls: false
+  # Production: Use real SMTP server with TLS
+  # smtp_smarthost: "smtp.gmail.com:587"
+  # smtp_auth_username: "alerts@yourdomain.com"
+  # smtp_auth_password: "<use-secret-file>"
+  # smtp_require_tls: true
 
-# Route configuration
+# Route configuration - Hierarchical alert routing
 route:
-  group_by: ["alertname", "cluster", "service"]
+  group_by: ["alertname", "cluster", "service", "tier"]
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 12h
   receiver: "default"
 
   routes:
-    # Critical alerts - immediate notification
+    # Critical alerts - immediate notification to oncall
     - match:
         severity: critical
       receiver: "critical-alerts"
       repeat_interval: 5m
+      continue: true  # Also send to default
 
-    # Warning alerts - grouped notification
+    # Warning alerts - grouped notification to team
     - match:
         severity: warning
       receiver: "warning-alerts"
       repeat_interval: 1h
+
+    # Database-specific alerts
+    - match:
+        tier: data
+      receiver: "database-team"
+      repeat_interval: 30m
+      routes:
+        - match:
+            severity: critical
+          receiver: "critical-alerts"
+          repeat_interval: 5m
+
+    # Observability stack alerts
+    - match:
+        tier: observability
+      receiver: "monitoring-team"
+      repeat_interval: 2h
 
 # Receivers configuration
 receivers:
@@ -32,47 +55,93 @@ receivers:
     email_configs:
       - to: "team@docker-cluster.local"
         headers:
-          Subject: "{{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}"
+          Subject: "[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} - {{ .GroupLabels.cluster }}"
         html: |
           <h2>Alert: {{ .GroupLabels.alertname }}</h2>
+          <p><strong>Status:</strong> {{ .Status }}</p>
           <p><strong>Cluster:</strong> {{ .GroupLabels.cluster }}</p>
+          <p><strong>Service:</strong> {{ .GroupLabels.service }}</p>
+          <p><strong>Tier:</strong> {{ .GroupLabels.tier }}</p>
           <p><strong>Severity:</strong> {{ .CommonLabels.severity }}</p>
           <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
           <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
           <hr>
-          <p><small>Firing alerts: {{ .Alerts.Firing | len }}</small></p>
+          <p><small>Firing alerts: {{ .Alerts.Firing | len }} | Resolved: {{ .Alerts.Resolved | len }}</small></p>
+          <p><small>Network: {{ .CommonLabels.network }}</small></p>
 
   - name: "critical-alerts"
     email_configs:
-      - to: "oncall@docker-cluster.local"
+      - to: "oncall@docker-cluster.local, team@docker-cluster.local"
         headers:
-          Subject: "🚨 CRITICAL: {{ .GroupLabels.alertname }}"
+          Subject: "🚨 [CRITICAL] {{ .GroupLabels.alertname }} - IMMEDIATE ACTION REQUIRED"
+          Priority: "urgent"
         html: |
-          <h1 style="color: red;">🚨 CRITICAL ALERT</h1>
-          <h2>{{ .GroupLabels.alertname }}</h2>
-          <p><strong>Cluster:</strong> {{ .GroupLabels.cluster }}</p>
-          <p><strong>Service:</strong> {{ .GroupLabels.service }}</p>
-          <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
-          <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
-          <hr>
-          <p>⚠️ Immediate action required!</p>
+          <div style="background-color: #ff0000; color: #ffffff; padding: 20px;">
+            <h1 style="margin: 0;">🚨 CRITICAL ALERT</h1>
+          </div>
+          <div style="padding: 20px;">
+            <h2>{{ .GroupLabels.alertname }}</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 5px; border-bottom: 1px solid #ccc;"><strong>Cluster:</strong></td><td style="padding: 5px; border-bottom: 1px solid #ccc;">{{ .GroupLabels.cluster }}</td></tr>
+              <tr><td style="padding: 5px; border-bottom: 1px solid #ccc;"><strong>Service:</strong></td><td style="padding: 5px; border-bottom: 1px solid #ccc;">{{ .GroupLabels.service }}</td></tr>
+              <tr><td style="padding: 5px; border-bottom: 1px solid #ccc;"><strong>Tier:</strong></td><td style="padding: 5px; border-bottom: 1px solid #ccc;">{{ .GroupLabels.tier }}</td></tr>
+              <tr><td style="padding: 5px; border-bottom: 1px solid #ccc;"><strong>Network:</strong></td><td style="padding: 5px; border-bottom: 1px solid #ccc;">{{ .CommonLabels.network }}</td></tr>
+              <tr><td style="padding: 5px; border-bottom: 1px solid #ccc;"><strong>Summary:</strong></td><td style="padding: 5px; border-bottom: 1px solid #ccc;">{{ .CommonAnnotations.summary }}</td></tr>
+              <tr><td style="padding: 5px;"><strong>Description:</strong></td><td style="padding: 5px;">{{ .CommonAnnotations.description }}</td></tr>
+            </table>
+            <hr>
+            <p style="color: #ff0000; font-weight: bold;">⚠️ IMMEDIATE ACTION REQUIRED</p>
+            <p><small>{{ .Alerts.Firing | len }} alert(s) firing</small></p>
+          </div>
 
-    # Webhook for external integrations (Slack/Teams/PagerDuty)
-    # Configure with actual endpoint when integrating with external services
+    # Webhook for external integrations (Slack/Teams/PagerDuty) - Configure in production
     # webhook_configs:
     #   - url: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL'
     #     send_resolved: true
+    #   - url: 'https://events.pagerduty.com/v2/enqueue'
+    #     http_config:
+    #       bearer_token: '<pagerduty-integration-key>'
 
   - name: "warning-alerts"
     email_configs:
       - to: "team@docker-cluster.local"
         headers:
-          Subject: "⚠️ WARNING: {{ .GroupLabels.alertname }}"
+          Subject: "⚠️ [WARNING] {{ .GroupLabels.alertname }}"
         html: |
-          <h2 style="color: orange;">⚠️ WARNING ALERT</h2>
+          <h2 style="color: #ff8800;">⚠️ WARNING ALERT</h2>
           <h3>{{ .GroupLabels.alertname }}</h3>
           <p><strong>Cluster:</strong> {{ .GroupLabels.cluster }}</p>
           <p><strong>Service:</strong> {{ .GroupLabels.service }}</p>
+          <p><strong>Tier:</strong> {{ .GroupLabels.tier }}</p>
+          <p><strong>Network:</strong> {{ .CommonLabels.network }}</p>
+          <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
+          <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
+          <hr>
+          <p><small>{{ .Alerts.Firing | len }} alert(s) firing</small></p>
+
+  - name: "database-team"
+    email_configs:
+      - to: "dba-team@docker-cluster.local"
+        headers:
+          Subject: "[DB ALERT] {{ .GroupLabels.alertname }} - {{ .GroupLabels.database }}"
+        html: |
+          <h2>Database Alert: {{ .GroupLabels.alertname }}</h2>
+          <p><strong>Database:</strong> {{ .GroupLabels.database }}</p>
+          <p><strong>Service:</strong> {{ .GroupLabels.service }}</p>
+          <p><strong>Network:</strong> cluster-data (internal-only)</p>
+          <p><strong>Severity:</strong> {{ .CommonLabels.severity }}</p>
+          <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
+          <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
+
+  - name: "monitoring-team"
+    email_configs:
+      - to: "monitoring-team@docker-cluster.local"
+        headers:
+          Subject: "[MONITORING] {{ .GroupLabels.alertname }}"
+        html: |
+          <h2>Monitoring Alert: {{ .GroupLabels.alertname }}</h2>
+          <p><strong>Service:</strong> {{ .GroupLabels.service }}</p>
+          <p><strong>Network:</strong> cluster-observability</p>
           <p><strong>Summary:</strong> {{ .CommonAnnotations.summary }}</p>
           <p><strong>Description:</strong> {{ .CommonAnnotations.description }}</p>
 
@@ -83,7 +152,7 @@ inhibit_rules:
       severity: "critical"
     target_match:
       severity: "warning"
-    equal: ["alertname", "cluster", "service"]
+    equal: ["alertname", "cluster", "service", "tier"]
 
   # Inhibit container alerts if host is down
   - source_match:
@@ -91,3 +160,17 @@ inhibit_rules:
     target_match_re:
       alertname: "Container.*"
     equal: ["instance"]
+
+  # Inhibit database alerts if network is down
+  - source_match:
+      alertname: "NetworkDown"
+    target_match:
+      tier: "data"
+    equal: ["cluster"]
+
+  # Inhibit backend alerts if frontend (load balancer) is down
+  - source_match:
+      alertname: "LoadBalancerDown"
+    target_match:
+      tier: "backend"
+    equal: ["cluster"]

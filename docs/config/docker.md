@@ -30,11 +30,27 @@ Docker daemon configuration - **for reference only**.
 
 **Key settings:**
 
-- BuildKit enabled by default
+- BuildKit enabled by default (v0.25.1, multi-platform: amd64, arm64, riscv64, ppc64le, s390x, arm/v7, arm/v6)
+- Experimental features enabled
 - JSON file logging with 30MB rotation (3×10MB)
 - Overlay2 storage driver
-- Custom network pools to avoid conflicts
-- 20GB build cache
+- Custom network pools to avoid conflicts (172.20.0.0/16)
+- 250GB build cache (20.4 GB used, 5.2 GB shared)
+- DNS servers: Google (8.8.8.8, 8.8.4.4) and Cloudflare (1.1.1.1)
+- Max concurrent downloads/uploads: 50 for faster operations
+
+**Beta Features Enabled:**
+
+- **Docker AI** - "Ask Gordon" feature in Desktop and CLI
+- **Docker MCP Toolkit** - Model Context Protocol integration
+- **Wasm Support** - WebAssembly workloads with containerd image store
+- **Docker Model Runner** - GPU-accelerated inference engines
+  - Endpoint: `model-runner.docker.internal:80` and `/var/run/docker.sock`
+  - Port: 12434 (host-side TCP)
+  - GPU-backed inference enabled (RTX consumer-grade GPU)
+  - Components: `~/.docker/bin/inference`
+  - CORS: All origins allowed
+- **Docker Extensions** - Enabled with marketplace distribution
 
 **Apply changes:**
 
@@ -163,6 +179,9 @@ docker-compose build cluster-docker-api
 3. **Hot reload** - Mount local code directories
 4. **Debug mode** - Enable verbose logging
 5. **Resource limits** - Adjust based on your machine
+6. **GPU workloads** - Use `deploy.resources.reservations.devices` for GPU access
+7. **AI features** - Leverage Docker Model Runner for ML inference
+8. **Wasm workloads** - Use containerd image store for WebAssembly
 
 ### For Production
 
@@ -171,6 +190,8 @@ docker-compose build cluster-docker-api
 3. **No overrides** - Use only main `docker-compose.yml`
 4. **Secrets** - Always use Docker secrets, never env vars
 5. **Health checks** - Verify all services are healthy
+6. **GPU management** - Properly configure NVIDIA runtime
+7. **Disable beta features** - Only use stable features in production
 
 ## Troubleshooting
 
@@ -178,10 +199,50 @@ docker-compose build cluster-docker-api
 
 ```bash
 # Check if BuildKit is active
-docker buildx version
+docker buildx version  # Should show v0.25.1+
 
 # Enable BuildKit
 export DOCKER_BUILDKIT=1
+```
+
+### GPU not available in containers
+
+```bash
+# Check NVIDIA runtime
+docker run --rm --gpus all nvidia/cuda:11.8.0-base-ubuntu22.04 nvidia-smi
+
+# Verify GPU device reservation in docker-compose.yml
+# deploy:
+#   resources:
+#     reservations:
+#       devices:
+#         - driver: nvidia
+#           count: all
+#           capabilities: [gpu]
+```
+
+### Docker Model Runner not working
+
+```bash
+# Check if inference engine is initialized
+curl http://model-runner.docker.internal:80/health
+curl http://localhost:12434/health
+
+# Verify GPU-backed inference
+ls ~/.docker/bin/inference/
+
+# Check Model Runner logs
+docker logs <model-runner-container>
+```
+
+### Wasm workloads failing
+
+```bash
+# Verify containerd image store is enabled
+docker info | grep "Storage Driver"
+
+# Check Wasm runtime installation
+docker run --rm --runtime=io.containerd.wasmedge.v1 <wasm-image>
 ```
 
 ### Port conflicts

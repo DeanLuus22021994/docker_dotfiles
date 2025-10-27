@@ -19,7 +19,7 @@ watch:
 theme:
   name: material
   language: en
-  custom_dir: overrides
+  custom_dir: .config/mkdocs/overrides
   palette:
     - media: (prefers-color-scheme)
       toggle:

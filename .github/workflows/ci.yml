@@ -252,20 +252,20 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
-          cache-dependency-path: web-content/package-lock.json
+          cache-dependency-path: dashboard/package-lock.json
 
       - name: Install Node dependencies
-        working-directory: web-content
+        working-directory: dashboard
         run: |
           npm ci --legacy-peer-deps
 
       - name: Run ESLint
-        working-directory: web-content
+        working-directory: dashboard
         run: |
           npm run lint
 
       - name: Run TypeScript check
-        working-directory: web-content
+        working-directory: dashboard
         run: |
           npm run type-check
 

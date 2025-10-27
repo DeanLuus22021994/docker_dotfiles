@@ -365,7 +365,7 @@ app.get('/api/stats/aggregate', async (req, res) => {
 // Layer configuration mapping service names to layers
 const LAYER_CONFIG = {
   data: ['postgres', 'mariadb', 'redis', 'minio'],
-  services: ['api', 'web-content'],
+  services: ['backend', 'dashboard'],
   monitoring: ['grafana', 'prometheus'],
   compute: ['jupyter', 'localstack'],
   network: ['nginx', 'traefik', 'mailhog']

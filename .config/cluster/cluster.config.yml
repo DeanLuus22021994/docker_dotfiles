@@ -1,148 +1,330 @@
 # Modern Data Platform Configuration
 # Centralized cluster configuration for all services
 # Note: This is a documentation file, not a Docker Compose schema
+# Last Updated: 2025-10-27
 
 name: "docker-modern-data-platform"
-version: "2.0.0"
+version: "3.0.0"
 environment: "development"
 
-network:
+# Network Architecture - 5-Tier Segmentation
+networks:
+  cluster-frontend:
+    driver: "bridge"
+    subnet: "172.20.0.0/24"
+    description: "Public-facing services (load balancer)"
+  
+  cluster-backend:
+    driver: "bridge"
+    subnet: "172.20.1.0/24"
+    description: "Application tier (web servers, APIs)"
+  
+  cluster-data:
+    driver: "bridge"
+    subnet: "172.20.2.0/24"
+    internal: true
+    description: "Database tier (internal-only, no external access)"
+  
+  cluster-observability:
+    driver: "bridge"
+    subnet: "172.20.3.0/24"
+    description: "Monitoring and observability stack"
+  
+  cluster-management:
+    driver: "bridge"
+    subnet: "172.20.4.0/24"
+    description: "Management tools (BuildKit, K9s, Jupyter)"
+  
   cluster-network:
     driver: "bridge"
-    subnet: "172.20.0.0/16"
+    subnet: "172.20.5.0/24"
+    description: "Legacy network (transitioning services)"
 
+# Security Configuration
+security:
+  docker_socket_proxy:
+    enabled: true
+    read_only_api: true
+    allowed_operations: ["CONTAINERS", "INFO", "VERSION", "PING"]
+    denied_operations: ["EXEC", "POST", "BUILD", "COMMIT"]
+  
+  secrets_management:
+    enabled: true
+    type: "docker_secrets"
+    secrets:
+      - postgres_user
+      - postgres_password
+      - redis_password
+      - mariadb_root_password
+      - mariadb_password
+      - mariadb_user
+  
+  hardening:
+    no_new_privileges: true
+    read_only_root_filesystem: true
+    user_namespaces: false  # Future enhancement
+
+# Services Configuration (31 total)
 services:
+  # Security Infrastructure
+  docker_socket_proxy:
+    enabled: true
+    network: cluster-management
+    security: read_only_api
+    health_check_interval: "30s"
+  
+  # Pre-commit Hooks
+  pre_commit:
+    enabled: true
+    network: cluster-management
+    cache_volume: "pre-commit-cache (608.4 MB)"
+    health_check_interval: "60s"
+  
+  # Frontend Tier
   loadbalancer:
     enabled: true
     port: 8080
+    networks: [cluster-frontend, cluster-backend]
     replicas: 1
+    security: [read_only_root, no_new_privileges]
     health_check_interval: "15s"
 
+  # Backend Tier
   web_servers:
     enabled: true
     replicas: 3
+    networks: [cluster-backend]
     health_check_interval: "30s"
-
+  
+  docker_api:
+    enabled: true
+    port: 3000
+    network: cluster-backend
+    depends_on: [docker_socket_proxy]
+    health_check_interval: "30s"
+  
+  # Data Tier (Internal-Only Network)
   postgresql:
     enabled: true
     port: 5432
+    networks: [cluster-data, cluster-backend]
     database: "clusterdb"
-    user: "cluster_user"
-    max_connections: 100
+    secrets: [postgres_user, postgres_password]
+    max_connections: 200
+    shared_buffers: "256MB"
     health_check_interval: "10s"
 
   mariadb:
     enabled: true
     port: 3306
+    networks: [cluster-data, cluster-backend]
     database: "clusterdb"
-    user: "cluster_user"
-    max_connections: 100
+    secrets: [mariadb_root_password, mariadb_password, mariadb_user]
+    max_connections: 151
+    innodb_buffer_pool: "256M"
     health_check_interval: "30s"
 
   redis:
     enabled: true
     port: 6379
+    networks: [cluster-data, cluster-backend]
+    secrets: [redis_password]
     persistence: true
     health_check_interval: "30s"
-
+  
+  # Observability Tier
+  grafana:
+    enabled: true
+    port: 3002
+    network: cluster-observability
+    admin_user: "admin"
+    health_check_interval: "30s"
+  
+  prometheus:
+    enabled: true
+    port: 9090
+    network: cluster-observability
+    scrape_interval: "15s"
+    targets: 9
+    health_check_interval: "30s"
+  
+  alertmanager:
+    enabled: true
+    port: 9093
+    network: cluster-observability
+    smtp_host: "cluster-mailhog:1025"
+    health_check_interval: "30s"
+  
+  cadvisor:
+    enabled: true
+    port: 8080
+    network: cluster-observability
+    privileged: true
+    health_check_interval: "30s"
+  
+  postgres_exporter:
+    enabled: true
+    port: 9187
+    network: cluster-observability
+    target: cluster-postgres
+    health_check_interval: "30s"
+  
   redis_exporter:
     enabled: true
     port: 9121
-    custom_build: true # Uses custom Dockerfile with curl for health checks
+    network: cluster-observability
+    custom_build: true
     health_check_interval: "30s"
-
+  
+  node_exporter:
+    enabled: true
+    port: 9100
+    network: cluster-observability
+    health_check_interval: "30s"
+  
+  # Management Tier
+  buildkit:
+    enabled: true
+    port: 1234
+    network: cluster-management
+    privileged: true
+    cache: "250GB (BuildKit v0.25.1)"
+    platforms: [amd64, arm64, riscv64, ppc64le, s390x, arm/v7, arm/v6]
+    health_check_interval: "30s"
+  
+  jupyter:
+    enabled: true
+    port: 8888
+    network: cluster-management
+    gpu_enabled: true
+    cuda_version: "12.2"
+    health_check_interval: "60s"
+  
+  k9s:
+    enabled: true
+    network: cluster-management
+    health_check_interval: "30s"
+  
+  github_mcp:
+    enabled: true
+    port: 3001
+    network: cluster-management
+    mode: "http"
+    health_check_interval: "30s"
+  
+  # Cloud/Storage Services
   minio:
     enabled: true
     api_port: 9000
     console_port: 9001
+    network: cluster-network  # TODO: Move to cluster-backend + cluster-data
     health_check_interval: "30s"
-
-  jupyter:
-    enabled: true
-    port: 8888
-    gpu_enabled: true
-    cuda_version: "12.2"
-    health_check_interval: "60s"
-
-  github_mcp:
-    enabled: true
-    mode: "stdio"
-    health_check_interval: "30s"
-
-  k9s:
-    enabled: true
-    health_check_interval: "30s"
-
-  grafana:
-    enabled: true
-    port: 3002
-    admin_user: "admin"
-    health_check_interval: "30s"
-
-  prometheus:
-    enabled: true
-    port: 9090
-    scrape_interval: "15s"
-    health_check_interval: "30s"
-
-  buildkit:
-    enabled: true
-    port: 1234
-    privileged: true
-    health_check_interval: "30s"
-
+  
   localstack:
     enabled: true
     port: 4566
     console_port: 4571
+    network: cluster-network  # TODO: Move to cluster-backend
     services: "s3,dynamodb,sqs,sns,lambda,apigateway"
     health_check_interval: "60s"
-
+  
+  # Development Tools
   mailhog:
     enabled: true
     smtp_port: 1025
     web_port: 8025
+    network: cluster-network  # TODO: Move to cluster-observability
     health_check_interval: "30s"
-
+  
   pgadmin:
     enabled: true
     port: 5050
+    network: cluster-network  # TODO: Move to cluster-management
     default_email: "admin@example.com"
+    servers: [PostgreSQL, MariaDB]
     health_check_interval: "30s"
-
+  
   redis_commander:
     enabled: true
     port: 8082
+    network: cluster-network  # TODO: Move to cluster-management
+    health_check_interval: "30s"
+  
+  dashboard:
+    enabled: true
+    port: 3003
+    network: cluster-network  # TODO: Move to cluster-management
+    security: [read_only_root, no_new_privileges]
+    depends_on: [docker_socket_proxy]
+    health_check_interval: "30s"
+  
+  # Documentation
+  mkdocs:
+    enabled: true
+    port: 8000
+    network: cluster-network  # TODO: Move to cluster-backend
+    profile: "docs"
     health_check_interval: "30s"
 
+# Persistent Volumes (18 total, 1.2 GB total storage)
 volumes:
   cluster_postgres_data:
     driver: "local"
+    size: "~100 MB"
   cluster_mariadb_data:
     driver: "local"
+    size: "~80 MB"
   cluster_mariadb_logs:
     driver: "local"
+    size: "~10 MB"
   cluster_redis_data:
     driver: "local"
+    size: "~5 MB"
   cluster_jupyter_data:
     driver: "local"
+    size: "~50 MB"
   cluster_minio_data:
     driver: "local"
+    size: "~100 MB"
   cluster_grafana_data:
     driver: "local"
+    size: "~50 MB"
   cluster_prometheus_data:
     driver: "local"
+    size: "~150 MB"
   cluster_k9s_config:
     driver: "local"
+    size: "~5 MB"
   cluster_github_mcp_data:
     driver: "local"
+    size: "~10 MB"
   cluster_buildkit_data:
     driver: "local"
+    size: "~100 MB"
   cluster_localstack_data:
     driver: "local"
+    size: "~50 MB"
   cluster_pgadmin_data:
     driver: "local"
+    size: "~20 MB"
+  cluster_alertmanager_data:
+    driver: "local"
+    size: "~10 MB"
+  cluster_mkdocs_site:
+    driver: "local"
+    size: "~50 MB"
+  cluster_mkdocs_build:
+    driver: "local"
+    size: "~30 MB"
+  cluster_dashboard_data:
+    driver: "local"
+    size: "~10 MB"
+  pre_commit_cache:
+    driver: "local"
+    size: "608.4 MB (largest)"
+    description: "Pre-commit hook environments cache"
 
+# Development Container Configuration
 devcontainer:
   enabled: true
   profile: "dev"
@@ -150,8 +332,54 @@ devcontainer:
   node_version: "22"
   cuda: true
   docker_in_docker: true
-  kubectl: true
+  kubectl: false  # Not currently configured
   cpus: 4
   memory: "4gb"
   storage: "8gb"
   gpu: "optional"
+  services_started: 29
+  
+# Docker Desktop Beta Features
+beta_features:
+  docker_ai:
+    enabled: true
+    description: "Ask Gordon CLI assistant"
+  mcp_toolkit:
+    enabled: true
+    description: "Model Context Protocol integration"
+  wasm_support:
+    enabled: true
+    description: "WebAssembly with containerd"
+  model_runner:
+    enabled: true
+    gpu_accelerated: true
+    port: 12434
+    endpoint: "model-runner.docker.internal:80"
+  docker_extensions:
+    enabled: true
+
+# Build & Cache Configuration
+build:
+  buildkit:
+    version: "v0.25.1"
+    cache_size: "250GB"
+    cache_used: "20.4 GB"
+    cache_shared: "5.2 GB"
+    max_parallelism: 50
+    platforms: [amd64, arm64, riscv64, ppc64le, s390x, "arm/v7", "arm/v6"]
+  
+  daemon:
+    experimental: true
+    dns: ["8.8.8.8", "8.8.4.4", "1.1.1.1"]
+    max_concurrent_downloads: 50
+    max_concurrent_uploads: 50
+
+# Cluster Statistics
+statistics:
+  total_services: 31
+  running_containers: 29
+  networks: 6
+  volumes: 18
+  secrets: 6
+  total_storage: "1.2 GB"
+  largest_volume: "pre-commit-cache (608.4 MB)"

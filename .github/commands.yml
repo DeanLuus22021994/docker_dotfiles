@@ -50,11 +50,11 @@ docker:
 
 development:
   web_dev:
-    command: "cd web-content && npm run dev"
+    command: "cd dashboard && npm run dev"
     description: "Start React development server"
 
   web_build:
-    command: "cd web-content && npm run build"
+    command: "cd dashboard && npm run build"
     description: "Build React production bundle"
 
   api_start:

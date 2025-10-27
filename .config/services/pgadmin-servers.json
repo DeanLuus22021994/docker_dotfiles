@@ -1,24 +1,32 @@
 {
   "Servers": {
     "1": {
-      "Name": "PostgreSQL Cluster",
-      "Group": "Development",
+      "Name": "PostgreSQL Cluster (Production)",
+      "Group": "Data Tier",
       "Host": "cluster-postgres",
       "Port": 5432,
       "MaintenanceDB": "clusterdb",
       "Username": "cluster_user",
       "SSLMode": "prefer",
-      "PassFile": "/tmp/pgpassfile"
+      "PassFile": "/tmp/pgpassfile",
+      "Comment": "PostgreSQL 16 on cluster-data network (internal-only)",
+      "SharedServers": true,
+      "BGColor": "#0066cc",
+      "FGColor": "#ffffff"
     },
     "2": {
-      "Name": "MariaDB Cluster",
-      "Group": "Development",
+      "Name": "MariaDB Cluster (Production)",
+      "Group": "Data Tier",
       "Host": "cluster-mariadb",
       "Port": 3306,
       "MaintenanceDB": "clusterdb",
       "Username": "cluster_user",
       "DBType": "mysql",
-      "SSLMode": "prefer"
+      "SSLMode": "prefer",
+      "Comment": "MariaDB 11 on cluster-data network (internal-only)",
+      "SharedServers": true,
+      "BGColor": "#003545",
+      "FGColor": "#ffffff"
     }
   }
 }

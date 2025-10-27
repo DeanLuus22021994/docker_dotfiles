@@ -1,4 +1,7 @@
-# MkDocs Bleeding-Edge Implementation - TODO List
+# ARCHIVED: MkDocs Bleeding-Edge Implementation - TODO List
+
+**ARCHIVED ON:** 2025-10-27
+**NOTE:** This file has been archived. See `TODO.md` in project root for current actionable items.
 
 ## Phase 4: Build Metrics & Health Checks ✅ COMPLETE
 

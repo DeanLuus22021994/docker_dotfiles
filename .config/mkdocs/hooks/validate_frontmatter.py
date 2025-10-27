@@ -61,7 +61,9 @@ except ImportError:
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         SCHEMA_ALLOWED_TAGS = cast(set[str], getattr(module, "ALLOWED_TAGS", set()))
-        _DocFrontmatter = cast(DocFrontmatterCallable | None, getattr(module, "DocFrontmatter", None))
+        _DocFrontmatter = cast(
+            DocFrontmatterCallable | None, getattr(module, "DocFrontmatter", None)
+        )
     else:
         SCHEMA_ALLOWED_TAGS = set()
         _DocFrontmatter = None
@@ -357,9 +359,7 @@ def validate_cross_references(frontmatter: dict[str, Any], docs_dir: Path) -> li
     if isinstance(tags, list):
         invalid_tags = set(tags) - ALLOWED_TAGS
         if invalid_tags:
-            errors.append(
-                f"Invalid tags (not in allowed list): {', '.join(sorted(invalid_tags))}"
-            )
+            errors.append(f"Invalid tags (not in allowed list): {', '.join(sorted(invalid_tags))}")
 
     return errors
 

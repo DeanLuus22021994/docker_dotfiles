@@ -1,4 +1,55 @@
 services:
+  # Docker Socket Proxy - Secure Docker API access with least privilege
+  cluster-docker-socket-proxy:
+    container_name: cluster-docker-socket-proxy
+    image: tecnativa/docker-socket-proxy:latest
+    environment:
+      - CONTAINERS=1
+      - IMAGES=1
+      - INFO=1
+      - NETWORKS=1
+      - SERVICES=1
+      - TASKS=1
+      - VOLUMES=1
+      - EXEC=0
+      - POST=0
+      - BUILD=0
+      - COMMIT=0
+      - CONFIGS=0
+      - DISTRIBUTION=0
+      - AUTH=0
+      - SECRETS=0
+      - SWARM=0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - cluster-management
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /run
+      - /tmp
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+        reservations:
+          cpus: "0.1"
+          memory: 64M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:2375/_ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   cluster-pre-commit:
     container_name: cluster-pre-commit
     build:
@@ -7,9 +58,11 @@ services:
     volumes:
       - .:/workspace:rw
       - ./.git:/workspace/.git:rw
+      - ./.config/git/.pre-commit-config.yaml:/workspace/.pre-commit-config.yaml:ro
+      - pre-commit-cache:/root/.cache/pre-commit
     networks:
       - cluster-network
-    command: sh -c "pre-commit install && pre-commit run --all-files"
+    command: sh -c "chmod -R u+w /workspace 2>/dev/null || true && pre-commit install && pre-commit run --all-files"
     restart: "no"
     deploy:
       resources:
@@ -80,7 +133,8 @@ services:
       - cluster-web2
       - cluster-web3
     networks:
-      - cluster-network
+      - cluster-frontend
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "-4", "http://localhost:80"]
@@ -88,6 +142,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
     deploy:
       resources:
         limits:
@@ -106,9 +166,9 @@ services:
     container_name: cluster-web1
     image: nginx:alpine
     volumes:
-      - ./web-content:/usr/share/nginx/html:ro
+      - ./dashboard:/usr/share/nginx/html:ro
     networks:
-      - cluster-network
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
       test:
@@ -142,9 +202,9 @@ services:
     container_name: cluster-web2
     image: nginx:alpine
     volumes:
-      - ./web-content:/usr/share/nginx/html:ro
+      - ./dashboard:/usr/share/nginx/html:ro
     networks:
-      - cluster-network
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
       test:
@@ -178,9 +238,9 @@ services:
     container_name: cluster-web3
     image: nginx:alpine
     volumes:
-      - ./web-content:/usr/share/nginx/html:ro
+      - ./dashboard:/usr/share/nginx/html:ro
     networks:
-      - cluster-network
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
       test:
@@ -219,7 +279,8 @@ services:
     ports:
       - "3000:80"
     networks:
-      - cluster-network
+      - cluster-frontend
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
       test:
@@ -236,10 +297,20 @@ services:
       retries: 3
       start_period: 40s
     depends_on:
-      - cluster-postgres
-      - cluster-redis
-      - cluster-mariadb
-      - loadbalancer
+      cluster-postgres:
+        condition: service_healthy
+      cluster-redis:
+        condition: service_healthy
+      cluster-mariadb:
+        condition: service_healthy
+      loadbalancer:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
     deploy:
       resources:
         limits:
@@ -256,24 +327,33 @@ services:
 
   cluster-postgres:
     container_name: cluster-postgres
-    image: postgres:13-alpine
+    image: postgres:16-alpine
     environment:
       POSTGRES_DB: clusterdb
-      POSTGRES_USER: cluster_user
-      POSTGRES_PASSWORD: ${DOCKER_POSTGRES_PASSWORD}
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_INITDB_ARGS: '--encoding=UTF8 --lc-collate=en_US.UTF-8 --lc-ctype=en_US.UTF-8'
+    secrets:
+      - postgres_user
+      - postgres_password
     volumes:
       - cluster_postgres_data:/var/lib/postgresql/data
+      - ./.config/database/postgresql.conf:/etc/postgresql/postgresql.conf:ro
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
       - "5432:5432"
     networks:
-      - cluster-network
+      - cluster-data
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cluster_user -d clusterdb"]
+      test: ["CMD-SHELL", "pg_isready -U $(cat /run/secrets/postgres_user) -d clusterdb"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    security_opt:
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
@@ -291,20 +371,25 @@ services:
   cluster-redis:
     container_name: cluster-redis
     image: redis:7-alpine
-    command: redis-server --appendonly yes --requirepass "${DOCKER_REDIS_PASSWORD}"
+    command: sh -c 'redis-server --appendonly yes --requirepass "$$(cat /run/secrets/redis_password)"'
+    secrets:
+      - redis_password
     volumes:
       - cluster_redis_data:/data
     ports:
       - "6379:6379"
     networks:
-      - cluster-network
+      - cluster-data
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "$${DOCKER_REDIS_PASSWORD}", "ping"]
+      test: ["CMD", "sh", "-c", "redis-cli -a $(cat /run/secrets/redis_password) ping"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 20s
+    security_opt:
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
@@ -321,32 +406,40 @@ services:
 
   cluster-mariadb:
     container_name: cluster-mariadb
-    build:
-      context: .
-      dockerfile: dockerfile/mariadb.Dockerfile
+    image: mariadb:11-jammy
     environment:
-      MYSQL_ROOT_PASSWORD: ${DOCKER_MARIADB_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
       MYSQL_DATABASE: clusterdb
-      MYSQL_USER: cluster_user
-      MYSQL_PASSWORD: ${DOCKER_MARIADB_PASSWORD}
+      MYSQL_USER_FILE: /run/secrets/mariadb_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mariadb_password
+      MARIADB_AUTO_UPGRADE: '1'
+      MARIADB_INITDB_SKIP_TZINFO: '1'
+    secrets:
+      - mariadb_root_password
+      - mariadb_user
+      - mariadb_password
     volumes:
       - cluster_mariadb_data:/var/lib/mysql
       - cluster_mariadb_logs:/var/log/mysql
+      - ./.config/database/mariadb.conf:/etc/mysql/conf.d/custom.cnf:ro
     ports:
       - "3306:3306"
     networks:
-      - cluster-network
+      - cluster-data
+      - cluster-backend
     restart: unless-stopped
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "mariadb-admin ping -h localhost -u root -p$${MYSQL_ROOT_PASSWORD} || exit 1",
+          "mariadb-admin ping -h localhost -u root -p$(cat /run/secrets/mariadb_root_password) || exit 1",
         ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 60s
+    security_opt:
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
@@ -828,23 +921,28 @@ services:
     build:
       context: .
       dockerfile: dockerfile/docker-api.Dockerfile
-    user: "0:0" # Run as root for Docker socket access (read-only mount)
+    user: "node:node"  # Run as non-root user
     ports:
       - "3001:3001"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
-      - cluster-network
+      - cluster-backend
+      - cluster-management
     restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: 3001
+      DOCKER_HOST: tcp://cluster-docker-socket-proxy:2375
+    depends_on:
+      cluster-docker-socket-proxy:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+    security_opt:
+      - no-new-privileges:true
     deploy:
       resources:
         limits:
@@ -1207,7 +1305,59 @@ volumes:
   cluster_pgadmin_data:
   cluster_mkdocs_site:
   cluster_mkdocs_cache:
+  pre-commit-cache:
 
 networks:
+  # Frontend Network - Public-facing services (nginx, traefik, web dashboards)
+  cluster-frontend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+  # Backend Network - Application services (API, worker processes)
+  cluster-backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.1.0/24
+
+  # Data Network - Database and cache services (postgres, redis, mariadb, minio)
+  cluster-data:
+    driver: bridge
+    internal: true  # No external access
+    ipam:
+      config:
+        - subnet: 172.20.2.0/24
+
+  # Observability Network - Monitoring and logging services
+  cluster-observability:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.3.0/24
+
+  # Management Network - DevOps tools (buildkit, pre-commit, docker socket proxy)
+  cluster-management:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.4.0/24
+
+  # Legacy network for backward compatibility - will be phased out
   cluster-network:
     driver: bridge
+
+secrets:
+  postgres_password:
+    file: ./.secrets/postgres_password.txt
+  postgres_user:
+    file: ./.secrets/postgres_user.txt
+  redis_password:
+    file: ./.secrets/redis_password.txt
+  mariadb_root_password:
+    file: ./.secrets/mariadb_root_password.txt
+  mariadb_password:
+    file: ./.secrets/mariadb_password.txt
+  mariadb_user:
+    file: ./.secrets/mariadb_user.txt

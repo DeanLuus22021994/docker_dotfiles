@@ -19,7 +19,7 @@ updates:
     labels: ["dependencies", "api"]
 
   - package-ecosystem: "npm"
-    directory: "/web-content"
+    directory: "/dashboard"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5

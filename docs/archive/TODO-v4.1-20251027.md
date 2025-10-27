@@ -1,8 +1,11 @@
-# Project TODO - v4.1
+# ARCHIVED: Project TODO - v4.1
 
+**ARCHIVED ON:** 2025-10-27
 **Last Updated:** 2025-10-26
 **Current Phase:** v4.1 - Testing Complete, Security & Scripts Next
-**Status:** 🚀 IN PROGRESS
+**Status:** 🚀 ARCHIVED - See root TODO.md for current tasks
+
+**NOTE:** This file has been archived. See `TODO.md` in project root for current actionable items.
 
 ---
 

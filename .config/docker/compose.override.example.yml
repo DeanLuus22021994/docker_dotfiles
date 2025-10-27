@@ -44,6 +44,34 @@ services: {}
 #   # Override command for debugging
 #   cluster-redis:
 #     command: redis-server --loglevel debug
+#
+#   # GPU-accelerated workload (requires NVIDIA runtime)
+#   cluster-ml-model:
+#     image: tensorflow/tensorflow:latest-gpu
+#     deploy:
+#       resources:
+#         reservations:
+#           devices:
+#             - driver: nvidia
+#               count: all
+#               capabilities: [gpu]
+#     environment:
+#       - NVIDIA_VISIBLE_DEVICES=all
+#
+#   # WebAssembly workload (requires containerd image store)
+#   cluster-wasm-app:
+#     image: wasmedge/example-wasi:latest
+#     runtime: io.containerd.wasmedge.v1
+#     platform: wasi/wasm
+#
+#   # Local AI inference using Docker Model Runner
+#   local-inference:
+#     image: ollama/ollama:latest
+#     ports:
+#       - "11434:11434"
+#     environment:
+#       - OLLAMA_HOST=0.0.0.0
+#     # Access via model-runner.docker.internal:80 or localhost:12434
 
 # Example: Add development-only services (uncomment to use)
 # local-adminer:

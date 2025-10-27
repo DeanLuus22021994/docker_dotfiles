@@ -1,5 +1,13 @@
 # BuildKit Daemon Configuration
-# Enterprise-grade configuration with garbage collection and registry optimization
+# Enterprise-grade configuration with 250GB cache, multi-platform support, and advanced GC
+# Aligned with Docker Desktop v0.25.1 beta features and daemon.json settings
+#
+# BuildKit Features:
+# - 250GB build cache (aligned with daemon.json)
+# - Multi-platform: amd64, arm64, riscv64, ppc64le, s390x, arm/v7, arm/v6
+# - 50 max parallelism (aligned with concurrent downloads/uploads)
+# - 7-day build history retention
+# - Advanced garbage collection policies
 
 # Debug logging
 debug = false
@@ -10,21 +18,22 @@ root = "/var/lib/buildkit"
 # Worker configuration
 [worker.oci]
   enabled = true
-  platforms = ["linux/amd64", "linux/arm64"]
-  max-parallelism = 4
+  # Multi-platform support (aligned with Docker Desktop v0.25.1)
+  platforms = ["linux/amd64", "linux/arm64", "linux/riscv64", "linux/ppc64le", "linux/s390x", "linux/arm/v7", "linux/arm/v6"]
+  max-parallelism = 50  # Aligned with max-concurrent-downloads/uploads
   gc = true
-  gckeepstorage = 10737418240  # 10GB
+  gckeepstorage = 268435456000  # 250GB (aligned with daemon.json)
 
   # GC policy configuration
   [[worker.oci.gcpolicy]]
-    keepBytes = 5368709120  # 5GB
-    keepDuration = 172800    # 2 days in seconds
+    keepBytes = 214748364800  # 200GB
+    keepDuration = 259200     # 3 days in seconds
     filters = ["type==source.local,type==exec.cachemount,type==source.git.checkout"]
 
   [[worker.oci.gcpolicy]]
     all = true
-    keepBytes = 2147483648  # 2GB
-    keepDuration = 86400     # 1 day in seconds
+    keepBytes = 53687091200  # 50GB
+    keepDuration = 172800     # 2 days in seconds
 
 [worker.containerd]
   enabled = false
@@ -47,5 +56,5 @@ root = "/var/lib/buildkit"
 
 # Build history configuration
 [history]
-  maxAge = 259200     # 3 days in seconds
-  maxEntries = 100
+  maxAge = 604800     # 7 days in seconds (longer retention with larger cache)
+  maxEntries = 500    # Increased for 250GB cache environment

@@ -4,6 +4,7 @@ global:
   external_labels:
     cluster: "docker-cluster"
     environment: "development"
+    version: "3.0.0"
 
 # Alertmanager configuration
 alerting:
@@ -16,32 +17,45 @@ alerting:
 rule_files:
   - "alerts/*.yml"
 
-# Scrape configurations
+# Scrape configurations - Aligned with 5-tier network architecture
 scrape_configs:
+  # ═══════════════════════════════════════════════════════════
+  # MANAGEMENT TIER (cluster-management)
+  # ═══════════════════════════════════════════════════════════
+  
   # Prometheus self-monitoring
   - job_name: "prometheus"
+    scrape_interval: 15s
     static_configs:
       - targets: ["localhost:9090"]
         labels:
           service: "monitoring"
-          tier: "infrastructure"
+          tier: "observability"
+          network: "cluster-observability"
 
+  # ═══════════════════════════════════════════════════════════
+  # OBSERVABILITY TIER (cluster-observability)
+  # ═══════════════════════════════════════════════════════════
+  
   # Grafana monitoring
   - job_name: "grafana"
+    scrape_interval: 30s
     static_configs:
       - targets: ["cluster-grafana:3000"]
         labels:
           service: "monitoring"
-          tier: "infrastructure"
+          tier: "observability"
+          network: "cluster-observability"
 
-  # MinIO S3 storage (disabled - requires authentication)
-  # - job_name: 'minio'
-  #   metrics_path: '/minio/v2/metrics/cluster'
-  #   static_configs:
-  #     - targets: ['cluster-minio:9000']
-  #       labels:
-  #         service: 'storage'
-  #         tier: 'data'
+  # Alertmanager monitoring
+  - job_name: "alertmanager"
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["cluster-alertmanager:9093"]
+        labels:
+          service: "monitoring"
+          tier: "observability"
+          network: "cluster-observability"
 
   # Docker containers via cAdvisor
   - job_name: "cadvisor"
@@ -50,8 +64,23 @@ scrape_configs:
       - targets: ["cluster-cadvisor:8080"]
         labels:
           service: "container-metrics"
-          tier: "monitoring"
+          tier: "observability"
+          network: "cluster-observability"
 
+  # Node exporter - Host system metrics
+  - job_name: "node"
+    scrape_interval: 30s
+    static_configs:
+      - targets: ["cluster-node-exporter:9100"]
+        labels:
+          service: "host-metrics"
+          tier: "observability"
+          network: "cluster-observability"
+
+  # ═══════════════════════════════════════════════════════════
+  # DATA TIER (cluster-data + cluster-backend)
+  # ═══════════════════════════════════════════════════════════
+  
   # PostgreSQL database metrics
   - job_name: "postgres"
     scrape_interval: 30s
@@ -61,6 +90,8 @@ scrape_configs:
           service: "database"
           tier: "data"
           database: "postgresql"
+          network: "cluster-data"
+          version: "16"
 
   # Redis cache metrics
   - job_name: "redis"
@@ -71,15 +102,54 @@ scrape_configs:
           service: "cache"
           tier: "data"
           database: "redis"
+          network: "cluster-data"
+          version: "7"
 
-  # Node exporter - Host system metrics
-  - job_name: "node"
+  # MariaDB database metrics (when exporter is added)
+  # - job_name: "mariadb"
+  #   scrape_interval: 30s
+  #   static_configs:
+  #     - targets: ["cluster-mariadb-exporter:9104"]
+  #       labels:
+  #         service: "database"
+  #         tier: "data"
+  #         database: "mariadb"
+  #         network: "cluster-data"
+  #         version: "11"
+
+  # ═══════════════════════════════════════════════════════════
+  # BACKEND TIER (cluster-backend)
+  # ═══════════════════════════════════════════════════════════
+  
+  # Docker API (via socket proxy)
+  - job_name: "docker-api"
     scrape_interval: 30s
+    metrics_path: "/metrics"
     static_configs:
-      - targets: ["cluster-node-exporter:9100"]
+      - targets: ["cluster-docker-api:3000"]
         labels:
-          service: "host-metrics"
-          tier: "infrastructure"
+          service: "docker-api"
+          tier: "backend"
+          network: "cluster-backend"
 
-  # Note: Docker API Proxy does not expose Prometheus metrics
-  # It's a REST API for dashboard integration, not a metrics exporter
+  # ═══════════════════════════════════════════════════════════
+  # CLOUD/STORAGE SERVICES (Legacy cluster-network - TODO: Migrate)
+  # ═══════════════════════════════════════════════════════════
+  
+  # MinIO S3 storage (requires authentication configuration)
+  # - job_name: 'minio'
+  #   metrics_path: '/minio/v2/metrics/cluster'
+  #   bearer_token: '<your-prometheus-token>'
+  #   static_configs:
+  #     - targets: ['cluster-minio:9000']
+  #       labels:
+  #         service: 'storage'
+  #         tier: 'data'
+  #         network: 'cluster-network'
+
+  # ═══════════════════════════════════════════════════════════
+  # NOTES
+  # ═══════════════════════════════════════════════════════════
+  # - Docker socket proxy does not expose Prometheus metrics (REST API only)
+  # - MinIO requires bearer token authentication for metrics endpoint
+  # - Some services on legacy cluster-network pending migration to segmented networks

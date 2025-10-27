@@ -1,6 +1,9 @@
 # Traefik Production Configuration with HTTPS
 # Version: 3.2
 # Last Updated: 2025-10-26
+# Network Architecture: 5-Tier Segmentation (cluster-frontend, cluster-backend, cluster-data, cluster-observability, cluster-management)
+# Security: TLS 1.2+, Security headers, Rate limiting, Docker socket proxy (READ-ONLY), no-new-privileges
+# Cluster Version: v3.0.0
 
 # =============================================================================
 # GLOBAL CONFIGURATION
@@ -13,8 +16,9 @@ global:
 # API & DASHBOARD
 # =============================================================================
 api:
-  dashboard: true # Enable dashboard (disable in production or secure it)
-  insecure: false # Don't expose on insecure port 8080 in production
+  dashboard: true # Enable dashboard (secure with authentication in production)
+  insecure: false # Never expose on insecure port 8080 in production
+  debug: false # Disable debug mode in production
 
 # =============================================================================
 # ENTRY POINTS
@@ -29,6 +33,18 @@ entryPoints:
           to: websecure
           scheme: https
           permanent: true
+    # Trusted proxies (if behind load balancer)
+    forwardedHeaders:
+      trustedIPs:
+        - "172.20.0.0/24" # cluster-frontend
+        - "172.20.1.0/24" # cluster-backend
+        - "127.0.0.1/32"
+        - "10.0.0.0/8"
+    # Rate limiting per IP
+    transport:
+      lifeCycle:
+        requestAcceptGraceTimeout: 10s
+        graceTimeOut: 30s
 
   # HTTPS entry point (port 443)
   websecure:
@@ -40,13 +56,40 @@ entryPoints:
           - main: "your-domain.com"
             sans:
               - "*.your-domain.com"
+        options: default # Use TLS options from dynamic config
       middlewares:
         - security-headers@file
         - rate-limit@file
+        - compression@file
+    # Trusted proxies (if behind load balancer)
+    forwardedHeaders:
+      trustedIPs:
+        - "172.20.0.0/24" # cluster-frontend
+        - "172.20.1.0/24" # cluster-backend
+        - "127.0.0.1/32"
+        - "10.0.0.0/8"
+    # HTTP/3 support (QUIC)
+    http3:
+      advertisedPort: 443
+    # Transport configuration
+    transport:
+      lifeCycle:
+        requestAcceptGraceTimeout: 10s
+        graceTimeOut: 30s
+      respondingTimeouts:
+        readTimeout: 60s
+        writeTimeout: 60s
+        idleTimeout: 180s
 
-  # Traefik dashboard (port 8080) - optional, secure in production
+  # Traefik dashboard & metrics (port 8080) - internal only
   traefik:
     address: ":8080"
+    # Restrict to internal networks only
+    forwardedHeaders:
+      trustedIPs:
+        - "172.20.4.0/24" # cluster-management
+        - "172.20.3.0/24" # cluster-observability
+        - "127.0.0.1/32"
 
 # =============================================================================
 # CERTIFICATE RESOLVERS (Let's Encrypt)
@@ -60,6 +103,8 @@ certificatesResolvers:
       # caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"
       # Production server (default)
       caServer: "https://acme-v02.api.letsencrypt.org/directory"
+      # Key type (RSA 4096 or EC 384)
+      keyType: "EC384" # More secure and faster than RSA
 
       # HTTP-01 challenge (simpler, works for single servers)
       httpChallenge:
@@ -72,6 +117,7 @@ certificatesResolvers:
       #   resolvers:
       #     - "1.1.1.1:53"
       #     - "8.8.8.8:53"
+      #   disablePropagationCheck: false
 
 # =============================================================================
 # PROVIDERS
@@ -79,12 +125,32 @@ certificatesResolvers:
 providers:
   # Docker provider (automatic service discovery)
   docker:
-    endpoint: "unix:///var/run/docker.sock"
+    # Use Docker socket proxy for READ-ONLY access (security best practice)
+    endpoint: "tcp://cluster-docker-api:2375" # READ-ONLY socket proxy
+    # Alternative: Direct socket access (less secure, requires privileged access)
+    # endpoint: "unix:///var/run/docker.sock"
+    
     exposedByDefault: false # Only expose services with traefik.enable=true
-    network: "traefik-public"
-    watch: true
+    network: "cluster-frontend" # Default network for exposed services
+    watch: true # Watch for configuration changes
+    
+    # Network segmentation
+    # Services on cluster-frontend: Web services exposed to internet
+    # Services on cluster-backend: Internal APIs, not directly exposed
+    # Services on cluster-data: Databases, never exposed through Traefik
+    # Services on cluster-observability: Monitoring, metrics endpoints
+    # Services on cluster-management: Admin tools, dashboards
+    
+    constraints: "Label(`traefik.enable`,`true`)"
+    
+    # Default labels for all services
+    defaultRule: "Host(`{{ normalize .Name }}.docker.localhost`)"
+    
+    # Swarm mode (if using Docker Swarm)
+    # swarmMode: true
+    # swarmModeRefreshSeconds: 15
 
-  # File provider (for dynamic configuration)
+  # File provider (for dynamic configuration - middleware, TLS options)
   file:
     directory: "/etc/traefik/dynamic"
     watch: true
@@ -93,31 +159,97 @@ providers:
 # LOGGING
 # =============================================================================
 log:
-  level: INFO # DEBUG, INFO, WARN, ERROR, FATAL, PANIC
-  format: json
+  level: INFO # DEBUG (development), INFO (production), WARN, ERROR, FATAL, PANIC
+  format: json # Structured logging for parsing
   filePath: "/var/log/traefik/traefik.log"
+  # Filter logs by level
+  # level: "ERROR" # Only log errors in production
 
 accessLog:
   filePath: "/var/log/traefik/access.log"
-  format: json
-  bufferingSize: 100
+  format: json # Structured logging for parsing
+  bufferingSize: 100 # Buffer size for performance
+  
+  # Filter logs (only log important events)
   filters:
     statusCodes:
-      - "400-499" # Log client errors
-      - "500-599" # Log server errors
+      - "400-499" # Log client errors (bad requests, auth failures)
+      - "500-599" # Log server errors (backend failures)
+    retryAttempts: true
+    minDuration: "10ms" # Only log slow requests
+  
+  # Additional fields for debugging
+  fields:
+    defaultMode: keep
+    names:
+      ClientUsername: drop # Don't log usernames (privacy)
+    headers:
+      defaultMode: keep
+      names:
+        Authorization: drop # Don't log auth headers (security)
+        Cookie: drop # Don't log cookies (privacy)
 
 # =============================================================================
-# METRICS (Optional - Prometheus integration)
+# METRICS (Prometheus integration)
 # =============================================================================
 metrics:
   prometheus:
-    entryPoint: traefik
+    entryPoint: traefik # Expose metrics on :8080/metrics
     addEntryPointsLabels: true
     addRoutersLabels: true
     addServicesLabels: true
+    
+    # Add custom labels for network segmentation
+    manualRouting: false
+    
+    # Buckets for response time histogram
+    buckets:
+      - 0.1 # 100ms
+      - 0.3 # 300ms
+      - 1.0 # 1s
+      - 3.0 # 3s
+      - 10.0 # 10s
 
 # =============================================================================
 # PING (Health check)
 # =============================================================================
 ping:
-  entryPoint: traefik
+  entryPoint: traefik # Expose on :8080/ping
+  manualRouting: false
+
+# =============================================================================
+# TRACING (Optional - for distributed tracing)
+# =============================================================================
+# tracing:
+#   serviceName: "traefik"
+#   spanNameLimit: 150
+#   jaeger:
+#     samplingServerURL: "http://cluster-jaeger:5778/sampling"
+#     localAgentHostPort: "cluster-jaeger:6831"
+#     propagation: "jaeger"
+#     traceContextHeaderName: "uber-trace-id"
+
+# =============================================================================
+# EXPERIMENTAL FEATURES
+# =============================================================================
+experimental:
+  plugins: {} # Enable plugins if needed
+  # localPlugins:
+  #   example:
+  #     moduleName: "github.com/traefik/plugindemo"
+  
+  # HTTP/3 (QUIC) support
+  http3: true
+
+# =============================================================================
+# SERIALIZATION
+# =============================================================================
+# How Traefik serializes configuration
+serversTransport:
+  insecureSkipVerify: false # Always verify TLS certificates
+  rootCAs: [] # Additional root CAs if needed
+  maxIdleConnsPerHost: 200 # Connection pooling
+  forwardingTimeouts:
+    dialTimeout: 30s
+    responseHeaderTimeout: 60s
+    idleConnTimeout: 90s

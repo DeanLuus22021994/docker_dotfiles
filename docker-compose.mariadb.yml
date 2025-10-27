@@ -1,0 +1,53 @@
+# Docker Compose Override for MariaDB Optimizations
+# Use: docker-compose -f docker-compose.yml -f docker-compose.mariadb.yml up
+
+services:
+  cluster-mariadb:
+    # Mount custom MariaDB configuration
+    volumes:
+      - cluster_mariadb_data:/var/lib/mysql
+      - cluster_mariadb_logs:/var/log/mysql
+      - ./.config/database/mariadb.conf:/etc/mysql/conf.d/custom.cnf:ro
+    
+    # Enhanced resource allocation for high-performance workloads
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+          memory: 8G
+        reservations:
+          cpus: '4.0'
+          memory: 4G
+    
+    # MariaDB-specific environment optimizations
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
+      MYSQL_DATABASE: clusterdb
+      MYSQL_USER_FILE: /run/secrets/mariadb_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mariadb_password
+      # Character set and collation
+      MYSQL_CHARSET: utf8mb4
+      MYSQL_COLLATION: utf8mb4_unicode_ci
+      # InnoDB optimizations
+      MYSQL_INNODB_BUFFER_POOL_SIZE: 2G
+      MYSQL_INNODB_LOG_FILE_SIZE: 256M
+    
+    # MariaDB-specific health check
+    healthcheck:
+      test: ['CMD-SHELL', 'mariadb-admin ping -h localhost -u root -p\$\ || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+    
+    # MariaDB-specific logging
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '50m'
+        max-file: '5'
+        labels: 'service=mariadb,tier=data'
+    
+    # Additional security options for MariaDB
+    security_opt:
+      - seccomp=unconfined  # Required for MariaDB performance (in addition to no-new-privileges from base)

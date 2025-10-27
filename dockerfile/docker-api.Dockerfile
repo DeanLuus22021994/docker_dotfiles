@@ -8,14 +8,14 @@ RUN apk add --no-cache curl
 WORKDIR /app
 
 # Copy package files (including lock file)
-COPY api/package.json api/package-lock.json ./
+COPY backend/package.json backend/package-lock.json ./
 
 # Install dependencies
 RUN npm ci --omit=dev && \
     npm cache clean --force
 
 # Copy application code
-COPY api/server.js api/auth.js api/middleware.js ./
+COPY backend/server.js backend/auth.js backend/middleware.js ./
 
 # For Docker Desktop, socket permissions require root access
 # Since socket is mounted read-only, this is acceptable
