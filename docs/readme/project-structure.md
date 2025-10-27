@@ -44,7 +44,7 @@ docker/
 │   ├── python/                 # Python scripts
 │   └── bash/                   # Bash scripts
 ├── web-content/                # React dashboard source code
-├── api/                        # Express.js API server
+├── backend/                    # Express.js API server
 ├── docker-compose.yml          # 26-service orchestration
 └── Makefile                    # Build + test + validate
 ```

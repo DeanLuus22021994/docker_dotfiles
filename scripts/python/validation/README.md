@@ -96,7 +96,7 @@ python validate_configs.py
 #### nginx Configuration
 
 - **Tool:** Docker nginx container (`nginx -t`)
-- **Files:** `web-content/nginx.conf`, `*.nginx.conf`
+- **Files:** `frontend/nginx.conf`, `*.nginx.conf`
 - **Checks:** Syntax errors, directive issues, invalid configurations
 
 #### PostgreSQL Configuration

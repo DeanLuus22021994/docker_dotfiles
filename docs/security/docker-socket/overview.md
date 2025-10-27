@@ -28,7 +28,7 @@ The Docker socket (`/var/run/docker.sock`) provides complete control over the Do
 
 ## Current Implementation
 
-**API Server:** `api/server.js` mounts socket read-only
+**API Server:** `backend/server.js` mounts socket read-only
 
 ```yaml
 services:

@@ -28,7 +28,7 @@ tags:
     ├── REFACTOR-SUMMARY-v2.0-20251025.md
     └── TODO-v3.1-20251025.md
 
-web-content/
+dashboard/
 ├── ARCHITECTURE.md             ✅ Updated
 ├── INSTALL.md                  ✅ Clean
 ├── QUICKSTART.md               ✅ Clean
@@ -63,7 +63,7 @@ Root:
 2. .github/DEVELOPMENT_DEBT.md - complete rewrite
 3. .github/copilot-instructions.md - comprehensive expansion
 4. AGENT.md - updated paths
-5. web-content/ARCHITECTURE.md - removed obsolete row
+5. dashboard/ARCHITECTURE.md - removed obsolete row
 6. README.md - verified clean
 
 **Archived (3):**

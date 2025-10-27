@@ -31,7 +31,7 @@ All configurations centralized in `.config/` directory:
 - `jekyll.config.yml` - Jekyll static site configuration
 - `Gemfile` / `Gemfile.lock` - Ruby dependencies for documentation site
 
-**Web Configs** (`.config/web/`):
+**Frontend Configs** (`frontend/`):
 
 - `nginx.conf` - React web dashboard nginx settings
 - `vite.config.ts` - Vite build configuration

@@ -38,13 +38,13 @@ This document contains all actionable items for the Modern Data Platform project
 **Category:** Architecture | **Effort:** 0.5 days | **Assignee:** GitHub Copilot | **Due:** 2025-10-28
 **Status:** 🔄 NOT STARTED
 
-**Description:** Refactor directory structure for clarity and maintainability by renaming three core directories: `web-content/` → `dashboard/`, `api/` → `backend/`, and `.config/web/` → `frontend/`. This creates clear separation between dashboard application, backend API, frontend configurations, and infrastructure configs.
+**Description:** Refactor directory structure for clarity and maintainability by renaming three core directories: `dashboard/` (formerly web-content/), `backend/` (formerly api/), and `frontend/` (formerly .config/web/). This creates clear separation between dashboard application, backend API, frontend configurations, and infrastructure configs.
 
 **Acceptance Criteria:**
 
-- [ ] Rename `web-content/` → `dashboard/` (React/Vite dashboard application)
-- [ ] Rename `api/` → `backend/` (Express.js Docker API server)
-- [ ] Move `.config/web/` → `frontend/` (shared frontend build configurations)
+- [x] Rename `web-content/` → `dashboard/` (React/Vite dashboard application)
+- [x] Rename `api/` → `backend/` (Express.js Docker API server)
+- [x] Move `.config/web/` → `frontend/` (shared frontend build configurations)
 - [ ] Update `dockerfile/web-dashboard.Dockerfile` (12 path references)
 - [ ] Update `dockerfile/docker-api.Dockerfile` (3 path references)
 - [ ] Update `docker-compose.yml` (3 volume mount paths)
@@ -83,7 +83,7 @@ This document contains all actionable items for the Modern Data Platform project
 
 **Acceptance Criteria:**
 
-- [ ] Rename `docs/web-content/` → `docs/dashboard/` (update 10 files)
+- [x] Rename `docs/web-content/` → `docs/dashboard/` (update 10 files)
 - [ ] Update all markdown references to `web-content` → `dashboard` (~60 files)
 - [ ] Update all markdown references to `api/` → `backend/` (~50 files)
 - [ ] Update all markdown references to `.config/web` → `frontend/` (~16 files)
@@ -96,7 +96,7 @@ This document contains all actionable items for the Modern Data Platform project
 
 **Files to Modify:**
 
-- `docs/web-content/` → `docs/dashboard/` (entire directory)
+- `docs/dashboard/` (formerly docs/web-content/, completed)
 - `docs/` (60+ markdown files with references)
 - `.config/INDEX.md` (simplify to index-only)
 - `.config/CONFIGURATION-ALIGNMENT-SUMMARY.md` (remove)
@@ -138,8 +138,8 @@ This document contains all actionable items for the Modern Data Platform project
 docker-compose config --quiet
 
 # Search for old references
-Select-String -Path * -Pattern "web-content" -Exclude "*.html","*.json" -Recurse
-Select-String -Path * -Pattern "\.config/web" -Exclude "*.html","*.json" -Recurse
+Select-String -Path * -Pattern "dashboard" -Exclude "*.html","*.json" -Recurse
+Select-String -Path * -Pattern "frontend" -Exclude "*.html","*.json" -Recurse
 Select-String -Path * -Pattern '(?<![a-z])api(?![a-z-])' -Exclude "*.html","*.json","*.js" -Recurse
 
 # Build and test
@@ -360,8 +360,8 @@ curl http://localhost:8000
 
 **Files to Modify:**
 
-- `api/auth.js`, `api/middleware.js`, `api/server.js`
-- `api/SECURITY.md`, `api/README.md`
+- `backend/auth.js`, `backend/middleware.js`, `backend/server.js`
+- `backend/SECURITY.md`, `backend/README.md`
 - `.env.example` (JWT configuration)
 
 ---
@@ -574,9 +574,9 @@ curl http://localhost:8000
 
 **Files to Modify:**
 
-- `web-content/src/hooks/useClusterHealth.ts`
-- `web-content/src/components/services/LayerControls.tsx` (new)
-- `web-content/src/components/dependencies/DependencyGraph.tsx` (new)
+- `dashboard/src/hooks/useClusterHealth.ts`
+- `dashboard/src/components/services/LayerControls.tsx` (new)
+- `dashboard/src/components/dependencies/DependencyGraph.tsx` (new)
 
 **References:**
 
@@ -647,9 +647,9 @@ curl http://localhost:8000
 
 **Files to Create:**
 
-- `api/openapi.yml` (OpenAPI specification)
-- `api/swagger-ui/` (documentation UI)
-- `tests/api/` (API test suite)
+- `backend/openapi.yml` (OpenAPI specification)
+- `backend/swagger-ui/` (documentation UI)
+- `tests/backend/` (API test suite)
 
 ---
 

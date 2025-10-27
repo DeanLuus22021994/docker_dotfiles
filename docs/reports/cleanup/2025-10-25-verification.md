@@ -32,10 +32,10 @@ git status --short
 - M .github/TODO.md
 - M .github/copilot-instructions.md
 - M AGENT.md
-- M web-content/ARCHITECTURE.md
+- M dashboard/ARCHITECTURE.md
 - D CLEANUP-REPORT.md (decomposed to docs/reports/cleanup/)
-- D web-content/IMPLEMENTATION.md (obsolete)
-- D web-content/REFACTOR-SUMMARY.md (obsolete)
+- D dashboard/IMPLEMENTATION.md (obsolete)
+- D dashboard/REFACTOR-SUMMARY.md (obsolete)
 - D .github/CLEANUP-SUMMARY.md (decomposed to docs/reports/cleanup/)
 - D .github/DEVELOPMENT_DEBT.md (decomposed to docs/reports/debt/)
 - D .github/PROJECT-SETUP-COMPLETE.md (decomposed to docs/reports/setup/)
