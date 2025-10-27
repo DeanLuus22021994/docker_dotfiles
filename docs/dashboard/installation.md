@@ -1,19 +1,22 @@
 ---
-date_created: "2025-10-26T18:32:25.959188+00:00"
-last_updated: "2025-10-26T18:32:25.959188+00:00"
-tags: ["documentation", "dashboard", "architecture"]
-description: "Documentation for installation"
+date_created: "2025-10-27T00:00:00Z"
+last_updated: "2025-10-27T00:00:00Z"
+tags: ["dashboard", "installation", "guide"]
+description: "Dashboard installation reference"
 ---
 
----\ndate_created: '2025-10-26T00:00:00Z'
-last_updated: '2025-10-26T00:00:00Z'
-tags:
+# Dashboard Installation
 
-- dashboard
-- installation
-- documentation
-  description: Documentation for installation in web-content
-  ---\n# Cluster Dashboard - Installation & Usage Guide
+**This guide has been split for better maintainability.**
+
+For dashboard setup information, see:
+
+- [Installation Guide](installation-guide.md) - Step-by-step setup
+- [Development Setup](development-setup.md) - Local development
+- [Production Deployment](production-deployment.md) - Docker deployment
+- [Configuration](configuration.md) - Environment settings
+
+For architecture details, see the `architecture/` directory.
 
 ## Quick Start
 

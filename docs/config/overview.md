@@ -1,18 +1,45 @@
 ---
-date_created: "2025-10-26T18:32:25.943866+00:00"
-last_updated: "2025-10-26T18:32:25.943866+00:00"
-tags: ["documentation", "configuration", "setup"]
-description: "Documentation for overview"
+date_created: "2025-10-27T00:00:00Z"
+last_updated: "2025-10-27T00:00:00Z"
+tags: ["configuration", "overview", "reference"]
+description: "Configuration overview and directory structure"
 ---
 
----\ndate_created: '2025-10-26T00:00:00Z'
-last_updated: '2025-10-26T00:00:00Z'
-tags:
+# Configuration Overview
 
-- overview
-- documentation
-  description: Documentation for overview in config
-  ---\n# .config - Single Source of Truth
+**Central reference for all cluster configuration files.**
+
+## Directory Structure
+
+The `.config/` directory contains 15 specialized configuration areas:
+
+- **cluster/** - Cluster-wide configuration
+- **database/** - PostgreSQL & MariaDB configs
+- **docker/** - Docker Engine & BuildKit
+- **monitoring/** - Prometheus & Grafana
+- **traefik/** - Reverse proxy & TLS
+- **nginx/** - Load balancer configuration
+- **python/** - Development tooling
+- **github/** - CI/CD workflows
+- **And 7 more specialized areas**
+
+## Key Principles
+
+1. **Single Source of Truth** - All configs centralized in `.config/`
+2. **Inheritance** - Components extend base configurations
+3. **Environment Separation** - Development vs production settings
+4. **Documentation** - Each directory has README.md
+
+## Quick Reference
+
+For the complete directory index, see [`.config/INDEX.md`](../../.config/INDEX.md)
+
+For specific configuration guides:
+
+- [Docker Configuration](docker-overview.md)
+- [Database Configuration](database-config.md)
+- [Monitoring Setup](monitoring-config.md)
+- [Network Configuration](network-config.md)
 
 All configuration files for the Docker cluster stack, strictly organized according to Docker and GitHub standards.
 

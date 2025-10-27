@@ -1,9 +1,22 @@
 ---
-date_created: "2025-10-26T18:32:25.941921+00:00"
-last_updated: "2025-10-26T18:32:25.941921+00:00"
-tags: ["documentation", "api", "reference"]
-description: "Documentation for overview"
+date_created: "2025-10-27T00:00:00Z"
+last_updated: "2025-10-27T00:00:00Z"
+tags: ["api", "backend", "reference"]
+description: "API documentation reference"
 ---
+
+# API Documentation
+
+**This documentation has been reorganized for better maintainability.**
+
+For API information, see:
+
+- [API Overview](api-overview.md) - Quick start and endpoints
+- [Authentication](../security/authentication.md) - Security setup
+- [Docker Integration](../security/docker-socket/overview.md) - Socket proxy
+- [API Reference](api-reference.md) - Complete endpoint documentation
+
+For backend development, see the `backend/` directory.
 
 ---\ndate_created: '2025-10-26T00:00:00Z'
 last_updated: '2025-10-26T00:00:00Z'

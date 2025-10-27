@@ -1,8 +1,8 @@
 ---
-date_created: "2025-10-26T18:32:25.959682+00:00"
-last_updated: "2025-10-26T18:32:25.959682+00:00"
-tags: ["documentation", "dashboard", "architecture"]
-description: "Documentation for overview"
+date_created: "2025-10-27T00:00:00Z"
+last_updated: "2025-10-27T00:00:00Z"
+tags: ["dashboard", "overview", "architecture"]
+description: "Dashboard overview and architecture"
 ---
 
 ---\ndate_created: '2025-10-26T00:00:00Z'

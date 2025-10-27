@@ -1,18 +1,22 @@
 ---
-date_created: "2025-10-26T18:32:25.942834+00:00"
-last_updated: "2025-10-26T18:32:25.942834+00:00"
-tags: ["documentation", "configuration", "setup", "docker"]
-description: "Documentation for docker"
+date_created: "2025-10-27T00:00:00Z"
+last_updated: "2025-10-27T00:00:00Z"
+tags: ["docker", "configuration", "reference"]
+description: "Docker configuration reference"
 ---
 
----\ndate_created: '2025-10-26T00:00:00Z'
-last_updated: '2025-10-26T00:00:00Z'
-tags:
+# Docker Configuration Reference
 
-- docker
-- documentation
-  description: Documentation for docker in config
-  ---\n# Docker Configuration
+**This file has been split for better maintainability.**
+
+For Docker configuration information, see:
+
+- [Docker Overview](docker-overview.md) - Quick setup and key features
+- [Daemon Configuration](daemon-config.md) - Docker Engine settings
+- [BuildKit Configuration](buildkit-config.md) - Build optimization
+- [Beta Features](beta-features.md) - Experimental Docker features
+
+For configuration files, see the `.config/docker/` directory.
 
 This directory contains Docker-specific configuration files for local development and production deployments.
 
