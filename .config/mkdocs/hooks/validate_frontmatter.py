@@ -44,18 +44,21 @@ DocFrontmatterCallable = Callable[..., _DocFrontmatterModel]
 ValidationErrorType = type[Exception]
 
 doc_frontmatter_factory: DocFrontmatterCallable | None = None
-_validation_error_type: ValidationErrorType | None = None
+validation_error_type: ValidationErrorType | None = None
 
 try:
-    from pydantic import ValidationError as _ValidationError
-    _PYDANTIC_VALIDATION_ERROR: type[Exception] = _ValidationError
+    from pydantic import ValidationError as PydanticValidationError
+    PYDANTIC_VALIDATION_ERROR: type[Exception] = PydanticValidationError
 except ImportError:
-    _ValidationError: type[Exception] | None = None
-    _PYDANTIC_VALIDATION_ERROR: type[Exception] = Exception
+    PydanticValidationError: type[Exception] | None = None
+    PYDANTIC_VALIDATION_ERROR = Exception
 
 try:
-    from ..schemas.frontmatter import ALLOWED_TAGS as SCHEMA_ALLOWED_TAGS  # type: ignore[import-not-found]
-    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatter  # type: ignore[import-not-found]
+    # Import frontmatter schemas with fallback
+    from ..schemas.frontmatter import (
+        ALLOWED_TAGS as SCHEMA_ALLOWED_TAGS,
+        DocFrontmatter as _DocFrontmatter,
+    )
 except ImportError:
     schema_path = Path(__file__).resolve().parent.parent / "schemas" / "frontmatter.py"
     spec = importlib.util.spec_from_file_location("mkdocs_frontmatter_schema", schema_path)
@@ -72,13 +75,13 @@ except ImportError:
 
 ALLOWED_TAGS = set(SCHEMA_ALLOWED_TAGS) if "SCHEMA_ALLOWED_TAGS" in locals() else set()
 
-if _ValidationError is not None and _DocFrontmatter is not None:
+if PydanticValidationError is not None and _DocFrontmatter is not None:
     PYDANTIC_AVAILABLE = True
     doc_frontmatter_factory = cast(DocFrontmatterCallable, _DocFrontmatter)
-    _validation_error_type = _PYDANTIC_VALIDATION_ERROR
+    validation_error_type = PYDANTIC_VALIDATION_ERROR
 else:
     PYDANTIC_AVAILABLE = False
-    _validation_error_type = Exception
+    validation_error_type = Exception
 # ============================================================================
 # Type Protocols (PEP 544) - No Runtime Dependencies
 # ============================================================================
@@ -296,7 +299,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
     """
     errors: list[str] = []
 
-    if PYDANTIC_AVAILABLE and doc_frontmatter_factory and _validation_error_type:
+    if PYDANTIC_AVAILABLE and doc_frontmatter_factory:
         # Use Pydantic validation
         try:
             # Convert ISO strings back to datetime objects for validation
@@ -319,13 +322,16 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
             # Validate with Pydantic
             doc_frontmatter_factory(**frontmatter)
 
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:  # pylint: disable=broad-exception-caught
             # Parse Pydantic validation errors if available
             if hasattr(e, 'errors') and callable(getattr(e, 'errors')):
-                for error in e.errors():
-                    field = error.get("loc", ["unknown"])[0]
-                    msg = error.get("msg", str(error))
-                    errors.append(f"Field '{field}': {msg}")
+                try:
+                    for error in e.errors():  # type: ignore[attr-defined]
+                        field = error.get("loc", ["unknown"])[0]
+                        msg = error.get("msg", str(error))
+                        errors.append(f"Field '{field}': {msg}")
+                except (AttributeError, TypeError):
+                    errors.append(f"Validation error: {e}")
             else:
                 errors.append(f"Validation error: {e}")
     else:
