@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from ..hooks.validate_frontmatter import validate_file_frontmatter
 else:
     try:
-        from ..hooks.validate_frontmatter import validate_file_frontmatter
+        from ..hooks.validate_frontmatter import validate_file_frontmatter  # type: ignore[import-not-found]
     except ImportError:  # pragma: no cover - fallback for direct execution
         current_dir = Path(__file__).resolve().parents[1]
         if str(current_dir) not in sys.path:

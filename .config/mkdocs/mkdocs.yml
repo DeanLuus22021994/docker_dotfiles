@@ -79,7 +79,7 @@ theme:
     - navigation.indexes
     - navigation.instant
     - navigation.instant.prefetch
-    - navigation.instant.preview
+
     - navigation.instant.progress
     - navigation.path
     - navigation.prune
@@ -258,10 +258,7 @@ markdown_extensions:
   - def_list
   - footnotes
   - md_in_html
-  - meta
-  - nl2br
   - sane_lists
-  - smarty
   - tables
   - toc:
       permalink: true

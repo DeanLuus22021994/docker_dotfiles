@@ -41,19 +41,21 @@ else:
 
 
 DocFrontmatterCallable = Callable[..., _DocFrontmatterModel]
-ValidationErrorType = type[_ValidationErrorModel]
+ValidationErrorType = type[Exception]
 
 doc_frontmatter_factory: DocFrontmatterCallable | None = None
 validation_error_type: ValidationErrorType | None = None
 
 try:
     from pydantic import ValidationError as _ValidationError
+    _PYDANTIC_VALIDATION_ERROR: type[Exception] = _ValidationError
 except ImportError:
-    _ValidationError = None
+    _ValidationError: type[Exception] | None = None
+    _PYDANTIC_VALIDATION_ERROR: type[Exception] = Exception
 
 try:
-    from ..schemas.frontmatter import ALLOWED_TAGS as SCHEMA_ALLOWED_TAGS
-    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatter
+    from ..schemas.frontmatter import ALLOWED_TAGS as SCHEMA_ALLOWED_TAGS  # type: ignore[import-not-found]
+    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatter  # type: ignore[import-not-found]
 except ImportError:
     schema_path = Path(__file__).resolve().parent.parent / "schemas" / "frontmatter.py"
     spec = importlib.util.spec_from_file_location("mkdocs_frontmatter_schema", schema_path)
@@ -73,10 +75,10 @@ ALLOWED_TAGS = set(SCHEMA_ALLOWED_TAGS) if "SCHEMA_ALLOWED_TAGS" in locals() els
 if _ValidationError is not None and _DocFrontmatter is not None:
     PYDANTIC_AVAILABLE = True
     doc_frontmatter_factory = cast(DocFrontmatterCallable, _DocFrontmatter)
-    validation_error_type = _ValidationError
+    validation_error_type: type[Exception] = _PYDANTIC_VALIDATION_ERROR
 else:
     PYDANTIC_AVAILABLE = False
-    validation_error_type = _ValidationError
+    validation_error_type = Exception
 # ============================================================================
 # Type Protocols (PEP 544) - No Runtime Dependencies
 # ============================================================================
@@ -317,7 +319,7 @@ def validate_frontmatter(frontmatter: dict[str, Any]) -> list[str]:
             # Validate with Pydantic
             doc_frontmatter_factory(**frontmatter)
 
-        except validation_error_type as e:
+        except validation_error_type as e:  # noqa: BLE001
             # Parse Pydantic validation errors
             for error in e.errors():
                 field = error.get("loc", ["unknown"])[0]
@@ -417,8 +419,13 @@ def validate_content_consistency(frontmatter: dict[str, Any], content: str) -> l
             content_words = set(re.findall(r"\b\w+\b", content_start))
 
             # Require at least 30% word overlap for consistency
-            if desc_words and len(desc_words & content_words) / len(desc_words) < 0.3:
-                errors.append("Description doesn't seem to match document content")
+            if (
+                desc_words
+                and len(desc_words & content_words) / len(desc_words) < 0.3
+            ):
+                errors.append(
+                    "Description doesn't seem to match document content"
+                )
 
     return errors
 

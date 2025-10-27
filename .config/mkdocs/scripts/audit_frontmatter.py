@@ -18,7 +18,10 @@ from rich.console import Console
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 
-from ..schemas.frontmatter import ALLOWED_TAGS
+try:
+    from ..schemas.frontmatter import ALLOWED_TAGS  # type: ignore[import-not-found]
+except ImportError:
+    ALLOWED_TAGS = set()  # Fallback when schema not available
 
 
 @dataclass

@@ -9,7 +9,10 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from ..schemas.frontmatter import DocFrontmatter
+try:
+    from ..schemas.frontmatter import DocFrontmatter  # type: ignore[import-not-found]
+except ImportError:
+    DocFrontmatter = None
 from .new_doc import CATEGORIES
 
 
@@ -29,7 +32,7 @@ def test_basic_functionality() -> bool:
             last_updated=now,
             tags=["testing", "documentation"],
             description="Test document for validation",
-        )  # type: ignore[call-arg]
+        )
         print(f"✅ Frontmatter creation successful: {frontmatter.tags}")
 
         # Test template directory exists

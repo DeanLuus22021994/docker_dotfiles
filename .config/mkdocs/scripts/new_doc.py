@@ -91,21 +91,17 @@ except ImportError:
 # Add the parent directory to sys.path for imports
 # sys.path.append(str(Path(__file__).parent.parent))  # Not needed with relative import
 
-if TYPE_CHECKING:
-    from ..schemas.frontmatter import DocFrontmatter as _DocFrontmatterType
-else:
-
-    class _DocFrontmatterType:  # pragma: no cover - typing helper
-        """Minimal signature placeholder for DocFrontmatter."""
-
-        def __init__(self, **_: Any) -> None: ...
+# DocFrontmatter type will be imported below with fallback
 
 
-_RuntimeDocFrontmatter: Any
+# Import schema definitions with fallback
 try:
-    from ..schemas.frontmatter import DocFrontmatter as _RuntimeDocFrontmatter
+    from ..schemas.frontmatter import DocFrontmatter as _RuntimeDocFrontmatter  # type: ignore[import-not-found]
+    from ..schemas.frontmatter import ALLOWED_TAGS  # type: ignore[import-not-found]
 except ImportError:
     # Fallback if schemas not available
+    ALLOWED_TAGS = set()
+    
     @dataclass
     class _FallbackDocFrontmatter:
         """Fallback frontmatter dataclass when Pydantic is not available."""
