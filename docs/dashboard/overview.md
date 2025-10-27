@@ -1,7 +1,7 @@
 ---
 date_created: "2025-10-26T18:32:25.959682+00:00"
 last_updated: "2025-10-26T18:32:25.959682+00:00"
-tags: ["documentation", "web-content", "architecture"]
+tags: ["documentation", "dashboard", "architecture"]
 description: "Documentation for overview"
 ---
 
@@ -9,7 +9,7 @@ description: "Documentation for overview"
 last_updated: '2025-10-26T00:00:00Z'
 tags:
 
-- web-content
+- dashboard
 - overview
 - documentation
   description: Documentation for overview in web-content

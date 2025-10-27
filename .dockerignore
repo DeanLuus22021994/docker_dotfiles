@@ -25,9 +25,9 @@
 **/.yarn/
 
 # Package manager locks (rebuild in container)
-# Exception: api/package-lock.json is needed for Docker API Proxy build
+# Exception: backend/package-lock.json is needed for Docker API Proxy build
 **/package-lock.json
-!api/package-lock.json
+!backend/package-lock.json
 **/yarn.lock
 **/pnpm-lock.yaml
 

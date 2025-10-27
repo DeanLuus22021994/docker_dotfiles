@@ -43,7 +43,7 @@ docker/
 │   ├── powershell/             # PowerShell scripts
 │   ├── python/                 # Python scripts
 │   └── bash/                   # Bash scripts
-├── web-content/                # React dashboard source code
+├── dashboard/                  # React dashboard source code
 ├── backend/                    # Express.js API server
 ├── docker-compose.yml          # 26-service orchestration
 └── Makefile                    # Build + test + validate

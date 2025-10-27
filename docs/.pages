@@ -9,7 +9,7 @@ title: Documentation
 nav:
   - index
   - readme
-  - web-content
+  - dashboard
   - api
   - config
   - scripts

@@ -16,7 +16,7 @@ tags:
 System design and component documentation:
 
 - [Overview](../../docs/readme/architecture.md) - High-level architecture
-- [Web Dashboard](../../web-content/architecture/overview.md) - Frontend architecture
+- [Web Dashboard](../../dashboard/architecture/overview.md) - Frontend architecture
 - [Features](../../docs/readme/features.md) - Complete feature set
 - [Project Structure](../../docs/readme/project-structure.md) - Directory organization
 - [API Documentation](../../api/overview.md) - API server design
@@ -31,4 +31,4 @@ The platform is organized into five architectural layers:
 - **Compute Layer** - Jupyter notebooks
 - **Network Layer** - Nginx, Traefik reverse proxy
 
-See [web architecture](../../web-content/architecture/layers.md) for details.
+See [web architecture](../../dashboard/architecture/layers.md) for details.

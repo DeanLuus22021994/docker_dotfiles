@@ -21,7 +21,7 @@ Quick links to begin using the platform:
 - [Prerequisites](../../docs/readme/prerequisites.md) - System requirements
 - [Installation](../../docs/readme/installation.md) - Setup instructions
 - [Environment Setup](../../docs/readme/environment-setup.md) - Configure credentials
-- [Quickstart](../../web-content/QUICKSTART.md) - 5-minute guide
+- [Quickstart](../../dashboard/quickstart.md) - 5-minute guide
 - [Production Deployment](../production/overview.md) - Production setup
 
 ## Quick Commands

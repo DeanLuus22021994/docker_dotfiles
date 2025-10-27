@@ -1,7 +1,7 @@
 ---
 date_created: "2025-10-26T18:32:25.959188+00:00"
 last_updated: "2025-10-26T18:32:25.959188+00:00"
-tags: ["documentation", "web-content", "architecture"]
+tags: ["documentation", "dashboard", "architecture"]
 description: "Documentation for installation"
 ---
 
@@ -9,7 +9,7 @@ description: "Documentation for installation"
 last_updated: '2025-10-26T00:00:00Z'
 tags:
 
-- web-content
+- dashboard
 - installation
 - documentation
   description: Documentation for installation in web-content

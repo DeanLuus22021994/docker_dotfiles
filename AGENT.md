@@ -25,7 +25,7 @@ Comprehensive development guidelines for AI agents and developers.
 
 **Config:** `.config/mkdocs/` (docs), `.config/docker/` (daemon), `.config/python/` (pyright/pytest), `.config/git/` (pre-commit), `.config/markdownlint/` (linting), `.config/monitoring/` (prometheus/grafana)
 
-**Application:** `api/` (Express.js), `web-content/` (React), `dockerfile/` (multi-stage builds)
+**Application:** `backend/` (Express.js), `dashboard/` (React), `dockerfile/` (multi-stage builds)
 
 **Automation:** `scripts/orchestrator.py` (CLI), `scripts/python/` (validation/audit/utils), `scripts/powershell/` (config/docker/mcp)
 

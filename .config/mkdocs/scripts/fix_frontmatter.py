@@ -126,8 +126,8 @@ def infer_tags_from_path(file_path: Path) -> List[str]:
         inferred.extend(["setup", "installation"])
     elif "scripts" in path_parts:
         inferred.extend(["scripts", "automation"])
-    elif "web-content" in path_parts:
-        inferred.extend(["web-content", "architecture"])
+    elif "dashboard" in path_parts:
+        inferred.extend(["dashboard", "architecture"])
     elif "readme" in path_parts:
         inferred.extend(["readme", "guide"])
     elif "config" in path_parts:

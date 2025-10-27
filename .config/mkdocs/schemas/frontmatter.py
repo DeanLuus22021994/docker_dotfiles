@@ -33,7 +33,7 @@ ALLOWED_TAGS = {
     "setup",
     "testing",
     "user-guide",
-    "web-content",
+    "dashboard",
 }
 
 
